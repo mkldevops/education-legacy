@@ -1,0 +1,140 @@
+{% extends "operation/common.html.twig" %}
+
+{% trans_default_domain 'operation' %}
+
+{% set resources = resources|merge({ uploadfile: true }) %}
+
+{% set title = 'title.show'|trans({ '%id%' : operation.id, '%name%' : operation.name }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_operation_show', { id : operation.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-7">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "operation" %}
+                {% block title 'title.header.show'|trans({'%name%' : operation }) %}
+                {% block config %}
+                    <span class='pull-left'>
+                        {% include "operation/validation.html.twig" %}
+                    </span>
+                {% endblock %}
+                {% block content %}
+                    <dl class="dl-horizontal">
+
+                        <dt>Libellé</dt>
+                        <dd>{{ operation.name }}</dd>
+
+                        <dt>{% trans %}Operation type{% endtrans %}</dt>
+                        <dd>
+                            <a href="{{ path("app_admin_dashboard_index", { "entity" : 'TypeOperation', 'action' : 'show', 'id' : operation.typeOperation.id }) }}">{{ operation.typeOperation.name }}</a>
+                        </dd>
+
+                        <dt>Compte</dt>
+                        <dd>
+                            <a href="{{ path("app_account_show", { "id" : operation.account.id }) }}"
+                               title="{% trans %}Compte {% endtrans %} {{ operation.account.id }} - {{ operation.account.name }}">{{ operation.account.name }}</a>
+                        </dd>
+
+                        <dt>Montant</dt>
+                        <dd>{{ '%.2f €'|format(operation.amount) }}</dd>
+
+                        <dt>Date / Encaissement</dt>
+                        <dd>
+                            {% if operation.date is not empty and operation.date.timestamp > 0  %}
+                                {{ operation.date.format('d/m/Y') }}
+                            {% endif %}
+                        </dd>
+
+                        {% if operation.datePlanned.timestamp > 0 %}
+                            <dt>{% trans %}Date planned{% endtrans %}</dt>
+                            <dd class="text-muted"><em>{{operation.datePlanned.format('d/m/Y') }}</em></dd>
+                        {% endif %}
+
+                        <dt>Genre</dt>
+                        <dd>{{operation.operationGender.name }}</dd>
+
+                        <dt>Référence / N° Ticket</dt>
+                        <dd>{{operation.reference }}</dd>
+
+                        <dt>Unique ID</dt>
+                        <dd><span class="label label-success">{{operation.uniqueId }}</span></dd>
+
+                        <dt>Etat</dt>
+                        <dd>{{operation.enable ? 'valide' : 'invalide' }}</dd>
+
+                        {% if(operation.accountStatement|default(null) is not empty) %}
+                            <dt>{% trans %}Account Statement{% endtrans %}</dt>
+                            <dd>
+                                <a href="{{ path("app_account_statement_show", { id : operation.accountStatement.id }) }}">{{ operation.accountStatement.month.format('F Y') }}</a>
+                                <span class="muted">({{ operation.accountStatement.title }})</span>
+                            </dd>
+                        {% endif %}
+
+                        {% if(operation.slipsCredit is not empty) %}
+                            <dt>{% trans %}Slip Credit{% endtrans %}</dt>
+                            <dd>
+                                <a href="{{ path("app_account_slip_show", { id : operation.slipsCredit.id }) }}">{{ operation.slipsCredit }}</a>
+                            </dd>
+                        {% endif %}
+
+                        {% if(operation.slipsDebit is not empty) %}
+                            <dt>{% trans %}Slip Debit{% endtrans %}</dt>
+                            <dd>
+                                <a href="{{ path("app_account_slip_show", { id : operation.slipsDebit.id }) }}">{{ operation.slipsDebit }}</a>
+                            </dd>
+                        {% endif %}
+
+                        {% if(operation.PaymentPackageStudent is not empty) %}
+                            <dt>Eleve</dt>
+                            <dd>
+                                <a href="{{ path('app_student_show', { "id" : operation.PaymentPackageStudent.packageStudentPeriod.student.id }) }}">
+                                    {{operation.PaymentPackageStudent.packageStudentPeriod.student.getNameComplete() }}
+                                </a>
+                            </dd>
+                        {% endif %}
+
+                        <dt>{% trans %}comment{% endtrans %}</dt>
+                        <dd class="well well-sm">{{operation.comment|raw|nl2br }}</dd>
+
+                        <dt>Auteur</dt>
+                        <dd>{{ operation.author.nameComplete }}</dd>
+                    </dl>
+
+                    <small>
+                        <em>Operation réalisé par <strong>{{ operation.publisher.nameComplete() }} </strong> le <strong>{{ operation.createdAt.format('d/m/Y à H:i') }}</strong></em>
+                    </small>
+
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        <fieldset class="col-md-5">
+            <legend>{% trans %}Attachements{% endtrans %}</legend>
+
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#documents-operation" aria-controls="documents" role="tab" data-toggle="tab">Documents ( {{ operation.documents|length }} )</a>
+                    </li>
+                </ul>
+            </div>
+
+             <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="documents-operation">
+                    {% include 'document/upload.html.twig' with {
+                        documents : operation.documents,
+                        upload : {
+                            url : path('app_operation_set_document', { id : operation.id, action : 'add' }),
+                            urlUnlink : path('app_operation_set_document', { id : operation.id, action : 'remove' }),
+                            prefix : 'Operation document - '|trans,
+                            multiple : true
+                        }
+                    } %}
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}

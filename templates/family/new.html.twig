@@ -1,0 +1,13 @@
+{% extends 'family/common.html.twig' %}
+
+{% trans_default_domain 'family' %}
+
+{% set title = 'title.family.new'|trans %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% include "family/includes/form.html.twig" %}
+
+{% endblock %}

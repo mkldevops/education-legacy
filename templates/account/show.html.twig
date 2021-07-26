@@ -1,0 +1,126 @@
+{% extends 'account/common.html.twig' %}
+
+{% trans_default_domain "account" %}
+
+{% set title = 'title.show'|trans({ '%name%' : account.name, '%id%' : account.id }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_show', { id : account.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+
+    {% include 'account/show_header.html.twig' %}
+
+    <div class="row">
+
+        <div class="col-md-4">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "account" %}
+                {% block title 'title.info'|trans %}
+                {% block config '' %}
+                {% block content %}
+                    <dl class="dl-horizontal">
+                        <dt>{% trans %}Name{% endtrans %}</dt>
+                        <dd>{{ account.name }}</dd>
+
+                        <dt>{{ 'show.isbank.label'|trans }}</dt>
+                        <dd>{{ 'show.isbank.value'|trans({'count' : account.isBank }) }}</dd>
+
+                        <dt>{% trans %}Is Principal{% endtrans %}</dt>
+                        <dd>{{ account.principal }}</dd>
+
+                        <dt title="{% trans %}Interval operations to statement{% endtrans %}">{% trans %}Interval operations to statement{% endtrans %}</dt>
+                        <dd>{{ account.intervalOperationsAccountStatement }} {% trans %}day(s){% endtrans %}</dd>
+
+                        <dt>{% trans %}Status:{% endtrans %}</dt>
+                        <dd>{{ account.enable ? 'Enabled'|trans : 'Disabled'|trans }}</dd>
+                    </dl>
+
+                    <div>
+                        {{ 'show.createdAt'|trans({ '%createdAt%' : account.updatedAt|date('d/m/Y H:i:s') }) }}
+                        <em class="muted">({{ 'show.updateAt'|trans({ '%updateAt%' : account.updatedAt|date('d/m/Y H:i:s') }) }})</em>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        {% if account.isBank %}
+            <div class="col-md-4">
+                {% embed '_inspina/embed/ibox.html.twig' %}
+                    {% trans_default_domain "account" %}
+                    {% block title 'title.bank'|trans %}
+                    {% block config '' %}
+                    {% block content %}
+                        <dl class="dl-horizontal">
+                            <dt >{% trans %}Name{% endtrans %}</dt>
+                            <dd>{{ account.BankName }}</dd>
+
+                            <dt >{% trans %}BIC{% endtrans %}</dt>
+                            <dd>{{ account.BankBic }}</dd>
+
+                            <dt >{% trans %}IBAN{% endtrans %}</dt>
+                            <dd>{{ account.BankIban }}</dd>
+
+                            <dt >{% trans %}Address{% endtrans %}</dt>
+                            <dd>{{ account.bankAddress }}</dd>
+                        </dl>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        {% endif %}
+
+        {% if account.enableAccountStatement %}
+            <div class="col-lg-12">
+                {% embed '_inspina/embed/ibox.html.twig' %}
+                    {% trans_default_domain "account" %}
+                    {% block title 'title.account_statement'|trans %}
+                    {% block config '' %}
+                    {% block content %}
+
+                        {% if accountStatements is not empty %}
+                            <table class="table">
+                                <thead>
+                                    <th>{% trans %}Id{% endtrans %}</th>
+                                    <th>{% trans %}Period{% endtrans %}</th>
+                                    <th>{% trans %}Number Operations{% endtrans %}</th>
+                                    <th>{% trans %}Amount Credit{% endtrans %}</th>
+                                    <th>{% trans %}Amount Debit{% endtrans %}</th>
+                                    <th>{% trans %}New Balance{% endtrans %}</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    {% for accountStatement in accountStatements %}
+                                        <tr>
+                                            <td><a href="{{ path("app_account_statement_show", { id : accountStatement.id }) }}">{{ accountStatement.id }}</a></td>
+                                            <td>
+                                                <a href="{{ path("app_account_statement_show", { id : accountStatement.id }) }}" title="{{ accountStatement.title }}" data-toggle="tooltip">{{ accountStatement.month.format('F Y') }}</a>
+                                            </td>
+                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.stats.numberOperations }}</span> / {{ accountStatement.numberOperations + 0 }}</td>
+                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.stats.sumCredit|number_format(2, '.', ',') }}</span> / {{ accountStatement.amountCredit|number_format(2, '.', ',') }}</td>
+                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.stats.sumDebit|number_format(2, '.', ',') }}</span> / {{ accountStatement.amountDebit|number_format(2, '.', ',') }}</td>
+                                            <td class="text-rigtht">{{ accountStatement.newBalance|number_format(2, '.', ',') }} €</td>
+                                            <td>
+                                                {% if accountStatement.stats.isValid %}
+                                                    <i class="fa fa-check-circle text-success"></i>
+                                                {% else %}
+                                                    <i class="fa fa-exclamation-circle text-warning"></i>
+                                                {% endif %}
+                                                &nbsp;<a href="{{ path("app_account_statement_show", { id : accountStatement.id }) }}" target="_blank" class="fas fa-folder-open"></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/operation.js') }}"></script>
+    <script src="{{ asset('js/type_operation.js') }}"></script>
+{% endblock %}

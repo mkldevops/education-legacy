@@ -1,0 +1,41 @@
+student-comment_root:
+    path:  /
+    defaults:
+        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+        route: student-comment
+        permanent: true
+
+student-comment:
+    path:  /list/{page}/{search}
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:index", page: 1, search: '' }
+
+student-comment_show:
+    path:  /{id}/show
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:show" }
+
+student-comment_new:
+    path:  /new
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:new" }
+
+student-comment_create:
+    path:  /create
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:create" }
+    requirements: { methods: post }
+
+student-comment_edit:
+    path:  /{id}/edit
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:edit" }
+
+student-comment_update:
+    path:  /{id}/update
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:update" }
+    requirements: { methods: post|put }
+
+student-comment_delete:
+    path:  /{id}/delete
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:delete" }
+
+student-comment_search:
+    path:  /search
+    defaults: { _controller: "MadrasseAdminBundle:StudentComment:search" }
+    requirements: { methods: post }

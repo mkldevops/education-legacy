@@ -1,0 +1,42 @@
+{% trans_default_domain  'document' %}
+
+{% set path_show = document.id is defined ? path('app_document_show', { id : document.id }) : '%PATH_SHOW%' %}
+{% set path_edit = document.id is defined ? path('app_document_edit', { id : document.id }) : '%PATH_EDIT%' %}
+{% set path_delete = document.id is defined ? path('app_document_delete', { id : document.id }) : '%PATH_DELETE%' %}
+
+<div id="document-{{ document.id|default('%ID%') }}"
+     class="{{ upload.class }} document"
+     data-toggle="tooltip"
+     title="{{ document.title|default('%TITLE%') }}"
+     data-id="{{ document.id|default('%ID%') }}">
+
+    <div class="action hidden text-right">
+        <a href="{{ asset(document.webPath|default('%WEB_PATH%')) }}" target="blank" class="pointer fas fa-share-square"></a>
+        <a href="{{ path_edit }}" class="pointer fa fa-pencil-square"></a>
+        {% if upload.urlUnlink is not empty %}
+            <i class="document-unlink pointer fa fa-chain-broken" data-url="{{ upload.urlUnlink }}"></i>
+        {% endif %}
+        <a href="{{ path_delete}}" class="pointer fa fa-trash"></a>
+    </div>
+
+    <div class="image">
+        {% if document.id is not defined or document.hasThumb or document.isImage %}
+            <a data-width="500" href="{{ asset(document.webPathPreview|default('%PREVIEW%')) }}" data-toggle="lightbox">
+                <img src="{{ asset(document.webPathThumb|default('%THUMB%')) }}"
+                     class="img-thumbnail"
+                     alt="{{ document.title|default('%TITLE%') }}" />
+            </a>
+        {% elseif document.isFormat('audio') %}
+            <audio src="{{ asset(document.getWebPath()|default('%WEB_PATH%')) }}" controls preload="none">
+                Votre navigateur ne supporte pas l'élément <code>audio</code>.
+            </audio>
+        {% else %}
+            <i class="fa {{ document.getFaIconFile|default('%ICON%') }} fa-10x"></i>
+        {% endif %}
+    </div>
+
+    <div class="text">
+        <i class="fa {{ document.getFaIconFile|default('%ICON%') }} pull-left"></i>
+        <a href="{{ path_show }}">{{ document.name|default('%NAME%') }}</a>
+    </div>
+</div>

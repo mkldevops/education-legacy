@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block breadcrumb %}
+    {{ parent()  }}
+    <li class="dropdown">
+        <a id="drop5" role="button" data-toggle="dropdown" href="{{ path('payment_package_student') }}">{% trans %}Payment Package Student{% endtrans %} <b class="caret"></b></a>
+    </li>
+{% endblock %}
+
+{% block contextualMenu %}
+
+    <div class="btn-group">
+        <a href="{{ path('payment_package_student') }}" class="btn btn-default{%if 'payment_package_student' == app.request.attributes.get('_route')%} active{% endif %}">
+            <span class="fa fa-list"></span>
+            {% trans %}List{% endtrans %}
+        </a>
+        <a href="{{ path('payment_package_student_new') }}" class="btn btn-primary{%if 'payment_package_student_new' == app.request.attributes.get('_route')%} active{% endif %}">
+            <span class="fa fa-plus"></span>
+            {% trans %}New Payment Package Student{% endtrans %}
+        </a>
+    </div>
+
+    {% if paymentpackagestudent is defined and paymentpackagestudent.id %}
+    <div class="btn-group">
+        <a class="btn btn-default {%if 'payment_package_student_show' == app.request.attributes.get('_route')%} active{% endif %}" href="{{ path('payment_package_student_show', {'id': paymentpackagestudent.id}) }}">
+            {% trans %}Show{% endtrans %}
+        </a>
+        <a class="btn btn-default {%if 'payment_package_student_edit' == app.request.attributes.get('_route')%} active{% endif %}" href="{{ path('payment_package_student_edit', {'id': paymentpackagestudent.id}) }}">
+            <span class="fa fa-edit"></span>
+            {% trans %}Edit{% endtrans %}
+        </a>
+        <a class="btn btn-default {%if 'payment_package_student_delete' == app.request.attributes.get('_route')%} active{% endif %}" href="{{ path('payment_package_student_delete', {'id': paymentpackagestudent.id}) }}">
+            <span class="fa fa-trash"></span>
+            {% trans %}Delete{% endtrans %}
+        </a>
+    </div>
+    {% endif %}
+
+
+{% endblock contextualMenu %}

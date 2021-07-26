@@ -1,0 +1,43 @@
+parameters:
+    # Adds a fallback DATABASE_URL if the env var is not set.
+    # This allows you to run cache:warmup even if your
+    # environment variables are not available yet.
+    # You should not need to change this value.
+    env(DATABASE_URL): ''
+
+doctrine:
+    dbal:
+        # configure these for your database server
+        driver: 'pdo_mysql'
+        server_version: '8'
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+
+        url: '%env(resolve:DATABASE_URL)%'
+    orm:
+        auto_generate_proxy_classes: true
+        entity_managers:
+            default:
+                quote_strategy: doctrine.orm.quote_strategy.ansi
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                auto_mapping: true
+                mappings:
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: App
+                dql:
+                    string_functions:
+                        if: DoctrineExtensions\Query\Mysql\IfElse
+                        any_value: DoctrineExtensions\Query\Mysql\AnyValue
+                    datetime_functions:
+                        regexp: DoctrineExtensions\Query\Mysql\Regexp
+                        date_format: DoctrineExtensions\Query\Mysql\DateFormat
+                        strftime:  DoctrineExtensions\Query\Sqlite\StrfTime
+                        date: DoctrineExtensions\Query\Mysql\Date
+                        hour: DoctrineExtensions\Query\Mysql\Hour
+                        month: DoctrineExtensions\Query\Mysql\Month

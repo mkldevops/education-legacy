@@ -1,0 +1,17 @@
+{% extends 'meet/common.html.twig' %}
+
+{% trans_default_domain 'meet' %}
+
+{% set title = 'title.delete'|trans({'%name%' : meet }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_meet_delete', {id : meet.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'meet' %}
+        {% set nameEntity = 'meet'|trans %}
+        {% block title 'title.form.delete'|trans %}
+    {% endembed %}
+{% endblock %}

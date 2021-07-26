@@ -1,0 +1,68 @@
+{% extends 'class_period/common.html.twig' %}
+
+{% trans_default_domain 'class_period' %}
+
+{% set title = 'title.index'|trans %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_class_period_index')}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+<div class="panel panel-default">
+    <table class="table table-striped table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>{% trans %}table.id{% endtrans %}</th>
+                <th>{% trans %}table.class{% endtrans %}</th>
+                <th>{% trans %}table.students{% endtrans %}</th>
+                <th>{% trans %}table.courses{% endtrans %}</th>
+                <th>{% trans %}table.teachers{% endtrans %}</th>
+                <th>{% trans %}table.status{% endtrans %}</th>
+                <th>{% trans %}table.record{% endtrans %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for classperiod in classperiodList %}
+            <tr>
+                <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ classperiod.id }}</a></td>
+                <td><a href="{{ path('app_class_school_show', { 'id': classperiod.classSchool.id }) }}">{{ classperiod.classSchool.name }}</a></td>
+                <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ classperiod.students|length }}</a></td>
+                <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ classperiod.courses|length }}</a></td>
+                <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ classperiod.getTeachersToString() }}</a></td>
+                <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ 'data.status'|trans({ count : classperiod.enable }) }}</a></td>
+                <td>{% if classperiod.record %}{{ classperiod.record|date('d/m/Y') }}{% endif %}</td>
+                <td>
+                    <div class="dropdown pull-left">
+                        <a href=""
+                           title="{% trans %}print list student{% endtrans %}"
+                        class="dropdown-toggle"
+                           type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-print" aria-hidden="true"></i>
+                        </a>
+                        
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li><a href="{{ path('app_class_period_print_list_student', {'id': classperiod.id}) }}">Print list student</a></li>
+                            <li><a href="{{ path('app_class_period_print_appeal_student', {'id': classperiod.id}) }}">Print student appeal</a></li>
+                        </ul>
+                    </div>
+                    &nbsp;
+                    <a href="{{ path('app_class_period_show', {'id': classperiod.id}) }}" title="{% trans %}Show{% endtrans %}">
+                        <span class="fas fa-folder-open"></span>
+                    </a>
+                    &nbsp;
+                    <a href="{{ path('app_class_period_edit', {'id': classperiod.id}) }}" title="{% trans %}Edit{% endtrans %}">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    &nbsp;
+                    <a href="{{ path('app_class_period_delete', {'id': classperiod.id}) }}" class="crud-entity-delete" title="{% trans %}Delete{% endtrans %}" data-entity="ClassPeriod" data-id="{{ classperiod.id }}">
+                        <span class="fa fa-remove"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+

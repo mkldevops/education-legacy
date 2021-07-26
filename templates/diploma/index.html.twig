@@ -1,0 +1,53 @@
+{% extends 'diploma/common.html.twig' %}
+
+{% block title %}Diploma index{% endblock %}
+
+{% block body %}
+    <h1>Diploma index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Enable</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>DeletedAt</th>
+                <th>Image.name</th>
+                <th>Image.originalName</th>
+                <th>Image.mimeType</th>
+                <th>Image.size</th>
+                <th>Image.dimensions</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for diploma in diplomas %}
+            <tr>
+                <td>{{ diploma.id }}</td>
+                <td>{{ diploma.name }}</td>
+                <td>{{ diploma.enable ? 'Yes' : 'No' }}</td>
+                <td>{{ diploma.createdAt ? diploma.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ diploma.updatedAt ? diploma.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ diploma.deletedAt ? diploma.deletedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ diploma.image.name }}</td>
+                <td>{{ diploma.image.originalName }}</td>
+                <td>{{ diploma.image.mimeType }}</td>
+                <td>{{ diploma.image.size }}</td>
+                <td>{{ diploma.image.dimensions }}</td>
+                <td>
+                    <a href="{{ path('app_diploma_show', {'id': diploma.id}) }}">show</a>
+                    <a href="{{ path('app_diploma_edit', {'id': diploma.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_diploma_new') }}">Create new</a>
+{% endblock %}

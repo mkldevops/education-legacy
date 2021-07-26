@@ -1,0 +1,70 @@
+{% extends 'person/common.html.twig' %}
+
+{% set title = 'Person list'|trans %}
+
+{% block body %}
+<div class="panel panel-default">
+    {% include 'search.html.twig' %}
+
+    <table class="table table-striped table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>{% trans %}Id{% endtrans %}</th>
+                <th>{% trans %}Name{% endtrans %}</th>
+                <th>{% trans %}Forname{% endtrans %}</th>
+                <th>{% trans %}Phone{% endtrans %}</th>
+                <th>{% trans %}Email{% endtrans %}</th>
+                <th>{% trans %}Birthday{% endtrans %}</th>
+                <th>{% trans %}Gender{% endtrans %}</th>
+                <th>{% trans %}Address{% endtrans %}</th>
+                <th>{% trans %}Zip{% endtrans %}</th>
+                <th>{% trans %}City{% endtrans %}</th>
+                <th>{% trans %}Status{% endtrans %}</th>
+                <th><span class="fa fa-edit" title="{% trans %}Edit{% endtrans %}"></span></th>
+                <th><span class="fa fa-times" title="{% trans %}Delete{% endtrans %}"></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for person in personList %}
+            <tr>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.id }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.name }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.forname }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.phone }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.email }}</a></td>
+                <td><span data-toggle="tooltip" title="{{ person.birthplace }}">{% if person.birthday %}{{ person.birthday|date('d/m/Y') }}{% endif %}</span></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.gender }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.address }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.zip }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.city }}</a></td>
+                <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.enable }}</a></td>
+                <td>
+                    <a href="{{ path('app_person_edit', {'id': person.id}) }}" title="{% trans %}Edit{% endtrans %}">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ path('app_person_delete', {'id': person.id}) }}" class="crud-entity-delete" title="{% trans %}Delete{% endtrans %}" data-entity="Person" data-id="{{ person.id }}">
+                        <span class="fa fa-times"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if pages > 1 %}
+    <div class="panel-footer">
+        {% include 'pagination.html.twig' with {
+            currentFilters: { 'search': search },
+            currentPage: page,
+            paginationPath: "app_person_index",
+            lastPage: pages,
+            showAlwaysFirstAndLast: true
+        } only %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+

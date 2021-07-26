@@ -1,0 +1,36 @@
+title.show: 'Relevé de compte n° %id% - %date%'
+title.form_new: 'Formulaire de Relevé de compte'
+title.documents: Documents
+account_statement: __account_statement
+title.form_delete: __title.form_delete
+title.delete: __title.delete
+title.form.edit: __title.form.edit
+title.edit: __title.edit
+title.index: __title.index
+Id: __Id
+Title: __Title
+Account: __Account
+'Amount Credit': '__Amount Credit'
+'Amount Debit': '__Amount Debit'
+'New Balance': '__New Balance'
+Begin: __Begin
+End: __End
+Created: __Created
+Status: __Status
+Edit: __Edit
+Delete: __Delete
+title.more_info: __title.more_info
+Author: __Author
+'Account statement -': '__Account statement -'
+Informations: __Informations
+Month: __Month
+'Number Operations': '__Number Operations'
+label.reference: __label.reference
+Credit: __Credit
+'Sum of the amount credit of operations related to statement': '__Sum of the amount credit of operations related to statement'
+Debit: __Debit
+'Sum of the amount debit of operations related to statement': '__Sum of the amount debit of operations related to statement'
+'List Operations': '__List Operations'
+'Delete Operations': '__Delete Operations'
+'Add Operations': '__Add Operations'
+'New Operations': '__New Operations'

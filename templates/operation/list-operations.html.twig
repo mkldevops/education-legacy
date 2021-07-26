@@ -1,0 +1,105 @@
+{% set hiddenFields = hiddenFields|default({}) %}
+{% trans_default_domain 'operation' %}
+
+{% if operations %}
+    <table id="list-operations" class="table table-condensed table-responsive table-hover table-striped" data-toggle="datatable">
+        <thead>
+            <tr>
+                <th class="date desc">Date</th>
+                <th class="numeric">Id</th>
+                <th>Nom</th>
+                <th>Type</th>
+                {% if hiddenFields.account is not defined %}
+                    <th>Compte</th>
+                {% endif %}
+                <th>Transac</th>
+                <th>Credit</th>
+                <th>Debit</th>
+                <th>Validate</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {%  set credit, debit, total = 0, 0, 0 %}
+            {% for operation in operations %}
+                {%  set credit = credit + ( operation.amount > 0 ? operation.amount : 0)  %}
+                {%  set debit = debit + (operation.amount < 0 ? operation.amount : 0) %}
+                {%  set total = total + operation.amount %}
+                {%  set label = '' %}
+                
+                <tr id="operation-{{ operation.id }}" data-id="{{ operation.id }}">
+                    <td class="date desc">
+                        {% if operation.date and operation.date.timestamp > 0  %}
+                            {{ operation.date.format('d/m/Y') }}
+                        {% elseif operation.datePlanned and operation.datePlanned.timestamp > 0 %}
+                            <em class="text-muted">{{operation.datePlanned.format('d/m/Y') }}</em>
+                        {% endif %}
+                    </td>
+                    <td class="numeric"><a
+                                href="{{ path('app_operation_show', { 'id' : operation.id}) }}"> {{ operation.id }}</a>
+                    </td>
+                    <td>{{ operation.name }}</td>
+                    {% if hiddenFields.typeOperation is not defined %}
+                        <td>
+                            {% if operation.typeOperation.id > 0 %}
+                                {% set label = operation.amount > 0 ? 'label-success' : 'label-danger' %}
+                            {% endif %}
+                            
+                            <span class="type-operation label {{ label }}"
+                               title="{{ operation.typeOperation.name }}"
+                               data-toggle="modal"
+                               data-target="#modalTypeOperation">{{ operation.typeOperation.name }}</span>
+                        </td>
+                    {% endif %}
+                    {% if hiddenFields.account is not defined %}
+                        <td>
+                            <a href="{{ path('app_account_show', {'id': operation.account.id}) }}" title="{{ operation.account.name }}">{{ operation.account.name }}</a>
+                        </td>
+                    {% endif %}
+                    <td>{{ operation.operationGender }}</td>
+                    <td class="text-success">{{ operation.amount > 0 ? '%.2f €'|format(operation.amount) : '' }}</td>
+                    <td class="text-warning">{{ operation.amount < 0 ? '%.2f €'|format(operation.amount) : '' }}</td>
+                    <td class="text-center">
+                        {% include "operation/validation.html.twig" %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_operation_show', {'id': operation.id}) }}"
+                           class="{{ operation.uniqueId is not empty ? 'fas fa-folder-open text-warning' : 'fas fa-folder-open' }}"></a>
+                        &nbsp;
+                        <a href="{{ path('app_operation_edit', {'id': operation.id}) }}"
+                           class="fas fa-edit"></a>
+                        {% if operation.accountStatement is not empty %}
+                            <a href="{{ path('app_account_statement_show', {'id' : operation.accountStatement.id }) }}"
+                               data-toggle="tooltip"
+                               title="{{ operation.accountStatement }}"
+                            >
+                                <i class="fab fa-stack-overflow"></i>
+                            </a>
+                        {% endif %}
+                        {% if operation.slipsCredit is not empty or operation.slipsDebit is not empty %}
+                            <a href="{{ path('app_account_slip_show', { id : (operation.slipsCredit is not empty ? operation.slipsCredit.id : operation.slipsDebit.id) }) }}">
+                                <i class="fas fa-exchange-alt"></i>
+                            </a>
+                        {% endif %}
+                        {% if operation.hasErrorAmount %}
+                            <i class="fas fa-exclamation-triangle fa-lg text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+        <tfoot>
+            <tr>
+                <th colspan="6" class="text-right"> Total : </th>
+                <th> {{ '%.2f €'|format(credit) }} </th>
+                <th> {{ '%.2f €'|format(debit) }} </th>
+                <th> {{ '%.2f €'|format(total) }} </th>
+            </tr>
+        </tfoot>
+    </table>
+    
+    {{ render(controller('App\\Controller\\TypeOperationController:modalList')) }}
+    
+{% endif %}

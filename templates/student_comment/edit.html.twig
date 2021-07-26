@@ -1,0 +1,11 @@
+{% extends 'student/common.html.twig' %}
+
+{% set title = 'edit.title'|trans %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block content %}
+
+    {{ form(edit_form) }}
+
+{% endblock %}

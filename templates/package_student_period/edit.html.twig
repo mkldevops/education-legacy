@@ -1,0 +1,21 @@
+{% extends 'package_student_period/common.html.twig' %}
+
+{% trans_default_domain 'package_period_student' %}
+
+{% set title = 'title.edit'|trans %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_package_student_period_edit', {id : packagestudentperiod.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "package" %}
+        {% block title 'form.title.edit'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

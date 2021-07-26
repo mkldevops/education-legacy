@@ -1,0 +1,55 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set breadcrumbs = { ('member.breadcrumb'|trans) : path('app_member_index')}|merge(breadcrumbs|default({})) %}
+
+{% block menu_action %}
+
+    <li class="{%if 'app_member_index' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_member_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}List{% endtrans %}
+        </a>
+    </li>
+    <li class="{%if 'app_member_new' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_member_new') }}">
+            <span class="fa fa-plus"></span>
+            {{ 'member.new'|trans }}
+        </a>
+    </li>
+
+    {% if member is defined and member.id %}
+        <li class="{%if 'app_person_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            {% if member.person.id|default(null) is not empty %}
+                <a href="{{ path('app_person_show', {'id': member.person.id}) }}">
+                    <i class="fas fa-file-text"></i>
+                    {{ 'member.person'|trans }}
+                </a>
+            {% endif %}
+        </li>
+        <li class="{%if 'app_member_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_member_show', {'id': member.id}) }}">
+                <i class="fas fa-file-text"></i>
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'app_member_edit' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_member_edit', {'id': member.id}) }}">
+                <span class="fa fa-edit"></span>
+                {% trans %}Edit{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'app_member_delete' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_member_delete', {'id': member.id}) }}">
+                <span class="fa fa-trash"></span>
+                {% trans %}Delete{% endtrans %}
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'print-base.html.twig' %}
+
+{% block container %}
+    <div class="text-center">
+        <div>
+            <small class="text-muted text-center"><i>{{ students|length }} élèves, le {{ "now"|date("d/m/Y") }}</i></small>
+        </div>
+        <h2>{{ classperiod.name }} <i class="h6 text-info">({{ page }}/{{ pages }})</i></h2>
+
+        <div class="row d-print-none">
+            <div class="offset-sm-2 col-2 text-center">
+                {% if pages > 1 %}
+                    {% include 'pagination.html.twig' with {
+                        currentFilters: { 'id': classperiod.id },
+                        currentPage: page,
+                        paginationPath: 'app_class_period_print_appeal_student',
+                        lastPage: pages,
+                        showAlwaysFirstAndLast: true
+                    } only %}
+                {% endif %}
+            </div>
+            <div class="col-4 mb-2">
+                <form action="" method="get" class="row g-2 text-sm-center">
+                    <div class="col-8">
+                        <label for="from" class="visually-hidden">Password</label>
+                        <input id="from" name="from" type="date" class="form-control" value="{{ from.format('Y-m-d') }}" />
+                    </div>
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Nom</th>
+
+                {% for course in courses %}
+                    {% if course.date|default(null) %}
+                        <th scope="col" class="text-center text-primary">
+                            <br> {{ course.date.format('D')|trans({}, 'date') }}
+                            <br> {{ course.date.format('d/m') }}
+                            <br> {{ course.hourBegin.format('H:i') }}
+                        </th>
+                    {% else %}
+                        <th scope="col">&emsp;&emsp;</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in 0..lines %}
+                {% set classperiodStudent  = students[i] is defined ? students[i] : null  %}
+
+                <tr>
+                    {% if classperiodStudent is not empty %}
+                        {% set student = classperiodStudent.student %}
+
+                        <th scope="row">{{ student.id }}</th>
+                        <td>{{ student.nameComplete }}</td>
+                    {% else %}
+                        <th scope="row" colspan="2">&emsp;</th>
+                    {% endif %}
+
+                    {% for course in courses %}
+                        <td>&nbsp;</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

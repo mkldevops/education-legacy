@@ -1,0 +1,61 @@
+{% extends "_inspina/core.html.twig" %}
+
+{% trans_default_domain 'user' %}
+
+{% set title = 'Login'|trans %}
+{% set body_attr = "class='gray-bg'" %}
+
+{% block stylesheets %}
+    <link href="{{ asset('inspina/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" referrerpolicy="no-referrer" />
+    <link href="{{ asset('inspina/css/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+    <script src="{{ asset('inspina/js/bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block container %}
+
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+                {% if asset('img/logo-custom.png') %}
+                    <img src="{{ asset('img/logo-custom.png') }}" alt="" width="200px">
+                {% else %}
+                    <h1 class="logo-name">E+</h1>
+                {% endif %}
+            </div>
+
+            <h3>{{ 'security.login.welcome'|trans }}</h3>
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <form class="m-t" role="form" method="post" >
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+                <div class="form-group">
+                    <input class="form-control" type="text" id="username" name="username" value="{{ last_username }}" required="required" placeholder="{{ 'security.login.username'|trans }}" />
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="password" id="password" name="password" required="required" placeholder="{{ 'security.login.password'|trans }}" />
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label for="remember_me">
+                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                            {{ 'security.login.remember_me'|trans }}
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary block full-width m-b" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
+
+                <a href="#"><small>{{ 'security.login.forgot_password'|trans }}</small></a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

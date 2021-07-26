@@ -1,0 +1,21 @@
+twig:
+    #exception_controller: App\Controller\ExceptionController::showException
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    form_themes: ['bootstrap_3_horizontal_layout.html.twig']
+    globals:
+        app_version: '%env(VERSION)%'
+        resources:
+            ckeditor: false
+            datatables: false
+            highchart: false
+            multiselect: false
+            uploadfile: false
+            operations: false
+
+        # Menu sidebar for active
+        menuSelect:
+            level1: null
+            level2: null
+            level3: null

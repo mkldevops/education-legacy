@@ -1,0 +1,17 @@
+{% extends 'account/common.html.twig' %}
+
+{% trans_default_domain 'account' %}
+
+{% set title = 'title.delete'|trans({ '%name%' : account }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_delete', { id : account.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'account' %}
+        {% set nameEntity = 'account'|trans %}
+        {% block title 'title.form_delete'|trans %}
+    {% endembed %}
+{% endblock %}

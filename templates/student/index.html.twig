@@ -1,0 +1,148 @@
+{% trans_default_domain 'student' %}
+{% set resources = resources|merge({ datatables : true }) %}
+
+{% extends "student/common.html.twig" %}
+
+{% set title = 'title.index'|trans %}
+
+{% block body %}
+    {% if students %}
+        <table class="table table-striped  table-bordered table-hover dt-responsive" data-toggle="datatable">
+            <thead>
+                <tr>
+                    <th>{{ 'list.label.family'|trans }}</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>{{ 'list.label.phone'|trans }}</th>
+                    <th>{{ 'list.label.class'|trans }}</th>
+                    <th class="numeric text-center">CP</th>
+                    <th class="numeric text-center">Age</th>
+                    <th>Sexe</th>
+                    <th>Niveau</th>
+                    <th class="text-center numeric">{{ 'list.label.id'|trans }}</th>
+                    <th class="text-center">{{ 'list.label.picture'|trans }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    {% if student.id is not empty %}
+                        {% set classPeriodStudent = student.getClassToPeriod( app.session.get('period').selected )|default(null) %}
+
+                        <tr id="student-{{ student.id }}"
+                            data-id="{{ student.id }}"
+                            data-class-period="{{ classPeriodStudent.classPeriod.id|default(0) }}"
+                            class="student {{ student.enable ? "" : "danger"}}">
+
+                            <td class="text-center">
+                                {% if student.person.family is not empty %}
+                                    <a href="{{ path('app_family_show', { 'id' : student.person.family.id }) }}">{{ student.person.family.id }}</a>
+                                {% else %}
+                                    <a href="{{ path('app_student_edit', { 'id' : student.id }) }}#relations">{{ 'index.table.header.family.affect'|trans }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_student_show', {'id': student.id}) }}">{{ student.name | upper }}</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_student_show', {'id': student.id}) }}">{{ student.forname | capitalize }}</a>
+                            </td>
+                            <td class="text-center">
+                                {% include 'student/includes/phone.html.twig' %}
+                            </td>
+                            <td class="class-period text-center">
+                                <div class="dropup">
+                                    {% if classPeriodStudent is not null %}
+
+                                        <a href="{{ path('app_class_period_show', {'id': classPeriodStudent.classPeriod.id }) }}"
+                                           class="class-period-name class-period-{{ classPeriodStudent.classPeriod.id }} fas fa-folder-open">
+                                            {{ 'list.label.class'|trans }} {{ classPeriodStudent.classPeriod.classSchool.name }}
+                                        </a>
+                                    {% elseif classPeriods is defined %}
+                                        <span class="class-period-name">{{ 'list.label.integrate_class'|trans }} </span>
+                                    {% endif %}
+
+                                    <a href="#" class="modal-classperiod" data-toggle="modal" data-target="#modal-classperiod">
+                                        <i class="icon fas fa-sign-{{ classPeriodStudent is not empty ? "out-alt text-warning" : "in-alt text-success" }}"></i>
+                                    </a>
+
+                                </div>
+                            </td>
+                            <td><span data-toggle="tooltip" title="{{ student.address }}">{{ student.zip }}</span></td>
+                            <td class="text-center">
+                                <span data-toggle="tooltip" data-placement="top" title="" data-original-title=" né(e) le {{ student.birthday.format('d/m/Y') }}">{{ student.getAge() }}</span>
+                            </td>
+                            <td class="text-center">
+                                <i class="fa fa-{{ student.genderCode }}" data-toggle="tooltip" title="{{ student.gender|capitalize }}"> {{ student.gender|first|capitalize }}</i>
+                            </td>
+                            <td class="text-center">{{ student.grade.name }}</td>
+                            <td class="text-center">{{ student.id }}</td>
+                            <td class="text-center">
+                                {% if student.image is not empty %}
+                                    <a href="{{ asset(student.image.getWebPathThumb) }}" data-width="100" data-toggle="lightbox"><i class="fa fa-file-image-o"></i></a>
+                                {% endif %}
+                            </td>
+                            <td class="student-setting">
+                                <div>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class="fa fa-cog"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-right dropdown-student-desactivated dropdown-table" role="menu">
+                                        <li><a href="{{ path('app_student_show', {'id': student.id}) }}"><i
+                                                        class="fas fa-file-text"></i> {{ 'list.action.view'|trans }}
+                                            </a></li>
+                                        <li><a href="{{ path('app_student_edit', {'id': student.id}) }}"><i
+                                                        class="fa fa-edit"></i> {{ 'list.action.edit'|trans }}</a></li>
+                                        <li><a href="#" class="student-disable"><i class="fa fa-toggle-off"></i> {{ 'list.action.disable'|trans }}</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if classPeriods is defined %}
+            <div id="modal-classperiod" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">{{ 'modal.classperiod.change'|trans }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" data-student="0">
+                                <select id="classperiod-change" name="classperiod-change" class="form-control" title="">
+                                    <option value="0">{{ 'modal.classperiod.choose'|trans }}</option>
+                                    {% for classPeriod in classPeriods %}
+                                        <option value="{{ classPeriod.id }}" class="class-period-{{ classPeriod.id }}">
+                                            {{ 'modal.classperiod.option'|trans({
+                                                '%classname%' : classPeriod.classSchool.name,
+                                                '%length%' : classPeriod.students|length
+                                            }) }}</option>
+                                    {% else %}
+                                        <option class="disable">{{ 'list.modal.nothing_class'|trans }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'modal.close'|trans }}</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {% include 'student/includes/modal-phone.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/phone.js') }}"></script>
+    <script type="text/javascript">
+        $('.popover').popover();
+    </script>
+{% endblock %}

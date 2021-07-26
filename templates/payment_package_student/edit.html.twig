@@ -1,0 +1,11 @@
+{% extends 'PaymentPackageStudent/common.html.twig' %}
+
+{% set title = 'PaymentPackageStudent edit'|trans %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block content %}
+
+    {{ form(edit_form) }}
+
+{% endblock %}

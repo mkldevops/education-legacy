@@ -1,0 +1,21 @@
+title.new: 'Nouveau genre d''operation'
+title.edit: 'Modifier le genre d''operation "%name%"'
+title.form.edit: 'Formulaire de modification de genre d''operation'
+title.form.new: 'Formulaire d''ajout de genre d''operation'
+title.form.delete: 'Formulaire de supression de genre d''operation'
+title.delete: 'Supprimer le genre d''operation "%name%"'
+title.index: 'Liste des genre d''operation'
+title.show: 'Fiche du genre d''operation "%name%"'
+title.header.info: 'Information du genre d''operation "%name%"'
+operationgender: 'Genre d''Operation'
+form.status: Activer
+form.name: Nom
+form.code: Code
+Update: Modifier
+Id: __Id
+Name: __Name
+Code: __Code
+Created: __Created
+Status: __Status
+Edit: __Edit
+Delete: __Delete

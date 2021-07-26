@@ -1,0 +1,24 @@
+{% trans_default_domain 'type_operation' %}
+
+<!-- Modal -->
+<div class="modal fade" id="modalTypeOperation" tabindex="-1" role="dialog" aria-labelledby="modalTypeOperation">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalTypeOperationLabel">{{ 'type_operation.modal.title'|trans }}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+
+                    <select name="type_operation" id="modal_type_operation" class="form-control  input-lg">
+                        <option selected value="0">{{ 'modal.todefine'|trans }}</option>
+                        {% for item in list %}
+                            <option value="{{ item.id }}"><i class="fas fa-dashboard"></i>{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+{% extends 'member/common.html.twig' %}
+
+{% trans_default_domain 'member' %}
+
+{% set title = 'new.title'|trans %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% include "member/_form.html.twig" %}
+
+{% endblock %}

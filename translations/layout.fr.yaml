@@ -1,0 +1,15 @@
+breadcrumb.dashboard: 'Tableau de bord'
+top.change_password: 'Changer de mot de passe'
+top.nothing: Aucun
+top.user_profile: 'Mon profile'
+top.user_list: 'Liste utilisateurs'
+top.user_add: 'Ajouter un utilisateur'
+top.user: Utilisateurs
+top.logout: Déconnexion
+top.welcome: 'Bienvenue sur l''admin'
+top.search: 'Recherche global...'
+header.periods.notfound: 'Aucune période disponible'
+search.btn: Rechercher
+search.placehoder: 'Votre recherche...'
+base.not_body.title: 'Page en cours de construction...'
+Manage Periods: Gestion des periodes

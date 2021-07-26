@@ -1,0 +1,15 @@
+{% extends 'account_statement/common.html.twig' %}
+
+{% trans_default_domain 'account_statement' %}
+
+{% set title = 'title.delete'|trans %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block content %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'account_statement' %}
+        {% set nameEntity = 'account_statement'|trans %}
+        {% block title 'title.form_delete'|trans %}
+    {% endembed %}
+{% endblock %}

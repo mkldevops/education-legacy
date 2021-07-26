@@ -1,0 +1,31 @@
+alert.steps_new_teacher: 'Si vous interrompez le processus d''ajout d''un enseignant, seul le profil de la personne sera sauvé'
+title.page: 'Enseignant %name%'
+title.delete: 'Supprimer l''enseignant %name%'
+title.more_info: 'Plus d''informations'
+title.info: Informations
+title.common: Enseignants
+title.edit: 'Modifer enseignant %name%'
+title.index: 'Liste des enseignants'
+title.new: 'Ajouter un nouvel enseignant'
+title.form_new: 'Formulaire d''ajout d''un nouvel enseignant'
+title.form_delete: 'Formulaire de supression d''enseignant'
+header.id_teacher: 'Id Enseignant'
+header.id_person: 'Id Personne'
+header.name: Nom
+header.forname: Prénom
+header.phone: Télephone
+header.email: E-mail
+header.gender: Sexe
+header.city: Ville
+header.status: Etat
+header.class: Classe
+header.created: 'Ajouté le'
+form.title.edit: 'Modifier les informations de l''enseignant'
+form.label.enabled: Activé
+form.label.grade: Niveau
+form.label.name: Nom
+form.label.class_periods: 'Classe annuelle'
+Create: Ajouter
+teacher: Enseignant
+Edit: __Edit
+Delete: __Delete

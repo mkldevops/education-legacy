@@ -1,0 +1,17 @@
+1:
+    id : 1
+    name: Account 1
+    status: true
+    principal: true
+    isBank: false
+    enableAccountStatement: false
+    structure: 1
+
+2:
+    id: 2
+    name: Account 2
+    status: true
+    principal: true
+    isBank: true
+    enableAccountStatement: true
+    structure: 1

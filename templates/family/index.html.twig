@@ -1,0 +1,47 @@
+{% extends 'family/common.html.twig' %}
+
+{% set resources = resources|merge({ datatables : true }) %}
+
+{% trans_default_domain 'family' %}
+
+{% set title = 'title.index'|trans %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    <h1>Families list</h1>
+
+    <table class="table table-striped  table-bordered table-hover dt-responsive" data-toggle="datatable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Famille</th>
+                <th>Email</th>
+                <th>Language</th>
+                <th>{{ 'index.header.Numberchildren'|trans }}</th>
+                <th>Zip</th>
+                <th>{{ 'index.createdat'|trans }}</th>
+                <th>Enable</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for family in families %}
+            <tr>
+                <td><a href="{{ path('app_family_show', { 'id': family.id }) }}">{{ family.id }}</a></td>
+                <td><a href="{{ path('app_family_show', { 'id': family.id }) }}">{{ family }}</a></td>
+                <td>{{ family.email }}</td>
+                <td>{{ family.language }}</td>
+                <td>{{ family.numberChildren }}</td>
+                <td>{{ family.city }}</td>
+                <td>{% if family.createdAt %}{{ family.createdAt|date('d/m/Y H:i') }}{% endif %}</td>
+                <td>{% if family.enable %}Yes{% else %}No{% endif %}</td>
+                <td class="text-center">
+                    <a href="{{ path('app_family_show', { 'id': family.id }) }}"><i class="fa fa-file"></i></a>
+                    <a href="{{ path('app_family_edit', { 'id': family.id }) }}"><i class="fa fa-edit"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

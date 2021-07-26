@@ -1,0 +1,86 @@
+List: Liste
+'New Account': 'Nouveau compte'
+Show: Afficher
+Edit: Modifier
+Delete: Supprimer
+Id: Identifiant
+Name: Nom
+Record: 'Enregistré le'
+'Add operation': 'Nouvelle operation'
+'Count operation': 'Nombre d''opérations'
+dashboard.breadcrumb: 'Tableau de bord'
+account.breadcrumb: Comptes
+account.not_exists: 'Vous ne possedez aucun compte, <a href="%link%">Creer un nouveau compte</a>'
+account.menu.add_accounstatement: 'Ajouter une relevé bancaire'
+account.menu.import_ofx: 'Importer un fichier OFX'
+operation.new: 'Nouvelle opération'
+operation.breadcrumb: 'Gestion des opérations'
+operation.statsbymonthly: 'Statistique mensuelle'
+package.new: 'Ajouter un forfait'
+package.breadcrumb: Forfait
+package_student_period.new: 'Ajouter un forfait à un élève'
+package_student_period.breadcrumb: 'Forfait Souscrit'
+grade.breadcrumb: 'Gestion Niveaux'
+grade.new: 'Ajouter un niveau'
+class_period.breadcrumb: 'Gestion des classes annuelles'
+classschool.breadcrumb: 'Gestion des classes'
+classschool.new: 'Ajouter une classe'
+classschool.list: 'Liste des classes'
+delete.text: 'Êtes vous sur de vouloir supprimer cette entrée de "%entity%"'
+date.short_with_hour: 'd/m/y à H:i:s'
+date.with_hour: 'd/m/Y à H:i:s'
+school.new: 'Nouvelle École'
+school.breadcrumb: 'Gestion des écoles'
+account_slip.new: 'Nouveau transfert'
+account_slip.breadcrumb: Transfert
+account_statement.new: 'Nouveau relevé de compte'
+account_statement.breadcrumb: 'Relevé de compte'
+teacher.breadcrumb: Enseignants
+teacher.new: 'Ajouter un enseignant'
+person.breadcrumb: 'Gestion de personnes'
+person.new: 'Ajouter une personne'
+product.breadcrumb: 'Gestion de produits'
+product.new: 'Ajouter un produit'
+user.new: 'Ajouter un utilisateur'
+user.breadcrumb: Utilisateurs
+user.change_password: 'Changer mot de passe'
+user.title: 'Gestion des utilisateurs'
+period.breadcrumb: 'Gestion des periodes'
+period.new: 'Ajouter une periode'
+type_operation.breadcrumb: 'Gestion des types d''operations'
+type_operation.new: 'Ajouter un type d''opération'
+operationgender.breadcrumb: 'Gestion des genre d''operations'
+operationgender.new: 'Ajouter un genre d''opération'
+sale.breadcrumb: 'Gestion des ventes'
+sale.new: 'Ajouter une vente'
+member.breadcrumb: 'Gestion des membres'
+member.new: 'Ajouter un membre'
+member.person: 'Afficher fiche personne'
+meet.breadcrumb: 'Gestion des réunions'
+meet.new: 'Ajouter une réunion'
+document.new: 'Nouveau document'
+document.breadcrumb: 'Gestion des documents'
+course.new: 'Ajouter un cours'
+course.breadcrumb: 'Gestion des cours'
+course.menu.generate: 'Génération des cours'
+family.breadcrumb: 'Gestion famille'
+family.new: Ajouter
+family.delete: Supprimer
+family.edit: Modifier
+family.show: Afficher
+family.list: Liste
+search.title: 'Résulat de la recherche %search%'
+'List class Period': 'Liste des classes annuelle'
+'Current Period': 'Classes annuelle %period%'
+'New ClassPeriod': 'Nouvelle classe annuelle'
+'Show students': 'Liste des éléves'
+'Add course': 'Ajouter un cours'
+'Print list student': 'Imprimer la liste d''éléves'
+'Print appeal student': 'Imprimer la liste d''appel'
+'Show Person': 'Fiche personnelle'
+diploma.breadcrumb: Diplôme
+diploma.new: Nouveau diplome
+'Payment Package Student': '__Payment Package Student'
+'New Payment Package Student': '__New Payment Package Student'
+'Account Statement': 'Rélévé de compte'
+'New Meet': 'Nouvelle réunion'

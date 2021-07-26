@@ -1,0 +1,97 @@
+ID: ID
+User: Utilisateur
+Users: Utilisateurs
+Enabled: Activé
+'Last login': 'Dernier accès'
+Name: Nom
+Enable: Actif
+Person: Personne
+Structure: Structure
+'Position name': 'Nom du poste'
+Phone: Téléphone
+Birthplace: 'Lieu de naissance'
+Birthday: 'Date de naisance'
+Gender: Sexe
+female: féminin
+TypeOperation: 'Type d''opération'
+OperationGender: 'Genre d''opération'
+School: École
+Member: Membre
+Education: Éducation
+Period: 'Période annuelle'
+Document: Document
+Comment: Commentaire
+'Class school': Classe
+'Class period': 'Classe annuelle'
+Teachers: Enseignants
+Author: Auteur
+Courses: Cours
+'Is internal transfert': 'Transfert interne'
+Status: État
+'Type amount': 'Type de montant'
+'Short name': 'Nom court'
+'Created at': 'Ajouté le'
+'Updated at': 'Modifié le'
+'Deleted at': 'Supprimé le'
+Dashboard: 'Tableau de bord'
+ClassSchool: 'Classe Géneral'
+ClassPeriod: 'Classe annuelle'
+Course: Cours
+Grade: Niveau
+Family: Famille
+'Type operations': 'Type d''operations enfant'
+'Persons manage': 'Gestion des personnes'
+'Classes manage': 'Gestion des classes'
+Parameters: Paramètres
+Package: Forfait
+Price: Prix
+Record: 'Ajouté le'
+Accountable: Comptabilité
+Show: Afficher
+Edit: Modifier
+Delete: Supprimer
+Zip: 'Code postal'
+City: Ville
+Address: Adresse
+Principal: Principale
+Code: Code
+Forname: Prénom
+Username: 'Nom d''utilisateur'
+'Name complete': 'Nom complet'
+Email: E-mail
+Roles: Rôles
+Student: Elève
+Schools: Ecoles
+Image: Image
+'New PackageStudentPeriod': 'Ajouter un forfait annuel'
+flash.change_period.success: __flash.change_period.success
+'Students without class to period': '__Students without class to period'
+'Information Teacher': '__Information Teacher'
+'More informations': '__More informations'
+Created: __Created
+Updated: __Updated
+'Delete PackageStudentPeriod''s entry': '__Delete PackageStudentPeriod''s entry'
+'Please confirm you want to delete this %entity%''s entry.': '__Please confirm you want to delete this %entity%''s entry.'
+'Person list': '__Person list'
+Id: __Id
+back: __back
+List: __List
+'New StudentComment': '__New StudentComment'
+'Delete StudentComment''s entry': '__Delete StudentComment''s entry'
+edit.title: __edit.title
+'StudentComment list': '__StudentComment list'
+Title: __Title
+Type: __Type
+'Comment to student %name%': '__Comment to student %name%'
+Text: __Text
+'Delete PaymentPackageStudent''s entry': '__Delete PaymentPackageStudent''s entry'
+'New PaymentPackageStudent': '__New PaymentPackageStudent'
+'PaymentPackageStudent edit': '__PaymentPackageStudent edit'
+'PaymentPackageStudent list': '__PaymentPackageStudent list'
+PaymentPackageStudent: __PaymentPackageStudent
+'List Operations to': '__List Operations to'
+Date: __Date
+Amount: __Amount
+'Type Operation': '__Type Operation'
+Close: __Close
+Save: __Save

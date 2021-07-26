@@ -1,0 +1,53 @@
+Gender: 'Type de transfert'
+versement: 'Versement d''especes'
+remise_cheque: 'Remise de chèques'
+cash_withdrawal: 'Retrait d''espèces'
+'Account credit': 'Compte créditeur (+)'
+'Account debit': 'Compte débiteur (-)'
+Date: Date
+Name: Nom
+Amount: Montant
+References: Références
+Comment: Commentaires
+Create: Ajouter
+'AccountSlip list': 'Liste des transfert'
+List: Liste
+'New AccountSlip': 'Nouveau transfert'
+account_slip: Transfert
+'AccountSlip "%name%"': 'Transfert "%name%"'
+Show: Afficher
+Edit: Modifier
+Delete: Supprimer
+Account: Compte
+Created: 'Ajouté le'
+Updated: 'Modifié le'
+Update: Modifier
+'Updated %date%': 'Modifié le %date%'
+Author: Auteur
+'AccountSlip edit': 'Modifier transfert'
+operation.credit: 'Opération crédit'
+operation.debit: 'Opération dédit'
+operation.update: 'Modifier l''opération'
+operation.show: 'Afficher l''opération'
+error.same_account: 'Attention ce sont les meme compte !'
+error.already_exists_ref: 'La transfert avec la réference %reference% existe'
+error.not_created: 'Le transfert n''a pas été ajouté : '
+title.new: 'Ajouter un tranfert'
+title.info: Information
+title.attachement: 'Documents / Fichiers'
+title.edit: 'Modification du transfert "%name%"'
+title.delete: 'Suppression du transfert "%name%"'
+title.form_new: 'Formulaire d''ajout de transfert'
+title.form_edit: 'Formulaire de modification de transfert'
+title.form_delete: 'Formulaire de suppression de transfert'
+title.account_slip.common: Transferts
+title.breadcrumb: '%name% - %ref%'
+title.index: 'Liste des transfert (%count% occurences)'
+show.prefix.document: 'Tranfert -'
+show.edit_accountslip: Modifier
+Id: __Id
+Ref.: __Ref.
+Pict.: __Pict.
+Reference: __Reference
+'Operation Debit': '__Operation Debit'
+'Operation Credit': '__Operation Credit'

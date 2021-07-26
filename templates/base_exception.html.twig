@@ -1,0 +1,24 @@
+{% extends '_inspina/core.html.twig' %}
+
+{% set body_attr = "class='gray-bg'" %}
+
+{% block stylesheets %}
+    <link href="{{ asset('inspina/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bower/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('inspina/css/animate.css') }}" rel="stylesheet">
+    <link href="{{ asset('inspina/css/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('jquer.min') }}"></script>
+    <script src="{{ asset('inspina/js/bootstrap.min.js') }}"></script>
+{% endblock %}
+
+{% block container %}
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            {% block body '' %}
+        </div>
+    </div>
+{% endblock %}

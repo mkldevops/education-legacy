@@ -1,0 +1,64 @@
+{% extends 'member/common.html.twig' %}
+
+{% trans_default_domain 'member' %}
+
+{% set title = 'title.show'|trans({'%name%' : member}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_member_show', {id : member.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-6">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "member" %}
+                {% block title 'title.header.info'|trans({'%name%' : member}) %}
+                {% block config '' %}
+                {% block content %}
+                    {% if member.person|default(null)  %}
+                        {% include 'person/show_content.html.twig' with { person : member.person } %}
+                    {% endif %}
+
+                {% endblock %}
+            {% endembed %}
+
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "member" %}
+                {% block title 'title.header.info_member'|trans({'%name%' : member}) %}
+                {% block config '' %}
+                {% block content %}
+                    <dl class="dl-horizontal">
+                        <dt>{{ 'position Name'|trans }}</dt>
+                        <dd> {{ member.positionName }} </dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+            <small>
+                <em>
+                    {% trans %}Member recorded by{% endtrans %} <strong>{{ member.author.nameComplete() }} </strong>
+                    {% trans %}to{% endtrans %} <strong>{{ member.createdAt.format('d/m/Y à H:i') }}</strong>
+                </em>
+            </small>
+        </div>
+
+        <div class="col-md-6">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "member" %}
+                {% block title 'title.header.info_meet'|trans({'%name%' : member}) %}
+                {% block config '' %}
+                {% block content %}
+                {% endblock %}
+            {% endembed %}
+
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "member" %}
+                {% block title 'title.header.info_membership'|trans({'%name%' : member}) %}
+                {% block config '' %}
+                {% block content %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'package/common.html.twig' %}
+
+{% trans_default_domain 'package' %}
+
+{% set title = 'package.title.show'|trans({'%name%' : package}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_package_show', {id : package.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "package" %}
+        {% block title 'title.show'|trans %}
+        {% block config '' %}
+        {% block content %}
+            <dl class="dl-horizontal">
+                <dt>{%trans%}Id{%endtrans%}</dt>
+                <dd>
+                    {{ package.id }}
+                </dd>
+
+                <dt>{%trans%}Name{%endtrans%}</dt>
+                <dd>
+                    {{ package.name }}
+                </dd>
+
+                <dt>{%trans%}Description{%endtrans%}</dt>
+                <dd>
+                    {{ package.description }}
+                </dd>
+
+                <dt>{%trans%}Price{%endtrans%}</dt>
+                <dd>
+                    {{ package.price }}
+                </dd>
+
+                <dt>{%trans%}Record{%endtrans%}</dt>
+                <dd>
+                    {{ package.record|date('d/m/Y H:i:s') }}
+                </dd>
+
+                <dt>{%trans%}Status{%endtrans%}</dt>
+                <dd>
+                    {{ 'status'|trans({count: package.status}) }}
+                </dd>
+            </dl>
+        {% endblock %}
+    {% endembed %}
+
+
+
+{% endblock %}

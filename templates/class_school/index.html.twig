@@ -1,0 +1,53 @@
+{% extends "class_school/common.html.twig" %}
+
+{% trans_default_domain 'class_school' %}
+
+{% set title = 'title.index'|trans %}
+
+{% block body %}
+
+    {% include 'search.html.twig' %}
+
+    <table class="table table-striped table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>{{'show.head.id'|trans}}</th>
+                <th>{{'show.head.name'|trans}}</th>
+                <th>{{'show.head.enable'|trans}}</th>
+                <th>{{'show.head.period'|trans}}</th>
+                <th>{{'show.head.created_at'|trans}}</th>
+                <th colspan="3" class="text-center"><Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class_school in class_schools %}
+                <tr class="{{ class_school.enable ? '' : 'warning' }}">
+                    <td>{{ class_school.id }}</td>
+                    <td>{{ class_school.name }}</td>
+                    <td>{{ class_school.enable }}</td>
+                    <td><span data-toggle="tooltip" title="{{ class_school.author }}">{{ class_school.createdAt.format('d/m/Y') }}</span></td>
+                    <td>
+                        {% if class_school.enable  %}
+                            {% set class_period = class_school.current(period) %}
+                            {% if class_period is not empty %}
+                                <a href="{{ path('app_class_period_show', {'id': class_period.id}) }}" class="btn btn-xs btn-default"> {{ class_period }}</a>
+                            {% elseif is_granted('ROLE_DIRECTOR') %}
+                                <a href="{{ path('app_class_period_add', {'classSchool': class_school.id, 'period': period.id}) }}" class="btn btn-xs btn-primary">Nouvelle classe {{ period }}</a>
+                            {% else %}
+                                classe à ajouter pour {{ period }}
+                            {% endif %}
+                        {% else %}
+                            ---
+                        {% endif %}
+                    </td>
+                    <td> <a href="{{ path("app_class_school_show", {"id" : class_school.id } ) }}"><span class="fa fa-file"></span></a></td>
+                    <td> <a href="{{ path("app_class_school_edit", {"id" : class_school.id } ) }}" class="fa fa-edit"></a></td>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <td> <a href="{{ path("app_class_school_delete", {"id" : class_school.id } ) }}" class="fa fa-trash"></a></td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,27 @@
+services:
+    Google_Client:
+        class: Google_Client
+        calls:
+            - [setAuthConfigFile, ['%kernel.project_dir%/config/google-credential.json']]            
+            - [setDeveloperKey, ['%env(GOOGLE_API_KEY)%']]
+            - [setClientId, ['%env(GOOGLE_CLIENT_ID)%']]
+            - [setClientSecret, ['%env(GOOGLE_CLIENT_SECRET)%']]
+
+    App\Services\GoogleService:
+        autowire: false
+        autoconfigure: false
+        public: false
+        class: App\Services\GoogleService
+        calls:
+            - [setPathTokens, ['%kernel.project_dir%/var/tokens']]
+            - [setClient, ['@Google_Client']]
+            - [setLogger, ["@logger"]]
+        tags:
+            - { name: monolog.logger, channel: 'app_google_service' }
+
+    App\Services\GoogleCalendarService:
+        autowire: false
+        autoconfigure: false
+        public: false
+        class: App\Services\GoogleCalendarService
+        parent: App\Services\GoogleService

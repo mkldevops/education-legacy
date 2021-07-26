@@ -1,0 +1,8 @@
+{% trans_default_domain 'layout' %}
+
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        {{ render_esi(controller('App\\Controller\\AdminController::menuInspina', { route : app.request.attributes.get('_route') })) }}
+
+    </div>
+</nav>

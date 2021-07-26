@@ -1,0 +1,233 @@
+{% set resources = resources|merge({ datatables : true }) %}
+
+{% extends "student/common.html.twig" %}
+
+{% trans_default_domain 'student' %}
+
+{% set title = "title.payment_list"|trans() %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_student_payment_list')}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <i class="fa fa-euro fa-5x" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                        <span>{{ 'payment.title.payments'|trans }} </span>
+
+                        <h2 class="font-bold">{{ '%.2f'|format(listPayment.total.totalPaid) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <i class="fa fa-percent fa-5x" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                        <span>{{ "payment.title.percentage"|trans }} </span>
+
+                        <h2 class="font-bold">{{ '%.2f'|format(listPayment.total.percentage) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="widget style1 red-bg">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <i class="fa fa-euro fa-5x" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                        <span>{{ 'payment.title.reminder'|trans }} </span>
+
+                        <h2 class="font-bold">-{{ '%.2f'|format(listPayment.total.totalReminderPaid) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="widget style1 navy-bg">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <i class="fa fa-euro fa-5x"></i>
+                    </div>
+                    <div class="col-xs-8 text-right" aria-hidden="true">
+                        <span>{{ "payment.title.discount"|trans }} </span>
+
+                        <h2 class="font-bold">{{ '%.2f'|format(listPayment.total.discount) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <ul class="nav nav-tabs">
+        {% if listPayment %}
+            <li>
+                <a data-toggle="tab" href="#students-payments">{{ 'payment.tabs.list_student'|trans }} <span class="badge badge">{{ listPayment.students|length }}</span></a>
+            </li>
+        {% endif %}
+
+        {% if studentsWithoutPackage %}
+            <li>
+                <a data-toggle="tab" href="#students-without-package">{{ 'payment.tabs.list_student_without_package'|trans }}<span class="alert-danger badge">{{ studentsWithoutPackage|length }}</span></a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <div class="tab-content">
+        <div id="students-payments" class="tab-pane fade">
+            {% if listPayment.students %}
+                <table class="table table-condensed table-responsive table-hover table-striped" data-toggle="datatable">
+                    <thead>
+                        <tr>
+                            <th class='text-center'>#</th>
+                            <th class='text-center'>Nom</th>
+                            <th class='text-center'>Prénom</th>
+                            <th class='text-center date'>Date entré</th>
+                            <th class='text-center'>Status</th>
+                            <th class='text-center'>Forfait</th>
+                            <th class='text-center'>Remise</th>
+                            <th class='text-center'>A Payer</th>
+                            <th class='text-center'>Paiement Réalisé</th>
+                            <th class='sort text-center'>Pourcentage %</th>
+                            <th class="no_sort text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set paymentTotal = 0 %}
+                        {% set amountTotal = 0 %}
+
+                        {% for infoStudent in listPayment.students %}
+                            {% set student = infoStudent.student %}
+                            {% set packagePeriod = student.packagePeriods ? student.packagePeriods[0] : {} %}
+
+                            {% set paymentTotal = paymentTotal + infoStudent.paymentTotal %}
+                            {% set amountTotal = amountTotal + infoStudent.amountTotal %}
+
+                            <tr class="{{ student.enable ? '' : 'text-muted' }}" data-id="{{ student.id }}">
+                                <td class="num"><a href="{{ path('app_student_show', {'id': student.id}) }}" class="fas fa-folder-open"></a></td>
+                                <td>{{ student.person.name|upper }}</td>
+                                <td>{{ student.person.forname|capitalize }}</td>
+                                <td>
+                                    <span data-toggle="tooltip" data-placement="top" title="{{ student.createdAt.format('d/m/Y') }}">
+                                        {{ student.createdAt.format('d/m/Y') }}
+                                    </span>
+                                </td>
+                                <td class="text-{{ student.enable ? "success" : "danger" }}"><strong>{{ student.enable ? "actif" : "inactif" }}</strong></td>
+                                <td>
+                                    {% if packagePeriod is empty %}
+                                        <a href="{{ path('app_student_addpackage', { 'id' : student.id }) }}" class="fa fa-th-large"></a>
+                                    {% else %}
+                                        {{ packagePeriod.package.name }}
+                                    {% endif %}
+                                </td>
+                                <td class='text-right num'>{{ '%.2f €'|format(packagePeriod.discount|default(0)) }}</td>
+                                <td class='text-right num'>{{ '%.2f €'|format(infoStudent.amountTotal|default(0)) }}</td>
+                                <td class='text-right num'>
+                                    <span data-toggle="tooltip" data-placement="top" title="{{infoStudent.numberPayment }} paiement(s)">
+                                        {{ '%.2f €'|format(infoStudent.paymentTotal|default(0)) }}
+                                    </span>
+                                </td>
+                                <td class='text-right num'>
+                                    <div class="progress" style="margin-bottom:0px; height: 18px">
+                                        <div class="progress-bar {{ 'progress-bar-'~infoStudent.status }}" role="progressbar" aria-valuenow="{{ infoStudent.percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ infoStudent.percentage }}%;">
+                                          {{ infoStudent.percentage }} %
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="no_sort  text-center">
+                                    {% if packagePeriod is not empty and infoStudent.paymentTotal <  infoStudent.amountTotal %}
+                                        <a href="{{ path('app_student_show', { 'id' : student.id }) }}" class="fa fa-money"></a> Payer
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class='text-right'></th>
+                            <th class='text-right'></th>
+                            <th class='text-right'></th>
+                            <th class='text-right'></th>
+                            <th class='text-right'></th>
+                            <th class='text-right'><strong>TOTAL</strong></th>
+                            <th class='text-right num'>{{ '%.2f €'|format(listPayment.total.discount) }}</th>
+                            <th class='text-right num'>{{ '%.2f €'|format(amountTotal) }}</th>
+                            <th class='text-right num'>{{ '%.2f €'|format(paymentTotal) }}</th>
+                            <th class='text-right num'>{{ '%.2f'|format((amountTotal is empty or amountTotal <= 0) ? 0 : paymentTotal / amountTotal * 100 ) }} %</th>
+                            <th class="no_sort text-center"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            {% endif %}
+        </div>
+
+        {% if studentsWithoutPackage %}
+            <div id="students-without-package" class="tab-pane fade">
+                <table class="table table-condensed table-responsive table-hover table-striped" data-toggle="datatable">
+                    <thead>
+                        <tr>
+                            <th class='text-center'>#</th>
+                            <th class='text-center'>Nom</th>
+                            <th class='text-center'>Prénom</th>
+                            <th class='text-center'>Date entré</th>
+                            <th class='text-center num'>Age</th>
+                            <th class='text-center no-sort'></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in studentsWithoutPackage %}
+                            <tr data-id="{{ student.id }}">
+                                <td class="num"><a href="{{ path('app_student_show', {'id': student.id }) }}" class="fas fa-folder-open"></a></td>
+                                <td>{{ student.person.name|upper }}</td>
+                                <td>{{ student.person.forname|capitalize }}</td>
+                                <td class="text-center" data-toggle="tooltip" title="{{ student.since }} ans">{{ student.createdAt.format('d/m/Y') }}</td>
+                                <td class="num text-center">{{  student.person.age }}</td>
+                                <td class="text-center">
+                                    <a href="{{ path('app_student_addpackage', { id : student.id }) }}"
+                                        target="_blank"
+                                        data-student="{{ student.id }}" 
+                                        class="add-package-student btn btn-primary btn-xs">
+                                        {{ 'payment.tabs.button.addPackage'|trans({ '%name%' : period }) }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            $('add-package-student').click(function(event) {
+                event.preventDefault();
+
+                let route = Routing.generate('route_name', { 'student' : $(this).data('student') });
+                $.post()
+                    .done(function(data) {
+                        console.log(data);
+                    })
+                    .fail(function() {
+                        alert( "error" );
+                    });
+            });
+        });
+    </script>
+{% endblock %}

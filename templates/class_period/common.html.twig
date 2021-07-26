@@ -1,0 +1,73 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain 'common' %}
+
+{% set breadcrumbs = { ('class_period.breadcrumb'|trans) : path('app_class_period_index')}|merge(breadcrumbs|default({})) %}
+
+{% set periods = app.session.get('period') %}
+
+{% block menu_action %}
+    <li class="{%if 'app_class_period_index' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_class_period_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}List class Period{% endtrans %}
+        </a>
+    </li>
+    <li class="{%if 'classschool' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_class_school_index') }}">
+            <span class="fa fa-list"></span>
+            {{ 'classschool.list'|trans }}
+        </a>
+    </li>
+    <li class="{%if 'class_period_current' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_class_period_current') }}">
+            <span class="fa fa-list"></span>
+            {{ 'Current Period'|trans({'%period%' : periods.selected }) }}
+        </a>
+    </li>
+    <li class="{%if 'class_period_new' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_class_period_new') }}">
+            <span class="fa fa-plus"></span>
+            {% trans %}New ClassPeriod{% endtrans %}
+        </a>
+    </li>
+
+    {% if classperiod is defined and classperiod.id %}
+        <li class="{%if 'class_period_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_class_period_show', {'id': classperiod.id}) }}">
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'class_period_show_student' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_class_period_show_student', {'id': classperiod.id}) }}">
+                <i class="fa fa-th"></i>
+                {% trans %}Show students{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'class_period_edit' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_class_period_edit', {'id': classperiod.id}) }}">
+                <span class="fa fa-edit"></span>
+                {% trans %}Edit{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'class_period_delete' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_class_period_delete', {'id': classperiod.id}) }}">
+                <span class="fa fa-trash"></span>
+                {% trans %}Delete{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'class_period_print_list_student' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_class_period_print_list_student', {'id': classperiod.id}) }}">
+                <i class="fa fa-print" aria-hidden="true"></i>
+                {% trans %}Print list student{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'class_period_print_appeal_student' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_class_period_print_appeal_student', {'id': classperiod.id}) }}">
+                <i class="fa fa-print" aria-hidden="true"></i>
+                {{ 'Print appeal student'|trans({'period' : periods.selected }) }}
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}

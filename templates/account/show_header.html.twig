@@ -1,0 +1,33 @@
+{% trans_default_domain 'account' %}
+
+<div class="row">
+    <div class="col-lg-3 col-md-4">
+        {% embed '_inspina/embed/widget-1.html.twig' %}
+            {% trans_default_domain 'account' %}
+            {% block icon 'fa-list' %}
+            {% block text 'header.nb_operations'|trans %}
+            {% block value info.countOperations %}
+        {% endembed %}
+    </div>
+
+    <div class="col-lg-4">
+        {% embed '_inspina/embed/widget-1.html.twig' %}
+            {% trans_default_domain 'account' %}
+            {% block icon 'fa-money' %}
+            {% block text 'header.current_amount'|trans %}
+            {% block value 'header.amount'|trans({ '%amount%' : info.amount|number_format(2, '.', ' ') }) %}
+        {% endembed %}
+    </div>
+
+    {% if account.enableAccountStatement %}
+        <div class="col-lg-3">
+            {% embed '_inspina/embed/widget-1.html.twig' %}
+                {% trans_default_domain 'account' %}
+                {% block icon 'fa-list' %}
+                {% block class 'red-bg' %}
+                {% block text 'header.operations_without'|trans %}
+                {% block value nbWithoutAccountStatements|default(0) %}
+            {% endembed %}
+        </div>
+    {% endif %}
+</div>

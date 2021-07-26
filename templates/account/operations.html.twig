@@ -1,0 +1,29 @@
+{% set resources = resources|merge({ datatables : true, operations : true }) %}
+
+{% extends 'account/common.html.twig' %}
+
+{% trans_default_domain "account" %}
+
+{% set title = 'title.operations'|trans({ "%name%" : account.name }) %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/operation.js') }}"></script>
+    <script src="{{ asset('js/type_operation.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>{% trans %}Count operation:{% endtrans %}</dt>
+                <dd>{{ account.operations|length }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    {% include "operation/list-operations.html.twig" with { "operations" : account.operations, "hiddenFields" : {"account" : true} } %}
+
+{% endblock %}

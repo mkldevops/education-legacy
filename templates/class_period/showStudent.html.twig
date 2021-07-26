@@ -1,0 +1,168 @@
+{% extends "class_period/common.html.twig" %}
+
+{% trans_default_domain 'class_period' %}
+
+{% set title = 'title.show_student.page'|trans({"%name%" : classperiod }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_class_period_show', {id : classperiod.id })}|merge(breadcrumbs|default({})) %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            let table = $('#student-without-classperiod').dataTable( {
+                "ajax": Routing.generate('class_period_studentwithout'),
+                "columns": [
+                    { "data": "id" },
+                    { "data": "name" },
+                    { "data": "forname" },
+                    { "data": "age" },
+                    { "data": "gender" },
+                    { "data": "dateRegistration" }
+                ]
+            } );
+
+            $('#student-without-classperiod tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('selected');
+            } );
+
+            $('#btn-add-student').click( function () {
+                let students = [];
+                $('#student-without-classperiod tr.selected').each(function() {
+                    students.push($(this).data('id'));
+                });
+
+                $.ajax({
+                    "url" : Routing.generate('class_period_addstudent', { id : {{ classperiod.id }} }),
+                    type: "POST",
+                    "data" : { "students" : students }
+                }).done(function(response) {
+                  if(response.success) {
+                      location.reload();
+                  }
+                });
+            } );
+        } );
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .image-student .img-thumbnail {
+            height :70px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "class_period" %}
+        {% block title %}
+            {{ 'title.show_student.ibox'|trans({'%name%' : classperiod}) }}
+            <small> - {{ 'title.show_student.date'|trans({
+                    '%name%' : classperiod.author.nameComplete,
+                    '%date%' : classperiod.record.format('date.with_hour'|trans({}, 'common'))
+                }) }}</small>
+        {% endblock %}
+        {% block config_list %}
+            <li><!-- Button trigger modal -->
+                <a href="#" id="add-students" data-toggle="modal" data-target="#myModal">
+                    <i class="fa fa-users"></i>
+                    {% trans %}Add Students{% endtrans %}
+                </a>
+            </li>
+            <li><!-- Button trigger modal -->
+                <a href="{{ path('app_class_period_print_list_student', { 'id' : classperiod.id }) }}">
+                    <i class="fa fa-list"></i>
+                    {% trans %}print list of students{% endtrans %}
+                </a>
+            </li>
+        {% endblock %}
+        {% block content %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{% trans %}Photo{% endtrans %}</th>
+                        <th>{% trans %}Name{% endtrans %}</th>
+                        <th>{% trans %}Forname{% endtrans %}</th>
+                        <th>{% trans %}Action{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classperiodStudent in students %}
+                        <tr class="{{ classperiodStudent.active ? 'warning text-muted' : null }}">
+                            <td class="image-student text-center col-md-1">
+                                {% if classperiodStudent.student.image is not empty %}
+                                    <a href="{{ asset(classperiodStudent.student.image.getWebPathPreview()) }}" data-toggle="lightbox">
+                                        <img src="{{ asset(classperiodStudent.student.image.getWebPathThumb()) }}" class="img-thumbnail" alt="{{ classperiodStudent.student.image.name }} " />
+                                    </a>
+                                {% else %}
+                                    <i class="fa fa-5x fa-file-image-o"></i>
+                                {% endif %}
+                            </td>
+                            <td class="text-left">
+                                <div class="row">
+                                    <strong class="col-md-4 col-lg-3">Name :</strong>
+                                    <a href="{{ path('app_student_show', { 'id' : classperiodStudent.student.id }) }}" class="col-md-8"> <strong> {{ classperiodStudent.student.nameComplete }} </strong></a>
+                                </div>
+                                <div class="row">
+                                    <strong class="col-md-4 col-lg-3">Age :</strong>
+                                    <span class="col-md-8"> {{ classperiodStudent.student.age }} </span>
+                                </div>
+                                <div class="row">
+                                    <strong class="col-md-4 col-lg-3">{% trans %}show_student.label.gender{% endtrans %} :</strong>
+                                    <span class="col-md-8"> <i class="fa fa-{{ classperiodStudent.student.genderCode }}"></i> {{ classperiodStudent.student.gender|capitalize }} </span>
+                                </div>
+                                <div class="row">
+                                    <strong class="col-md-4 col-lg-3">Niveau :</strong>
+                                    <span class="col-md-8"> {{ classperiodStudent.student.grade.name }} </span>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="row">
+                                    <strong class="col-md-6 col-lg-6">{{ 'show.label.begin'|trans }} :</strong>
+                                    <span class="col-md-6"> {{ classperiodStudent.begin.format('d/m/Y') }} </span>
+                                </div>
+                                {% if classperiodStudent.active %}
+                                    <div class="row text-danger">
+                                        <strong class="col-md-6 col-lg-6">{{ 'show.label.end'|trans }}</strong>
+                                        <span class="col-md-6"> {{ classperiodStudent.end.format('d/m/Y') }} </span>
+                                    </div>
+                                {% endif %}
+                                <div class="row">
+                                    <strong class="col-md-6 col-lg-6">{% trans %}Registration to class :{% endtrans %}</strong>
+                                    <span class="col-md-6"> {{ classperiodStudent.createdAt.format('d/m/Y') }} </span>
+                                </div>
+                                <div class="row">
+                                    <strong class="col-md-6 col-lg-6">Cours :</strong>
+                                    <span class="col-md-6"> {{ classperiodStudent.student.courses|length }} </span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div>
+                                    <a href="{{ path('app_class_period_delete_student', {'student' :  classperiodStudent.student.id, 'id' : classperiod.id  }) }}"
+                                       data-toggle="tooltip"
+                                       title="{{ 'show.tooltip.remove'|trans }}">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href="{{ path('app_class_period_change_student', {'student' :  classperiodStudent.student.id, 'id' : classperiod.id  }) }}"
+                                       data-toggle="tooltip"
+                                       title="{{ 'show.tooltip.change'|trans }}">
+                                        <i class="fa fa-retweet" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endblock %}
+    {% endembed %}
+
+    {% include "class_period/students.html.twig" %}
+
+{% endblock %}

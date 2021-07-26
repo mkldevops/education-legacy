@@ -1,0 +1,21 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% block menu_action %}
+
+    {% if is_granted('ROLE_ACCOUNTANT') %}
+        <li class="{% if 'app_operation_new' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_operation_new') }}"><i class="fa fa-list"></i> {{ 'operation.new'|trans }}</a>
+        </li>
+
+        <li class="{%if 'app_account_slip_new' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_slip_new') }}"><i class="fas fa-random"></i> {{ 'account_slip.new'|trans }}</a>
+        </li>
+    {% endif %}
+
+{% endblock %}

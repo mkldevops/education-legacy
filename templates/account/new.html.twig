@@ -1,0 +1,22 @@
+{% extends 'account/common.html.twig' %}
+
+{% trans_default_domain 'account' %}
+
+{% set title = 'title.new'|trans %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_new')}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "account" %}
+        {% block title 'title.form_new'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

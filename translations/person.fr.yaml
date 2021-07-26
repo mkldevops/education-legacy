@@ -1,0 +1,70 @@
+form.button.update: Modifier
+form.title.edit: 'Formulaire de modification'
+form.email.label: E-mail
+form.email.placeholder: '@ Veuillez séparer les e-mails par ";"'
+form.birthday_birthplace.label: Né(e)
+form.email_phone.label: 'E-mail / Téléphone'
+form.phone.label: Téléphones
+form.phone.placeholder: 'Veuillez séparer les numero de télephones par ";"'
+form.mother.label: Mère
+form.father.label: Père
+form.legalGuardian.label: 'Responsable légale'
+form.name.label: Nom
+form.forname.label: Prénom
+form.address.label: Adresse
+form.zip.label: 'Code postal'
+form.enable.label: État
+form.city.label: Ville
+form.birthplace.label: 'Né(e) à'
+form.birthplace.placeholder: Ville
+form.birthday.label: 'Né(e) le'
+form.birthday.placeholder: Date
+form.family.label: Famille
+form.family.choice_label: 'Aucune famille'
+form.gender.label: Sexe
+form.gender.choices.female: Féminin
+form.gender.choices.male: Masculin
+title.new: 'Ajouter une personne'
+title.edit: 'Modifier le personne "%name%"'
+title.form.edit: 'Formulaire d''ajout de personne'
+title.form.new: 'Formulaire d''ajout de personne'
+title.form.delete: 'Formulaire de supression de personne'
+title.delete: 'Supprimer la personne "%name%"'
+title.index: 'Liste des personnes'
+title.show: 'Fiche de la personne "%name%"'
+title.header.info: 'Information de la personne "%name%"'
+title.header.status: 'Infornation status'
+title.header.families: 'Information Famille'
+show.value.enable: '{0}Désactivé|{1}Actif'
+show.label.enable: Etat
+show.label.updated_at: 'Modifiée le'
+show.label.schools: 'Écoles administrées'
+show.label.family: 'Enfnat de la famille'
+show.label.forname: Prénom
+show.label.name: Nom
+show.label.phone: Téléphones
+show.label.families: 'Parent des familles :'
+'Delete Person''s entry': '__Delete Person''s entry'
+delete_person: __delete_person
+'Please confirm you want to delete this %entity%''s entry.': '__Please confirm you want to delete this %entity%''s entry.'
+'Person edit': '__Person edit'
+Name: __Name
+Phone: __Phone
+Email: __Email
+Birthday: __Birthday
+Birthplace: __Birthplace
+Gender: __Gender
+Address: __Address
+Zip: __Zip
+City: __City
+Author: __Author
+Created: __Created
+'Profil Member': '__Profil Member'
+'Add Profil Member': '__Add Profil Member'
+'only an administrator can add the state to member profile': '__only an administrator can add the state to member profile'
+'Profil student': '__Profil student'
+'Add Profil Student': '__Add Profil Student'
+'only an administrator can add the state to student profile': '__only an administrator can add the state to student profile'
+'Profil Teacher': '__Profil Teacher'
+'Add Profil Teacher': '__Add Profil Teacher'
+'only an administrator can add the state to teacher profile': '__only an administrator can add the state to teacher profile'

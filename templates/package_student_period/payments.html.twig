@@ -1,0 +1,45 @@
+{% if payments|length > 0 %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Type</th>
+                <th>Ref</th>
+                <th>Enregistré le</th>
+                <th>Check</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+                <tr>
+                    <td><a href="{{ path('app_operation_show', {'id': payment.operation.id}) }}" class="fas fa-folder-open"></a></td>
+                    {% if payment.operation.date %}
+                        <td>{{ payment.operation.date.format('d/m/y') }}</td>
+                    {% else %}
+                        <td class="text-muted">{{ payment.operation.datePlanned.format('d/m/y') }}</td>
+                    {% endif %}
+                    <td>{{ '%.2f'|format(payment.amount) }} €</td>
+                    <td>{{ payment.operation.operationGender }}</td>
+                    <td>{{ payment.operation.reference }}</td>
+                    <td>
+                        <span data-toggle="tooltip"
+                              data-html="true"
+                              title="Author : {{ payment.operation.author.nameComplete }} <br />Publisher : {{ payment.operation.publisher.nameComplete }}">{{ payment.record.format('d/m/y') }}</span>
+                    </td>
+                    <td class="validate-hidden-text validate-operation">
+                        {% include "operation/validation.html.twig" with { operation : payment.operation } %}
+                    </td>
+                    <td>
+                         <a href="{{ path('app_operation_edit', {'id': payment.operation.id}) }}" class="fa fa-edit"></a>
+                        {% if payment.operation.documents.count > 0 %}
+                            <i data-toggle="tooltip" title="{{ payment.operation.documents.count }}" class="fa fa-file-image-o"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+             {% endfor %}
+          </tbody>
+    </table>
+{% endif %}

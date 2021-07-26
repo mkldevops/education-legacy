@@ -1,0 +1,68 @@
+{% trans_default_domain 'menu' %}
+
+{% trans_default_domain 'menu' %}
+
+<ul class="nav" id="side-menu">
+    <li class="nav-header">
+        <div class="dropdown profile-element">
+                    <span>
+                        {% if app.user.person.image is defined %}
+                            <img alt="{{ app.user.nameComplete }}" class="img-circle" width="48" src="{{ asset('img/profile_unknow.jpg') }}">
+                        {% else %}
+                            <img alt="{{ app.user.nameComplete }}" class="img-circle" width="48" src="{{ asset('img/profile_unknow.jpg') }}">
+                        {% endif %}
+                    </span>
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="clear">
+                    <span class="block m-t-xs"> <strong class="font-bold">{{ app.user.nameComplete }}</strong></span>
+                    <span class="text-muted text-xs block">{{ (person and person.member is not empty) ? person.member.function : 'sidebar.nothing_function'|trans }} <b class="caret"></b></span>
+                </span>
+            </a>
+            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                <li><a href="{{ path('app_user_profile') }}">{% trans %}sidebar.user_profile{% endtrans %}</a></li>
+                <li><a href="{{ path('app_change_password') }}">{% trans %}sidebar.change_password{% endtrans %}</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ path('app_logout') }}">Logout</a></li>
+            </ul>
+        </div>
+        <div class="logo-element">
+            IN+
+        </div>
+    </li>
+
+    {% for key, menu in menus %}
+        {% if is_granted(menu.role) %}
+            <li {% if menu.active is defined and menu.active %}class="active"{% endif %}>
+                <a href="{{ menu.path is defined and menu.path is not empty ? path(menu.path) : '#' }}">
+                    <i class="fa {{ menu.icon }} fa-fw"></i> <span class="nav-label">{{ menu.label|trans }} </span>
+                    {% if menu.sub is defined %}<span class="fa arrow"></span>{% endif %}
+                </a>
+
+
+                {% if menu.sub is defined %}
+                    <ul class="nav nav-second-level collapse">
+                        {% for key2, menu2 in menu.sub %}
+                            <li {% if menu2.active is defined and menu2.active %}class="active"{% endif %}>
+                                <a href="{{ menu2.path is defined and menu2.path is not empty ? path(menu2.path) : '#' }}">
+                                    {{ menu2.label|trans }}
+                                    {% if menu2.sub is defined %}<span class="fa arrow"></span>{% endif %}
+                                </a>
+
+                                {% if menu2.sub is defined %}
+                                    <ul class="nav nav-third-level collapse">
+                                        {% for key3, menu3 in menu2.sub %}
+                                            <li {% if menu3.active is defined and menu3.active %}class="active"{% endif %}>
+                                                <a href="{{ menu3.path is defined and menu3.path is not empty ? path(menu3.path) : '#' }}">{{ menu3.label|trans }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+

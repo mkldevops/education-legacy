@@ -1,0 +1,17 @@
+{% extends 'type_operation/common.html.twig' %}
+
+{% set resources = resources|merge({ datatables : true }) %}
+
+{% trans_default_domain 'type_operation' %}
+
+{% set title = 'title.operation'|trans({'%name%' : typeoperation, '%count%' : operations|length }) %}
+{% block body %}
+    {% include "operation/list-operations.html.twig" with { "operations" : operations } %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/operation.js') }}"></script>
+    <script src="{{ asset('js/type_operation.js') }}"></script>
+{% endblock %}

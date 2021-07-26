@@ -1,0 +1,60 @@
+{% extends '_inspina/layout.html.twig' %}
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set breadcrumbs = { ('operation.breadcrumb'|trans) : path('app_operation_index')}|merge(breadcrumbs|default({})) %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/operation.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/operation.css') }}" />
+{% endblock %}
+
+{% block menu_action %}
+    <li class="{%if 'operation' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_operation_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}List{% endtrans %}
+        </a>
+    </li>
+    <li class="{% if 'app_operation_statsbymonthly' == app.request.attributes.get('_route') %} active{% endif %}">
+        <a href="{{ path('app_operation_statsbymonth') }}">
+            <span class="fa fa-bar-chart"></span>
+            {% trans %}operation.statsbymonthly{% endtrans %}
+        </a>
+    </li>
+    <li class="{% if 'app_operation_add' == app.request.attributes.get('_route') %} active{% endif %}">
+        <a href="{{ path('app_operation_new') }}">
+            <span class="fa fa-plus"></span>
+            {% trans %}operation.new{% endtrans %}
+        </a>
+    </li>
+
+    {% if operation is defined and operation.id %}
+        <li class="{% if 'app_operation_show' == app.request.attributes.get('_route') %} active{% endif %}">
+            <a href="{{ path('app_operation_show', {'id': operation.id}) }}">
+                <i class="fas fa-file-text"></i>
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        <li class="{% if 'app_operation_edit' == app.request.attributes.get('_route') %} active{% endif %}">
+            <a href="{{ path('app_operation_edit', {'id': operation.id}) }}">
+                <span class="fa fa-pencil-square-o"></span>
+                {% trans %}Edit{% endtrans %}
+            </a>
+        </li>
+        <li class="{% if 'app_operation_delete' == app.request.attributes.get('_route') %} active{% endif %}">
+            <a href="{{ path('app_operation_delete', {'id': operation.id}) }}">
+                <span class="fa fa-trash"></span>
+                {% trans %}Delete{% endtrans %}
+            </a>
+        </li>
+    {% endif %}
+{% endblock %}

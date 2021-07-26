@@ -1,0 +1,22 @@
+{% extends 'type_operation/common.html.twig' %}
+
+{% trans_default_domain 'type_operation' %}
+
+{% set title = 'title.new'|trans %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_type_operation_new')}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "type_operation" %}
+        {% block title 'title.form.new'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

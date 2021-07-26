@@ -1,0 +1,213 @@
+{% extends 'family/common.html.twig' %}
+
+{% trans_default_domain 'family' %}
+
+{% set title = 'show.title'|trans({ '%family%' : family }) %}
+
+{% block title %}
+    {{ title }} / {{ parent() }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li><a href="{{ path('app_family_show', { "id" : course.id }) }}">{{ title }}</a></li>
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-7">
+
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "family" %}
+            {% block title 'title.header.info'|trans({'%id%' : family.id })|raw %}
+            {% block config '' %}
+            {% block content %}
+
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th width="30%">{{ 'show.label.father'|trans }}</th>
+                        <td>
+                            {% if family.father|default(null) is not empty %}
+                                <a href="{{ path('app_person_show', {'id': family.father.id }) }}">{{ family.father }}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.mother'|trans }}</th>
+                        <td>
+                            {% if family.mother|default(null) is not empty %}
+                                <a href="{{ path('app_person_show', {'id': family.mother.id }) }}">{{ family.mother }}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.legalguardian'|trans }}</th>
+                        <td>{{ family.legalGuardian }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.language'|trans }}</th>
+                        <td>{{ family.language }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.numberchildren'|trans }}</th>
+                        <td>{{ family.numberChildren }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.address'|trans }}</th>
+                        <td>{{ family.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.city'|trans }}</th>
+                        <td>{{ family.city }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.zip'|trans }}</th>
+                        <td>{{ family.zip }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'show.label.enable'|trans }}</th>
+                        <td>{% if family.enable %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <em class="muted">
+                    {{ 'show.label.created'|trans({
+                        '%created_at%' : family.createdAt|date('d/m/Y H:i:s'),
+                        '%updated_at%' : family.updatedAt|date('d/m/Y H:i:s')
+                    }) }}
+                </em>
+            {% endblock %}
+        {% endembed %}
+    </div>
+    <div class="col-md-5">
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "family" %}
+            {% block title 'title.header.contacts'|trans %}
+            {% block config '' %}
+            {% block content %}
+                <dl>
+                    <dt>{{ 'show.label.mother'|trans }}</dt>
+                    <dd>{{ family.mother.phone|default('---') }}</dd>
+                    <dt>{{ 'show.label.father'|trans }}</dt>
+                    <dd>{{ family.father.phone|default('---') }}</dd>
+                    <dt>{{ 'show.label.legalguardian'|trans }}</dt>
+                    <dd>{{ family.legalGuardian.phone|default('---') }}</dd>
+                    <dt>{{ 'show.label.email'|trans }}</dt>
+                    <dd>{{ family.email|default('---') }}</dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "family" %}
+            {% block title 'title.header.authorization'|trans %}
+            {% block config '' %}
+            {% block content %}
+                <dl>
+                    <dt>{{ 'show.label.personauthorized'|trans }}</dt>
+                    <dd>{{ family.personAuthorized|raw|default('show.value.nothing'|trans) }}</dd>
+                    <dt>{{ 'show.label.personemergency'|trans }}</dt>
+                    <dd>{{ family.personEmergency|raw|default('show.value.nothing'|trans) }}</dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+    <!-- list of persons -->
+    <div class="col-md-12">
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "family" %}
+            {% block title 'title.header.persons'|trans %}
+            {% block config %}
+                {% include 'family/includes/_modal_form_student.html.twig' with { 'form' : formStudent } %}
+            {% endblock %}
+            {% block content %}
+                {% if persons %}
+                    <table class="table table-striped">
+                        <tr>
+                            <th class="text-center">img</th>
+                            <th class="text-center">{{ 'show.list.person.name'|trans }}</th>
+                            <th class="text-center">{{ 'show.list.person.age'|trans }}</th>
+                            <th class="text-center">{{ 'show.list.person.gender'|trans }}</th>
+                            <th class="text-center">{{ 'show.list.person.class'|trans }}</th>
+                            <th class="text-center">{{ 'show.list.person.package'|trans({ '%period%' : period }) }}</th>
+                            <th class="text-center">{{ 'show.list.person.to_pay'|trans }}</th>
+                        </tr>
+                        {% set unpaid_total = 0 %}
+                        {% for person in persons  %}
+                            <tr>
+                                <td class="text-center">
+                                    {% if person.image is not empty %}
+                                    <img src="{{ person.image.path }}" alt="" class="ing-thumbnail"></td>
+                                {% else %}
+                                    ---
+                                {% endif %}
+                                <td class="text-center">
+                                    {% if person.student is not empty %}
+                                        <a href="{{ path('app_student_show', { id : person.student.id }) }}">{{ person }}</a>
+                                    {% else %}
+                                        {{ person }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{{ person.age }}</td>
+                                <td class="text-center">{{ person.gender }}</td>
+                                <td class="text-center">
+                                    {% if person.student.classPeriods.first.classPeriod|default(null) is not empty %}
+                                        <a href="{{ path('app_class_period_show', { id : person.student.classPeriods.first.classPeriod.id }) }}">{{ person.student.classPeriods.first.classPeriod }}</a>
+                                    {% else %}
+                                        ---
+                                    {% endif %}
+                                </td>
+                                {% set pp = person.student.packagePeriods.first|default(null) %}
+                                <td class="text-center">
+                                    {% if pp is not empty %}
+                                        <a href="{{ path('app_package_student_period_show', {'id': pp.id }) }}" class="badge badge-dark">{{ pp.period }} {{ pp.package }}</a>
+                                    {% else %}
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalPackageStudentPeriod" data-student="{{ person.student.id }}">
+                                            <i class="far fa-calendar-plus"></i> {{ 'new_package_student'|trans({'%period%' : period}) }}
+                                        </button>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if pp is not empty %}
+                                        {% set unpaid = pp.unpaid  %}
+                                        {% if unpaid <= 0 %}
+                                            <a href="{{ path('app_student_show', {'id': person.student.id }) }}" class="text-success"><i class="fas fa-check-circle"></i></a>
+                                        {% else %}
+                                            {% set unpaid_total = unpaid_total + unpaid %}
+                                            <a href="{{ path('app_student_show', {'id': person.student.id }) }}" class="text-info">{{ unpaid|number_format(2) }} €</a>
+                                        {% endif %}
+                                    {% else %}
+                                        ---
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <th colspan="6" class="text-right h3">{{ 'show.total_to_pay'|trans }}</th>
+                            <td class="text-center h3">
+                                {% if unpaid_total > 0 %}
+                                    <span class="text-info">{{ unpaid_total|number_format(2) }} €</span>
+                                {% else %}
+                                    <strong class="text-success"><i class="fas fa-check-circle"></i></strong>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+
+                    {% include 'family/includes/_modal_form_package_student_period.html.twig' %}
+                {% else %}
+                    <div class="alert alert-danger text-center">{{ 'nothing.person'|trans }}</div>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/student-api.js') }}"></script>
+    <script src="{{ asset('js/package-api.js') }}"></script>
+{% endblock %}

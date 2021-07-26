@@ -1,0 +1,41 @@
+{% trans_default_domain 'student' %}
+
+{% if phones is not empty %}
+    {% for name,person in phones %}
+        <div style="margin-bottom:0.7rem" class="clearfix">
+            <dl class="dl-horizontal"
+                data-person="{{ person.id }}">
+                <dt class="phone-name">
+                    <span style="margin-right: 1rem" class="hidden phone-action">
+                        <a class="add-phone"
+                           href="#"
+                           title="{{ 'title.phone.edit'|trans }}"
+                           data-toggle="tooltip">
+                            <i class="fas fa-plus-circle"></i>
+                        </a>
+                    </span>
+                    <a href="{{ path('app_person_show', { id : person.id }) }}">{{ ("phones." ~ name)|trans }}</a>
+                </dt>
+
+                {% for key,phone in person.phones %}
+                    <dd class="phone-value"
+                        data-key="{{ key }}">
+
+                        <a href="tel:{{ phone }}" class="phone pointer"><i class="fa fa-phone"></i> :
+                            <span class="phone-text">{{ phone }}</span>
+                        </a>
+
+                        <input type="text" class="phone-input hidden"/>&emsp;
+                        <span class="hidden phone-action">
+                            <a class="edit-phone" href="#" title="{{ 'title.phone.edit'|trans }}" data-toggle="tooltip"><i
+                                        class="fas fa-pencil-alt"></i></a>
+                            <a class="delete-phone" href="#" title="{{ 'title.phone.delete'|trans }}"
+                               data-toggle="tooltip"><i class="fas fa-trash"></i></a>
+                        </span>
+                    </dd>
+                {% endfor %}
+            </dl>
+
+        </div>
+    {% endfor %}
+{% endif %}

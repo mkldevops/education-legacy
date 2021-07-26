@@ -1,0 +1,80 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set breadcrumbs = { ('account.breadcrumb'|trans) : path('app_account_index')}|merge(breadcrumbs|default({})) %}
+
+{% block menu_action %}
+
+    <li class="{%if 'app_account_index' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_account_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}List{% endtrans %}
+        </a>
+    </li>
+    <li class="{%if 'app_operation_new' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_operation_new', { account : account is defined ? account.id : null }) }}">
+            <span class="fa fa-plus"></span>
+            {{ 'menu.add_operations'|trans({}, 'account') }}
+        </a>
+    </li>
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <li class="{%if 'app_account_new' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_new') }}">
+                <span class="fa fa-plus"></span>
+                {{ 'menu.new'|trans({}, 'account') }}
+            </a>
+        </li>
+    {% endif %}
+
+    {% if account is defined and account.id %}
+        <li class="{%if 'app_account_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_show', {'id': account.id}) }}">
+                <i class="fas fa-folder-open"></i>
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        {% if account.enableAccountStatement %}
+            <li class="{%if 'app_account_statement_new' == app.request.attributes.get('_route')%} active{% endif %}">
+                <a href="{{ path('app_account_statement_new', { 'account' : account.id }) }}">
+                    <i class="fa fa-clipboard"></i>
+                    {{ 'account.menu.add_accounstatement'|trans }}
+                </a>
+            </li>
+        {% endif %}
+        <li class="{%if 'account_operations' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_operations', {'id': account.id}) }}">
+                <i class="fa fa-list-ol"></i>
+                {{ 'menu.list_operations'|trans({}, 'account') }}
+            </a>
+        </li>
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            {% if account.isBank %}
+                <li class="{%if 'app_account_ofx' == app.request.attributes.get('_route')%} active{% endif %}">
+                    <a href="{{ path('app_account_ofx', { 'id': account.id }) }}">
+                        <i class="fas fa-money-check-alt"></i>
+                        {{ 'account.menu.import_ofx'|trans }}
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li class="{%if 'app_account_edit' == app.request.attributes.get('_route')%} active{% endif %}">
+                <a href="{{ path('app_account_edit', {'id': account.id}) }}">
+                    <span class="fa fa-edit"></span>
+                    {% trans %}Edit{% endtrans %}
+                </a>
+            </li>
+            <li class="{%if 'app_account_delete' == app.request.attributes.get('_route')%} active{% endif %}">
+                <a href="{{ path('app_account_delete', {'id': account.id}) }}">
+                    <span class="fa fa-trash"></span>
+                    {% trans %}Delete{% endtrans %}
+                </a>
+            </li>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

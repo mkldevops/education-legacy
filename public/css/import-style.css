@@ -1,0 +1,12 @@
+/* 
+    Document   : import-style
+    Created on : 8 nov. 2013, 13:55:52
+    Author     : fahari
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+@import url("general.css");
+@import url("header.css");
+@import url("footer.css");
+@import url("menu.css");

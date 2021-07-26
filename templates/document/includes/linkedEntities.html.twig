@@ -1,0 +1,76 @@
+{% set persons = document.getPersons %}
+
+{% if persons is not empty %}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingStudent">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#entityStudent" aria-expanded="true" aria-controls="entityStudent">
+                        Students {{ persons|length }}
+                    </a>
+                </h4>
+            </div>
+            <div id="entityStudent" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <table class="table">
+                    {% for student in persons %}
+                        <tr>
+                            <td>{{ student.nameComplete }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% set operations = document.getOperations %}
+
+{% if operations is not empty %}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingStudent">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#entityStudent" aria-expanded="true" aria-controls="entityStudent">
+                        Operations {{ operations|length }}
+                    </a>
+                </h4>
+            </div>
+            <div id="entityStudent" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <table class="table">
+                    {% for operation in operations %}
+                        <tr>
+                            <td><i class="fa fa-chain-broken"></i></td>
+                            <td><a href="{{ path('app_operation_show', { id : operation.id }) }}">{{ operation.name }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% set accountStatements = document.getAccountStatements %}
+
+{% if accountStatements is not empty %}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingStudent">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#entityStudent" aria-expanded="true" aria-controls="entityStudent">
+                        Account Statements {{ accountStatements|length }}
+                    </a>
+                </h4>
+            </div>
+            <div id="entityStudent" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <table class="table">
+                    {% for accountStatement in accountStatements %}
+                        <tr>
+                            <td><i class="fa fa-chain-broken"></i></td>
+                            <td><a href="{{ path('app_account_statement_show', { id : accountStatement.id }) }}"> {{ accountStatement.title }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}

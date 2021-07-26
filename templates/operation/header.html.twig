@@ -1,0 +1,15 @@
+<div>
+    <a href="{{ path("operation") }}" class="btn btn-primary btn-xs {% if app.request.attributes.get('_route') == 'operation' %} active {% endif %}">Liste des operations</a>
+    <a href="{{ path("operation_add") }}"
+       class="btn btn-primary btn-xs {% if app.request.attributes.get('_route') == 'app_operation_add' %} active {% endif %}">Ajouter
+        operation</a>
+    
+    {% if operation is defined %}
+        <a href="{{ path("operation_show", {"id" : operation.id }) }}"
+           class="btn btn-primary btn-xs {% if app.request.attributes.get('_route') == 'app_operation_show' %} active {% endif %}">Afficher</a>
+        <a href="{{ path("operation_edit", {"id" : operation.id }) }}"
+           class="btn btn-primary btn-xs {% if app.request.attributes.get('_route') == 'app_operation_edit' %} active {% endif %}">Modifier</a>
+        <a href="{{ path("operation_delete", {"id" : operation.id }) }}"
+           class="btn btn-primary btn-xs {% if app.request.attributes.get('_route') == 'app_operation_delete' %} active {% endif %}">Supprimer</a>
+    {% endif %}
+</div>

@@ -1,0 +1,29 @@
+title.new: 'Nouveau type d''opération'
+title.edit: 'Modifier le type d''opération "%name%"'
+title.form.edit: 'Formulaire d''ajout de type d''opération'
+title.form.new: 'Formulaire d''ajout de type d''opération'
+title.form.delete: 'Formulaire de supression de type d''opération'
+title.delete: 'Supprimer du type d''opération "%name%"'
+title.index: 'Liste des type d''opérations'
+title.show: 'Fiche du type d''opération "%name%"'
+title.header.info: 'Information de la période "%name%"'
+title.operation: 'Type operation "%name%" (%count% operations)'
+typeoperation: 'Type d''opération'
+modal.todefine: 'A definir'
+type_operation.modal.title: __type_operation.modal.title
+Id: __Id
+Name: __Name
+Shortname: __Shortname
+Code: __Code
+Typeamount: __Typeamount
+Description: __Description
+Status: __Status
+Edit: __Edit
+'Is internal transfert': '__Is internal transfert'
+'Yes': __Yes
+'No': __No
+'Type Amount': '__Type Amount'
+title.header.moreinfo: __title.header.moreinfo
+Record: __Record
+Updated: __Updated
+Author: __Author

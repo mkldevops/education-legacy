@@ -1,0 +1,17 @@
+{% extends 'type_operation/common.html.twig' %}
+
+{% trans_default_domain 'type_operation' %}
+
+{% set title = 'title.delete'|trans({'%name%' : typeoperation }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_type_operation_delete', {id : typeoperation.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'type_operation' %}
+        {% set nameEntity = 'typeoperation'|trans %}
+        {% block title 'title.form.delete'|trans %}
+    {% endembed %}
+{% endblock %}

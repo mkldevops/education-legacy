@@ -1,0 +1,40 @@
+.page-heading .header-action {
+    margin-top: 39px;
+}
+
+/* Font awesome */
+.fa-6x {
+    font-size: 6em;
+}
+
+.fa-7x {
+    font-size: 7em;
+}
+
+.fa-8x {
+    font-size: 8em;
+}
+
+.fa-9x {
+    font-size: 9em;
+}
+
+.fa-10x {
+    font-size: 10em;
+}
+
+.fa-12x {
+    font-size: 12em;
+}
+
+.fa-15x {
+    font-size: 15em;
+}
+
+.fa-20x {
+    font-size: 20em;
+}
+
+.dataTables_filter {
+    margin-top: 2rem;
+}

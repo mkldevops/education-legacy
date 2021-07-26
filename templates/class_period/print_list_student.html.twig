@@ -1,0 +1,59 @@
+{% extends 'print-base.html.twig' %}
+
+{% trans_default_domain 'student' %}
+
+{% block container %}
+    <div class="text-center">
+        <div>
+            <small class="text-muted text-center"><i>{{ classperiod.students|length }} élèves, le {{ "now"|date("d/m/Y") }}</i></small>
+        </div>
+        <h2>{{ classperiod.name }} </h2>
+    </div>
+
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Age</th>
+                <th>Télephone</th>
+                <th class="text-center">Authorisé à<br />Sortir seul</th>
+                {#<th colspan="2">Materiel</th>#}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in 0..lines %}
+                {% set classperiodStudent  = students[i] is defined ? students[i] : null  %}
+                {% set packageStudent = null %}
+
+                <tr>
+                    {% if classperiodStudent is not empty and classperiodStudent.student.enable %}
+                        {% set student = classperiodStudent.student %}
+                        {% set packageStudent = packageStudents[student.id] is defined ? packageStudents[student.id] : null %}
+
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.nameComplete }}</td>
+                        <td>{{ student.age }}</td>
+                        <td>{{ student.listPhones|slice(0, 3)|join(' <span class="text-danger text-weight">|</span> ')|raw }}</td>
+                    {% else %}
+                        <td colspan="4"></td>
+                    {% endif %}
+                    <td class="text-center">
+                        <i class="fas fa-{{ student.letAlone|default(false) ? 'check text-success' : 'times text-danger' }}">
+                            {{ student.letAlone|default(false) ? 'print.let_alone.yes'|trans : 'print.let_alone.no'|trans }}</i>
+                    </td>
+                    {#<td>
+                        {% if packageStudent is not empty and packageStudent.percentPayments >= 25 %}
+                            <i class="far fa-check-square text-success" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="far fa-square" aria-hidden="true"></i>
+                        {% endif %}
+                        Droit
+                    </td>
+                    <td><i class="far fa-square" aria-hidden="true"></i> Distribué</td>#}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

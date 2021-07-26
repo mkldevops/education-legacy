@@ -1,0 +1,8 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% block body %}
+    <h1>Your Profile</h1>
+
+    <p>Logged in as: <em>{{ app.user.name }}</em></p>
+    <p><a href="{{ path('app_logout') }}">Logout</a></p>
+{% endblock %}

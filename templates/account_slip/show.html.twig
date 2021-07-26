@@ -1,0 +1,171 @@
+{% set resources = resources|merge({ uploadfile : true }) %}
+
+{% extends 'account_slip/common.html.twig' %}
+
+{% trans_default_domain 'account_slip' %}
+
+{% set title = 'title.breadcrumb'|trans({ '%name%' : accountslip, '%ref%' : accountslip.reference }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_slip_show', { id : accountslip.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="col-md-6">
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "account_slip" %}
+            {% block title 'title.info'|trans %}
+            {% block config '' %}
+            {% block content %}
+
+                <dl class="dl-horizontal">
+                    <dt>{% trans %}Id{% endtrans %}</dt>
+                    <dd>
+                        {{ accountslip.id }}
+                    </dd>
+
+                    <dt>{% trans %}Name{% endtrans %}</dt>
+                    <dd>
+                        {{ accountslip.name }}
+                    </dd>
+
+                    <dt>{% trans %}Reference{% endtrans %}</dt>
+                    <dd>
+                        <span class="badge badge-info">{{ accountslip.reference }}</span>
+                    </dd>
+
+                    <dt>{% trans %}Date{% endtrans %}</dt>
+                    <dd>
+                        {% if accountslip.date %}{{ accountslip.date|date('d/m/Y') }}{% else %}-{% endif %}
+                    </dd>
+
+                    <dt>{% trans %}Amount{% endtrans %}</dt>
+                    <dd>
+                        {{ '%.2f €'|format(accountslip.amount) }}
+                    </dd>
+
+                    <dt>{% trans %}Gender{% endtrans %}</dt>
+                    <dd>
+                        {{ accountslip.gender|trans() }}
+                    </dd>
+
+                    <dt>{% trans %}Comment{% endtrans %}</dt>
+                    <dd class="well">
+                        {{ accountslip.comment|raw }}
+                    </dd>
+
+                    <dt>{% trans %}Author{% endtrans %}</dt>
+                    <dd>{{ accountslip.author }}</dd>
+
+                    <dt>{% trans %}Created{% endtrans %}</dt>
+                    <dd>
+                        {% if accountslip.createdAt %}{{ accountslip.createdAt|date('d/m/Y H:i:s') }}{% else %}-{% endif %}
+                    </dd>
+
+                    <dt>{% trans %}Updated{% endtrans %}</dt>
+                    <dd>
+                        {% if accountslip.updatedAt %}{{ accountslip.updatedAt|date('d/m/Y H:i:s') }}{% else %}-{% endif %}
+                    </dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+    <div class="col-md-6">
+        {% if accountslip.operationCredit is not empty and accountslip.operationCredit.id == accountslip.operationDebit.id %}
+            <div class="alert alert-danger text-center"><i class="fa fa-warning"></i> {% trans %}error.same_account{% endtrans %}</div>
+        {% endif %}
+
+        {% if accountslip.operationDebit|default(null) is not empty %}
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "account_slip" %}
+                {% block title %}
+                    <i class="fas fa-sign-out-alt text-danger" aria-hidden="true"></i>
+                    <span>{% trans %}Operation Debit{% endtrans %}</span>
+                    {% if accountslip.operationDebit.amount > 0 %}
+                        <i class="fa fa-warning text-danger"></i>
+                    {% endif %}
+                {% endblock %}
+                {% block config_list %}
+                    <li>
+                        <a href="{{ path('app_operation_show', { id : accountslip.operationDebit.id }) }}"><i class="fa fa-file-o"></i> {{ 'operation.show'|trans }}</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_operation_edit', { id : accountslip.operationDebit.id }) }}"><i class="fa fa-edit"></i> {{ 'operation.update'|trans }}</a>
+                    </li>
+                {% endblock %}
+                {% block content %}
+
+                    <dl class="dl-horizontal">
+                        <dt>{% trans %}Id{% endtrans %}</dt>
+                        <dd><a href="{{ path('app_operation_show', { 'id' : accountslip.operationDebit.id }) }}"
+                               title="{{ accountslip.operationDebit.name }}"
+                               data-toggle="tooltip">{{ accountslip.operationDebit.id }}</a></dd>
+
+                        <dt>{% trans %}Account{% endtrans %}</dt>
+                        <dd><a href="{{ path('app_account_show', { id : accountslip.operationDebit.account.id }) }}">{{ accountslip.operationDebit.account }}</a></dd>
+
+                        <dt>{% trans %}Amount{% endtrans %}</dt>
+                        <dd>{{ '%.2f €'|format(accountslip.operationDebit.amount) }}</dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+        {% else %}
+            <a href="{{ path('app_account_slip_edit', {'id': accountslip.id }) }}" class="btn btn-block btn-primary"><i class="fa fa-edit"></i> {{ 'show.edit_accountslip'|trans }}</a>
+        {% endif %}
+
+        {% if accountslip.operationCredit|default(null) is not empty %}
+
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "account_slip" %}
+                {% block title %}
+                    <i class="fa fa-sign-in text-success" aria-hidden="true"></i>
+                    <span>{% trans %}Operation Credit{% endtrans %}</span>
+                    {% if accountslip.operationCredit.amount < 0 %}
+                        <i class="fa fa-warning text-danger"></i>
+                    {% endif %}
+                {% endblock %}
+                {% block config_list %}
+                    <li>
+                        <a href="{{ path('app_operation_show', { id : accountslip.operationCredit.id }) }}"><i class="fa fa-file-o"></i> {{ 'operation.show'|trans }}</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_operation_edit', { id : accountslip.operationCredit.id }) }}"><i class="fa fa-edit"></i> {{ 'operation.update'|trans }}</a>
+                    </li>
+                {% endblock %}
+                {% block content %}
+
+                    <dl class="dl-horizontal">
+                        <dt>{% trans %}Id{% endtrans %}</dt>
+                        <dd><a href="{{ path('app_operation_show', { 'id' : accountslip.operationCredit.id }) }}"
+                               title="{{ accountslip.operationCredit.name }}"
+                               data-toggle="tooltip">{{ accountslip.operationCredit.id }}</a></dd>
+
+                        <dt>{% trans %}Account{% endtrans %}</dt>
+                        <dd><a href="{{ path('app_account_show', { id : accountslip.operationCredit.account.id }) }}">{{ accountslip.operationCredit.account }}</a></dd>
+
+                        <dt>{% trans %}Amount{% endtrans %}</dt>
+                        <dd>{{ '%.2f €'|format(accountslip.operationCredit.amount) }}</dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
+
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "account_slip" %}
+            {% block title 'title.attachement'|trans %}
+            {% block config '' %}
+            {% block content %}
+
+                {% include 'document/upload.html.twig' with {
+                    documents : accountslip.documents,
+                    upload : {
+                        url : path('app_account_slip_set_document', { id : accountslip.id, action : 'add' }),
+                        urlUnlink : path('app_account_slip_set_document', { id : accountslip.id, action : 'remove' }),
+                        prefix : 'show.prefix.document'|trans,
+                        multiple : true
+                    }
+                } %}
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+{% endblock %}

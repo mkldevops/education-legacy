@@ -1,0 +1,53 @@
+{% trans_default_domain 'operation' %}
+
+{% if stats %}
+    <table id="list-operations" class="table table-condensed table-responsive table-hover table-striped" data-toggle="datatable">
+        <thead>
+            <tr>
+                <th rowspan="2" class="text-center" valign="center">Date</th>
+                {% for column in stats.column %}
+                    <th class="text-center border-l"> {{ column.columnLabel }}</th>
+                {% endfor %}
+                <th class="text-center text-info border-l">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in stats.row %}
+                <tr id="row-{{ row.rowId }}">
+                    <td><a href="{{ path('app_type_operation_operations',{ id : row.rowId }) }}">{{ row.rowlabel }}</a></td>
+                    {% for column in stats.column %}
+                        {% if stats.data[row.rowId][column.columnId] is defined %}
+                    
+                            {% set data = stats.data[row.rowId][column.columnId] %}
+                    
+                            <td class="text-right border-l">
+                                <span class="{{ data.sum > 0 ? 'text-info' : 'text-danger' }}"
+                                      data-toggle="tooltip"
+                                      title="{{ 'data.tooltip'|trans({ '%sum%' : '%.2f'|format(data.sum), '%count%' : data.count }) }}">{{ '%.2f'|format(data.sum) }}</span>
+                            </td>
+                        {% else %}
+                            <td class="text-right border-l">{{ '%.2f'|format(0) }}</td>
+                        {% endif %}
+                            
+                    {% endfor %}
+                    <td class="text-right text-info border-l {{ row.sum > 0 ? 'text-info' : 'text-danger' }}">{{ '%.2f'|format(row.sum)  }}</td>
+                </tr> 
+                
+            {% else %}
+                <tr>
+                    <td colspan="7">Nothing operation !!</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="text-right"> Total : </th>
+                {% for column in stats.column %}
+                    <th class="text-center border-l {{ column.sum > 0 ? 'text-info' : 'text-danger' }}"> {{ '%.2f'|format(column.sum) }}</th>
+                {% endfor %}
+
+                <th class="text-right {{ stats.global.sum > 0 ? 'text-info' : 'text-danger' }}">{{ stats.global.sum }}</th>
+            </tr>
+        </tfoot>
+    </table>
+{% endif %}

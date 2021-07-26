@@ -1,0 +1,11 @@
+#vendor
+var
+docker-compose.yaml
+.vscode
+.idea
+.env
+.env.local
+vendor
+public/bundles
+*.cache
+symfony

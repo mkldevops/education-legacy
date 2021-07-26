@@ -1,0 +1,21 @@
+{% extends 'family/common.html.twig' %}
+
+{% trans_default_domain 'family' %}
+
+{% set title = 'title.edit'|trans({'%name%' : family}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_family_edit', {id : family.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "family" %}
+        {% block title 'title.form.edit'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include 'family/includes/form.html.twig' %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

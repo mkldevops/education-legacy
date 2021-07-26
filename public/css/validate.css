@@ -1,0 +1,17 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 3 aout 2015, 08:14:35
+    Author     : fardus
+*/
+
+.validate-operation .text {
+    margin-left: 5px;
+}
+
+#list-operations .validate-operation .text , .validate-hidden-text .text{
+    display:none;
+}

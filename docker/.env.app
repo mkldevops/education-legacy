@@ -1,0 +1,42 @@
+PROJECT_DB_PASSWORD=1nt3Rr316n_Scr13v35_m1Nt_m0uLd135t_F12213r
+###> doctrine/doctrine-bundle ###
+# Format described at http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url
+# For an SQLite database, use: "sqlite:///%kernel.project_dir%/var/data.db"
+# Configure your db driver and server_version in config/packages/doctrine.yaml
+#DATABASE_URL=mysql://root:root@db/education1
+DATABASE_URL=mysql://root:$PROJECT_DB_PASSWORD@db/education_app
+#DATABASE_URL="sqlite:///%kernel.project_dir%/var/education.db"
+###< doctrine/doctrine-bundle ###
+###> symfony/framework-bundle ###
+APP_ENV=dev
+APP_SECRET=b65c31c88ba9c70598e6688060ac3cb7
+#TRUSTED_PROXIES=127.0.0.1,127.0.0.2
+#TRUSTED_HOSTS=localhost,example.com
+###< symfony/framework-bundle ###
+
+###> symfony/messenger ###
+# MESSENGER_TRANSPORT_DSN=amqp://guest:guest@localhost:5672/%2f/messages
+###< symfony/messenger ###
+
+###> symfony/swiftmailer-bundle ###
+# For Gmail as a transport, use: "gmail://username:password@localhost"
+# For a generic SMTP server, use: "smtp://localhost:25?encryption=&auth_mode="
+# Delivery is disabled by default via "null://localhost"
+MAILER_URL=null://localhost
+###< symfony/swiftmailer-bundle ###
+
+###> google/apiclient ###
+GOOGLE_API_KEY=AIzaSyCRk2UaBNiW0aDtmzWcgMg_14zefMcejsE
+GOOGLE_AUTH_CODE=4/7QABlYKWraDU9trzhiSS08qZ-oYP7Mhqo7muNKuluW1WDXOKCb6-Y6E
+GOOGLE_CLIENT_ID=570940369747-bniu9dosgnfsnfdh78qil9fqa80kecv8.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=RtR0H_ylfKVUpJmx2zpnvLoi
+###< google/apiclient ###
+
+###> symfony/mailer ###
+# MAILER_DSN=smtp://localhost
+###< symfony/mailer ###
+
+###> sentry/sentry-symfony ###
+SENTRY_DSN=https://9979e8c67c2948a68eed5e76ec1cb737@sentry.techndcall.com/2
+VERSION=$(git describe --tags --abbrev=0)
+###< sentry/sentry-symfony ###

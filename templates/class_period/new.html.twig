@@ -1,0 +1,21 @@
+{% extends 'class_period/common.html.twig' %}
+
+{% trans_default_domain 'class_period' %}
+
+{% set title = 'title.new'|trans %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "class_period" %}
+        {% block title 'title.form_new'|trans %}
+        {% block config '' %}
+        {% block content %}
+
+            {{ form(form) }}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

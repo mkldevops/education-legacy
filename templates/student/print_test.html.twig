@@ -1,0 +1,226 @@
+{% extends 'print-base.html.twig' %}
+
+{% trans_default_domain 'student' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-size: 1.2rem !important;
+        }
+
+        .footer {
+            margin: 3rem 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3 text-center pt-3">
+                <img src="{{ absolute_url(asset('img/logo-structure.jpg')) }}" alt="" class="img-fluid">
+            </div>
+            <div class="col-md-6 text-center">
+                <h2 class="font-weight-bold">{{ packageStudentPeriod.student.school.name }}</h2>
+                <h3 class="font-weight-bold">{{ packageStudentPeriod.student.school.address }}</h3>
+                <h3 class="font-weight-bold">{{ packageStudentPeriod.student.school.zip }} {{ packageStudentPeriod.student.school.city }}</h3>
+                <h4 class="font-weight-bold mt-5">N° : {{ packageStudentPeriod.student.id }}</h4>
+            </div>
+            <h3 class="col-md-3 text-center pt-3">
+                {% if packageStudentPeriod.student.image is not empty %}
+                    <img class="img-fluid" src="{{ packageStudentPeriod.student.image.path }}" alt="">
+                {% else %}
+                    <img class="img-fluid" src="{{ absolute_url(asset('img/profile_unknow.jpg')) }}" alt="">
+                {% endif %}
+            </h3>
+            <h3 class="col-md-12 text-center font-weight-bold">{{ 'print.title'|trans({'%period%' : packageStudentPeriod.period.name }) }}</h3>
+        </div>
+
+        <div class="card card-primary">
+            <div class="card-header text-white bg-info h6 font-weight-bold">
+                <i class="fas fa-user-graduate"></i> {{ 'print.civil.panel-title'|trans }}
+            </div>
+            <div class="card-body row text-info">
+                <div class="col-md-3">
+                    <strong>{{ 'print.name.label'|trans }} :</strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.name }}</span>
+                </div>
+                <div class="col-md-3">
+                    <strong>{{ 'print.forname.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.forname }}</span>
+                </div>
+                <div class="col-md-6">
+                    <strong>{{ 'print.phone.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.phone }}</span>
+                </div>
+                <div class="col-md-3">
+                    <strong>{{ 'print.birthday.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.birthday.format('d/m/Y') }}</span>
+                </div>
+                <div class="col-md-9">
+                    <strong class="pr-4">{{ 'print.bithplace.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.birthplace }}</span>
+                </div>
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.address.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.address }}</span>
+                </div>
+                <div class="col-md-4">
+                    <strong class="pr-4">{{ 'print.zip.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.zip }}</span>
+                </div>
+                <div class="col-md-8">
+                    <strong class="pr-4">{{ 'print.city.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.city }}</span>
+                </div>
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.last-school.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.lastSchool }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-primary mt-3">
+            <div class="card-header text-white bg-info h6 font-weight-bold">
+                <i class="fas fa-users"></i> {{ 'print.family.panel-title'|trans }}
+            </div>
+            <div class="card-body row text-info">
+
+                <div class="col-md-1">
+                    <strong class="pr-4"><u>{{ 'print.family.father.name.title'|trans }}</u></strong>
+                </div>
+                <div class="col-md-4">
+                    <strong class="pr-4">{{ 'print.family.father.name.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.father.name|default('') }}</span>
+                </div>
+                <div class="col-md-3">
+                    <strong class="pr-4">{{ 'print.family.father.forname.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.father.forname|default('') }}</span>
+                </div>
+                <div class="col-md-4">
+                    <strong class="pr-4">{{ 'print.family.father.phone.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.father.phone|default('') }}</span>
+                </div>
+
+
+                <div class="col-md-1">
+                    <strong class="pr-4"><u>{{ 'print.family.mother.name.title'|trans }}</u></strong>
+                </div>
+                <div class="col-md-4">
+                    <strong class="pr-4">{{ 'print.family.mother.name.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.mother.name|default('') }}</span>
+                </div>
+                <div class="col-md-3">
+                    <strong class="pr-4">{{ 'print.family.mother.forname.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.mother.forname|default('') }}</span>
+                </div>
+                <div class="col-md-4">
+                    <strong class="pr-4">{{ 'print.family.mother.phone.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.mother.phone|default('') }}</span>
+                </div>
+
+                {% if packageStudentPeriod.student.person.family.legalGuardian is not empty %}
+
+                    <div class="col-md-1">
+                        <strong class="pr-4"><u>{{ 'print.family.legalGuardian.name.title'|trans }}</u></strong>
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="pr-4">{{ 'print.family.legalGuardian.name.label'|trans }} : </strong>
+                        <span class="text-dark">{{ packageStudentPeriod.student.person.family.legalGuardian.name|default('') }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong class="pr-4">{{ 'print.family.legalGuardian.forname.label'|trans }} : </strong>
+                        <span class="text-dark">{{ packageStudentPeriod.student.person.family.legalGuardian.forname|default('') }}</span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="pr-4">{{ 'print.family.legalGuardian.phone.label'|trans }} : </strong>
+                        <span class="text-dark">{{ packageStudentPeriod.student.person.family.legalGuardian.phone|default('') }}</span>
+                    </div>
+                {% endif %}
+
+
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.family.email.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.email|default(packageStudentPeriod.student.email) }}</span>
+                </div>
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.family.email.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.personAuthorized|default(packageStudentPeriod.student.personAuthorized) }}</span>
+                </div>
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.family.language.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.language }}</span>
+                </div>
+                <div class="col-md-6">
+                    <strong class="pr-4">{{ 'print.family.numberChildren.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.numberChildren }}</span>
+                </div>
+                <div class="col-md-6">
+                    <strong class="pr-4">{{ 'print.family.persons.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.persons|length }}</span>
+                </div>
+
+                {% if packageStudentPeriod.student.person.family.persons|length > 1 %}
+                    <table class="table">
+                        <tr>
+                            <th>{{ 'print.family.persons.forname.label'|trans }}</th>
+                            {% for person in packageStudentPeriod.student.person.family.persons %}
+                                <td class="text-center">{{ person }}<br><span class="text-muted">{{ person.age }}</span></td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card card-primary mt-3">
+            <div class="card-header text-white bg-info h6 font-weight-bold">
+                <i class="fas fa-clipboard-check"></i> {{ 'print.authorization.panel-title'|trans }}
+            </div>
+            <div class="card-body text-info">
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.let_alone.label'|trans }} : </strong>
+                    <span class="text-dark">
+                        <i class="far fa-{{ packageStudentPeriod.student.letAlone ? 'check-' : '' }}square"></i> {{ 'print.let_alone.yes'|trans }}
+                        <i class="pl-2 far fa-{{ packageStudentPeriod.student.letAlone ? '' : 'check-' }}square"></i> {{ 'print.let_alone.no'|trans }}
+                    </span>
+                </div>
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.person_authorized.label'|trans }} : </strong>
+                    <span class="text-dark"></span>
+                </div>
+                <div class="col-md-12">
+                    <strong class="pr-4">{{ 'print.person_authorized.label'|trans }} : </strong>
+                    <span class="text-dark"></span>
+                </div>
+
+                <div class="font-weight-bold h6 mt-3"><u>{{ 'print.authorization.emergency.title'|trans }} :</u></div>
+                <p>{{ 'print.authorization.emergency.text'|trans }}</p>
+
+                <div class="font-weight-bold h6"><u>{{ 'print.authorization.eat.title'|trans }} :</u></div>
+                <p>{{ 'print.authorization.eat.text'|trans }}</p>
+
+                <div class="font-weight-bold h6"><u>{{ 'print.authorization.engagement.title'|trans }} :</u></div>
+                <div>
+                    <ul>
+                        <li>{{ 'print.authorization.engagement.text.1'|trans }}</li>
+                        <li>{{ 'print.authorization.engagement.text.2'|trans }}</li>
+                        <li>{{ 'print.authorization.engagement.text.3'|trans }}</li>
+                        <li>{{ 'print.authorization.engagement.text.4'|trans }}</li>
+                    </ul>
+                    <p>{{ 'print.authorization.engagement.text.5'|trans }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-info row footer">
+            <div class="col-md-6">{{ 'print.signature.date'|trans({
+                    '%city%' : packageStudentPeriod.student.school.city,
+                    '%date%' : packageStudentPeriod.updatedAt.format('d/m/Y H:i')
+                }) }}</div>
+            <div class="text-right col-md-offset-8">{{ 'print.signature.label'|trans }}</div>
+        </div>
+    </div>
+{% endblock %}
+

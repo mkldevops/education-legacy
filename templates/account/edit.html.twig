@@ -1,0 +1,22 @@
+{% extends 'account/common.html.twig' %}
+
+{% trans_default_domain 'account' %}
+
+{% set title = 'title.edit'|trans({ '%name%' : account }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_edit', { id : account.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "account" %}
+        {% block title 'title.form_edit'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

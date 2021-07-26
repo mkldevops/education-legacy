@@ -1,0 +1,27 @@
+title.show: "Forfait de l'éléve %package%"
+title.edit: "Modifier le forfait de l'eleve"
+title.header.info: "Information sur le forfait élève"
+show.createdat: "Ajouté par <strong>%name%</strong> le <strong>%date%</strong>"
+show.discount: "Remise effectué"
+show.paid: "Somme payé"
+show.amount: "Somme recquis"
+show.title.payment: "Liste des paiements"
+show.package: Forfait
+show.comment: Commentaire
+show.date_expire: "Date d'expiration du forfait"
+show.period: Période
+show.student: Élève
+show.id: Id
+Package: Forfait
+Student: Élève
+Discount: Remise
+Comment: Commentaire
+title.index: Forfait d'élève  
+Id: Id
+Record: Enregistré le
+Dateexpire: Date d'expiration
+Amount: Montant
+Paid: Payé
+Edit: Modifier
+Delete: Supprimer
+Create: Ajouter

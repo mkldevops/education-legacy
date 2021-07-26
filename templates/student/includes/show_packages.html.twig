@@ -1,0 +1,77 @@
+{% trans_default_domain 'student' %}
+
+<fieldset class="student-package">
+    <legend>{{ 'show.package_info.title'|trans }}</legend>
+
+    {% set haveCurrentPackage = false %}
+
+    <div class="panel-group" id="pakage-periods">
+        {% for packagePeriod in packagePeriods %}
+            {% set isCurrentPackage = false %}
+
+            {% if packagePeriod.period.id == currentPeriod.id %}
+                {% set haveCurrentPackage = true %}
+                {% set isCurrentPackage = true %}
+            {% endif %}
+
+            <div class="panel panel-{{ packagePeriod.getStatusPayments }}">
+                <div class="panel-heading">
+                    <h4 class="panel-title clearfix">
+                        <a data-toggle="collapse" data-parent="#pakage-periods" href="#pakage-period-{{ packagePeriod.id }}">
+                            <span class="label label-info">{{ packagePeriod.period.name }}</span>
+                            {% if is_granted('ROLE_ACCOUNTANT') %}
+                                <span class="label label-white">{{ packagePeriod.getUnpaid }}/{{ packagePeriod.amount }} €</span>
+                            {% endif %}
+                        </a>
+                        <a href="{{ path('app_student_print', { id : packagePeriod.id }) }}" target="_self" class="fa fa-print pull-right"></a>
+                        <a href="{{ path('app_package_student_period_edit', { id : packagePeriod.id }) }}" class="fa fa-pencil-square-o pull-right"></a>
+                    </h4>
+                </div>
+                <div id="pakage-period-{{ packagePeriod.id }}" class="panel-collapse collapse {{ isCurrentPackage ? 'in' : '' }}">
+                    {% if is_granted('ROLE_ACCOUNTANT') %}
+                        <div class="panel-body">
+                            <ul class="unstyled">
+                                <li><strong>{% trans %}Discount{% endtrans %}.</strong> {{ packagePeriod.discount }} €</li>
+                                {% if packagePeriod.paid == false %}
+                                    <li><strong>Reste à payer</strong> {{ packagePeriod.getUnpaid }} €</li>
+                                {% else %}
+                                    <li><strong>Payé</strong> {{ packagePeriod.paid ? 'Oui' : 'Non' }}</li>
+                                {% endif %}
+                                <li><strong>Expire le</strong> {{ packagePeriod.dateExpire.format('d/m/Y') }}</li>
+                                <li><strong>Commentaire</strong> {{ packagePeriod.comment }} </li>
+                                <li><strong>Enregistré le</strong> {{ packagePeriod.createdAt.format('d/m/Y à H:i') }}</li>
+                                <li><strong>Auteur</strong> {{ packagePeriod.author.nameComplete }}</li>
+                            </ul>
+                        </div>
+
+                        <!-- List payment to current package -->
+                        {% include 'package_student_period/payments.html.twig' with { 'payments' : packagePeriod.payments } %}
+
+                        <div class="panel-footer text-center">
+                            {% if packagePeriod.getUnpaid > 0 %}
+                                <a href="#" class="btn btn-primary btn-xs btn-payment-package" data-toggle="modal" data-target="#payment-package-form-{{ packagePeriod.id }}"> Réaliser un paiement</a>
+                            {% else %}
+                                <strong class="text-success"><span class="fa fa-ok"></span> {{ 'package_paid'|trans }}</strong>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {{ render(controller('App\\Controller\\PaymentPackageStudentController::newStudent', { 'id' : packagePeriod.id })) }}
+
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if haveCurrentPackage is empty %}
+        {% if student.enable is empty %}
+            <a href="{{ path('app_student_edit_status', { id : student.id, enable : true, redirect : true }) }}" class="btn btn-default btn-lg btn-block">{% trans %}btn.activate_student{% endtrans %}</a>
+        {% elseif is_granted('ROLE_DIRECTOR') and currentPeriod.isEnable %}
+            <a href="{{ path('app_student_addpackage', { 'id' : student.id, 'period' : currentPeriod.id }) }}" type="button" class="btn btn-primary btn-lg btn-block"><i class="fa fa-cube"></i> {{ 'btn.add_package'|trans({ '%period%' : currentPeriod } ) }}</a>
+        {% else %}
+            <div class="alert text-center alert-danger">
+                <em class="muted">{{ 'show.package.nothing'|trans({"%period%" : currentPeriod }) }}</em>
+            </div>
+        {% endif %}
+    {% endif %}
+</fieldset>

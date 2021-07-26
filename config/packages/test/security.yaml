@@ -1,0 +1,12 @@
+security:
+    providers:
+        in_memory:
+            memory:
+                users:
+                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+
+    firewalls:
+        # replace 'main' by the name of your own firewall
+        main:
+            http_basic: ~

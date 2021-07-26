@@ -1,0 +1,17 @@
+{% extends "operation/common.html.twig" %}
+
+{% set resources = resources|merge({ datatables : true }) %}
+
+{% trans_default_domain 'operation' %}
+
+{% set title = 'title.index'|trans({ '%length%' : operations|length }) %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript" src="{{ asset('js/type_operation.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {% include "operation/list-operations.html.twig" with { "operations" : operations } %}
+{% endblock %}

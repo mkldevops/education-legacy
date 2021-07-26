@@ -1,0 +1,50 @@
+title.index: 'Gestion des familles'
+title.family.new: 'Nouvelle famille'
+title.edit: 'Modifier famille %name%'
+title.form.edit: 'Formulaire de modification'
+title.header.info: '<strong>%id%</strong> - Info Génerale famille'
+title.header.persons: 'Listes des enfants'
+title.header.authorization: 'Info autorisations'
+title.header.contacts: 'Info contact'
+show.title: 'Famille %family%'
+show.list.person.name: Nom
+show.list.person.age: Âge
+show.list.person.class: Classe
+show.list.person.gender: Sexe
+show.list.person.package: 'Forfait %period%'
+show.list.person.to_pay: 'Reste à payer'
+show.label.mother: Mère
+show.label.father: Père
+show.label.personauthorized: 'Personnes autorisées à récuperer les enfants'
+show.label.personemergency: 'Personnes à appeler en cas d''urgence'
+show.label.legalguardian: 'Representant légal'
+show.label.created: 'Ajouté le %created_at% (Modifié le %updated_at%)'
+show.label.email: E-mail
+show.label.language: 'Langue parlée'
+show.label.zip: 'Code postal'
+show.label.city: Ville
+show.label.numberchildren: 'Nombre d''enfant'
+show.label.address: Adresse
+show.label.enable: Actif
+show.value.nothing: Aucun
+show.total_to_pay: 'Total restant à payer'
+form.family.person.forname: Prénom
+form.family.person.name: Nom
+form.button.create: 'Ajouter famille'
+form.button.edit: 'Modifier famille'
+form.father.label: Père
+form.mother.label: Mère
+form.legalGuardian.label: 'Responsable légale'
+form.email.label: E-mail
+form.address.label: Adresse
+form.city.label: Ville
+form.zip.label: 'Code postal'
+form.language.label: 'Langue parlé à la maison'
+form.personEmergency.label: 'Personne à appeler d''urgence'
+form.personAuthorized.label: 'Personnes authorisé à récuperer les enfants'
+form.numberChildren.label: 'Nombre d''enfant'
+index.header.Numberchildren: 'Nombre d''enfants'
+index.createdat: 'Ajouté le'
+nothing.person: 'Aucun enfant'
+new_student: 'Ajouter un élève'
+new_package_student: 'Ajouter un forfait %period%'

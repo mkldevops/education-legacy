@@ -1,0 +1,326 @@
+{% extends 'print-base.html.twig' %}
+
+{% trans_default_domain 'student' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-size: 1.2rem !important;
+        }
+
+        .footer {
+            margin: 3rem 0;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+        $(function () {
+            $('#print_rules').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#print-rules-text').removeClass('d-print-none');
+                } else {
+                    $('#print-rules-text').addClass('d-print-none');
+                }
+            });
+        })
+    </script>
+{% endblock %}
+
+{% block container %}
+    <table class="table table-borderless">
+        <tr class="text-center row">
+            <td  class="col-sm-4">
+                <img src="{{ absolute_url(asset('img/logo-custom.png')) }}" alt="logo Structure" width="300px">
+                <h5 class="font-weight-bold">{{ packageStudentPeriod.student.school.address }} {{ packageStudentPeriod.student.school.zip }} {{ packageStudentPeriod.student.school.city }}</h5>
+            </td>
+            <td class="col-sm-4">
+                <h2 class="font-weight-bold">{{ packageStudentPeriod.student.school.name }}</h2>
+                <h3 class="font-weight-bold text-info">N° : {{ packageStudentPeriod.student.id }}</h3>
+                <h6 class="font-weight-bold text-dark">Supprimé le : &emsp;&emsp; / &emsp;&emsp; / &emsp; </h6>
+                <a href="{{ path('app_student_print', { id : packageStudentPeriod.id, format : 'html', force : true }) }}" class="btn btn-default">
+                    <img src="{{ qr_code_data_uri(absolute_url(path('app_student_show', { id : packageStudentPeriod.student.id })) , { writer: 'svg', size: 120 }) }}" alt="{{ absolute_url(path('app_student_show', { id : packageStudentPeriod.student.id })) }}" />
+                </a>
+                <div class="d-print-none">
+                    <label for="print_rules"><input type="checkbox" id="print_rules"> {{ 'print.print_rules'|trans }}</label>
+                </div>
+            </td>
+            <td align="center" class="text-center col-sm-4">
+                {% if packageStudentPeriod.student.image is not empty %}
+                    <img height="240px" src="{{ absolute_url(asset(packageStudentPeriod.student.image.webPath)) }}" alt="{{ packageStudentPeriod.student.image.webPath }}">
+                {% else %}
+                    <img height="240px" src="{{ absolute_url(asset('img/user.png')) }}" alt="">
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <h3 class="col-sm-12 text-center font-weight-bold">{{ 'print.title'|trans({'%period%' : packageStudentPeriod.period.name }) }}</h3>
+            </td>
+        </tr>
+    </table>
+
+    <div class="col-sm-12">
+        <div class="card card-primary">
+            <div class="card-header text-white bg-info h6 font-weight-bold">
+                <i class="fas fa-user-graduate"></i> {{ 'print.civil.panel-title'|trans }}
+            </div>
+            <div class="card-body row text-info">
+                <div class="col-sm-3">
+                    <strong>{{ 'print.name.label'|trans }} :</strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.name }}</span>
+                </div>
+                <div class="col-sm-3">
+                    <strong>{{ 'print.forname.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.forname }}</span>
+                </div>
+                <div class="col-sm-6">
+                    <strong>{{ 'print.phone.label'|trans }} : </strong>
+                    <span class="text-warning">
+                        {% for key, phone in packageStudentPeriod.student.listPhones %}
+                            {{ loop.index > 1 ? '/ ' : '' }}<i class="text-dark">{{ phone }}</i>
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="col-sm-3">
+                    <strong>{{ 'print.birthday.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.birthday.format('d/m/Y') }}</span>
+                </div>
+                <div class="col-sm-9">
+                    <strong class="pr-4">{{ 'print.bithplace.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.birthplace }}</span>
+                </div>
+                <div class="col-sm-12">
+                    <strong class="pr-4">{{ 'print.address.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.address|default(packageStudentPeriod.student.person.address) }}</span>
+                </div>
+                <div class="col-sm-4">
+                    <strong class="pr-4">{{ 'print.zip.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.zip|default(packageStudentPeriod.student.person.zip) }}</span>
+                </div>
+                <div class="col-sm-8">
+                    <strong class="pr-4">{{ 'print.city.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.city|default(packageStudentPeriod.student.person.city) }}</span>
+                </div>
+                <div class="col-sm-12">
+                    <strong class="pr-4">{{ 'print.last-school.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.lastSchool }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-primary mt-3">
+            <div class="card-header text-white bg-info h6 font-weight-bold">
+                <i class="fas fa-users"></i> {{ 'print.family.panel-title'|trans }}
+            </div>
+            <div class="card-body row text-info">
+
+                <div class="col-sm-4">
+                    <strong class="pr-4 h4"><u>{{ 'print.family.father.name.title'|trans }}</u></strong>
+                    <strong class="pr-4">{{ 'print.family.father.name.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.father.name|default('') }}</span>
+                </div>
+                <div class="col-sm-3">
+                    <strong class="pr-4">{{ 'print.family.father.forname.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.father.forname|default('') }}</span>
+                </div>
+                <div class="col-sm-5">
+                    <strong class="pr-4">{{ 'print.family.father.phone.label'|trans }} : </strong>
+                    <span class="text-warning">{% for key, phone in packageStudentPeriod.student.person.family.father.listPhones|default([]) %}
+                            {{ loop.index > 1 ? '/ ' : '' }}<i class="text-dark">{{ phone }}</i>
+                        {% endfor %}
+                    </span>
+                </div>
+
+                <div class="col-sm-4">
+                    <strong class="pr-4 h4"><u>{{ 'print.family.mother.name.title'|trans }}</u></strong>
+                    <strong class="pr-4">{{ 'print.family.mother.name.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.mother.name|default('') }}</span>
+                </div>
+                <div class="col-sm-3">
+                    <strong class="pr-4">{{ 'print.family.mother.forname.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.mother.forname|default('') }}</span>
+                </div>
+                <div class="col-sm-5">
+                    <strong class="pr-4">{{ 'print.family.mother.phone.label'|trans }} : </strong>
+                    <span class="text-warning">
+                        {% for key, phone in packageStudentPeriod.student.person.family.mother.listPhones|default([]) %}
+                            {{ loop.index > 1 ? '/ ' : '' }}<i class="text-dark">{{ phone }}</i>
+                        {% endfor %}
+                    </span>
+                </div>
+
+                {% if packageStudentPeriod.student.person.family.legalGuardian is not empty %}
+
+                    <div class="col-sm-4">
+                        <strong class="pr-4"><u>{{ 'print.family.legalGuardian.name.title'|trans }}</u></strong>
+                        <strong class="pr-4 h4">{{ 'print.family.legalGuardian.name.label'|trans }} : </strong>
+                        <span class="text-dark">{{ packageStudentPeriod.student.person.family.legalGuardian.name|default('') }}</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <strong class="pr-4">{{ 'print.family.legalGuardian.forname.label'|trans }} : </strong>
+                        <span class="text-dark">{{ packageStudentPeriod.student.person.family.legalGuardian.forname|default('') }}</span>
+                    </div>
+                    <div class="col-sm-5">
+                        <strong class="pr-4">{{ 'print.family.legalGuardian.phone.label'|trans }} : </strong>
+                        <span class="text-warning">
+                            {% for key, phone in packageStudentPeriod.student.person.family.legalGuardian.listPhones|default([]) %}
+                                {{ loop.index > 1 ? '/ ' : '' }}<i class="text-dark">{{ phone }}</i>
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
+
+
+                <div class="col-sm-12">
+                    <strong class="pr-4">{{ 'print.family.email.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.email|default(packageStudentPeriod.student.email) }}</span>
+                </div>
+                <div class="col-sm-12">
+                    <strong class="pr-4">{{ 'print.family.language.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.language }}</span>
+                </div>
+                <div class="col-sm-6">
+                    <strong class="pr-4">{{ 'print.family.numberChildren.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.numberChildren }}</span>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <strong class="pr-4">{{ 'print.family.persons.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.person.family.persons|length }}</span>
+                </div>
+
+                {% if packageStudentPeriod.student.person.family.persons|length > 1 %}
+                    <table class="table mt-3">
+                        <tr>
+                            <th class="text-center">{{ 'print.family.persons.forname.label'|trans|raw }}</th>
+                            {% for person in packageStudentPeriod.student.person.family.persons %}
+                                <td class="text-center">{{ person }}<hr><span class="text-muted">{{ person.age }} ans</span></td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card card-primary mt-3">
+            <div class="card-header text-white bg-info h6 font-weight-bold">
+                <i class="fas fa-clipboard-check"></i> {{ 'print.authorization.panel-title'|trans }}
+            </div>
+            <div class="card-body text-info">
+                <div class="col-sm-12">
+                    <strong class="pr-4">{{ 'print.let_alone.label'|trans }} : </strong>
+                    <span class="text-dark">
+                        <i class="{{ packageStudentPeriod.student.letAlone ? 'text-success fa-check-square' : 'fa-square' }} far"> {{ 'print.let_alone.yes'|trans }}</i>
+                        <i class="pl-2 {{ packageStudentPeriod.student.letAlone ? 'fa-square' : 'text-danger fa-check-square' }} far"> {{ 'print.let_alone.no'|trans }}</i>
+                    </span>
+                </div>
+                <div class="col-sm-12">
+                    <strong class="pr-4">{{ 'print.person_authorized.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.personAuthorized|default(packageStudentPeriod.student.person.family.personAuthorized)  }}</span>
+                </div>
+                <div class="col-sm-12 mb-3">
+                    <strong class="pr-4">{{ 'print.remarksHealth.label'|trans }} : </strong>
+                    <span class="text-dark">{{ packageStudentPeriod.student.remarksHealth  }}</span>
+                </div>
+
+                <div class="font-weight-bold h6 mt-3"><u>{{ 'print.authorization.emergency.title'|trans }} :</u></div>
+                <p>{{ 'print.authorization.emergency.text'|trans }}</p>
+
+                <div class="font-weight-bold h6"><u>{{ 'print.authorization.eat.title'|trans }} :</u></div>
+                <p>{{ 'print.authorization.eat.text'|trans }}</p>
+
+                <div class="font-weight-bold h6"><u>{{ 'print.authorization.engagement.title'|trans }} :</u></div>
+                <div>
+                    <ul>
+                        <li>{{ 'print.authorization.engagement.text.1'|trans }}</li>
+                        <li>{{ 'print.authorization.engagement.text.2'|trans }}</li>
+                        <li>{{ 'print.authorization.engagement.text.3'|trans }}</li>
+                        <li>{{ 'print.authorization.engagement.text.4'|trans }}</li>
+                    </ul>
+                    <p>{{ 'print.authorization.engagement.text.5'|trans }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-primary mt-3 mb-3">
+            <p>{{ 'print.payment.text1'|trans({'%price%' : packageStudentPeriod.amount })|raw }}</p>
+            <p>{{ 'print.payment.text2'|trans({'%name%' : packageStudentPeriod.package.school })|raw }}</p>
+        </div>
+
+        <div class="text-info row footer mb-5">
+            <div class="col-sm-12">
+                {{ 'print.register.date'|trans({
+                    '%date%' : packageStudentPeriod.updatedAt.format('d/m/Y à H:i'),
+                    '%author%' : packageStudentPeriod.author
+                })|raw }}</div>
+            <div class="col-sm-5">{{ 'print.signature.date'|trans({
+                    '%city%' : packageStudentPeriod.student.school.city,
+                    '%date%' : 'now'|date('d/m/Y à  H:i')
+                })|raw }}</div>
+            <div class="text-right col-sm-offset-5 col-md-7">{{ 'print.signature.label'|trans }}</div>
+        </div>
+
+        <div id="print-rules-text" class="d-print-none" style="page-break-before:always">
+            <div class="text-center">
+                <img src="{{ absolute_url(asset('img/logo-structure-300.jpg')) }}" alt="logo Structure">
+                <h5 class="font-weight-bold">{{ packageStudentPeriod.student.school.address }} {{ packageStudentPeriod.student.school.zip }} {{ packageStudentPeriod.student.school.city }}</h5>
+                <h1 >Règlement Interieur</h1>
+            </div>
+            <div>
+                <h2>Présence, arrivée et départ du chioni</h2>
+                <ul>
+                    <li>Il est demandé aux parents d'assurer la présence régulière de leurs enfants au Chioni et Madrassa afin que votre enfant profite pleinement
+                        de l'enseignement.</li>
+                    <li>Les absences sont notées dans un registre spécial. Les parents sont tenu d'en faire connaître les motifs le jour même par un appel
+                        téléphonique ou un message.</li>
+                    <li>Le Chioni est ouvert 15 minutes avant le début des cours ainsi, il vous est demandé d'être à l'heure afin que votre enfant ne rate pas et ne
+                        perturbe pas le cours.</li>
+                    <li>Un enfant ne peut sortir avant l'heure réglementaire, sauf en cas d'urgence et avec la permission de l'enseignant. Les parents sont tenu
+                        d'en informer le Chioni.</li>
+                    <li>Les élèves non-autorisés à rentrer seul chez eux attendront leurs parents dans le Chioni sous la surveillance d'un enseignant.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2>II. Règlement de conduite</h2>
+                Il est demandé à l'élève (garçon ou fille)
+                <ul>
+                    <li>D'avoir une tenue correcte couvrant la zone de pudeur (qamis, robe, hijab, foulard...)</li>
+                    <li>D'avoir un bon comportement et le respect envers ses camarades et ses enseignants</li>
+                    <li>D'éviter les bavardages durant le cours, et de ne parler que s'il est interrogé et après avoir levé le doigt</li>
+                    <li>De ne rien manger, ni boire durant le cours</li>
+                    <li>D'avoir toujours ses affaires (manuelle, cahier, stylo…) dans un cartable</li>
+                    <li>D'éteindre son téléphone portable dès son entrée dans le Chioni et ce, jusqu'à la fin du cours</li>
+                    <li>De ne pas ramener des jouets (cartes, bracelets...)</li>
+                    <li>De ne pas amener au Chioni des objets dangereux (couteau, bâton, outil…) ni des objets de valeurs (bijoux…) et tout objets susceptible
+                        d'être avalés (billes…)</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3>III. Santé</h3>
+                <ul>
+                    <li>Les enfants accueillis en classe doivent être en bon état de santé et de propreté</li>
+                    <li>Si votre enfant est malade, vous le garderez à la maison par respect pour lui même et ses camarades</li>
+                    <li>Le chioni n'est pas habilitée à administrer des médicaments mêmes sur ordonnances ou demande des parents.</li>
+                </ul>
+            </div>
+
+            <div class="row text-center mt-6">
+                <div class="col-md-6">
+                    Signature de l'élève<br>
+                    précédé de la mention lu et approuvé
+                </div>
+
+                <div class="col-md-6">
+                    Signature des parents / responsables<br>
+                    précédé de la mention lu et approuvé
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

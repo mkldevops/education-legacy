@@ -1,0 +1,24 @@
+title.new: 'Nouveau document'
+title.edit: 'Modifier le document "%name%"'
+title.form.edit: 'Formulaire d''ajout de document'
+title.form.new: 'Formulaire d''ajout de document'
+title.form.delete: 'Formulaire de supression de document'
+title.delete: 'Supprimer le document "%name%"'
+title.index: 'Liste des documents'
+title.show: 'Fiche du document "%name%"'
+title.header.info: 'Information du document "%name%"'
+title.header.linked: 'Entité liés'
+title.header.preview: document
+document: Document
+title.form_new: __title.form_new
+Id: __Id
+Name: __Name
+Path: __Path
+Edit: __Edit
+Delete: __Delete
+'Last documents': '__Last documents'
+Upload: __Upload
+'The url to attach document is not defined...': '__The url to attach document is not defined...'
+MimeType: __MimeType
+School: __School
+'Record to': '__Record to'

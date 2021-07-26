@@ -1,0 +1,153 @@
+{% trans_default_domain 'student' %}
+
+<fieldset>
+    <legend>{{ 'show.other_info.title'|trans }}</legend>
+    <div role="tabpanel">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="relations" class="active"><a href="#relations" aria-controls="relations" role="tab" data-toggle="tab">{{ 'show.family.label'|trans }}</a></li>
+            <li role="messages">
+                <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+                    <i class="fa fa-comments"></i> {{ 'show.otherinfos.tab.messages'|trans }} <span class="badge badge-info">{{ comments|length}}</span>
+                </a>
+            </li>
+            <li role="classSchool"><a href="#classSchool" aria-controls="classSchool" role="tab" data-toggle="tab">{{ 'show.otherinfos.tab.class'|trans }}</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="relations">
+                <div class="student-family">
+
+                    {% if student.person.family is not empty  %}
+                        {% set family = student.person.family %}
+
+                        <dl class="dl-horizontal">
+                            {% if family.father is not empty %}
+                                <dt>{{ 'show.other_info.family.father.label'|trans }}</dt>
+                                <dd><a href="{{ path('app_person_show', { id : family.father.id }) }}">{{ family.father }}</a></dd>
+                            {% endif %}
+
+                            {% if family.mother is not empty %}
+                                <dt>{{ 'show.other_info.family.mother.label'|trans }}</dt>
+                                <dd><a href="{{ path('app_person_show', { id : family.mother.id }) }}">{{ family.mother }}</a></dd>
+                            {% endif %}
+
+                            {% if family.legalGuardian is not empty  %}
+                                <dt>{{ 'show.other_info.family.legalGuardian.label'|trans }}</dt>
+                                <dd><a href="{{ path('app_person_show', { id : family.legalGuardian.id }) }}"></a>{{ family.legalGuardian }}</dd>
+                            {% endif %}
+
+                            <dt>{{ 'show.other_info.family.address.label'|trans }}</dt>
+                            <dd>{{ family.address }}</dd>
+                            <dd>{{ family.zip }} {{ family.city }}</dd>
+                            
+                            {% if family.persons|length > 1 %}
+                                <dt>{{ 'show.other_info.family.children.label'|trans }}</dt>
+                                {% for person in family.persons %}
+                                    {% if person.student.id != student.id  %}
+                                        <dd>
+                                            {% if person.student is not empty %}
+                                                <a href="{{ path('app_student_show', { id : person.student.id }) }}">{{ person.student }}</a>
+                                            {% else %}
+                                                <a href="{{ path('app_person_show', { id : person.id }) }}">{{ person.student }}</a>
+                                            {% endif %}
+                                        </dd>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </dl>
+
+                    {% else %}
+                        <a href="{{ path('app_student_edit', { id : student.id }) }}" class="btn btn-primary">{{ 'list.action.edit'|trans }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="classSchool">
+                {% if student.classPeriods is not empty %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{% trans %}Period{% endtrans %}</th>
+                                <th>{% trans %}Class School{% endtrans %}</th>
+                                <th>{% trans %}Begin{% endtrans %}</th>
+                                <th>{% trans %}End{% endtrans %}</th>
+                                <th>{% trans %}Students{% endtrans %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for classPeriodStudent in student.classPeriods %}
+                                <tr class="">
+                                    <td>{{ classPeriodStudent.classPeriod.period.name }}</td>
+                                    <td>{{ classPeriodStudent.classPeriod.classSchool.name }}</td>
+                                    <td>{{ classPeriodStudent.begin.format('d/m/Y') }}</td>
+                                    <td>{{ classPeriodStudent.end.format('d/m/Y') }}</td>
+                                    <td>{{ classPeriodStudent.classPeriod.students|length }}</td>
+                                    <td>
+                                        <a href="{{ path('app_class_period_show', {'id': classPeriodStudent.classPeriod.id}) }}" class="fas fa-folder-open-o"></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <a href="#" class="btn btn-default">{% trans %}Integrer une classe{% endtrans %}</a>
+                {% endif %}
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="messages">
+                <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#commentStudent"><i class="fa fa-comment"></i> {% trans %}Add comment{% endtrans %}</button>
+                {% for comment in comments %}
+                    <div id="comment-{{ comment.id }}" data-id="{{ comment.id }}" class="comment-block panel panel-{{ comment.type }}">
+                        <div class="panel-body">
+                            <header class="text-left">
+                                <div class="comment-title clearfix">
+                                    <a href="{{ path('app_student_comment_show', { id : comment.id }) }}" class="text-{{ comment.type }}"><strong class="pull-left"><u>{{ comment.title }}</u></strong></a>
+                                    <time class="comment-date pull-right" datetime="{{ comment.createdAt.format('Y-m-d H:i:s') }}"><i class="fa fa-clock-o"></i> {{ comment.createdAt.format('d/m/Y H:i:s') }}</time>
+                                </div>
+                            </header>
+                            <div class="comment-text"><blockquote>{{ comment.text|raw }}</blockquote></div>
+                            <footer class="clearfix">
+                                <div class="action pull-left">
+                                    <a href="{{ path('app_student_comment_edit', { id : comment.id }) }}" class="comment-edit alert-link"><i class="fa fa-edit"></i></a>&nbsp;
+                                    <a href="{{ path('app_student_comment_delete', { id : comment.id }) }}" class="comment-delete alert-link"><i class="fa fa-trash"></i></a>
+                                </div>
+                                <div class="tex-muted pull-right comment-user">
+                                    <small><em>{% trans %}Written by{% endtrans %} {{ comment.author.nameComplete }} <i class="fa fa-user"></i></em></small>
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="modal fade" id="commentStudent" tabindex="-1" role="dialog" aria-labelledby="commentStudentLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="commentStudentLabel">{% trans %}New message{% endtrans %}.</h4>
+                          </div>
+                          <div class="modal-body">
+                             {% form_theme formComment 'bootstrap_4_layout.html.twig' %}
+                             {{ form(formComment) }}
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans %}Close{% endtrans %}.</button>
+                            <button type="button" id="submit-comment" class="btn btn-primary">{% trans %}Send message{% endtrans %}.</button>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+
+                {% for comment in comments %}
+                    <div id="student-comments-{{ student.id }}">
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div> <!-- End Tab panes -->
+    </div>
+</fieldset>

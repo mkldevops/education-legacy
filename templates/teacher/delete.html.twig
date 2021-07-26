@@ -1,0 +1,17 @@
+{% extends 'teacher/common.html.twig' %}
+
+{% trans_default_domain 'teacher' %}
+
+{% set title = 'title.delete'|trans({ '%name%' : teacher }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_teacher_delete', { id : teacher.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'teacher' %}
+        {% set nameEntity = 'teacher'|trans %}
+        {% block title 'title.form_delete'|trans %}
+    {% endembed %}
+{% endblock %}

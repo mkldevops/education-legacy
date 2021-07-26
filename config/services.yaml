@@ -1,0 +1,67 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'fr'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Model,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    App\EventListener\LoginListener:
+        arguments: ["@security.authorization_checker", "@session"]
+        tags:
+            - { name: 'kernel.event_listener', event: security.interactive_login }
+
+    App\Services\GoogleService:
+        autowire: false
+        autoconfigure: false
+        public: false
+        calls:
+            - [setPathTokens, ['%kernel.project_dir%/var/tokens']]
+            - [setClient, ['@Google_Client']]
+
+    App\Services\GoogleCalendarService:
+        autowire: false
+        autoconfigure: false
+        public: false
+        class: App\Services\GoogleCalendarService
+        parent: App\Services\GoogleService
+
+    App\EventListener\CheckDataListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.finish_request }
+
+    App\EventListener\OperationListener:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: prePersist, entity: App\Entity\Operation }
+            - { name: 'doctrine.orm.entity_listener', event: preUpdate, entity: App\Entity\Operation }
+
+
+    App\Services\DiplomaService:
+        calls:
+            - [setPathFont, ['%kernel.project_dir%/public/fonts']]
+            - [setFileFromPath, ['%kernel.project_dir%/public/img/diploma-2019.jpeg']]
+            - [setPathUploads, ['%kernel.project_dir%/public/diplomas']]
+
+    Monolog\Processor\PsrLogMessageProcessor:
+        tags: { name: monolog.processor, handler: sentry }

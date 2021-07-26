@@ -1,0 +1,46 @@
+{% trans_default_domain 'layout' %}
+
+<li class="dropdown">
+    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+        <i class="fa fa-calendar"></i> {{ app.session.get('period').selected }}
+    </a>
+    <ul class="dropdown-menu dropdown-alerts">
+        {% for period in app.session.get('period').list|default({}) %}
+            {% if period.id|default(null) %}
+                {% set active = period.id == app.session.get('period').selected.id|default(null) %}
+                <li class="{{ active ? 'active' : null }}">
+                    <a href="{{ path('app_period_switch', { 'id' : period.id }) }}">
+                        <div>
+                            <i class="fas fa-angle-double-right"></i> <strong>{{ period.name }}</strong>
+                            <span class="pull-right">
+                                {% if active %}
+                                    <i class="fas fa-check"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                {% if loop.index < app.session.get('period').list|length %}
+                    <li class="divider"></li>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <li>
+                <div class="text-center text-danger link-block">
+                    <span class="muted"><i class="fa fa-warning"></i> {% trans %}header.periods.notfound{% endtrans %}</span>
+                </div>
+            </li>
+        {% endfor %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <li class="divider"></li>
+            <li>
+                <div class="text-center link-block">
+                    <a href="{{ path('app_admin_dashboard_index', {'entity' : 'Period'}) }}">
+                        <strong>{{ 'Manage Periods'|trans }}</strong>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+</li>

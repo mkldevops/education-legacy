@@ -1,0 +1,11 @@
+{% set trans_bundle = trans_bundle|default(false) %}
+
+{# On affiche les messages flash que définissent les contrôleurs du bundle #}
+{% for key, messages in app.session.flashbag.all() %}
+    {% for message in messages %}
+        <div class="alert alert-{{ key }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ message|trans({}, trans_bundle)|raw }}
+        </div>
+    {% endfor %}
+{% endfor %}

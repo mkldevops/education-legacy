@@ -1,0 +1,15 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% block menu_action %}
+
+    {% if typeoperation is defined and typeoperation.id %}
+
+    {% endif %}
+
+{% endblock %}

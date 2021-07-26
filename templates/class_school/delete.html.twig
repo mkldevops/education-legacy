@@ -1,0 +1,17 @@
+{% extends 'class_school/common.html.twig' %}
+
+{% trans_default_domain 'class_school' %}
+
+{% set title = 'title.delete'|trans({'%name%' : classschool }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_class_school_delete', {id : classschool.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'class_school' %}
+        {% set nameEntity = 'classschool'|trans %}
+        {% block title 'title.form.delete'|trans %}
+    {% endembed %}
+{% endblock %}

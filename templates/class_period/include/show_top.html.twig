@@ -1,0 +1,31 @@
+{% trans_default_domain 'class_period' %}
+
+<div class="row">
+    <div class="col-lg-3">
+        <div class="widget style1 navy-bg">
+            <div class="row">
+                <div class="col-xs-4">
+                    <i class="fa fa-graduation-cap fa-5x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span> {{ 'show.top.number_course'|trans }} </span>
+                    <h2 class="font-bold">{{ classperiod.courses|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="widget style1 red-bg">
+            <div class="row">
+                <div class="col-xs-4 text-white ">
+                    <a href="{{ path('app_class_period_show_student', { 'id' : classperiod.id }) }}"><i class="fa fa-users fa-5x"></i></a>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span> {{ 'show.top.number_student'|trans }} </span>
+                    <h2 class="font-bold">{{ classperiod.students|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

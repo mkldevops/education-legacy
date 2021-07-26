@@ -1,0 +1,41 @@
+{% trans_default_domain 'layout' %}
+
+{% set breadcrumbs = { ('breadcrumb.dashboard'|trans) : path('app_admin_home')}|merge(breadcrumbs|default({})) %}
+
+{% extends '_inspina/base.html.twig' %}
+
+{% block title %}
+    {{ title|default('title.undefined') }} - {{ parent() }}
+{% endblock %}
+
+{% block page_header %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-8">
+            <h2>{{ page_header_title|default(title|default('')) }}</h2>
+
+            <ol class="breadcrumb">
+                {% for name, path_name in breadcrumbs %}
+                    <li class="{{ app.request.attributes.get('_route') == path_name ? 'active' : '' }}">
+                        <a href="{{ path_name }}">
+                            {{ name|capitalize|raw }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <div class="col-lg-4 header-action">
+            <div class="btn-group btn-xs pull-right">
+                <button type="button" class="btn btn-danger">Action</button>
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% block menu_action %}
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

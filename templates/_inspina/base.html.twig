@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain 'layout' %}
+
+{% block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('inspina/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('inspina/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+    {% if resources.uploadfile %}
+        <link href="{{ asset('jquery/uploadfile/uploadfile.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/document.css') }}" rel="stylesheet">
+    {% endif %}
+
+    <!-- Morris -->
+    <link href="{{ asset('inspina/css/plugins/morris/morris-0.4.3.min.css') }}" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="{{ asset('inspina/js/plugins/gritter/jquery.gritter.css') }}" rel="stylesheet">
+
+    <!-- CDN DataTables CSS -->
+    {% if resources.datatables %}
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/datatable/2.0.1/css/datatable-bootstrap.min.css" />
+    {% endif %}
+
+    {% if resources.multiselect %}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet">
+    {% endif %}
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" />
+
+    <link href="{{ asset('inspina/css/animate.css') }}" rel="stylesheet">
+    <link href="{{ asset('inspina/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('inspina/css/custom.css') }}" rel="stylesheet">
+
+    {% if resources.operations %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/operation.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/validate.css') }}" />
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+    <!-- Mainly scripts -->
+    <script src="{{ asset('inspina/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('inspina/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('inspina/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+    <script src="{{ asset('inspina/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+    {#<!-- Custom and plugin javascript -->#}
+    <script src="{{ asset('inspina/js/inspinia.js') }}"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+    {% if resources.uploadfile %}
+        <script src="{{ asset('jquery/uploadfile/uploadfile.js') }}"></script>
+        <script src="{{ asset('js/document.js') }}"></script>
+    {% endif %}
+
+    <!-- CDN DataTables JS -->
+    {% if resources.datatables %}
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="{{ asset('bower/datatables/media/js/dataTables.bootstrap.js') }}"></script>
+
+        <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+    {% endif %}
+
+    <!-- CKEDITOR version standard -->
+    {% if resources.ckeditor %}
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.10.0/ckeditor.js"></script>
+        <script type="text/javascript" src="{{ asset('js/ckeditor.js') }}"></script>
+    {% endif %}
+
+    {% if resources.multiselect %}
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+    {% endif %}
+
+    <script type="text/javascript" src="{{ asset('js/base/base-bundle.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/base/base-config.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/base/base-functions.js') }}"></script>
+
+    {% if resources.operations %}
+        <script type="text/javascript" src="{{ asset('js/operation.js') }}"></script>
+    {% endif %}
+{% endblock %}
+
+{% block container %}
+
+    <div id="wrapper">
+        {% block wrapper %}
+
+            {% block sidebar %}
+                {% include '_inspina/sidebar.html.twig' %}
+            {% endblock %}
+
+            <div id="page-wrapper" class="gray-bg">
+
+                {% block header %}
+                    {% include '_inspina/header.html.twig' %}
+                    {% block page_header '' %}
+                {% endblock %}
+
+                <!-- flashbag -->
+                <div class="text-center" style="margin-top: 0.3rem">
+                    {% include "flashbag.html.twig" with { 'trans_bundle' : '' } %}
+                </div>
+
+                <div class="wrapper wrapper-content animated fadeInRight clearfix">
+                    {% block body %}
+                        <div class="middle-box text-center animated fadeInRightBig">
+                            <h3 class="font-bold">
+                                <i class="fa fa-cogs" aria-hidden="true"></i>
+                                <span>{{ 'base.not_body.title'|trans }}</span>
+                            </h3>
+
+                            <div class="error-desc">
+                                <a href="{{ path('app_admin_home') }}" class="btn btn-primary m-t">{{ 'breadcrumb.dashboard'|trans }}</a>
+                            </div>
+                        </div>
+                    {% endblock %}
+                </div>
+
+                {% block footer %}
+                    {% include '_inspina/footer.html.twig' %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

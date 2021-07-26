@@ -1,0 +1,22 @@
+{% extends 'teacher/common.html.twig' %}
+
+{% trans_default_domain "teacher" %}
+
+{% set title = 'title.edit'|trans({ '%name%' : teacher.name }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_teacher_edit', { id : teacher.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "teacher" %}
+        {% block title 'form.title.edit'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include 'teacher/_form.html.twig' %}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

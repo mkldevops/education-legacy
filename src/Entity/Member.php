@@ -1,0 +1,92 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use App\Traits\AuthorEntityTrait;
+use Doctrine\ORM\Mapping as ORM;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
+use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use App\Repository\MemberRepository;
+
+/**
+ * @ORM\Table(name="`person_member`")
+ * @ORM\Entity(repositoryClass=MemberRepository::class)
+ */
+class Member
+{
+    use IdEntityTrait;
+    use NameEntityTrait;
+    use AuthorEntityTrait;
+    use EnableEntityTrait;
+    use TimestampableEntityTrait;
+    use SoftDeleteableEntity;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected ?string $positionName = null;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist", "merge", "remove"}, inversedBy="member")
+     */
+    protected ?Person $person = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Structure::class, cascade={"persist"}, inversedBy="members")
+     */
+    protected ?Structure $structure = null;
+
+    public function __toString(): string
+    {
+        return (string) $this->person;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setPositionName(string $positionName): self
+    {
+        $this->positionName = $positionName;
+
+        return $this;
+    }
+
+    public function getPositionName(): ?string
+    {
+        return $this->positionName;
+    }
+
+    public function setPerson(?Person $person): self
+    {
+        $this->person = $person;
+        if ($person instanceof Person) {
+            $this->name = $person->getNameComplete();
+        }
+
+        return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setStructure(Structure $structure): ?Member
+    {
+        $this->structure = $structure;
+
+        return $this;
+    }
+
+    public function getStructure(): ?Structure
+    {
+        return $this->structure;
+    }
+}

@@ -1,0 +1,41 @@
+title.index: 'Liste des classes annuelle'
+title.show: 'Classe %name%'
+title.show_student.page: 'Elèves de la classe %name%'
+title.show_student.ibox: 'Liste des élève de la classe %name%'
+title.show_student.date: 'Ajouté le %date% par %name%'
+table.id: Id
+table.class: Classe
+table.students: 'Nb élèves'
+table.courses: 'Nb cours'
+table.teachers: Professeur
+table.status: Etat
+data.status: '{0}Désactivé|{1}Activé'
+show_student.label.gender: Sexe
+show.top.number_course: 'Nombre de cours'
+show.top.number_student: 'Nombre d''élèves'
+show.tooltip.remove: 'Supprimer de la classe'
+show.tooltip.change: 'Changee de classer'
+show.label.begin: 'Date d''entrée'
+show.label.end: 'Date de sortie'
+class_period: Classe annuelle
+title.form_delete: Formulaire suppression classe anuelle
+title.delete: Supprimer classe annuelle %name%
+'Add Students': 'Ajouter une éléève'
+'print list of students': 'Imprimer la liste des éléves'
+Photo: Photo
+Name: Nom
+Forname: Prénom
+Action: Action
+'Registration to class :': '__Registration to class :'
+title.form_new: __title.form_new
+title.new: __title.new
+title.form_edit: __title.form_edit
+title.edit: __title.edit
+table.record: __table.record
+'print list student': '__print list student'
+Show: Afficher
+Edit: Modifier
+Delete: Supprimer
+'Record by': 'Enregistrer par'
+to: à
+student: élève

@@ -1,0 +1,44 @@
+{% trans_default_domain 'family' %}
+
+{{ form_start(form) }}
+
+    <div class="form-group">
+        {{ form_label(form.father) }}
+        <div class="col-sm-3">
+            {{ form_widget(form.father.name, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.name'|trans }}) }}
+        </div>
+        <div class="col-sm-3">
+            {{ form_widget(form.father.forname, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.forname'|trans}}) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.father.phone, { 'attr' : {'class' : 'form-control'}}) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.mother) }}
+        <div class="col-sm-3">
+            {{ form_widget(form.mother.name, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.name'|trans}}) }}
+        </div>
+        <div class="col-sm-3">
+            {{ form_widget(form.mother.forname, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.forname'|trans}}) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.mother.phone, { 'attr' : {'class' : 'form-control'}}) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.legalGuardian) }}
+        <div class="col-sm-3">
+            {{ form_widget(form.legalGuardian.name, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.name'|trans}}) }}
+        </div>
+        <div class="col-sm-3">
+            {{ form_widget(form.legalGuardian.forname, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.forname'|trans}}) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.legalGuardian.phone, { 'attr' : {'class' : 'form-control'}}) }}
+        </div>
+    </div>
+    {{ form_widget(form) }}
+{{ form_end(form) }}

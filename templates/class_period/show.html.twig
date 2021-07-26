@@ -1,0 +1,78 @@
+{% extends 'class_period/common.html.twig' %}
+
+{% trans_default_domain 'class_period' %}
+
+{% set title = 'title.show'|trans({'%name%' : classperiod}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_class_period_show', {id : classperiod.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+
+    {% include 'class_period/include/show_top.html.twig' %}
+
+    <div>
+        <small class="text-right">
+            <em>{% trans %}Record by{% endtrans %} <strong>{{ classperiod.author.nameComplete }}</strong> {% trans %}to{% endtrans %} <strong>{{ classperiod.record.format('d/m/Y à H:i') }}</strong></em>
+        </small>
+    </div>
+
+    <div id="appeals-courses">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{% trans %}student{% endtrans %}</th>
+                    {% for courseId, appeal in appeals.courses %}
+                        <th class="text-center"><a href="{{ path('app_course_show', { id : courseId }) }}" data-toggle="tooltip" title="{{ appeal.course.text }}">{{ appeal.course.date.format('d/m') }}</a></th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for studentId, student in appeals.students %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_student_show', { id : student.id }) }}" data-toggle="tooltip" data-placement="left" title="count course : {{ student.countCOurse }}">{{ student.nameComplete }}</a>
+                        </td>
+                        {% for courseId, course in appeals.courses %}
+                            <td class="text-center">
+                                {% set appeal = course.students[studentId]|default(null) %}
+
+                                {% if appeal is not empty %}
+                                    <div class="dropdown" data-toggle="tooltip" data-placement="left" title="{{ appeal.status.label|capitalize }}">
+                                            <span class="status-current label label-{{ appeal.status.class }}" data-toggle="dropdown" data-status="{{ appeal.status.id }}">{{ appeal.status.short }}</span>
+                                            <ul class="dropdown-menu status-list" role="menu" aria-labelledby="dLabel">
+                                                {% for key, status in listStatus %}
+                                                    <li>
+                                                        <a class="student-status" data-status="{{ key }}" role="menuitem" href="#">{{ status.label|capitalize }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="ibox-content">
+        <div id="calendar"></div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('inspina/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('inspina/css/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
+    <link href="{{ asset('inspina/css/plugins/fullcalendar/fullcalendar.print.css') }}" rel='stylesheet' media='print'>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bower/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('inspina/js/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('js/course-calendar.js') }}"></script>
+{% endblock %}

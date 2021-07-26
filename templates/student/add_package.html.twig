@@ -1,0 +1,20 @@
+{% extends 'student/common.html.twig' %}
+
+{% trans_default_domain 'student' %}
+
+{% set title = 'title.add_package'|trans %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+    
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "student" %}
+        {% block title 'title.form.add_package'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

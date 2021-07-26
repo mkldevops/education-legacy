@@ -1,0 +1,38 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set breadcrumbs = { ('account_statement.breadcrumb'|trans) : path('app_account_statement_index')}|merge(breadcrumbs|default({})) %}
+
+{% block menu_action %}
+    <li class="{%if 'app_account_statement_index' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_account_statement_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}Account Statement{% endtrans %}</a>
+    </li>
+
+    {% if accountstatement is defined and accountstatement.id %}
+        <li class="{%if 'app_account_statement_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_statement_show', {'id': accountstatement.id}) }}">
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'app_account_statement_edit' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_statement_edit', {'id': accountstatement.id}) }}">
+                <span class="fa fa-edit"></span>
+                {% trans %}Edit{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'app_account_statement_delete' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_statement_delete', {'id': accountstatement.id}) }}">
+                <span class="fa fa-trash"></span>
+                {% trans %}Delete{% endtrans %}
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}

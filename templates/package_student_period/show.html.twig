@@ -1,0 +1,86 @@
+{% extends 'package_student_period/common.html.twig' %}
+
+{% trans_default_domain 'package_period_student' %}
+
+{% set title = 'title.show'|trans({'%package%' : packagestudentperiod}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_package_student_period_show', {id : packagestudentperiod.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-7">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "package_period_student" %}
+
+                {% block title 'title.header.info'|trans({'%name%' : packagestudentperiod}) %}
+                {% block config '' %}
+                {% block content %}
+                    <dl class="dl-horizontal">
+                        <dt>{{ 'show.id'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            {{ packagestudentperiod.id }}
+                        </dd>
+        
+                        <dt>{{ 'show.period'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            <a href='{{ path('app_period_show', { 'id' : packagestudentperiod.period.id } ) }}'>{{ packagestudentperiod.period.name }}</a>
+                        </dd>
+        
+                        <dt>{{ 'show.package'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            <a href='{{ path('app_package_show', { 'id' : packagestudentperiod.package.id } ) }}'>{{ packagestudentperiod.package.name }}</a>
+                        </dd>
+        
+                        <dt>{{ 'show.student'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            <a href='{{ path('app_student_show', { 'id' : packagestudentperiod.student.id } ) }}'>{{ packagestudentperiod.student.nameComplete }}</a>
+                        </dd>
+        
+                        <dt>{{ 'show.date_expire'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            {{ packagestudentperiod.dateExpire|date('d/m/Y') }}
+                        </dd>
+        
+                        <dt>{{ 'show.amount'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            {{ packagestudentperiod.amount }} &euro;
+                        </dd>
+        
+                        <dt>{{ 'show.discount'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            {{ packagestudentperiod.discount }} &euro;
+                        </dd>
+        
+                        <dt>{{ 'show.paid'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            {{ packagestudentperiod.paid }}
+                        </dd>
+        
+                        <dt>{{ 'show.comment'|trans }}</dt>
+                        <dd class="crud-field-value">
+                            {{ packagestudentperiod.comment|raw }}
+                        </dd>
+                    </dl>
+            
+                    <small>
+                        <em>
+                            {{ 'show.createdat'|trans({
+                                '%name%' : packagestudentperiod.author,
+                                '%date%' : packagestudentperiod.createdAt.format('d/m/Y à H:i')
+                            })|raw }}
+                        </em>
+                    </small>
+                {% endblock %}
+            {% endembed %}
+        
+        </div>
+    
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ 'show.title.payment'|trans }}</div>
+                
+                {% include 'package_student_period/payments.html.twig' with { 'payments' : packagestudentperiod.payments } %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'PaymentPackageStudent/common.html.twig' %}
+
+{% set title = 'PaymentPackageStudent'|trans %}
+
+{% block content %}
+    <div class="crud-field">
+        <div class="crud-field-label">{% trans %}Id{% endtrans %}</div>
+        <div class="crud-field-value">
+            {{ paymentpackagestudent.id }}
+        </div>
+    </div>
+    <div class="crud-field">
+        <div class="crud-field-label">{% trans %}Comment{% endtrans %}</div>
+        <div class="crud-field-value">
+            {{ paymentpackagestudent.comment }}
+        </div>
+    </div>
+    <div class="crud-field">
+        <div class="crud-field-label">{% trans %}Record{% endtrans %}</div>
+        <div class="crud-field-value">
+            {{ paymentpackagestudent.record|date('Y-m-d H:i:s') }}
+        </div>
+    </div>
+    <div class="crud-field">
+        <div class="crud-field-label">{% trans %}Status{% endtrans %}</div>
+        <div class="crud-field-value">
+            {{ paymentpackagestudent.status }}
+        </div>
+    </div>
+
+{% endblock %}

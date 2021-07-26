@@ -1,0 +1,29 @@
+{% extends "operation/common.html.twig" %}
+
+{% trans_default_domain 'operation' %}
+
+{% set resources = resources|merge({ operation : true, highchart : true }) %}
+
+{% set title = "title.stats_by_monthly"|trans %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_operation_statsbymonth')}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#numbers" role="tab" data-toggle="tab">{% trans %}Numbers{% endtrans %}</a></li>
+        <li><a href="#charts" role="tab" data-toggle="tab">{% trans %}Charts{% endtrans %}</a></li>
+    </ul>
+    <br />
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="numbers">
+            {% include "operation/includes/stats_by_monthly_numbers.html.twig" %}
+        </div>
+      
+        <div class="tab-pane" id="charts">
+            {% include "operation/includes/stats_by_monthly_chart.html.twig" %}
+        </div>
+    </div>
+{% endblock %}

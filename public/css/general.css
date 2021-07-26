@@ -1,0 +1,20 @@
+/* 
+    Document   : general
+    Created on : 12 nov. 2013, 13:30:12
+    Author     : fahari
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+html,body {
+  min-height: 100%;
+}
+
+legend {
+    margin-bottom: 5px;
+}
+
+table {
+    font-size: 12px;
+}
+

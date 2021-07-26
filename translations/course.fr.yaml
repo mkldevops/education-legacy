@@ -1,0 +1,40 @@
+form.label.teacher: Professeurs
+form.label.class_period: Classe
+form.label.hour_begin: 'Heure de début'
+form.label.hour_end: 'Heure de fin'
+form.label.comment: Commentaire
+form.label.text: Récapitulatif
+data.hour_begin: 'Heure de débuts'
+data.hour_end: 'Heure de fin'
+title.index: 'Liste des cours (%count%)'
+title.new: 'Ajouter un nouveau cours'
+title.form_new: 'Formulaire d''ajoute de nouveau cours'
+title.generate-course: 'Generateur de Cours depuis l''agenda Google'
+text.generate-course: 'Cliquez sur le boutton pour synchronyser les cours avec les cours sur google Agenda'
+'Informations Course': '__Informations Course'
+Date: __Date
+'Class Period': '__Class Period'
+data.teachers: __data.teachers
+Text: __Text
+Comment: __Comment
+Status: __Status
+'Record by': '__Record by'
+course: __course
+title.form_delete: __title.form_delete
+title.delete: __title.delete
+'Course edit': '__Course edit'
+Id: __Id
+Class: __Class
+Hourbegin: __Hourbegin
+Hourend: __Hourend
+Teacher: __Teacher
+Created: __Created
+Edit: __Edit
+Delete: __Delete
+'Course %classperiod% to %date%': '__Course %classperiod% to %date%'
+'Tous status doivent etres renseignées': '__Tous status doivent etres renseignées'
+'Status sauvegardé avec succès': '__Status sauvegardé avec succès'
+'Sauvegarde des status échoué !': '__Sauvegarde des status échoué !'
+'List students': '__List students'
+Name: __Name
+Grade: __Grade

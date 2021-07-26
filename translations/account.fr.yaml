@@ -1,0 +1,84 @@
+account: Compte
+List: Liste
+'New Account': 'Nouveau compte'
+'Amount Credit': 'Montant credité'
+'Amount Debit': 'Montant debité'
+Period: Période
+'Number Operations': 'Nombre d''operations'
+'New Balance': 'Nouveau solde'
+Show: Afficher
+Edit: Modifier
+Delete: Supprimer
+Id: Identifiant
+Name: Nom
+Record: 'Enregistré le'
+'Add operation': 'Ajouter operation'
+'Count operation': 'Nombre d''opérations'
+Create: Ajouter
+'Status:': État
+day(s): jour(s)
+label.index.name: Nom
+label.index.id: Id
+label.index.nb_operations: 'Nb d''opérations'
+label.index.amount: Montant
+label.index.credit: Crédit
+label.index.debit: Débit
+label.index.record: 'Ajouté le'
+label.index.status: Etat
+label.index.principal: Stats
+form.label.structure: Structure
+form.label.name: Nom
+form.label.enableAccountStatement: 'Activer l''option relevé de compte'
+form.label.intervalOperationsAccountStatement: 'Intervalle de recherche d''operations de relevé de compte'
+form.label.school: 'Ecole / Etablissement'
+form.label.isBank: 'Compte de banque'
+form.label.principal: 'Inclure dans les stats'
+form.label.status: Activer
+form.label.bankName: 'Nom de la banque'
+form.label.bankAddress: 'Adresse de la banque'
+form.label.bankIban: IBAN
+form.label.bankBic: BIC
+form.button.update: Modifier
+form.button.create: Ajouter
+form.button.delete: Supprimer
+menu.list_operations: 'Liste des operations'
+menu.add_operations: 'Ajouter une operation'
+menu.new: 'Nouveau compte'
+title.show: 'Détail du compte %name%'
+title.info: Information
+title.new: 'Nouveau compte'
+title.index: 'Liste des comptes'
+title.form_new: 'Formulaire d''ajout de compte'
+title.form_edit: 'Formulaire de modification de compte'
+title.form_delete: 'Formulaire de suppression de compte'
+title.edit: 'Modification du compte "%name%"'
+title.delete: 'Suppression du compte "%name%"'
+title.account_statement: 'Liste des relevés de comptes'
+title.bank: 'Information bancaire'
+title.operations: 'Liste des operations du compte %name%'
+title.form_ofx: 'Formulaire d''upload de fichier OFX'
+title.ofx: 'Uploader fichier OFX'
+account.not_exists: 'Vous ne possedez aucun compte, <a href="%link%">Creer un nouveau compte</a>'
+account.ofx.form.launch: Lancer
+account.ofx.form.file: Fichier
+account.ofx.form.account_transfer: 'Compte reference de tranfert'
+account.ofx.treatment.ok: 'Le fichier à été correctement traité'
+account.ofx.treatment.error: 'Des erreurs sont apparu lors du traitement OFX'
+header.current_amount: Solde
+header.amount: '%amount% €'
+header.nb_operations: 'Nombre d''operations'
+header.operations_without: 'Operations sans relevé'
+show.createdAt: 'Ajouté le %createdAt%'
+show.updateAt: 'Modifié le %updateAt%'
+show.isbank.label: 'Compte bancaire'
+show.isbank.value: Non|Oui
+label.index.edit: __label.index.edit
+label.index.delete: __label.index.delete
+'Count operation:': 'Nombre d''operation:'
+'Is Principal': 'Principale'
+'Interval operations to statement': '__Interval operations to statement'
+Enabled: Activé
+Disabled: Désactivé
+BIC: BIC
+IBAN: IBAN
+Address: Adresse

@@ -1,0 +1,98 @@
+{% set resources = resources|merge({ ckeditor : true, operations : true, uploadfile : true }) %}
+{% trans_default_domain 'student' %}
+{% extends "student/common.html.twig" %}
+
+{% set title = "title.show"|trans({'%name%': student}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_student_show', {id : student.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="row">
+        <div class="student-info col-md-7">
+            <div class="panel panel-{{ student.enable ? 'default' : 'danger' }}">
+                <div class="panel-heading clearfix">
+                    <span>{{ 'show.info.title'|trans }}</span>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_student_edit_status', { id : student.id, enable : student.enable ? false : true, redirect : true}) }}" class="btn btn-default btn-xs pull-right">
+                            {{ student.enable ? 'btn.disable'|trans : 'btn.enable'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="panel-body">
+
+                    <h4 class="col-md-12 text-center alert alert-{{ student.family|default(false) ? 'success' : 'warning' }}" style="margin-bottom: 1rem">
+                        {% if student.family|default(null) is not empty %}
+                            <a href="{{ path('app_family_show', {id : student.family.id }) }}" class="text-primary"><i class="fas fa-users"></i> {{ 'show.family.label'|trans }} : {{ student.family }}</a>
+                        {% else %}
+                            <a href="{{ path('app_student_edit', { id : student.id }) }}" class="text-warning"><i class="fas fa-exclamation-triangle"></i> {{ 'show.family.nothing'|trans }}</a>
+                        {% endif %}
+                    </h4>
+                    <div id="student-image" class="col-md-5">
+
+                        {% include 'document/upload.html.twig' with {
+                            documents : ( student.image is not empty ? [student.image] : [] ),
+                            upload : {
+                                url : path('app_student_setimage', { id : student.id }),
+                                prefix : 'show.student.image'|trans,
+                                name : student.nameComplete,
+                                class : 'col-md-10'
+                            }
+                        } %}
+                    </div>
+
+                    <dl class="dl-horizontal col-md-7">
+                        <dt>{{ 'show.student.name'|trans }}</dt> <dd>{{ student.name }}</dd>
+                        <dt>Prénom</dt> <dd>{{ student.forname }}</dd>
+                        <dt>Sexe</dt> <dd>{{ student.genderCode }}</dd>
+                        <dt>Niveau</dt> <dd>{{ student.grade.name }}</dd>
+                        <dt>Date de naissance</dt> <dd>{{ student.birthday.format('d/m/Y') }} <strong>({{ student.getAge() }} ans)</strong> à {{ student.birthplace }}</dd>
+                        <dt>E-mail</dt> <dd>{{ student.email }}</dd>
+                        <dt>{{ 'show.label.lastschool'|trans }}</dt> <dd>{{ student.lastSchool }}</dd>
+                        <dt>Etat</dt> <dd>{{ student.getStatusLabel() }} <em>{{ student.enable is empty ? student.dateDesactivated.format('d/m/Y à H:i:s') : '' }}</em></dd>
+
+                        <dt>{{ 'show.family.label'|trans }}</dt>
+                        {% if student.family|default(null) is not empty %}
+                            <dt>{{ 'print.family.language.label'|trans }}</dt>
+                            <dd>{{ student.family.language }}</dd>
+                        {% endif %}
+                        <dt>Adresse</dt> <dd>{{ student.address }} <br /> {{ student.zip }} {{ student.city }}</dd>
+                    </dl>
+
+                    <div class="col-md-12">
+                        {{ render(controller(
+                            'App\\Controller\\PersonController::phones',
+                            { 'id': student.person.id }
+                        )) }}
+                    </div>
+                </div>
+
+                <div class="panel-footer text-muted text-right">
+                    <small class="text-muted student-footer text-right clearfix">
+                        <em>Enregistré le <strong>{{ student.createdAt.format('d/m/Y à H:i:s')}}</strong> par <strong>{{ student.author }}</strong></em>
+                    </small>
+                </div>
+            </div>
+
+            {% include "student/includes/show_otherInfo.html.twig" %}
+
+        </div> <!-- End .student-info -->
+
+        <div class="col-md-5">
+            <div class="text-center">
+                {% if student.letAlone %}
+                    <h3 class="text-success"><i class="fa fa-check"></i> {{ 'print.let_alone.choice_true'|trans }}</h3>
+                {% else %}
+                    <h3 class="text-danger"><i class="fa fa-times"></i> {{ 'print.let_alone.choice_false'|trans }}</h3>
+                {% endif %}
+            </div>
+            <!-- List package student -->
+            {% include "student/includes/show_packages.html.twig" %}
+        </div>
+
+    </div> <!-- End row -->
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/phone.js') }}"></script>
+{% endblock %}

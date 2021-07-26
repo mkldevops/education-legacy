@@ -1,0 +1,30 @@
+{% extends 'course/common.html.twig' %}
+
+{% trans_default_domain 'course' %}
+
+{% set title = 'title.generate-course'|trans %}
+
+{% block body %}
+    <div class="panel panel-default">
+        {% include 'search.html.twig' %}
+
+        <div class="panel panel-warning">
+            <div class="panel-heading clearfix">
+                <span>{% block title '' %}</span>
+            </div>
+
+            <div class="panel-body">
+                <p class="alert alert-warning">
+                    {% block message %}
+                        <i class="fa fa-warning"></i>
+                        <span>{{ 'text.generate-course'|trans }}</span>
+                    {% endblock %}
+                </p>
+                {% block form %}
+                    {% include "form.html.twig" %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

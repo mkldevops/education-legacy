@@ -1,0 +1,29 @@
+{% trans_default_domain 'layout' %}
+
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" method="get" action="{{ path('app_admin_seacrh') }}">
+                <div class="form-group">
+                    <input placeholder="{% trans %}top.search{% endtrans %}" class="form-control" name="search" id="top-search" type="text">
+                </div>
+            </form>
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <span class="m-r-sm text-muted welcome-message">{% trans %}top.welcome{% endtrans %}</span>
+            </li>
+
+            {% include '_inspina/includes/header_periods.html.twig' %}
+            {% include '_inspina/includes/header_schools.html.twig' %}
+
+            <li>
+                <a href="{{ path('app_logout') }}">
+                    <i class="fas fa-sign-out-alt"></i> {% trans %}top.logout{% endtrans %}
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+</div>

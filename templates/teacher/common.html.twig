@@ -1,0 +1,57 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set resources = resources|merge({ multiselect : true }) %}
+
+{% set breadcrumbs = { ('teacher.breadcrumb'|trans) : path('app_teacher_index')}|merge(breadcrumbs|default({})) %}
+
+{% block menu_action %}
+    <li class="{% if 'app_teacher_index' == app.request.attributes.get('_route') %}active{% endif %}">
+        <a href="{{ path('app_teacher_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}List{% endtrans %}
+        </a>
+    </li>
+    <li class="{% if 'app_teacher_new' == app.request.attributes.get('_route') %} active{% endif %}">
+        <a href="{{ path('app_teacher_new') }}">
+            <span class="fa fa-plus"></span>
+            {% trans %}teacher.new{% endtrans %}
+        </a>
+    </li>
+
+    {% if teacher is defined and teacher.id %}
+        {% if person is defined and person.id %}
+            <li class="{% if 'person_show' == app.request.attributes.get('_route') %} active{% endif %}">
+                <a href="{{ path('app_person_show', {'id': person.id}) }}">
+                    <i class="fas fa-file-text"></i>
+                    {% trans %}Show Person{% endtrans %}
+                </a>
+            </li>
+        {% endif %}
+        <li class="{% if 'app_teacher_show' == app.request.attributes.get('_route') %} active{% endif %}">
+            <a href="{{ path('app_teacher_show', {'id': teacher.id}) }}">
+                <i class="fas fa-file-text"></i>
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        <li class="{% if 'app_teacher_edit' == app.request.attributes.get('_route') %} active{% endif %}">
+            <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}">
+                <span class="fa fa-edit"></span>
+                {% trans %}Edit{% endtrans %}
+            </a>
+        </li>
+        <li>
+            <a class="{% if 'app_teacher_delete' == app.request.attributes.get('_route') %} active{% endif %}"
+               href="{{ path('app_teacher_delete', {'id': teacher.id}) }}">
+                <span class="fa fa-trash"></span>
+                {% trans %}Delete{% endtrans %}
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,220 @@
+0:
+    ID: 0
+    NAME: À definir
+    DESCRIPTION: En attende de categorisation
+    RECORD: '2017-10-01 00:00:00'
+    STATUS: 1
+    SHORT_NAME: To define
+    CODE: TO_DEFINE
+    TYPE_AMOUNT: positive
+    PARENT: null
+    INTERNAL_TRANSFERT: 0
+1:
+    ID: 1
+    NAME: Paiement Forfait Elève
+    DESCRIPTION: Paiement Forfait Elève inscrit à la madrasse
+    RECORD: '2014-02-03 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Ecole
+    CODE: PPS
+    TYPE_AMOUNT: positive
+    PARENT: null
+    INTERNAL_TRANSFERT: 0
+14:
+    ID: 14
+    NAME: Dons
+    DESCRIPTION: Tout type de dons faite à la structure
+    RECORD: '2015-01-08 11:33:37'
+    STATUS: 1
+    SHORT_NAME: Dons
+    CODE:  null
+    TYPE_AMOUNT: positive
+    PARENT: null
+    INTERNAL_TRANSFERT: 0
+2:
+    ID: 2
+    NAME: Cotisation Mensuelle Membre
+    DESCRIPTION: Cotisation Mensuelle des membres de msadawaheri
+    RECORD: '2014-02-03 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Coti. Membre
+    CODE: null
+    TYPE_AMOUNT: positive
+    PARENT: 14
+    INTERNAL_TRANSFERT: 0
+3:
+    ID: 3
+    NAME: Don ponctuel
+    DESCRIPTION: Don ponctuel
+    RECORD: '2014-01-17 22:34:09'
+    STATUS: 1
+    SHORT_NAME: Don ponctuel
+    CODE:
+    TYPE_AMOUNT: positive
+    PARENT: 14
+    INTERNAL_TRANSFERT: 0
+4:
+    ID: 4
+    NAME: Don récolté lors d'une fete
+    DESCRIPTION: Don récolté lors d'une fete
+    RECORD: '2014-01-17 22:34:09'
+    STATUS: 1
+    SHORT_NAME: Don Fête
+    CODE:
+    TYPE_AMOUNT: positive
+    PARENT:
+    INTERNAL_TRANSFERT: 0
+5:
+    ID: 5
+    NAME: Dépense travaux
+    DESCRIPTION: Dépense pour réaliser des travaux
+    RECORD: '2014-02-20 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Travaux
+    CODE:
+    TYPE_AMOUNT: negative
+    PARENT:
+    INTERNAL_TRANSFERT: 0
+6:
+    ID: 6
+    NAME: Dépense Divers
+    DESCRIPTION: Toutes dépense non catégorisable
+    RECORD: '2014-02-20 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Dépense
+    CODE:
+    TYPE_AMOUNT: negative
+    PARENT: null
+    INTERNAL_TRANSFERT: 0
+7:
+    ID: 7
+    NAME: Charges fixes
+    DESCRIPTION: Loyer / Electricité / Télephonie
+    RECORD: '2014-02-20 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Charges
+    CODE: null
+    TYPE_AMOUNT: negative
+    PARENT: null
+    INTERNAL_TRANSFERT: 0
+8:
+    ID: 8
+    NAME: Vente produits
+    DESCRIPTION: Vente des produits proposé par le chioni uniquement
+    RECORD: '2014-02-20 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Produit
+    CODE: null
+    TYPE_AMOUNT: positif
+    PARENT: null
+    INTERNAL_TRANSFERT: 0
+9:
+    ID: 9
+    NAME: Préparation fêtes
+    DESCRIPTION: Toutes dépense du à la préparation d'une fête organisé par le chioni
+    RECORD: '2014-02-26 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Préparation fêtes
+    CODE:  null
+    TYPE_AMOUNT: negative
+    PARENT:  null
+    INTERNAL_TRANSFERT: 0
+10:
+    ID: 10
+    NAME: Entrée Divers
+    DESCRIPTION: Tout autres catégories d'entrées de fonds
+    RECORD: '2014-03-04 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Entrée Divers
+    CODE:
+    TYPE_AMOUNT: positif
+    PARENT:  null
+    INTERNAL_TRANSFERT: 0
+11:
+    ID: 11
+    NAME: Mouvement Intercomptes
+    DESCRIPTION: 'Correspond au mouvement de somme entre les differents comptes: (Versement, virement, Encaissement chèque...)'
+    RECORD: '2014-04-04 00:00:00'
+    STATUS: 1
+    SHORT_NAME: Mvt Comptes
+    CODE: SPLIT
+    TYPE_AMOUNT: mixte
+    PARENT:  null
+    INTERNAL_TRANSFERT: 0
+12:
+    ID: 12
+    NAME: Frais bancaire
+    DESCRIPTION: Frais bancaire
+    RECORD: '2014-09-12 15:30:20'
+    STATUS: 1
+    SHORT_NAME: Frais bancaire
+    CODE:  null
+    TYPE_AMOUNT: negative
+    PARENT: 6
+    INTERNAL_TRANSFERT: 0
+13:
+    ID: 13
+    NAME: Achat Fourniture
+    DESCRIPTION: Achat de fourniture permettant le bon foctionnement (Papier Toilette, Soupalin, Stylos, Velleda, ....)
+    RECORD: '2014-09-25 08:48:31'
+    STATUS: 1
+    SHORT_NAME: Fourniture
+    CODE:  null
+    TYPE_AMOUNT: negative
+    PARENT: 6
+    INTERNAL_TRANSFERT: 0
+15:
+    ID: 15
+    NAME: Loyer
+    DESCRIPTION: Loyer, charges...
+    RECORD: '2015-01-08 11:35:59'
+    STATUS: 1
+    SHORT_NAME: Loyer
+    CODE:  null
+    TYPE_AMOUNT: negative
+    PARENT: 7
+    INTERNAL_TRANSFERT: 0
+16:
+    ID: 16
+    NAME: Opération annulée
+    DESCRIPTION: 'Tout type d''opération qui a entrainé une annulation de celle-ci Exemple : chèque Impayé, Remboursement après achat...'
+    RECORD: '2015-01-16 12:34:09'
+    STATUS: 1
+    SHORT_NAME: Annulée
+    CODE:  null
+    TYPE_AMOUNT: mixte
+    PARENT:  null
+    INTERNAL_TRANSFERT: 0
+17:
+    ID: 17
+    NAME: Professionnelles
+    DESCRIPTION: Comprend toutes les operations de type professionnelle.
+    RECORD: '2015-05-27 11:06:37'
+    STATUS: 1
+    SHORT_NAME: Pro
+    CODE:  null
+    TYPE_AMOUNT: mixte
+    PARENT: null
+    INTERNAL_TRANSFERT: 1
+18:
+    ID: 18
+    NAME: Salaires
+    DESCRIPTION: Toutes les operations concernant les salaires des employées
+    RECORD: '2015-05-27 11:18:35'
+    STATUS: 1
+    SHORT_NAME: Salaires
+    CODE: null
+    TYPE_AMOUNT: negative
+    PARENT: 17
+    INTERNAL_TRANSFERT: 1
+19:
+    ID: 19
+    NAME: Education
+    DESCRIPTION: Toute transaction en lien avec l'education
+    RECORD: '2015-08-26 21:38:09'
+    STATUS: 1
+    SHORT_NAME: Education
+    CODE: null
+    TYPE_AMOUNT: mixte
+    PARENT: null
+    INTERNAL_TRANSFERT: 1

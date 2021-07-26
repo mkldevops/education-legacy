@@ -1,0 +1,19 @@
+{% trans_default_domain 'layout' %}
+
+{% if searchForm is defined %}
+    <div class="panel-body search-form row">
+        {{ form_start(searchForm, {'attr' : { 'class' : 'col-md-12'}}) }}
+        {{ form_errors(searchForm) }}
+
+            <div class="input-group">
+                <span class="input-group-btn">
+                    {{ form_widget(searchForm.submit, {'attr' : { 'class' : 'btn btn-default' }, 'label' : 'search.btn'|trans  }) }}
+                </span>
+
+                {{ form_errors(searchForm.q) }}
+                {{ form_widget(searchForm.q, {'attr' : { 'class' : 'form-control', 'placeholder' : 'search.placehoder'|trans }}) }}
+            </div><!-- /input-group -->
+
+        {{ form_end(searchForm) }}
+    </div>
+{% endif %}

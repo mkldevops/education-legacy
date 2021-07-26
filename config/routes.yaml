@@ -1,0 +1,7 @@
+app_operation_gender:
+    resource: "routes/app/operation_gender.yaml"
+    prefix:   /operation-gender
+
+app_student_comment:
+    resource: "routes/app/student_comment.yaml"
+    prefix:   /student-comment

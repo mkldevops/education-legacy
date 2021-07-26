@@ -1,0 +1,41 @@
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">{% trans %}Students without class to period {% endtrans %} {{ app.session.get('period').selected.name }}</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <table id="student-without-classperiod" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Forname</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Start date</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Forname</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Start date</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                <button id="btn-add-student" type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>

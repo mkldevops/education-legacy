@@ -1,0 +1,25 @@
+{% trans_default_domain 'student' %}
+
+{% set config = {  list : false, }|merge(config|default({})) %}
+{% set listPhone = '' %}
+
+{% if student.getListPhones is not empty %}
+
+    <a href="tel:{{ student.getListPhones|first }}" class="phone pointer">
+        {{ student.getListPhones|first }}
+    </a>
+    {% if student.getListPhones|length >  1 %}
+        | <a href="tel:{{ student.getListPhones[1] }}" class="phone pointer">
+        {{ student.getListPhones[1] }}
+    </a>
+    {% endif %}
+{% endif %}
+
+<i id="set-phone-{{ student.id }}"
+   data-person="{{ student.person.id }}"
+   data-toggle="modal"
+   data-target="#phone-modal-sm"
+   class="fa fa-ellipsis-h pull-left fa-border"
+   data-placement="bottom"
+   title="{{ 'phone.title.list'|trans }}"></i>
+

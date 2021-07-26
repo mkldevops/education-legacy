@@ -1,0 +1,23 @@
+Name: Nom
+Price: Prix
+Description: Description
+Id: Id
+School: Établissement
+Record: 'Ajouté le'
+name_entity: Forfait
+'Package list': 'Liste des forfaits'
+package.title.new: 'Nouveau Forfait'
+package.title.show: 'Fiche du forfait %name%'
+package.title.edit: 'Modifier le forfait %name%'
+package.title.delete: 'Supprimer le forfait %name%'
+title.show: 'Information du forfait'
+status: Désactivé|Activé
+Update: Modifier
+Delete: Supprimer
+form.status_desactivate: Désactivé
+form.status_activate: Activé
+form.title.new: 'Formulaire d''ajout de forfait'
+form.title.delete: 'Formulaire de suppression de forfait'
+form.title.edit: 'Formulaire de modification du forfait'
+Status: __Status
+Edit: __Edit

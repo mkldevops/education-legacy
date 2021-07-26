@@ -1,0 +1,32 @@
+{% set resources = resources|merge({ ckeditor : true, multiselect : true }) %}
+
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain 'common' %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set breadcrumbs = { ('course.breadcrumb'|trans) : path('app_course_index')}|merge(breadcrumbs|default({})) %}
+
+{% block menu_action %}
+    <li class="{%if 'course' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_course_index') }}">
+            <span class="fa fa-calendar"></span>
+            {% trans %}Calendar{% endtrans %}
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('app_admin_dashboard_index', {'entity' : 'Course'}) }}">
+            <span class="fa fa-list"></span>
+            {% trans %}Easy Admin{% endtrans %}
+        </a>
+    </li>
+    <li class="{%if 'app_course_generate' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_course_generate') }}">
+            <i class="fa fa-repeat" aria-hidden="true"></i>
+            {{ 'course.menu.generate'|trans }}
+        </a>
+    </li>
+{% endblock %}

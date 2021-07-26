@@ -1,0 +1,63 @@
+{% extends 'StudentComment:common.html.twig' %}
+
+{% set title = 'StudentComment list'|trans %}
+
+{% block content -%}
+<div class="panel panel-default">
+    <div class="panel-body search-form">
+        {{ form(searchForm) }}
+    </div>
+    <table class="table table-striped table-hover table-responsive">
+        <thead>
+            <tr>
+                <th>{% trans %}Id{% endtrans %}</th>
+                <th>{% trans %}Title{% endtrans %}</th>
+                <th>{% trans %}Student{% endtrans %}</th>
+                <th>{% trans %}Type{% endtrans %}</th>
+                <th>{% trans %}Author{% endtrans %}</th>
+                <th>{% trans %}Created{% endtrans %}</th>
+                <th>{% trans %}Status{% endtrans %}</th>
+                <th><span class="fa fa-edit" title="{% trans %}Edit{% endtrans %}"></span></th>
+                <th><span class="fa fa-trash" title="{% trans %}Delete{% endtrans %}"></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for studentcomment in studentcommentList %}
+            <tr>
+                <td><a href="{{ path('app_student_comment_show', { 'id': studentcomment.id }) }}">{{ studentcomment.id }}</a></td>
+                <td><a href="{{ path('app_student_comment_show', { 'id': studentcomment.id }) }}">{{ studentcomment.title }}</a></td>
+                <td><a href="{{ path('app_student_comment_show', { 'id': studentcomment.id }) }}">{{ studentcomment.student }}</a></td>
+                <td><a href="{{ path('app_student_comment_show', { 'id': studentcomment.id }) }}" class="badge alert-{{ studentcomment.type }}">{{ studentcomment.type }}</a></td>
+                <td><a href="{{ path('app_student_comment_show', { 'id': studentcomment.id }) }}">{{ studentcomment.author }}</a></td>
+                <td>{% if studentcomment.created %}{{ studentcomment.created|date('d/m/Y H:i:s') }}{% endif %}</td>
+                <td><a href="{{ path('app_student_comment_show', { 'id': studentcomment.id }) }}">{{ studentcomment.status }}</a></td>
+                <td>
+                    <a href="{{ path('app_student_comment_edit', {'id': studentcomment.id}) }}" title="{% trans %}Edit{% endtrans %}">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ path('app_student_comment_delete', {'id': studentcomment.id}) }}" class="crud-entity-delete" title="{% trans %}Delete{% endtrans %}" data-entity="StudentComment" data-id="{{ studentcomment.id }}">
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if pages > 1 %}
+    <div class="panel-footer">
+        {% include 'pagination.html.twig' with {
+            currentFilters: { 'search': search },
+            currentPage: page,
+            paginationPath: "student-comment",
+            lastPage: pages,
+            showAlwaysFirstAndLast: true
+        } only %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock content %}
+

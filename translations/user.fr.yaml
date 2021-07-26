@@ -1,0 +1,58 @@
+index.action.action: Action
+index.action.change_password: 'Changer le mot passe'
+index.action.edit: Modifier
+index.action.show: Afficher
+index.action.delete: Supprimmer
+index.header.id: Id
+index.header.action: Action
+change_password.info: 'Formulaire de changement de mot de passe'
+change_password.title: '%name% - Changer de mot de passe'
+change_password.form.submit: 'Change password'
+change_password.submit: 'Modifier le mot de passe'
+mail.success.change_password: 'Mail changement de mot de passe envoyé.'
+label.username: 'Nom d''utilisateur'
+label.name: Nom
+label.surname: Prénom
+label.email: E-mail
+label.password: 'Mot de passe'
+label.enabled: Activé
+label.roles: 'Roles utilisateur'
+label.groups: 'Groupes utilisateur'
+label.schoolAccessRight: 'Acces écoles'
+value.yes: Oui
+value.no: Non
+Create: Ajouter
+Update: Modifier
+Delete: Supprimer
+user: Utilisateur
+school.not_found: 'Aucune école n''a été trouvé'
+title.show: 'Fiche utilisateur %name%'
+title.edit: 'Modifier utilisateur "%name%"'
+title.new: 'Ajouter un utilisateur'
+title.delete: 'Supprimer l''utilisateur %name%'
+title.index: 'Liste des utilisateurs'
+title.ibox.show: 'Information utilisateur'
+title.ibox.list_school: 'Écoles accessibles'
+title.ibox.roles: 'Liste roles'
+title.ibox.groups: 'Liste groupes'
+title.ibox.more_info: 'Plus d''infos'
+title.ibox.change_passwd: 'Formulaire de modification du mot de passe'
+title.ibox.form_new: 'Formulaire de d''ajout d''utilisateur'
+title.ibox.form_delete: 'Formulaire de suppression d''utilisateur'
+title.ibox.form_edit: 'Formulaire de modification d''utilisateur'
+title.change_password_admin: 'Admin - Change mot de passe'
+security.login.username: 'Nom d''utilisateur'
+security.login.password: 'Mot de passe'
+security.login.remember_me: 'Se souvenir de moi'
+security.login.submit: 'Se connecter'
+security.login.forgot_password: 'Mot de passe oublié ?'
+security.login.welcome: 'Bienvenue sur l''outil d''administration EDUCATION'
+show.name.label: Nom
+show.surname.label: Prénom
+show.email.label: E-mail
+show.createdAt.label: 'Ajouté le'
+show.show_person: 'Afficher la fiche Personnel'
+show.retrieve_person: 'L''utilisateur %user% à été affecté à la personne %person%'
+change_password_admin.title: 'Admin - Change mot de passe %name%'
+change_password_admin.title_form: 'Formulaire de changement de mot de passe'
+Login: __Login

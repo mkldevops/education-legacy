@@ -1,0 +1,153 @@
+upload: téléchargement
+'New student': 'Nouvel élève'
+List: Liste
+Show: Afficher
+Edit: Modifier
+Delete: Supprimer
+student: Élève
+diff.ago.month: 'Il y a un mois|il y %count% Mois'
+title.common: 'Gestion des élèves'
+title.index: 'Liste des élèves'
+title.show: 'Fiche de l''élève %name%'
+title.new: 'Ajouter un nouvel élève'
+title.edit: 'Modifier l''élève %name%'
+title.delete: 'Supprimer l''élève %name%'
+title.payment_list: 'Liste des paiements d''élèves'
+title.form.new: 'Formulaire d''ajout de nouvel l''élève'
+title.form.edit: 'Formulaire de modification de l''élève %name%'
+title.form.delete: 'Formulaire de suppression de l''élève %name%'
+title.phone.delete: 'Supprimmer le numero de téléphone'
+title.phone.edit: 'Modifier le numero de téléphone'
+action.inactive_list: 'Liste des inactifs'
+action.payment_list: 'Liste des paiements'
+btn.disable: Désactiver
+btn.enable: Activer
+btn.activate_student: 'Activer l''élève'
+btn.add_package: 'Ajouter un forfait pour %period%'
+package_paid: 'Forfait à jour !'
+modal.close: Fermer
+modal.payment.title: 'Réaliser un paiement pour le forfait %package% %amount%'
+modal.classperiod.option: 'Classe %classname% ( %length% )'
+modal.classperiod.change: 'Changement de classe'
+modal.classperiod.choose: 'Aucune classe'
+show.student.image: 'Photo de l''élève - '
+show.student.name: Nom
+show.package.nothing: 'Aucun forfait disponible pour %period%'
+show.other_info.title: 'Autres informations'
+show.other_info.family.father.label: Père
+show.other_info.family.mother.label: Mère
+show.other_info.family.address.label: Adresse
+show.other_info.family.legalGuardian.label: 'Responsable légal'
+show.other_info.family.children.label: 'Liste des enfants'
+show.family.label: Famille
+show.family.nothing: 'Affecter à une famille'
+show.label.lastschool: 'Ancienne école'
+show.otherinfos.tab.messages: Messages
+show.otherinfos.tab.class: Classes
+show.package_info.title: 'Forfaits souscrits'
+show.info.title: 'Information sur l''élève'
+label.letAlone: 'Authoriser à partir seul'
+label.lastSchool: 'Ancienne école'
+label.personAuthorized: 'Personnes authorisées à récuperer l''enfant'
+label.remarksHealth: 'Remarques sur la santé de l''enfant'
+new.form.civility: 'Etat civil de l''eleve'
+new.form.authorization: Autorisations
+new.form.residency: Résidence
+form.button.create: 'Ajouter une élève'
+form.button.add_family: 'Nouvelle Famille'
+form.grade.placeholder: 'Choisir une niveau'
+form.gender_grade.label: 'Sexe / Niveau'
+form.family.person.name: Nom
+form.family.person.forname: Prénom
+list.label.phone: Télephone
+list.label.picture: Photo
+list.label.family: Famille
+list.label.id: ID
+list.label.class: Classe
+list.label.integrate_class: Intégrer
+list.action.edit: Modifier
+list.action.view: Voir
+list.action.disable: Désactiver
+list.modal.nothing_class: 'Il n''y a aucune classe disponible'
+phone.add: 'Ajouter un numéro de Téléphone'
+phone.title.list: 'Liste des numéro de télephones'
+print.title: 'FICHE D''INSCRIPTION %period%'
+print.civil.panel-title: 'Etat civil de l''élève'
+print.name.label: Nom
+print.forname.label: Prénom
+print.family.panel-title: 'Renseignements concernant les parents'
+print.family.email.label: 'E-mail de l''un des parents'
+print.family.language.label: 'Langues parlées'
+print.family.father.name.label: Nom
+print.family.father.name.title: Père
+print.family.father.forname.label: Prenom
+print.family.father.phone.label: Tél
+print.family.mother.name.label: Nom
+print.family.mother.name.title: Mère
+print.family.mother.forname.label: Prénom
+print.family.mother.phone.label: Tél
+print.family.legalGuardian.name.title: 'Responsable légal'
+print.family.legalGuardian.name.label: Nom
+print.family.legalGuardian.forname.label: Prénom
+print.family.legalGuardian.phone.label: Tel
+print.family.persons.label: 'Nombre d’enfants inscrits'
+print.family.persons.forname.label: Prénom<hr/>Âge
+print.family.numberChildren.label: 'Nombre d’enfants'
+print.phone.label: Téléphones
+print.authorization.panel-title: Authorisations
+print.authorization.emergency.title: 'En cas d''urgence'
+print.authorization.emergency.text: 'Je soussigné, le responsable légal, de l’enfant ci-dessus désigné, autorise le responsable du Chioni à prendre toute mesure nécessaire en cas d’urgence. Je m’engage à prendre en charge les frais de consultation, transport, pharmacie, etc.'
+print.authorization.eat.text: 'J''autorise mon enfant à participer aux activités gustatives (fruits, jus, chocolats, bonbons, biscuits, lait, eau, etc...) et à participer aux goûters organisés par le chioni.'
+print.authorization.eat.title: Gouter
+print.authorization.engagement.title: 'Engagement Parental'
+print.authorization.engagement.text.1: 'Les parents s''engagent à vérifier que l''enfant vient au cours avec le matériel nécessaire.'
+print.authorization.engagement.text.2: 'Les parents s''engagent à vérifier le cahier de liaison-devoir régulièrement.'
+print.authorization.engagement.text.3: 'Les parents s''engagent à participer aux réunions parents-professeurs organisé par le Chioni.'
+print.authorization.engagement.text.4: 'Les parents s''engagent à vérifier que l''enfant révise ses leçons et réalise les devoirs (Lecture, Récitation par cœurs, et exercices d’ecritures)'
+print.authorization.engagement.text.5: 'Par leur signature, les parents attestent avoir pris connaissance du règlement intérieur et ils s’engagent à le respecter et à le faire respecter.'
+print.birthday.label: 'Né le'
+print.bithplace.label: À
+print.address.label: Adresse
+print.zip.label: 'Code postal'
+print.city.label: Ville
+print.last-school.label: 'Ancienne école'
+print.let_alone.label: 'Autorisé à quitter seul l''établissement'
+print.let_alone.yes: OUI
+print.let_alone.no: NON
+print.let_alone.choice: '{0}Non| {1}Oui'
+print.let_alone.choice_true: 'Autorisé à quitter seul l''établissement'
+print.let_alone.choice_false: 'Non autorisé à quitter seul l''établissement'
+print.person_authorized.label: 'Personnes autorisés à venir chercher vos enfants'
+print.signature.date: 'Fait à %city%, le %date%'
+print.signature.label: 'Signature des parents, précédée de la mention "lu et approuvée"'
+print.remarksHealth.label: 'Remarque sur l''enfant'
+print.register.date: 'Inscrit le <strong>%date%</strong> par <strong><i>%author%</i></strong>'
+print.payment.text1: 'Pour le bon fonctionnement, les frais d''inscription s''élèvent à <strong>%price%  €</strong> pour votre enfant. Ces frais, doivent être réglés au moment de l''inscription. Ceci comprend les ouvrages et les activités pédagogiques proposés par le Chioni.'
+print.payment.text2: 'En cas de paiement partiel ou total des frais d''inscription, la somme est considérée donnée à l''association <strong>%name%</strong>, et aucune somme ne sera remboursée.'
+print.print_rules: 'Imprimer le reglement'
+index.table.header.family.affect: Affecter
+phones.person: Personnel
+phones.father: Père
+phones.mother: Mère
+phones.legalGuardian: Responsable
+payment.title.payments: 'Total Paiements'
+payment.title.percentage: 'Pourcentage Paiements'
+payment.title.reminder: 'Paiments restant'
+payment.title.discount: 'Total des remises'
+payment.tabs.list_student: 'Liste des paiements d''eleve'
+payment.tabs.list_student_without_package: 'Liste des éléves sans forfait'
+payment.tabs.button.addPackage: 'Ajouter forfait %name%'
+Period: __Period
+'Class School': '__Class School'
+Begin: __Begin
+End: __End
+Students: __Students
+'Integrer une classe': '__Integrer une classe'
+'Add comment': '__Add comment'
+'Written by': '__Written by'
+'New message': '__New message'
+Close: __Close
+'Send message': '__Send message'
+Discount: __Discount
+title.form.add_package: __title.form.add_package
+title.add_package: __title.add_package

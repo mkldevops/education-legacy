@@ -1,0 +1,89 @@
+.col-md-4.document {
+    height: auto;
+}
+
+.document .text {
+    overflow: hidden;
+    height : 50px;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.document .text span {
+    -o-text-overflow: ellipsis; /* pour Opera 9 */
+    text-overflow: ellipsis;
+}
+
+.document .image {
+    display: block;
+    height: 150px;
+    overflow: hidden;
+    border-bottom: 1px solid;
+}
+
+/*** file-upload ***/
+.row div.ajax-upload-dragdrop {
+    width : calc !important;
+    text-align: center;
+}
+
+.ajax-file-upload-statusbar {
+    margin: 5px 5px 5px 0;
+    border-radius: 3px;
+    padding: 5px 5px 0 0;
+}
+
+.ajax-file-upload-progress {
+    width:80%;
+    margin: 0px 10px 0px;
+}
+
+.ajax-file-upload-bar {
+    height: 15px;
+}
+
+.ajax-upload-dragdrop, .ajax-file-upload-statusbar {
+    font-size: 0.75em;
+}
+
+.ajax-file-upload-filename {
+    margin: 0px 5px 0px 10px;
+}
+
+.ajax-file-upload-green {
+    padding: 1px 15px;
+    font-size: 11px;
+    order-radius: 3px;
+}
+
+/*** popover ***/
+
+#last-documents-list .items {
+    font-size: 0.8em;
+    max-height: 150px;
+    overflow-y: scroll;
+}
+
+#last-documents-list .img-thumb {
+    display:inline-block;
+    width: 35px;
+    text-align: center;
+}
+
+#last-documents-list .img-thumb img {
+    height: 19px;
+}
+
+#documents .action {
+    position: absolute;
+    right: 0px;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 0 5px;
+    border-radius: 3px;
+}
+
+#documents audio {
+    vertical-align : -75px;
+}

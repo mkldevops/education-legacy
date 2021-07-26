@@ -1,0 +1,21 @@
+{% extends 'type_operation/common.html.twig' %}
+
+{% trans_default_domain 'type_operation' %}
+
+{% set title = 'title.edit'|trans({'%name%' : typeoperation}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_type_operation_edit', {id : typeoperation.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "type_operation" %}
+        {% block title 'title.form.edit'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

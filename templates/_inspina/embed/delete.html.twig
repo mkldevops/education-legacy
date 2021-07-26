@@ -1,0 +1,16 @@
+<div class="panel panel-danger">
+    <div class="panel-heading clearfix">
+        <span>{% block title '' %}</span>
+    </div>
+    <div class="panel-body">
+        <p class="alert alert-danger">
+            {% block message %}
+                <i class="fa fa-warning"></i>
+                <span>{{ 'delete.text'|trans({'%entity%': nameEntity }, 'common') }}</span>
+            {% endblock %}
+        </p>
+        {% block form %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    </div>
+</div>

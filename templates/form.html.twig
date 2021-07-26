@@ -1,0 +1,9 @@
+{% if edit_form is defined %}
+    {% set form = edit_form %}
+{% elseif delete_form is defined %}
+    {% set form = delete_form %}
+{% endif  %}
+
+{{ form_start(form) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}

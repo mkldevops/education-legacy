@@ -1,0 +1,47 @@
+{% extends '_inspina/layout.html.twig' %}
+
+{% trans_default_domain "common" %}
+
+{% block title %}
+    {{ title }} - {{ parent() }}
+{% endblock %}
+
+{% set breadcrumbs = { ('family.breadcrumb'|trans) : path('app_family_index')}|merge(breadcrumbs|default({})) %}
+
+{% block menu_action %}
+
+    <li class="{%if 'family' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_family_index') }}">
+            <span class="fa fa-list"></span>
+            {{ 'family.list'|trans }}
+        </a>
+    </li>
+    <li class="{%if 'family_new' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_family_new') }}">
+            <span class="fa fa-plus"></span>
+            {{ 'family.new'|trans }}
+        </a>
+    </li>
+
+    {% if family is defined and family.id %}
+        <li class="{%if 'family_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_family_show', {'id': family.id}) }}">
+                <i class="fas fa-file-text"></i>
+                {{ 'family.show'|trans }}
+            </a>
+        </li>
+        <li class="{%if 'family_edit' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_family_edit', {'id': family.id}) }}">
+                <span class="fa fa-edit"></span>
+                {{ 'family.edit'|trans }}
+            </a>
+        </li>
+        <li class="{%if 'family_delete' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_family_delete', {'id': family.id}) }}">
+                <span class="fa fa-trash"></span>
+                {{ 'family.delete'|trans }}
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}

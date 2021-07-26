@@ -1,0 +1,17 @@
+<!-- Modal -->
+<div class="modal fade" id="payment-package-form-{{ packageStudentPeriod.id }}" tabindex="-1" role="dialog" aria-labelledby="payment-package-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="payment-package-title">{{ packageStudentPeriod.id }} / Paiement pour le forfait {{ packageStudentPeriod.package.name }} / {{ packageStudentPeriod.amount }} €</h4>
+            </div>
+            <div class="modal-body modal-form">
+                {{ form_start(form) }}
+                {{ form_widget(form.operation) }}
+                {{ form_end(form) }}
+                {#{% include "form.html.twig" %}#}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

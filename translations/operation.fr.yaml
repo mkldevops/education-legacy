@@ -1,0 +1,37 @@
+form.author: Autheur
+form.account: Compte
+form.comment: Commentaire
+form.reference: Reference
+form.type_operation: 'Type d''opération'
+form.date: 'Date d''encaissment'
+form.operation_gender: 'Type transaction'
+form.amount: Montant
+form.name: Titre
+form.button.create: Ajouter
+form.button.edit: Modifier
+form.button.delete: Supprimer
+title.index: 'List des opérations'
+title.show: 'Operation %id% - %name%'
+title.header.show: 'Information sur l''operation'
+title.stats_by_monthly: 'Statistique mensuelle de l''année'
+title.edit: 'Modifier l''operation %name%'
+title.form_edit: 'Formulaire d''edition de l''operation %name%'
+title.new: 'Ajouter une opération'
+title.form.new: 'Formulaire d''ajout d''operation'
+'Validate operation : %id% - %name%': '__Validate operation : %id% - %name%'
+'Validated by %name% <br />Date : %date%': '__Validated by %name% <br />Date : %date%'
+Numbers: __Numbers
+Charts: __Charts
+operation: __operation
+title.form.delete: __title.form.delete
+title.delete: __title.delete
+data.tooltip: __data.tooltip
+'Operation type': '__Operation type'
+Compte: __Compte
+'Date planned': '__Date planned'
+'Account Statement': '__Account Statement'
+'Slip Credit': '__Slip Credit'
+'Slip Debit': '__Slip Debit'
+comment: __comment
+Attachements: __Attachements
+'Operation document -': '__Operation document -'

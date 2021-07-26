@@ -1,0 +1,39 @@
+<!-- Modal -->
+<div class="modal fade" id="modal-operations-available" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">{% trans %}List Operations to {% endtrans %}</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <table id="operations-available" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>{% trans %}Date{% endtrans %}</th>
+                            <th>{% trans %}Id{% endtrans %}</th>
+                            <th>{% trans %}Title{% endtrans %}</th>
+                            <th>{% trans %}Amount{% endtrans %}</th>
+                            <th>{% trans %}Type Operation{% endtrans %}</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <th>{% trans %}Date{% endtrans %}</th>
+                            <th>{% trans %}Id{% endtrans %}</th>
+                            <th>{% trans %}Title{% endtrans %}</th>
+                            <th>{% trans %}Amount{% endtrans %}</th>
+                            <th>{% trans %}Type Operation{% endtrans %}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans %}Close{% endtrans %}</button>
+                <button id="btn-add-operations" disabled type="submit" class="btn btn-primary">{% trans %}Save{% endtrans %}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+ClassSchool: 'Aucune classe génerale disponible, Veuillez le gerez dans <a href="%url%" class="alert-link">"Administration - Gestion des classes > Classe Génerale"</a>'
+ClassPeriod: 'Aucune classe annuelle disponible pour l''année en cours. Veuillez le gerez dans <a href="%url%"  class="alert-link">"Administration - Gestion des classes > Classe annuelle"</a>'
+Package: 'Aucune forfait disponible. Veuillez le gérez dans <a href="%url%" class="alert-link">"Administration - Forfait"</a>'
+Period: 'Aucune période disponible. Veuillez le gérez dans <a href="%url%" class="alert-link">"Administration - Période"</a>'
+School: 'Aucune école disponible. Veuillez le gérez dans <a href="%url%" class="alert-link">"Administration - École"</a>'
+School.define: 'L''école n''a pas encore été configuré, vous pouvez le gérez dans <a href="%url%" class="alert-link">"Administration - École"</a>'

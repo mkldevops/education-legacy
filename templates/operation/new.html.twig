@@ -1,0 +1,23 @@
+{% extends "operation/common.html.twig" %}
+
+{% trans_default_domain 'operation' %}
+
+{% set resources = resources|merge({ ckeditor: true }) %}
+
+{% set title = 'title.new'|trans() %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_operation_new')}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "operation" %}
+        {% block title 'title.form.new'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

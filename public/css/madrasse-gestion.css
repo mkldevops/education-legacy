@@ -1,0 +1,147 @@
+/*
+    Document   : madrasse-gestion
+    Created on : 25 avr. 2013, 13:24:37
+    Author     : fahari
+    Description:
+    Purpose of the stylesheet follows.
+*/
+body {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+audio {
+    width : 100%;
+}
+
+.pointer {
+     cursor: pointer;
+ }
+
+.hour select{
+    width: 49.20%;
+    display: inline-block;
+}
+
+
+img.img-book, img.img-header {
+    margin: 0 5px 0 0;
+    height: 2em;
+}
+
+.required:after {
+  content: " *";
+}
+
+label {
+  display:inline-block;
+  font-weight: bold;
+}
+
+select, input[type="file"] {
+  line-height: 23px;
+}
+
+textarea {
+  width: 100%;
+  height: 5em;
+}
+
+.search-form [type="submit"] {
+    margin: 0 0 2px 0;
+}
+
+/**
+ * Bootstrap tunning
+ */
+table a:not(.btn), .table a:not(.btn) {
+    text-decoration: none;
+}
+
+.text-message {
+  margin: 2% 5%;
+}
+
+.text-indent {
+  margin-left: 3%;
+}
+
+.text-label {
+  display: inline-block;
+  width: 10%;
+}
+
+.alert {
+    padding: 5px 15px;
+    margin: 10px 0 10px;
+}
+
+.nav .form-search {
+  margin: 0.3em 0 0 0;
+}
+
+.btn {
+    margin-bottom: 4px;
+}
+
+.tab-content {
+    margin-top: 20px;
+}
+
+.popover {
+    max-width:400px;
+}
+
+.popover form .btn {
+    vertical-align:-2px;
+}
+
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+    padding: 8px;
+    line-height: 1.42857;
+    vertical-align: top;
+    border-top: 1px solid #DDD;
+}
+
+/**
+ * Datatable tunning
+ */
+.sorting_asc, sorting_desc {
+    color : #563d7c;
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+   padding: 5px;
+}
+
+/**
+ * Jquery UI tunning
+ */
+.ui-datepicker {
+    font-size: 1em;
+}
+
+/**
+ * CRUD Tuning
+ */
+.crud-field {
+    margin-bottom: 10px;
+    clear: both;
+}
+
+.crud-field-label {
+    color: #2f3f4e;
+    font-size: 1.05em;
+    font-weight: 700;
+    line-height: 24px;
+    margin-bottom: 0;
+    width: 30%;
+    float: left;
+    text-align: right;
+    padding-right: 2%;
+}
+
+.crud-field-value {
+    padding: 2px;
+    width: 58%;
+    float: left;
+}

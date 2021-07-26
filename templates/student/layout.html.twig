@@ -1,0 +1,19 @@
+{% extends "layout.html.twig" %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="dropdown">
+            <a id="drop5" role="button" data-toggle="dropdown" href="{{ path('app_homepage') }}">Elèves <b class="caret"></b></a>
+            <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop5">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path("student") }}">Liste actifs</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path("student_desactivated") }}">Liste inactifs</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path("student_new") }}">Ajouter</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path("student_paymentlist") }}">Liste paiement</a></li>
+            </ul>
+    </li>
+{% endblock %}
+    
+ {% block admin_header %}
+    
+ {% endblock %}
+ 

@@ -1,0 +1,92 @@
+ {% extends 'admin/common.html.twig' %}
+
+{% set resources = resources|merge({ datatables : true }) %}
+
+{% trans_default_domain 'admin' %}
+
+{% set title = 'search.title'|trans({ '%search%' : search }, 'common') %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/operation.js') }}"></script>
+    <script src="{{ asset('js/type_operation.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+        {% if result.person|default({}) is not empty %}
+            <div>
+                <div class="panel panel-default">
+                    <h3 class="panel-heading">Search in person</h3>
+                    <div class="panel-body">
+                        <ul class="pa">
+                            {% for person in result.person %}
+                                <li>
+                                    <a href="{{ path('app_person_show', { id : person.id }) }}">{{ person }}</a> ({{ person.age }} ans)
+                                    {% if person.student is not empty %}
+                                        <a href="{{ path('app_student_show', {id : person.student.id }) }}">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if result.operation|default({}) is not empty %}
+            <div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel- pull-left">
+                            <span class="text-dark"><strong>Operations - </strong>Résultat de la recherche "{{ search }}"</span>
+                        </h3>
+                        <div class="panel-title pull-right">
+                            <a href="{{ path('app_operation_new') }}" class="btn btn-default">Ajouter une operation</a>&emsp;
+                        </div>
+                        <div class="panel-title pull-right"><a href="{{ path('app_account_slip_new') }}" class="btn btn-default">Ajouter un transfert</a>&emsp;</div>
+                    </div>
+                        {% include "operation/list-operations.html.twig" with { "operations" : result.operation } %}
+
+                </div>
+            </div>
+        {% endif %}
+
+        {% if result.family|default({}) is not empty %}
+            <div>
+                <div class="panel panel-default">
+                    <h3 class="panel-heading">Search in Family</h3>
+                    <div class="panel-body">
+                        <ul>
+                            {% for family in result.family %}
+                                <li>
+                                    <a href="{{ path('app_family_show', { id : family.id }) }}">{{ family }}</a>
+                                    ({{ family.createdAt.format('d/m/Y H:i')|default('---') }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if result.document|default({}) is not empty %}
+            <div>
+                <div class="panel panel-default">
+                    <h3 class="panel-heading">Search in document</h3>
+                    <div class="panel-body">
+                        <ul>
+                            {% for document in result.document %}
+                                <li>
+                                    <a href="{{ path('app_document_show', { id : document.id }) }}">{{ document.name }}</a>
+                                    ({{ document.createdAt.format('d/m/Y H:i')|default('---') }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+{% endblock %}

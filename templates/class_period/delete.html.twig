@@ -1,0 +1,15 @@
+{% extends 'class_period/common.html.twig' %}
+
+{% trans_default_domain 'class_period' %}
+
+{% set title = 'title.delete'|trans({'%name%': classperiod }) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'class_period' %}
+        {% set nameEntity = 'class_period'|trans %}
+        {% block title 'title.form_delete'|trans %}
+    {% endembed %}
+{% endblock %}

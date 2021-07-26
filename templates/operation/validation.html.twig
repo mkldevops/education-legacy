@@ -1,0 +1,35 @@
+{% trans_default_domain 'validation' %}
+
+<span id="validate-operation-{{ operation.id }}" class="validate-operation text-{{ operation.validate.type|default('') }}" data-id="{{ operation.id }}">
+    {% if operation.validate is not empty %}
+        {% set textValidation = "text"|trans({
+            "%name%" : operation.validate.author.nameComplete,
+            '%date%' : operation.validate.created.format('d/m/Y H:i:s')
+        }) %}
+
+        <span data-toggle="tooltip"
+            data-placement="top"
+            title="{{ textValidation|raw }}"
+            class="far fa-check-square"></span>
+        <span class="text hidden-xs">{{ textValidation|raw }}</span>
+    {% elseif is_granted('ROLE_ACCOUNTANT') %}
+        {% if operation.isPlanned %}
+            <span
+                class="pointer planned far fa-square"
+                data-toggle="popover"
+                title="{% trans %}Date real to operation{% endtrans %}"
+                data-placement="bottom"
+                data-html="true"
+                data-content='<form data-id="{{ operation.id }}" role="form" class="form-inline form-planed-operation" method="post">
+                    <div class="form-group">
+                        <input type="text" placeholder="{% trans %}Date real to operation{% endtrans %}" class="form-control datepicker" name="operation_date" value="" />
+                        <button class="btn btn-primary "><i class="far fa-check-square"></i></button>
+                    </div>
+                </form>'></span>
+        {% else %}
+            <span class="pointer check far fa-square"></span>
+        {% endif %}
+    {% else %}
+        {% trans %}Not validated{% endtrans %}
+    {% endif %}
+</span>

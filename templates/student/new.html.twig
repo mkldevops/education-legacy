@@ -1,0 +1,22 @@
+{% extends 'student/common.html.twig' %}
+
+{% trans_default_domain 'student' %}
+
+{% set title = 'title.new'|trans %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_student_new')}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "student" %}
+        {% block title 'title.form.new'|trans %}
+        {% block config '' %}
+        {% block content %}
+             {% include 'student/includes/form.html.twig' %}
+        {% endblock %}
+    {% endembed %}
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% trans_default_domain 'student' %}
+
+{{ form_start(form) }}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingCivility">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#civility" aria-expanded="true" aria-controls="civility">
+                        {{ 'new.form.civility'|trans }}
+                    </a>
+                </h4>
+            </div>
+            <div id="civility" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingCivility">
+                <div class="panel-body">
+                    {{ form_row(form.person.name) }}
+                    {{ form_row(form.person.forname) }}
+                    {{ form_row(form.person.gender) }}
+                    {{ form_row(form.person.birthday, { attr: { class: 'datepicker' }}) }}
+                    {{ form_row(form.person.birthplace) }}
+                    {{ form_row(form.grade) }}
+                    {{ form_row(form.lastSchool) }}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingResidency">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#residency" aria-expanded="true" aria-controls="residency">
+                        {{ 'new.form.residency'|trans }}
+                    </a>
+                </h4>
+            </div>
+            <div id="residency" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingResidency">
+                <div class="panel-body">
+                    <div class="form-group">
+                        {{ form_label(form.person.family) }}
+                        <div class="col-sm-8">
+                            {{ form_widget(form.person.family, { 'attr' : {'class' : 'form-control'}}) }}
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalFamily" type="button">{{ 'form.button.add_family'|trans }}</button>
+                        </div>
+                    </div>
+                    {{ form_row(form.person.phone) }}
+                    {{ form_row(form.person.email) }}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingAuthorization">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#authorization" aria-expanded="true" aria-controls="authorization">
+                        {{ 'new.form.authorization'|trans }}
+                    </a>
+                </h4>
+            </div>
+            <div id="authorization" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingAuthorization">
+                <div class="panel-body">
+                    {{ form_row(form.letAlone) }}
+                    {{ form_row(form.personAuthorized) }}
+                    {{ form_row(form.remarksHealth) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}
+
+<div id="modalFamily" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="modalFamilyLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modalFamilyLabel">{{ 'form.button.add_family'|trans }}</h4>
+            </div>
+
+            <div class="modal-body">
+                {% include 'family/includes/form.html.twig' with { form : formFamily } %}
+            </div>
+        </div>
+    </div>
+</div>

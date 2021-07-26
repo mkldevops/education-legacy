@@ -1,0 +1,9 @@
+1: { id: 1, name: espèce, code: espece, status: true }
+2: { id: 2, name: chèque, code: cheque, status: true }
+3: { id: 3, name: virement, code: virement, status: true }
+4: { id: 4, name: versement, code: versement, status: true }
+5: { id: 5, name: remise de chèque, code: remise_cheque, status: true }
+6: { id: 6, name: prélèvement, code: prelevement, status: true }
+7: { id: 7, name: Carte Bleu, code: cb, status: true }
+8: { id: 8, name: Chèques non-encaissable, code: cheque_unpayable, status: true }
+9: { id: 9, name: Retrait d'espèce, code: cash_withdrawal, status: true }

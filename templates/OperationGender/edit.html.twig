@@ -1,0 +1,21 @@
+{% extends 'OperationGender:common.html.twig' %}
+
+{% trans_default_domain 'operationgender' %}
+
+{% set title = 'title.edit'|trans({'%name%' : operationgender}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_operation-gender_edit', {id : operationgender.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(edit_form) }}{% endblock errors %}
+
+{% block body %}
+    
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "operationgender" %}
+        {% block title 'title.form.edit'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

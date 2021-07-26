@@ -1,0 +1,45 @@
+{% trans_default_domain 'common' %}
+
+{% set title = "title.account_slip.common"|trans({}, 'account_slip') %}
+
+{% set breadcrumbs = { ('account_slip.breadcrumb'|trans) : path('app_account_slip_index')}|merge(breadcrumbs|default({})) %}
+
+{% extends '_inspina/layout.html.twig' %}
+
+{% block menu_action %}
+
+    <li class="{%if 'accountslip' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_account_slip_index') }}">
+            <span class="fa fa-list"></span>
+            {% trans %}List{% endtrans %}
+        </a>
+    </li>
+    <li class="{%if 'accountslip_new' == app.request.attributes.get('_route')%} active{% endif %}">
+        <a href="{{ path('app_account_slip_new') }}">
+            <span class="fa fa-plus"></span>
+            {% trans %}account_slip.new{% endtrans %}
+        </a>
+    </li>
+
+    {% if accountslip is defined and accountslip.id %}
+        <li class="{%if 'accountslip_show' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_slip_show', {'id': accountslip.id}) }}">
+                <span class="fa fa-file"></span>
+                {% trans %}Show{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'accountslip_edit' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_slip_edit', {'id': accountslip.id}) }}">
+                <span class="fa fa-edit"></span>
+                {% trans %}Edit{% endtrans %}
+            </a>
+        </li>
+        <li class="{%if 'accountslip_delete' == app.request.attributes.get('_route')%} active{% endif %}">
+            <a href="{{ path('app_account_slip_delete', {'id': accountslip.id}) }}">
+                <span class="fa fa-trash"></span>
+                {% trans %}Delete{% endtrans %}
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,12 @@
+1:
+  name: Novice
+  description: Nouvel élèves
+2:
+  name: Débutant
+  description: l'enfant maitrise la reconnaissance des lettre
+3:
+  name: Intermediaire
+  description: l'enfant maitrise la lecture
+4:
+  name: Avancé
+  description: l'enfant lit fluidement

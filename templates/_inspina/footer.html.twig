@@ -1,0 +1,11 @@
+<div class="footer">
+    <div class="pull-right">
+        {{ render_esi(controller('App\\Controller\\AdminController::diskUsage', { route : app.request.attributes.get('_route') })) }}
+    </div>
+    <div>
+        <strong>Copyright</strong> <a href="http://www.techndcall.com">Tech & Call</a> © 2014-{{ "now"|date("Y") }} |
+        version {{ app_version }}
+    </div>
+</div>
+
+

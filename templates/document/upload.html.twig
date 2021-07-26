@@ -1,0 +1,79 @@
+{% trans_default_domain  'document' %}
+
+{% set upload = {
+    multiple: false,
+    urlupload : path('app_document_upload'),
+    url : false,
+    urlUnlink : false,
+    name : null,
+    prefix : null,
+    class : 'col-lg-4 col-md-6 col-sm-6'
+}|merge(upload) %}
+
+{% if upload.url is not empty %}
+    {% if upload.multiple or ( upload.multiple is empty and documents is empty) %}
+        <div class="row">
+            <div class="col-md-2 text-center">
+                <button
+                    class="btn btn-lg btn-primary btn-last-documents"
+                    role="button"
+                    data-toggle="modal"
+                    data-target="#lastDocumentModal">
+                    <i class="fa fa-list"></i>
+                </button>
+
+                <div class="modal fade" id="lastDocumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">{% trans %}Last documents{% endtrans %}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div id='last-documents-list' class='text-center' data-first-result="0">
+                                    <button class='btn btn-danger btn-sm btn-block document-loader'>
+                                        <i class='fa fa-spinner fa-spin'></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+
+            <div class="col-md-10">
+                <div id="fileuploader"
+                {% for key, value in upload %}
+                    data-{{ key }}="{{ value }}"
+                {% endfor %}
+                >{% trans %}Upload{% endtrans %}</div>
+            </div>
+        </div>
+
+        <hr />
+    {% endif %}
+
+
+    <div id="documents" class="row text-center {{ upload.multiple ? 'multiple' : '' }}">
+        {% if documents is not empty %}
+            {% if documents is not iterable %}
+                {% set documents = [documents] %}
+            {% endif %}
+
+            {% for document in documents %}
+                {% include 'document/document.html.twig' %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% else %}
+    <div id="upload-url-empty" class="alert alert-danger">
+        {% trans %}The url to attach document is not defined...{% endtrans %}
+    </div>
+{% endif %}
+
+<div id="document-default" class="hide">
+    {% include 'document/document.html.twig' with { document : {} } %}
+</div>
+

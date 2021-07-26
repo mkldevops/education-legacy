@@ -1,0 +1,10 @@
+{% extends 'StudentComment:common.html.twig' %}
+
+{% set title = 'Delete StudentComment\'s entry'|trans %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+{% block content %}
+<p class="alert alert-danger">{% trans with {'%entity%': 'StudentComment'} %}Please confirm you want to delete this %entity%'s entry.{% endtrans %}</p>
+{{ form(delete_form) }}
+{% endblock %}

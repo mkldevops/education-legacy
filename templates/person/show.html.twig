@@ -1,0 +1,97 @@
+{% extends 'person/common.html.twig' %}
+
+{% trans_default_domain 'person' %}
+
+{% set title = 'title.show'|trans({'%name%' : person}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_person_show', {id : person.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-8">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "person" %}
+                {% block title 'title.header.info'|trans({'%name%' : person }) %}
+                {% block config '' %}
+                {% block content %}
+                    {% include 'person/show_content.html.twig' %}
+                {% endblock %}
+            {% endembed %}
+
+            {% include 'person/show_family.html.twig' %}
+        </div>
+
+        <div class="col-md-4">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "person" %}
+                {% block title 'title.header.status'|trans %}
+                {% block config '' %}
+                {% block content %}
+                    <dl class="dl-horizontal row">
+                        {% if person.author is not empty %}
+                            <dt>{% trans %}Author{% endtrans %}</dt>
+                            <dd><a href="{{ path('app_person_show', {'id': person.author.id }) }}">{{ person.author.nameComplete }}</a></dd>
+                        {% endif %}
+
+                        <dt>{{ 'show.label.enable'|trans }}</dt>
+                        <dd>{{ 'show.value.enable'|trans({count : person.enable})  }}</dd>
+                        <dt>{% trans %}Created{% endtrans %}</dt>
+                        <dd>{{ person.createdAt.format('d/m/Y H:i:s') }}</dd>
+                        <dt>{{ 'show.label.updated_at'|trans }}</dt>
+                        <dd>{{ person.createdAt.format('d/m/Y H:i:s') }}</dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+            {% if member %}
+                <a href="{{ path('app_member_show', { 'id': member.id }) }}" class="btn btn-default btn-block">
+                    <i class="fab fa-shirtsinbulk"></i>
+                    <span>{% trans %}Profil Member{% endtrans %} ({{ member.positionName }})</span>
+                </a>
+            {% else %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_member_new', { 'person' : person.id }) }}" class="btn btn-default btn-block">
+                        <i class="fab fa-shirtsinbulk"></i>
+                        {% trans %}Add Profil Member{% endtrans %}
+                    </a>
+                {% else %}
+                    {% trans %}only an administrator can add the state to member profile{% endtrans %}
+                {% endif %}
+            {% endif %}
+
+            {% if student %}
+                <a href="{{ path('app_student_show', { 'id': student.id }) }}" class="btn btn-default btn-block">
+                    <i class="fa fa-graduation-cap"></i>
+                    <span>{% trans %}Profil student{% endtrans %} ({{ student }})</span>
+                </a>
+            {% else %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="#" class="btn btn-default btn-block">
+                        <i class="fa fa-graduation-cap"></i>
+                        {% trans %}Add Profil Student{% endtrans %}
+                    </a>
+                {% else %}
+                    {% trans %}only an administrator can add the state to student profile{% endtrans %}
+                {% endif %}
+            {% endif %}
+
+            {% if teacher is not empty %}
+                <a href="{{ path('app_teacher_show', { 'id' : teacher.id }) }}" class="btn btn-default btn-block">
+                    <i class="fa fa-graduation-cap"></i>
+                    {% trans %}Profil Teacher{% endtrans %}
+                </a>
+            {% else %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_teacher_new', { 'id' : person.id }) }}" class="btn btn-default btn-block">
+                        <i class="fa fa-graduation-cap"></i>
+                        {% trans %}Add Profil Teacher{% endtrans %}
+                    </a>
+                {% else %}
+                    {% trans %}only an administrator can add the state to teacher profile{% endtrans %}
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

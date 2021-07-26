@@ -1,0 +1,38 @@
+package.not_found: 'vous n''avez pas encore de forfait disponible <a href=''%url%'' class=''btn btn-default btn-xs'' target=''_blank''>ajouter</a>'
+label.id: Id
+label.director: Directeur
+label.name: Nom
+label.address: Adresse
+label.zip: 'Code postal'
+label.city: Ville
+label.comment: Commentaire
+label.status: Activer
+data.author: 'Ajouté par %author% le %created%'
+data.status: Non|Oui
+more.informations: 'Plus d''informations'
+title.informations: Informations
+title.accounts: 'Compte Comptabilite'
+title.school.show: 'Fiche Ecole %name%'
+title.school.common: 'Etablissement / Ecole'
+title.show: 'Ecole %name%'
+title.index: 'Liste des écoles'
+title.header.moreinfo: 'Plus d''information'
+title.header.info: 'Information sur l''école'
+school: __school
+title.form_delete: __title.form_delete
+title.delete: __title.delete
+title.form_new: __title.form_new
+title.new: __title.new
+title.form_edit: __title.form_edit
+title.edit: __title.edit
+Id: __Id
+Name: __Name
+Address: __Address
+Zip: __Zip
+City: __City
+Status: __Status
+Created: __Created
+Edit: __Edit
+Delete: __Delete
+label.author: __label.author
+title.header.account: __title.header.account

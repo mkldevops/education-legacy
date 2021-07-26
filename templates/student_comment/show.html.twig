@@ -1,0 +1,41 @@
+{% extends 'StudentComment:common.html.twig' %}
+
+{% set title = 'Comment to student %name%'|trans({ '%name%' : studentcomment.student }) %}
+
+{% block content %}
+<div class="row">
+    <fieldset class="col-md-8">
+        <legend>Information</legend>
+        <dl class="dl-horizontal">
+            <dt>{%trans%}Id{%endtrans%}</dt>
+            <dd>{{ studentcomment.id }}</dd>
+
+            <dt>{%trans%}Student{%endtrans%}</dt>
+            <dd>{{ studentcomment.student }}</dd>
+
+            <dt>{%trans%}Title{%endtrans%}</dt>
+            <dd>{{ studentcomment.title }}</dd>
+
+            <dt>{%trans%}Text{%endtrans%}</dt>
+            <dd>{{ studentcomment.text|raw }}</dd>
+
+            <dt>{%trans%}Type{%endtrans%}</dt>
+            <dd><span class="badge alert-{{ studentcomment.type }}">{{ studentcomment.type }}</span></dd>
+        </dl>
+    </fieldset>
+
+    <fieldset class="col-md-4">
+        <legend>Details</legend>
+        <dl class="dl-horizontal">
+            <dt>{%trans%}Author{%endtrans%}</dt>
+            <dd>{{ studentcomment.author }}</dd>
+
+            <dt>{%trans%}Created{%endtrans%}</dt>
+            <dd>{{ studentcomment.created|date('d/m/Y H:i:s') }}</dd>
+
+            <dt>{%trans%}Status{%endtrans%}</dt>
+            <dd>{{ studentcomment.status }}</dd>
+        </dl>
+    </fieldset>
+</div>
+{% endblock %}

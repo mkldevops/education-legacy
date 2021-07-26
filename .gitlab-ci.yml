@@ -1,0 +1,55 @@
+image: jakzal/phpqa:php8.0
+
+before_script:
+  - apt-get update -qq
+  - apt-get install -qq git
+  # Setup SSH deploy keys
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - composer install
+
+cache:
+  paths:
+    - vendor
+
+stages:
+  - CodingStandards
+  - UniTests
+
+phpcs:
+  stage: CodingStandards
+  script:
+    - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src
+  allow_failure: false
+
+phpstan:
+  stage: CodingStandards
+  script:
+    - phpstan analyse ./src
+  allow_failure: false
+
+psalm:
+  stage: CodingStandards
+  script:
+    - psalm
+  allow_failure: false
+
+phpunit:
+  stage: UniTests
+  script:
+    - php bin/phpunit
+  allow_failure: false
+
+deploy_prod:
+  type: deploy
+  stage: .post
+  environment:
+    name: prod
+    url: $IP_PROD
+  script:
+    - ssh fardus@$IP_PROD "cd /var/www/$REPO && git checkout master && git pull origin master --rebase && make build-up && exit"
+  only:
+    - master

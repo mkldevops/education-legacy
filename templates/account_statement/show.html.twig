@@ -1,0 +1,227 @@
+{% set resources = resources|merge({ datatables : true, operations : true, uploadfile: true }) %}
+
+{% extends 'account_statement/common.html.twig' %}
+
+{% trans_default_domain 'account_statement' %}
+
+{% set title = 'title.show'|trans({"%id%" : accountstatement.id, '%date%' : accountstatement.month.format('F Y') }) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_statement_show', { id : accountstatement.id })}|merge(breadcrumbs|default({})) %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/operation.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/operation.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/type_operation.js') }}"></script>
+    <script charset="utf-8">
+        $(function() {
+            $('#operations-available').dataTable( {
+                "ajax": Routing.generate('app_account_statement_operation_available', { id : {{ accountstatement.id }} }),
+                "columns": [
+                    { "data": "date" },
+                    { "data": "id" },
+                    { "data": "name" },
+                    { "data": "amount", "sType" : "numeric" },
+                    { "data": "typeOperation" }
+                ]
+            } );
+
+            $('#operations-available tbody, #list-operations tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('selected');
+
+                if($('#operations-available tr.selected').length == 0) {
+                    $('#tn-add-operations').attr('disabled', true);
+                } else {
+                    $('#btn-add-operations').removeAttr('disabled');
+                }
+
+                if($('#list-operations tr.selected').length == 0) {
+                    $('#btn-delete-operations').attr('disabled', true);
+                } else {
+                    $('#btn-delete-operations').removeAttr('disabled');
+                }
+
+                console.log($('#list-operations tr.selected').length);
+            } );
+
+            $('#btn-add-operations').click( function () {
+                var operations = [];
+                $('#operations-available tr.selected').each(function() {
+                    operations.push( parseInt($(this).attr('id')) );
+                });
+
+                $.ajax({
+                    "url" : Routing.generate('app_account_statement_add_operation', { id : {{ accountstatement.id }} }),
+                    type: "POST",
+                    data : { "operations" : operations }
+                }).done(function(response) {
+                  if(response.success) {
+                      location.reload();
+                  }
+                });
+            } );
+
+            $('#btn-delete-operations').click(function() {
+                if(confirm('Are you sure delete this operations selected to account statement ?')) {
+                    var operations = [];
+                    $('#list-operations tr.selected').each(function() {
+                        operations.push( parseInt($(this).data('id')) );
+                    });
+
+                    $.ajax({
+                        "url" : Routing.generate('account_statement_delete_operations'),
+                        type: "POST",
+                        data : { "operations" : operations }
+                    }).done(function(response) {
+                      if(response.success) {
+                          location.reload();
+                      }
+                    });
+                }
+            })
+        } );
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <fieldset class="col-md-8">
+            <legend>{% trans %}Informations{% endtrans %}</legend>
+
+            <dl class="dl-horizontal">
+                <dt>{% trans %}Id{% endtrans %}</dt>
+                <dd>{{ accountstatement.id }}</dd>
+
+                <dt>{% trans %}Title{% endtrans %}</dt>
+                <dd>{{ accountstatement.title }}</dd>
+
+                <dt>{% trans %}Month{% endtrans %}</dt>
+                <dd>{{ accountstatement.month|date('F Y') }}</dd>
+
+                <dt>{% trans %}Account{% endtrans %}</dt>
+                <dd>
+                    <a href="{{ path('app_account_show', { id : accountstatement.account.id }) }}" title="{{ accountstatement.account.name }}">{{ accountstatement.account.name }}</a>
+                </dd>
+
+                <dt>{% trans %}Begin{% endtrans %}</dt>
+                <dd>{{ accountstatement.begin|date('d/m/Y') }}</dd>
+
+                <dt>{% trans %}End{% endtrans %}</dt>
+                <dd>{{ accountstatement.end|date('d/m/Y') }}</dd>
+
+                <dt>{% trans %}New Balance{% endtrans %}</dt>
+                <dd>{{ accountstatement.newBalance|number_format(2, '.', ',') }} €</dd>
+
+                <dt>{% trans %}Amount Credit{% endtrans %}</dt>
+                <dd>{{ accountstatement.amountCredit|number_format(2, '.', ',') }} €</dd>
+
+                <dt>{% trans %}Amount Debit{% endtrans %}</dt>
+                <dd>{{ accountstatement.amountDebit|number_format(2, '.', ',') }} €</dd>
+
+                <dt>{% trans %}Number Operations{% endtrans %}</dt>
+                <dd>{{ accountstatement.numberOperations + 0 }}</dd>
+
+                <dt>{% trans %}label.reference{% endtrans %}</dt>
+                <dd>{{ accountstatement.reference }}</dd>
+            </dl>
+
+            <div class="row alert">
+                <div class="col-md-4 text-center">
+                    <strong>{% trans %}Credit{% endtrans %} : </strong>
+                    <span class='text-muted' title="{% trans %}Sum of the amount credit of operations related to statement{% endtrans %}">{{ statsOperations.sumCredit|number_format(2, '.', '') }}</span>
+                    <strong> / {{ accountstatement.amountCredit|number_format(2, '.', '') }}</strong>
+                    {% if accountstatement.amountCredit == statsOperations.sumCredit  %}
+                        <i class="fas fa-check-square text-success"></i>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <strong>{% trans %}Debit{% endtrans %} : </strong>
+                    <span class="text-muted" title="{% trans %}Sum of the amount debit of operations related to statement{% endtrans %}">{{ statsOperations.sumDebit|number_format(2, '.', '') }}</span>
+                    <strong> / {{ accountstatement.amountDebit|number_format(2, '.', '') }}</strong>
+                    {% if accountstatement.amountDebit == statsOperations.sumDebit  %}
+                        <i class="far fa-check-square text-success"></i>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <strong>{% trans %}Number Operations{% endtrans %} : </strong>
+                    <span class="text-muted">{{ operations|length }}</span>
+                    <strong> / {{ accountstatement.numberOperations + 0 }}</strong>
+                    {% if accountstatement.numberOperations == operations|length  %}
+                        <i class="far fa-check-square text-success"></i>
+                    {% endif %}
+                </div>
+            </div>
+
+            <legend>
+                <span>{% trans %}List Operations{% endtrans %}</span>
+
+                <span class="pull-right pull-right">
+                    <span id="btn-delete-operations" disabled class="btn btn-sm btn-danger">
+                        <i class="fa fa-times"></i> {% trans %}Delete Operations{% endtrans %}
+                    </span>
+                    <span class="btn btn-sm btn-primary"  data-toggle="modal" data-target="#modal-operations-available">
+                        <i class="fa fa-plus"></i> {% trans %}Add Operations{% endtrans %}
+                    </span>
+
+                    <a href="{{ path('app_operation_new', { account : accountstatement.account.id, accountstatement : accountstatement.id, date : accountstatement.begin.format('Y-m-d') } )}}" target="_blank" class="btn btn-sm btn-primary">
+                        <i class="fa fa-plus"></i> {% trans %}New Operations{% endtrans %}
+                    </a>
+                </span>
+            </legend>
+
+            <!-- Modal list operations -->
+            {% include "account_statement/modal_operations.html.twig" %}
+
+            <!-- list operations -->
+            {% include "operation/list-operations.html.twig" with { "operations" : operations, "hiddenFields" : { "account" : true } } %}
+
+        </fieldset>
+
+        <div class="col-md-4">
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "account_statement" %}
+                {% block title 'title.more_info'|trans %}
+                {% block config '' %}
+                {% block content %}
+                    <dl class="dl-horizontal">
+                        <dt>{% trans %}Status{% endtrans %}</dt>
+                        <dd>{{ accountstatement.enable ? 'Enabled' : 'desactivated' }}</dd>
+
+                        <dt>{% trans %}Author{% endtrans %}</dt>
+                        <dd>{{ accountstatement.author ? accountstatement.author.nameComplete : '---' }}</dd>
+
+                        <dt>{% trans %}Created{% endtrans %}</dt>
+                        <dd>{{ accountstatement.createdAt|date('d/m/Y H:i:s') }}</dd>
+                    </dl>
+                {% endblock %}
+            {% endembed %}
+
+            {% embed '_inspina/embed/ibox.html.twig' %}
+                {% trans_default_domain "account_statement" %}
+                {% block title 'title.documents'|trans %}
+                {% block config '' %}
+                {% block content %}
+                    <div>
+
+                        {% include 'document/upload.html.twig' with {
+                            documents : accountstatement.documents,
+                            upload : {
+                                url : path('app_account_statement_add_document', { id : accountstatement.id }),
+                                prefix : 'Account statement - '|trans,
+                                multiple : true
+                            }
+                        } %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+{% endblock %}

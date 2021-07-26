@@ -1,0 +1,46 @@
+{% trans_default_domain 'layout' %}
+
+<li class="dropdown">
+    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+        <i class="fas fa-school"></i> {{ app.session.get('school').selected }}
+    </a>
+    <ul class="dropdown-menu dropdown-alerts">
+        {% for school in app.session.get('school').list|default({}) %}
+            {% if school.id|default(null) %}
+                {% set active = school.id == app.session.get('school').selected.id|default(null) %}
+                <li class="{{ active ? 'active' : null }}">
+                    <a href="{{ path('app_school_switch', { 'id' : school.id }) }}">
+                        <div>
+                            <i class="fas fa-angle-double-right"></i> <strong>{{ school.name }} ({{ school.structure }}) </strong>
+                            <span class="pull-right">
+                                {% if active %}
+                                    <i class="fas fa-check"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                {% if loop.index < app.session.get('school').list|length %}
+                    <li class="divider"></li>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <li>
+                <div class="text-center text-danger link-block">
+                    <span class="muted"><i class="fa fa-warning"></i> {% trans %}Nothing school available{% endtrans %}</span>
+                </div>
+            </li>
+        {% endfor %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <li class="divider"></li>
+            <li>
+                <div class="text-center link-block">
+                    <a href="{{ path('app_admin_dashboard_index', {'entity' : 'School'}) }}">
+                        <strong>{{ 'Manage Schools'|trans }}</strong>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+</li>

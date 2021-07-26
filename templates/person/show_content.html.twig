@@ -1,0 +1,40 @@
+{% trans_default_domain 'person' %}
+
+<dl class="dl-horizontal">
+    <dt>{% trans %}Name{% endtrans %}</dt>
+    <dd>{{ person.name }}</dd>
+
+    <dt>{{ 'show.label.forname'|trans }}</dt>
+    <dd>{{ person.forname }}</dd>
+
+    <dt>{% trans %}Phone{% endtrans %}</dt>
+    <dd>{{ person.phone }}</dd>
+
+    <dt>{% trans %}Email{% endtrans %}</dt>
+    <dd>{{ person.email }}</dd>
+
+    <dt>{% trans %}Birthday{% endtrans %}</dt>
+    <dd>{{ person.birthday|date('d/m/Y') }}</dd>
+
+    <dt>{% trans %}Birthplace{% endtrans %}</dt>
+    <dd>{{ person.birthplace }}</dd>
+
+    <dt>{% trans %}Gender{% endtrans %}</dt>
+    <dd>{{ person.gender }}</dd>
+
+    <dt>{% trans %}Address{% endtrans %}</dt>
+    <dd>{{ person.address }}</dd>
+
+    <dt>{% trans %}Zip{% endtrans %}</dt>
+    <dd>{{ person.zip }}</dd>
+
+    <dt>{% trans %}City{% endtrans %}</dt>
+    <dd>{{ person.city }}</dd>
+
+    <dt>{{ 'show.label.schools'|trans }}</dt>
+    <dd>
+        {% for key, school in person.schools %}
+            <span>{{ school.name }}</span>
+        {% endfor %}
+    </dd>
+</dl>

@@ -1,0 +1,94 @@
+{% extends 'class_school/common.html.twig' %}
+
+{% trans_default_domain 'class_school' %}
+
+{% set title = 'title.show'|trans({'%name%' : classschool}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_class_school_show', {id : classschool.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="col-md-8">
+
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "class_school" %}
+            {% block title 'title.header.info'|trans({'%name%' : classschool}) %}
+            {% block config '' %}
+            {% block content %}
+
+                <dl class="dl-horizontal">
+                    <dt>Tranche d'age</dt>
+                    <dd> de {{ classschool.ageMinimum }} à {{ classschool.ageMaximum }} ans</dd>
+                    <dt>Description</dt>
+                    <dd> {{ classschool.description }}</dd>
+                    <dt>Etat</dt>
+                    <dd> {{ classschool.enable ? 'Actif' : 'Désactivé' }}</dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "class_school" %}
+            {% block title 'title.header.classperiod'|trans({'%name%' : classschool}) %}
+            {% block config '' %}
+            {% block content %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>{% trans %}Period{% endtrans %}</th>
+                        <th>{% trans %}Count Student{% endtrans %}</th>
+                        <th>{% trans %}Count Course{% endtrans %}</th>
+                        <th>{% trans %}Status{% endtrans %}</th>
+                        <th>{% trans %}Record{% endtrans %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for period in periods %}
+                        <tr>
+                            <td data-toogle='tooltip'
+                                title="{{ 'show.begin'|trans({ '%begin%' : period.begin.format('d/m/Y'), '%end%' : period.end.format('d/m/Y')}) }}">{{ period.name }}</td>
+                            {% if classschool.getClassPeriods[period.id] is defined %}
+                                {% set classPeriod = classschool.getClassPeriods[period.id] %}
+                                <td>{{ classPeriod.students|length }}</td>
+                                <td>{{ classPeriod.courses|length }}</td>
+                                <td>{{ classPeriod.enable ? 'Actif' : 'Desactivé' }}</td>
+
+                                <td>Enregistré le <strong>{{ classPeriod.record.format('d/m/y à H:i') }}</strong> par {{classPeriod.author.name }} {{classPeriod.author.surname }}</td>
+                                <td><a href="{{ path('app_class_period_show', {'id' : classPeriod.id }) }}" class="btn btn-sm btn-primary">Voir la classe</a></td>
+                            {% else %}
+                                <td colspan="4" class="text-center">
+                                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                        <a href="{{ path('app_class_period_add', {'classSchool' : classschool.id, 'period' : period.id }) }}"
+                                           class="btn btn-sm btn-default">
+                                            {% trans with { '%period%' : period.name } %}class_period.add{% endtrans %}
+                                        </a>
+                                    {% else %}
+                                        <span>{% trans %}Request a superadmin to add this class{% endtrans %}</span>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+    <div class="col-xs-4">
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "class_school" %}
+            {% block title 'title.header.status'|trans({'%name%' : classschool}) %}
+            {% block config '' %}
+            {% block content %}
+                <dl class="dl-horizontal">
+                    <dt>{% trans %}Author{% endtrans %}</dt>
+                    <dd>{{ classschool.author.nameComplete }}</dd>
+                    <dt>{% trans %}Created{% endtrans %}</dt>
+                    <dd>{{ classschool.createdAt.format('d/m/Y à H:i') }}</dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+{% endblock %}

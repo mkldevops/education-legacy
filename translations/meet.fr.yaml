@@ -1,0 +1,21 @@
+title.new: 'Nouvelle réunion'
+title.edit: 'Modifier la réunion "%name%"'
+title.form.edit: 'Formulaire d''ajout de réunion'
+title.form.new: 'Formulaire d''ajout de réunion'
+title.form.delete: 'Formulaire de supression de réunion'
+title.delete: 'Supprimer le réunion "%name%"'
+title.index: 'Liste des réunions'
+title.show: 'Fiche de la réunion "%name%"'
+title.header.info: 'Information de la réunion "%name%"'
+meet: Réunion
+Id: __Id
+Title: __Title
+Date: __Date
+Subject: __Subject
+Created: __Created
+Status: __Status
+Edit: __Edit
+Delete: __Delete
+title.header.subject: __title.header.subject
+'Subject Meet': '__Subject Meet'
+'Recorded by %name% to %date%': '__Recorded by %name% to %date%'

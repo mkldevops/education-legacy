@@ -1,0 +1,39 @@
+{% extends 'account/common.html.twig' %}
+
+{% trans_default_domain 'account' %}
+
+{% set title = 'title.ofx'|trans %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_account_ofx', { id : account.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(form) }}{% endblock errors %}
+
+{% block body %}
+
+    {% embed '_inspina/embed/ibox.html.twig' %}
+        {% trans_default_domain "account" %}
+        {% block title 'title.form_ofx'|trans %}
+        {% block config '' %}
+        {% block content %}
+            {% include "form.html.twig" %}
+        {% endblock %}
+    {% endembed %}
+
+    {% if logsOperations is not empty %}
+        <h4>{{ logsOperations|length }} operations</h4>
+
+        <table class="table table-condensed" data-toggle="datatable">
+            {% for log in logsOperations %}
+                <tr>
+                    <td><span class="label label-info">{{ log.status }}</span></td>
+                    <td><a href="{{ path('app_operation_show', { id : log.operation.id }) }}">{{ log.operation.id }}</a></td>
+                    <td><a href="{{ path('app_operation_show', { id : log.operation.id }) }}">{{ log.operation }}</a></td>
+                    <td><a href="{{ path('app_operation_show', { id : log.operation.id }) }}">{{ log.operation.operationGender }}</a></td>
+                    <td><a href="{{ path('app_operation_show', { id : log.operation.id }) }}">{{ log.operation.typeOperation }}</a></td>
+                    <td class="text-right">{{ log.operation.amount|round(2) }} €</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,66 @@
+{% extends 'type_operation/common.html.twig' %}
+
+{% trans_default_domain 'type_operation' %}
+
+{% set title = 'title.show'|trans({'%name%' : typeoperation}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_type_operation_show', {id : typeoperation.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="col-md-8">
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "type_operation" %}
+            {% block title 'title.header.info'|trans({'%name%' : typeoperation }) %}
+            {% block config '' %}
+            {% block content %}
+
+                <dl class="dl-horizontal">
+                    <dt>{%trans%}Id{%endtrans%}</dt>
+                    <dd> {{ typeoperation.id }} </dd>
+
+                    <dt>{%trans%}Name{%endtrans%}</dt>
+                    <dd> {{ typeoperation.name }} </dd>
+
+                    <dt>{%trans%}Shortname{%endtrans%}</dt>
+                    <dd> {{ typeoperation.shortName }} </dd>
+
+                    <dt>{%trans%}Code{%endtrans%}</dt>
+                    <dd> {{ typeoperation.code }} </dd>
+
+                    <dt>{%trans%}Is internal transfert{%endtrans%}</dt>
+                    <dd> {{ typeoperation.isInternalTransfert ? 'Yes'|trans : 'No'|trans  }} </dd>
+
+                    <dt>{%trans%}Type Amount{%endtrans%}</dt>
+                    <dd> {{ typeoperation.typeAmount|capitalize }} </dd>
+
+                    <dt>{%trans%}Description{%endtrans%}</dt>
+                    <dd> {{ typeoperation.description|raw }} </dd>
+                </dl>
+
+            {% endblock %}
+        {% endembed %}
+    </div>
+    <div class="col-md-4">
+        {% embed '_inspina/embed/ibox.html.twig' %}
+            {% trans_default_domain "type_operation" %}
+            {% block title 'title.header.moreinfo'|trans({'%name%' : typeoperation }) %}
+            {% block config '' %}
+            {% block content %}
+                <dl class="dl-horizontal">
+                    <dt>{%trans%}Record{%endtrans%}</dt>
+                    <dd> {{ typeoperation.createdAt|date('Y-m-d H:i:s') }} </dd>
+
+                    <dt>{%trans%}Updated{%endtrans%}</dt>
+                    <dd> {{ typeoperation.createdAt|date('Y-m-d H:i:s') }} </dd>
+
+                    <dt>{%trans%}Author{%endtrans%}</dt>
+                    <dd> {{ typeoperation.author }} </dd>
+
+                    <dt>{%trans%}Status{%endtrans%}</dt>
+                    <dd> {{ typeoperation.status }} </dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+{% endblock %}
