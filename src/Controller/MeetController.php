@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Meet;
 use App\Form\MeetType;
 use Doctrine\ORM\NonUniqueResultException;
@@ -17,12 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Meet controller.
- *
- * @Route("/meet")
- */
-class MeetController extends BaseController
+#[Route('/meet')]
+class MeetController extends AbstractBaseController
 {
     /**
      * Lists all Meet entities.

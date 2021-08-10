@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\Operation;
 use App\Exception\AppException;
@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/account")
  * @IsGranted("ROLE_ACCOUNTANT")
  */
-class AccountController extends BaseController
+class AccountController extends AbstractBaseController
 {
     /**
      * @Route("/{page}", name="app_account_index", methods={"GET"})

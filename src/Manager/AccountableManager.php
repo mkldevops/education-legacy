@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace App\Manager;
 
 use App\Entity\Account;
@@ -20,7 +19,8 @@ abstract class AccountableManager
     public function __construct(
         protected EntityManagerInterface $entityManager,
         protected LoggerInterface $logger
-    ) { }
+    ) {
+    }
 
     /**
      * @throws NonUniqueResultException

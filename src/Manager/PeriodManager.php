@@ -17,7 +17,6 @@ use App\Model\PeriodsList;
 use App\Repository\PeriodRepository;
 use App\Services\AbstractFullService;
 use Fardus\Traits\Symfony\Manager\SessionTrait;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class PeriodManager extends AbstractFullService
 {
@@ -73,7 +72,7 @@ class PeriodManager extends AbstractFullService
     /**
      * @throws AppException
      */
-    public function switch(Period $period) : void
+    public function switch(Period $period): void
     {
         $periodList = $this->session->get('period');
         if (!$periodList instanceof PeriodsList) {

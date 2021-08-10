@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Student;
@@ -53,6 +55,7 @@ class StudentCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
             $age = TextareaField::new('age');
+
             return [$id, $person, $age, $letAlone, $grade, $school, $enable, $createdAt];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $lastSchool, $personAuthorized, $remarksHealth, $letAlone, $dateRegistration, $dateDesactivated, $enable, $createdAt, $updatedAt, $deletedAt, $person, $grade, $classPeriods, $packagePeriods, $courses, $comments, $author, $school];

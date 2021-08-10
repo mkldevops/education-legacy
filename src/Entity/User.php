@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use App\Traits\AuthorEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,9 +14,7 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Repository\UserRepository;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -67,7 +66,6 @@ class User implements UserInterface
      */
     protected Collection $schoolAccessRight;
 
-    #[Pure]
     public function __construct()
     {
         $this->schoolAccessRight = new ArrayCollection();
@@ -97,6 +95,7 @@ class User implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
         return $this;
     }
 
@@ -104,12 +103,14 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -121,6 +122,7 @@ class User implements UserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -142,6 +144,7 @@ class User implements UserInterface
     public function setSurname(string $surname): self
     {
         $this->surname = $surname;
+
         return $this;
     }
 
@@ -153,6 +156,7 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -164,6 +168,7 @@ class User implements UserInterface
     public function setLastLogin(\DateTimeInterface $lastLogin): self
     {
         $this->lastLogin = $lastLogin;
+
         return $this;
     }
 
@@ -193,12 +198,14 @@ class User implements UserInterface
     public function addRole(string $role): self
     {
         $this->roles[] = $role;
+
         return $this->setRoles(array_unique($this->roles));
     }
 
     public function setPlainPassword(string $plainPassword): User
     {
         $this->plainPassword = $plainPassword;
+
         return $this;
     }
 

@@ -195,8 +195,6 @@ class Operation
 
     /**
      * Set PaymentPackageStudent.
-     *
-     *
      */
     public function setPaymentPackageStudent(PaymentPackageStudent $paymentPackageStudent = null): self
     {
@@ -263,8 +261,6 @@ class Operation
 
     /**
      * Set validate.
-     *
-     *
      */
     public function setValidate(Validate $validate = null): self
     {
@@ -322,7 +318,6 @@ class Operation
     /**
      * Set accountStatement.
      *
-     *
      * @return Operation
      */
     public function setAccountStatement(AccountStatement $accountStatement = null)
@@ -352,7 +347,6 @@ class Operation
 
     /**
      * Set slipsDebit.
-     *
      *
      * @return Operation
      */

@@ -22,8 +22,7 @@ use Exception;
 
 class ClassPeriodManager extends AbstractFullService
 {
-
-    public function findClassPeriod($name, Period $period, School $school) : ?ClassPeriod
+    public function findClassPeriod($name, Period $period, School $school): ?ClassPeriod
     {
         $classPeriod = null;
 
@@ -80,6 +79,7 @@ class ClassPeriodManager extends AbstractFullService
 
     /**
      * @return array|Course[]
+     *
      * @param \DateTime|\DateTimeImmutable $from
      */
     public function getCourses(ClassPeriod $classPeriod, int $page, int $maxResult, \DateTimeInterface $from): array
@@ -127,10 +127,10 @@ class ClassPeriodManager extends AbstractFullService
     /**
      * Treatment to add List Student.
      *
-     *
      * @return bool
      *
      * @throws ORMException
+     *
      * @internal param array $students
      */
     public function treatListStudent(array $studentsId, Period $period, ClassPeriod $classPeriod = null)

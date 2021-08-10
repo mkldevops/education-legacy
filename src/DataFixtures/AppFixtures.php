@@ -8,7 +8,6 @@ use App\Exception\AppException;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\Yaml\Parser;
 
-
 abstract class AppFixtures extends Fixture
 {
     public const TODEFINE = 'todefine';

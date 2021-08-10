@@ -1,41 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Manager;
 
-use App\Entity\Period;
 use App\Entity\School;
 use App\Exception\AppException;
-use App\Exception\PeriodException;
-use App\Model\PeriodsList;
 use App\Model\SchoolList;
-use App\Repository\PeriodRepository;
 use App\Repository\SchoolRepository;
 use App\Services\AbstractFullService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Fardus\Traits\Symfony\Manager\SessionTrait;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SchoolManager extends AbstractFullService
 {
     use SessionTrait;
-    public ?SchoolRepository $repository = null;
 
-    /**
-     * @required
-     */
-    public function setRepository(?SchoolRepository $repository): void
+    public function __construct(private SchoolRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     public function setSchoolsOnSession(): bool
     {
-        $list = $this->user->getSchoolAccessRight();
+        $list = $this->user?->getSchoolAccessRight() ?? new ArrayCollection();
 
-        if ($this->user->getSchoolAccessRight()->isEmpty()) {
-            /* @var $school School */
+        if ($list->isEmpty()) {
             $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
-
-            if (!empty($school)) {
+            if (null !== $school) {
                 $this->user->addSchoolAccessRight($school);
                 $this->entityManager->persist($this->user);
                 $this->entityManager->flush();
@@ -43,12 +34,14 @@ class SchoolManager extends AbstractFullService
                 $msg = $this->trans('school.not_found', [], 'user');
                 $this->session->getFlashBag()->add('error', $msg);
                 $this->logger->error(__FUNCTION__.' Not found school');
+
                 return false;
             }
         }
 
-        $school = $this->user->getSchoolAccessRight()->current();
+        $school = $list->current();
         $this->session->set('school', new SchoolList($list->toArray(), $school));
+
         return true;
     }
 
@@ -57,14 +50,17 @@ class SchoolManager extends AbstractFullService
      */
     public function getSchool(): ?School
     {
-        if (!$this->session->has('school')) {
+        if (!$this->session->has('school')
+            || !$this->session->get('school') instanceof SchoolList) {
+            dump('ici');
             $this->setSchoolsOnSession();
         }
 
         $schoolList = $this->session->get('school');
-        if(!$schoolList instanceof SchoolList) {
+        if (!$schoolList instanceof SchoolList) {
             throw new AppException('Error on session school list');
         }
+
         return $schoolList->selected;
     }
 
@@ -79,7 +75,7 @@ class SchoolManager extends AbstractFullService
     /**
      * @throws AppException
      */
-    public function switch(School $school) : void
+    public function switch(School $school): void
     {
         $schoolList = $this->session->get('school');
         if (!$schoolList instanceof SchoolList) {

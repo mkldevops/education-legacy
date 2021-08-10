@@ -26,8 +26,7 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-
-    public function getListQueryBuilder(string $search, School $school, Period $period) : QueryBuilder
+    public function getListQueryBuilder(string $search, School $school, Period $period): QueryBuilder
     {
         return $this->createQueryBuilder('e')
                     ->addSelect('t')
@@ -59,7 +58,7 @@ class CourseRepository extends ServiceEntityRepository
     /**
      * @return Course[]
      */
-    public function getCourseOfClass(ClassPeriod $classPeriod, \DateTimeInterface $form, int $maxResult, int $offset) : array
+    public function getCourseOfClass(ClassPeriod $classPeriod, \DateTimeInterface $form, int $maxResult, int $offset): array
     {
         $form->sub(new DateInterval('P1D'));
 
@@ -75,7 +74,7 @@ class CourseRepository extends ServiceEntityRepository
         ;
     }
 
-    public function remove(ClassPeriod $classPeriod) : bool
+    public function remove(ClassPeriod $classPeriod): bool
     {
         return (bool) $this->createQueryBuilder('c')
             ->delete()

@@ -96,26 +96,26 @@ class Structure
         return $this->logo;
     }
 
-    public function setPresident(Member $president) : static
+    public function setPresident(Member $president): static
     {
         $this->president = $president;
 
         return $this;
     }
 
-    public function getPresident() : ?Member
+    public function getPresident(): ?Member
     {
         return $this->president;
     }
 
-    public function setTreasurer(Member $treasurer) : self
+    public function setTreasurer(Member $treasurer): self
     {
         $this->treasurer = $treasurer;
 
         return $this;
     }
 
-    public function getTreasurer() : ?Member
+    public function getTreasurer(): ?Member
     {
         return $this->treasurer;
     }
@@ -132,26 +132,26 @@ class Structure
         return $this;
     }
 
-    public function getSecretary() : ?Member
+    public function getSecretary(): ?Member
     {
         return $this->secretary;
     }
 
-    public function setMembers(Collection $members) : self
+    public function setMembers(Collection $members): self
     {
         $this->members = $members;
 
         return $this;
     }
 
-    public function getMembers() : Collection
+    public function getMembers(): Collection
     {
         return $this->members;
     }
 
-    public function addMember(?Member $member) : static
+    public function addMember(?Member $member): static
     {
-        if ($member !== null && !$this->members->contains($member)) {
+        if (null !== $member && !$this->members->contains($member)) {
             $this->members[] = $member;
         }
 
@@ -163,14 +163,14 @@ class Structure
         $this->members->removeElement($member);
     }
 
-    public function setOptions(array $options) : static
+    public function setOptions(array $options): static
     {
         $this->options = $options;
 
         return $this;
     }
 
-    public function getOptions() : array
+    public function getOptions(): array
     {
         return $this->options;
     }

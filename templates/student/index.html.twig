@@ -35,7 +35,7 @@
                             class="student {{ student.enable ? "" : "danger"}}">
 
                             <td class="text-center">
-                                {% if student.person.family is not empty %}
+                                {% if student.person is not empty and student.person.family is not empty %}
                                     <a href="{{ path('app_family_show', { 'id' : student.person.family.id }) }}">{{ student.person.family.id }}</a>
                                 {% else %}
                                     <a href="{{ path('app_student_edit', { 'id' : student.id }) }}#relations">{{ 'index.table.header.family.affect'|trans }}</a>

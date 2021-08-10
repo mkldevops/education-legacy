@@ -40,7 +40,6 @@ class Document
     /**
      * Mime Type file.
      *
-     *
      * @ORM\Column(type="string", length=30, nullable=true)
      * @Assert\NotBlank
      */
@@ -361,7 +360,6 @@ class Document
     /**
      * Set path.
      *
-     *
      * @return Document
      */
     public function setPath(string $path = null)
@@ -466,10 +464,9 @@ class Document
     /**
      * Add student.
      *
-     *
      * @return Document
      */
-    public function addStudent(\App\Entity\Person $person)
+    public function addStudent(Person $person)
     {
         $this->persons[] = $person;
 

@@ -53,6 +53,7 @@ class FamilyCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
             $nameComplete = TextareaField::new('nameComplete');
+
             return [$id, $nameComplete, $persons, $numberChildren, $zip, $city, $enable, $createdAt, $author];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $language, $numberChildren, $address, $city, $personAuthorized, $personEmergency, $name, $enable, $createdAt, $updatedAt, $deletedAt, $email, $zip, $father, $mother, $legalGuardian, $persons, $author];

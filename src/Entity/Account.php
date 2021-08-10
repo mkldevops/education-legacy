@@ -114,6 +114,7 @@ class Account
     public function setPrincipal(bool $principal): self
     {
         $this->principal = $principal;
+
         return $this;
     }
 
@@ -125,12 +126,14 @@ class Account
     public function addAccountStatement(AccountStatement $accountStatements): self
     {
         $this->accountStatements[] = $accountStatements;
+
         return $this;
     }
 
     public function removeAccountStatement(AccountStatement $accountStatements): self
     {
         $this->accountStatements->removeElement($accountStatements);
+
         return $this;
     }
 
@@ -147,6 +150,7 @@ class Account
     public function setIsBank(bool $isBank): self
     {
         $this->isBank = $isBank;
+
         return $this;
     }
 
@@ -225,6 +229,7 @@ class Account
     public function setStructure(?Structure $structure): self
     {
         $this->structure = $structure;
+
         return $this;
     }
 

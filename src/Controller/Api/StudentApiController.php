@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Student;
 use App\Exception\AppException;
 use App\Form\StudentType;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/student', options: ['expose' => true])]
-class StudentApiController extends BaseController
+class StudentApiController extends AbstractBaseController
 {
     #[Route('/create', name: 'app_api_student_create', methods: ['POST'])]
     public function create(Request $request): Response

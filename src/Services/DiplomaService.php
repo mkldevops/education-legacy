@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Entity\Period;
 use App\Entity\School;
-use App\Entity\Student;
 use App\Repository\PeriodRepository;
 use App\Repository\StudentRepository;
 use Imagick;
@@ -15,9 +14,6 @@ use ImagickException;
 use ImagickPixel;
 use Symfony\Component\HttpFoundation\File\File;
 
-/**
- * Class DiplomaService.
- */
 class DiplomaService extends AbstractFullService
 {
     public const FONT_MILLENIA = 'millenia.ttf';
@@ -32,16 +28,15 @@ class DiplomaService extends AbstractFullService
     public function __construct(
         private PeriodRepository $periodRepository,
         private StudentRepository $studentRepository
-    )
-    {
+    ) {
     }
 
     /**
      * @throws ImagickException
      */
-    public function generate(School $school, Period $period = null, int $limit = 1) : bool
+    public function generate(School $school, Period $period = null, int $limit = 1): bool
     {
-        if ($period === null) {
+        if (null === $period) {
             $period = $this->periodRepository->getCurrentPeriod();
         }
 

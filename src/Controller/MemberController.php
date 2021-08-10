@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Member;
 use App\Form\MemberType;
 use App\Repository\MemberRepository;
@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/member")
  * @IsGranted("ROLE_MEMBER")
  */
-class MemberController extends BaseController
+class MemberController extends AbstractBaseController
 {
     /**
      * @Route("", name="app_member_index", methods={"GET"})

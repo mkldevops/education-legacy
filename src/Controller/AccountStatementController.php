@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
@@ -31,7 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
  */
-class AccountStatementController extends BaseController
+class AccountStatementController extends AbstractBaseController
 {
     /**
      * Lists all AccountStatement entities.

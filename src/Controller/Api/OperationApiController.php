@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Operation;
 use App\Exception\AppException;
 use App\Manager\OperationManager;
@@ -15,11 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class OperationApiController.
- *
  * @Route("/api/operation", options={"expose"="true"})
  */
-class OperationApiController extends BaseController
+class OperationApiController extends AbstractBaseController
 {
     /**
      * @Route(

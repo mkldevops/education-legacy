@@ -46,7 +46,7 @@ class AccountRepository extends ServiceEntityRepository
         return $query;
     }
 
-    public function getAccounts(School $school, bool $principalOnly = true, array $listAccountId = []) : Query
+    public function getAccounts(School $school, bool $principalOnly = true, array $listAccountId = []): Query
     {
         return $this->getAccountsQB($school, $principalOnly, $listAccountId)
             ->leftJoin('acc.operations', 'ope')
@@ -62,7 +62,7 @@ class AccountRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function getStatsAccount(School $school, $principalOnly = true, array $listAccountId = []) : array
+    public function getStatsAccount(School $school, $principalOnly = true, array $listAccountId = []): array
     {
         $result = $this
             ->getAccounts($school, $principalOnly, $listAccountId)

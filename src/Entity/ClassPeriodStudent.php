@@ -8,8 +8,8 @@ use App\Repository\ClassPeriodStudentRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\CommentEntity;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
+use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -18,15 +18,15 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class ClassPeriodStudent
 {
     use AuthorEntityTrait;
-    use CommentEntity;
-    use EnableEntity;
+    use CommentEntityTrait;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     /**
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity=ClassPeriod::class, inversedBy="students")
      */
-    private ClassPeriod $classPeriod;
+    private ?ClassPeriod $classPeriod = null;
 
     /**
      * @ORM\Id
@@ -70,9 +70,10 @@ class ClassPeriodStudent
      * Set begin.
      *
      * @return static
+     *
      * @param \DateTime|\DateTimeImmutable $begin
      */
-    public function setBegin(\DateTimeInterface $begin)
+    public function setBegin(DateTimeInterface $begin)
     {
         $this->begin = $begin;
 

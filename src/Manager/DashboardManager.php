@@ -167,7 +167,7 @@ class DashboardManager extends AbstractFullService
         return $result;
     }
 
-    public static function size(int $int)
+    public static function size(float $int): string
     {
         $si_prefix = ['B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB'];
         $base = 1024;

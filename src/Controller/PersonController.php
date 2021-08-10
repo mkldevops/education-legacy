@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Entity\Member;
 use App\Entity\Person;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/person")
  */
-class PersonController extends BaseController
+class PersonController extends AbstractBaseController
 {
     /**
      * Lists all Person entities.

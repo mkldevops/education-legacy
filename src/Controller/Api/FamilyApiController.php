@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Form\FamilyType;
 use App\Model\ResponseModel;
@@ -17,18 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 
 /**
- * Class OperationApiController.
- *
  * @Route("/api/family", options={"expose"=true})
  */
-class FamilyApiController extends BaseController
+class FamilyApiController extends AbstractBaseController
 {
     /**
      * @Route("/create", name="app_api_family_create", methods={"POST"})
-     *
-     * @return Response
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
@@ -52,9 +48,6 @@ class FamilyApiController extends BaseController
         return ResponseModel::jsonResponse($result);
     }
 
-    /**
-     * Creates a form to create a Grade entity.
-     */
     public function createCreateForm(Family $family): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
@@ -68,8 +61,6 @@ class FamilyApiController extends BaseController
     }
 
     /**
-     * @param $form
-     *
      * @throws Exception
      */
     private function persistData(Family $family, FormInterface $form): void
@@ -95,10 +86,8 @@ class FamilyApiController extends BaseController
 
     /**
      * @Route("/update/{id}", name="app_api_family_update", methods={"POST", "PUT"})
-     *
-     * @return Response
      */
-    public function update(Request $request, Family $family, Serializer $serializer)
+    public function update(Request $request, Family $family, Serializer $serializer): Response
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
@@ -121,9 +110,6 @@ class FamilyApiController extends BaseController
         return ResponseModel::jsonResponse($result);
     }
 
-    /**
-     * Creates a form to create a Grade entity.
-     */
     public function createEditForm(Family $family = null): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [

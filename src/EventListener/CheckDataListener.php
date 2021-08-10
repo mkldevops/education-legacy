@@ -32,13 +32,13 @@ class CheckDataListener
 
     public function onKernelFinishRequest(FinishRequestEvent $event = null): void
     {
-        if ($this->security->getUser() === null) {
+        if (null === $this->security->getUser()) {
             return;
         }
 
         if (!$this->checked) {
             $this->session->getFlashBag()->clear();
-            $packages = $this->entityManager->getRepository(Package::class)->count(['status' => true]);
+            $packages = $this->entityManager->getRepository(Package::class)->count(['enable' => true]);
             if (empty($packages)) {
                 $this->session->getFlashBag()->add('danger', $this->trans('Package'));
             }

@@ -100,15 +100,15 @@ class Family
     public function getNameComplete(): string
     {
         $persons = [];
-        if ($this->mother !== null) {
+        if (null !== $this->mother) {
             $persons[] = (string) $this->mother;
         }
 
-        if ($this->father !== null) {
+        if (null !== $this->father) {
             $persons[] = (string) $this->father;
         }
 
-        if (count($persons) < 2 && $this->legalGuardian !== null) {
+        if (count($persons) < 2 && null !== $this->legalGuardian) {
             $persons[] = (string) $this->getLegalGuardian();
         }
 
@@ -138,7 +138,6 @@ class Family
     {
         return $this->id;
     }
-
 
     public function setFather(Person $father = null): self
     {

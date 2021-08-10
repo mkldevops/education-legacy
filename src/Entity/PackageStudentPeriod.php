@@ -155,7 +155,7 @@ class PackageStudentPeriod
         return self::getStatusPaymentsStatic($this->getPercentPayments(), $this->period);
     }
 
-    public static function getStatusPaymentsStatic($percentPayment, Period $period) : string
+    public static function getStatusPaymentsStatic($percentPayment, Period $period): string
     {
         $status = self::STATUS_PAYMENT_INFO;
 

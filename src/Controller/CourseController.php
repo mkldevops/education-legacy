@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\AppealCourse;
 use App\Entity\Course;
 use App\Exception\InvalidArgumentException;
@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/course")
  * @IsGranted("ROLE_TEACHER")
  */
-class CourseController extends BaseController
+class CourseController extends AbstractBaseController
 {
     /**
      * @Route("", name="app_course_index", methods={"GET"})
@@ -304,7 +304,7 @@ class CourseController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $courseManager->generate($this->getPeriod(), $this->getSchool());
 
-            if ($result !== 0) {
+            if (0 !== $result) {
                 $this->addFlash('success', 'The course is successfully generated : '.$result);
             } else {
                 $logs = $courseManager->getLogger()->getLogs();

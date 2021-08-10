@@ -39,9 +39,9 @@ class ClassPeriodRepository extends ServiceEntityRepository
         $this->classPeriodStudentRepository = $classPeriodStudentRepository;
     }
 
-    public function remove(ClassPeriod $classPeriod) : array
+    public function remove(ClassPeriod $classPeriod): array
     {
-        if(!$classPeriod->getCourses()?->isEmpty()) {
+        if (!$classPeriod->getCourses()?->isEmpty()) {
             $this->courseRepository->remove($classPeriod);
         }
 
@@ -58,7 +58,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function getClassPeriods(Period $period, School $school) : array
+    public function getClassPeriods(Period $period, School $school): array
     {
         return $this->getClassPeriodsQueryBuilder($period, $school)
             ->getQuery()
@@ -78,7 +78,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function getClassPeriodByName(string $name, Period $period, School $school) : ?ClassPeriod
+    public function getClassPeriodByName(string $name, Period $period, School $school): ?ClassPeriod
     {
         return $this->getClassPeriodsQueryBuilder($period, $school)
             ->andWhere('cls.name = :name')
@@ -91,6 +91,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
      * Get Students To ClassPeriod.
      *
      * @return ClassPeriodStudent[]
+     *
      * @throws Exception
      */
     public function getStudentToClassPeriod(ClassPeriod $classPeriod, Student $student = null): array
@@ -108,7 +109,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->setParameter('now', new DateTime())
             ->orderBy('p.name', 'ASC');
 
-        if ($student !== null) {
+        if (null !== $student) {
             $qb->andWhere('cps.student = :student')
                 ->setParameter('student', $student->getId());
         }

@@ -161,7 +161,7 @@ class TransferManager extends AccountableManager
      * @throws AppException
      * @throws NonUniqueResultException
      */
-    public function createByForm() : AccountSlip
+    public function createByForm(): AccountSlip
     {
         $this->create();
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit);
@@ -217,7 +217,6 @@ class TransferManager extends AccountableManager
     /**
      * Set AccountDebit.
      *
-     *
      * @throws Exception
      */
     public function setAccountDebitById(int $accountDebitId): self
@@ -271,7 +270,6 @@ class TransferManager extends AccountableManager
     }
 
     /**
-     *
      * @return Operation|object|null
      *
      * @throws AppException

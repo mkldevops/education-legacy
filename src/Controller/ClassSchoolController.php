@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Period;
@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/class-school")
  */
-class ClassSchoolController extends BaseController
+class ClassSchoolController extends AbstractBaseController
 {
     /**
      * @Route("", name="app_class_school_index", methods={"GET"})
@@ -52,12 +52,13 @@ class ClassSchoolController extends BaseController
 
     /**
      * @Route("/create", name="app_class_school_create", methods={"POST"})
+     *
      * @throws AppException
      */
     public function create(Request $request): Response
     {
         $classSchool = new ClassSchool();
-        $form        = $this->createCreateForm($classSchool);
+        $form = $this->createCreateForm($classSchool);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -229,6 +229,7 @@ class Student
      * Set birthday.
      *
      * @return Student
+     *
      * @param \DateTime|\DateTimeImmutable $birthday
      */
     public function setBirthday(\DateTimeInterface $birthday)
@@ -260,7 +261,7 @@ class Student
         return $this;
     }
 
-    public function getBirthplace() : ?string
+    public function getBirthplace(): ?string
     {
         return $this->person->getBirthplace();
     }
@@ -303,35 +304,38 @@ class Student
         return $this->person;
     }
 
-    public function setPerson(Person $person) : self
+    public function setPerson(Person $person): self
     {
         $this->person = $person;
+
         return $this;
     }
 
-    public function setPostcode(string $postcode) : self
+    public function setPostcode(string $postcode): self
     {
         $this->person->setZip($postcode);
+
         return $this;
     }
 
-    public function getPostcode() : ?string
+    public function getPostcode(): ?string
     {
         return $this->getZip();
     }
 
-    public function setTown(string $town) : self
+    public function setTown(string $town): self
     {
         $this->person->setCity($town);
+
         return $this;
     }
 
-    public function getTown() : ?string
+    public function getTown(): ?string
     {
         return $this->getCity();
     }
 
-    public function getCity() : ?string
+    public function getCity(): ?string
     {
         $city = $this->person->getCity();
 
@@ -386,7 +390,6 @@ class Student
      * Add number phone.
      *
      * @param $key
-     *
      *
      * @throws \Exception
      */
@@ -452,45 +455,48 @@ class Student
         return $this->lastSchool;
     }
 
-    public function setLastSchool(string $lastSchool) : self
+    public function setLastSchool(string $lastSchool): self
     {
         $this->lastSchool = $lastSchool;
+
         return $this;
     }
 
-    public function getGrade() : ?Grade
+    public function getGrade(): ?Grade
     {
         return $this->grade;
     }
 
-    public function setGrade(Grade $grade) : self
+    public function setGrade(Grade $grade): self
     {
         $this->grade = $grade;
+
         return $this;
     }
 
-    public function setImage(Document $image) : self
+    public function setImage(Document $image): self
     {
         $this->person->setImage($image);
+
         return $this;
     }
 
-    public function getImage() : ?Document
+    public function getImage(): ?Document
     {
         return $this->person->getImage();
     }
 
-    public function getStatusLabel() : string
+    public function getStatusLabel(): string
     {
         return $this->enable ? 'Actif' : 'Inactif';
     }
 
-    public function getAge() : ?int
+    public function getAge(): ?int
     {
         return $this->person->getAge();
     }
 
-    public function addClassPeriod(ClassPeriodStudent $classPeriod) :self
+    public function addClassPeriod(ClassPeriodStudent $classPeriod): self
     {
         $this->classPeriods[] = $classPeriod;
 
@@ -587,8 +593,8 @@ class Student
     /**
      * Set dateDesactivated.
      *
-     *
      * @return Student
+     *
      * @param \DateTime|\DateTimeImmutable $dateDesactivated
      */
     public function setDateDesactivated(\DateTimeInterface $dateDesactivated = null)
@@ -641,8 +647,8 @@ class Student
     /**
      * Set dateRegistration.
      *
-     *
      * @return Student
+     *
      * @param \DateTime|\DateTimeImmutable $dateRegistration
      */
     public function setDateRegistration(\DateTimeInterface $dateRegistration = null)
@@ -652,9 +658,10 @@ class Student
         return $this;
     }
 
-    public function addComment(StudentComment $comment) : self
+    public function addComment(StudentComment $comment): self
     {
         $this->comments[] = $comment;
+
         return $this;
     }
 
@@ -694,6 +701,7 @@ class Student
     public function setPersonAuthorized(string $personAuthorized = null)
     {
         $this->personAuthorized = $personAuthorized;
+
         return $this;
     }
 

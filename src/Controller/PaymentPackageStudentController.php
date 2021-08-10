@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\PaymentPackageStudent;
 use App\Entity\TypeOperation;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("payment-package-student")
  */
-class PaymentPackageStudentController extends BaseController
+class PaymentPackageStudentController extends AbstractBaseController
 {
     /**
      * Lists all PaymentPackageStudent entities.

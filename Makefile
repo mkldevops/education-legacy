@@ -125,7 +125,7 @@ init-psalm: ## Init a new psalm config file for a given level, it must be decrem
 	./vendor/bin/psalm --init src/ 3
 
 cs-fix: ## Run php-cs-fixer and fix the code.
-	./vendor/bin/php-cs-fixer fix src/
+	./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes
 
 sonar: sonar-project.properties ## sonar scan src directory
 	sonar-scanner -Dsonar.projectVersion=$(VERSION)

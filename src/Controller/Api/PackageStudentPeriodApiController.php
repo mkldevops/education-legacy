@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Exception\AppException;
 use App\Form\PackageStudentPeriodType;
@@ -15,11 +15,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class OperationApiController.
- *
  * @Route("/api/pachage-student-period", options={"expose"=true})
  */
-class PackageStudentPeriodApiController extends BaseController
+class PackageStudentPeriodApiController extends AbstractBaseController
 {
     /**
      * @Route("/create", name="app_api_package_student_period_create", methods={"POST"})
@@ -33,7 +31,7 @@ class PackageStudentPeriodApiController extends BaseController
             $packageStudentPeriod = (new PackageStudentPeriod())
                 ->setPeriod($this->getEntityPeriod())
                 ->setDateExpire($this->getPeriod()->getEnd());
-                
+
             $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
                 ->handleRequest($request);
 

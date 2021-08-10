@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\AppealCourse;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/class-period')]
 #[IsGranted('ROLE_TEACHER')]
-class ClassPeriodController extends BaseController
+class ClassPeriodController extends AbstractBaseController
 {
     private const NB_LINES_MIN = 30;
     private const NB_DATES = 17;
@@ -184,6 +184,7 @@ class ClassPeriodController extends BaseController
 
     /**
      * @Route("/show/{id}", name="app_class_period_show", methods={"GET"}, options={"expose"=true})
+     *
      * @throws InvalidArgumentException
      * @throws LogicException
      * @throws Exception
@@ -235,6 +236,7 @@ class ClassPeriodController extends BaseController
         if ($editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'The ClassPeriod has been updated.');
+
             return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
         }
 
@@ -255,6 +257,7 @@ class ClassPeriodController extends BaseController
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $repository->remove($classPeriod);
             $this->addFlash('success', 'The ClassPeriod has been deleted.');
+
             return $this->redirect($this->generateUrl('app_class_period_current'));
         }
 
@@ -264,7 +267,7 @@ class ClassPeriodController extends BaseController
         ]);
     }
 
-    private function createDeleteForm(int $id) : FormInterface
+    private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_class_period_delete', ['id' => $id]))
@@ -315,7 +318,7 @@ class ClassPeriodController extends BaseController
     /**
      * @Route("/show-student/{id}", name="app_class_period_show_student", methods={"GET"})
      */
-    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
+    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
     {
         return $this->render('class_period/showStudent.html.twig', [
             'classperiod' => $classPeriod,
@@ -325,9 +328,10 @@ class ClassPeriodController extends BaseController
 
     /**
      * @Route("/print-list-student/{id}", name="app_class_period_print_list_student", methods={"GET"})
+     *
      * @throws NonUniqueResultException
      */
-    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
+    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
     {
         $packageStudents = $manager->getPackageStudent($classPeriod);
         $students = $manager->getStudentsInClassPeriod($classPeriod);
@@ -349,6 +353,7 @@ class ClassPeriodController extends BaseController
      * @ParamConverter("from", options={"format": "Y-m-d"})
      *
      * @throws Exception
+     *
      * @param \DateTime|\DateTimeImmutable $from
      */
     #[Route(

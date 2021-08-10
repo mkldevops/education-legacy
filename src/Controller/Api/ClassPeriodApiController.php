@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\Student;
 use App\Exception\InvalidArgumentException;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/api/class-period")
  */
-class ClassPeriodApiController extends BaseController
+class ClassPeriodApiController extends AbstractBaseController
 {
     /**
      * Get student WithOut Class School to Period selected.
@@ -48,7 +48,6 @@ class ClassPeriodApiController extends BaseController
      *     methods={"POST"},
      *     options={"expose"=true}
      *    )
-     *
      *
      * @return JsonResponse
      */

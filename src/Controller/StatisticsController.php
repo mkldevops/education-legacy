@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\Student;
 use Doctrine\ORM\ORMException;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/statistics")
  */
-class StatisticsController extends BaseController
+class StatisticsController extends AbstractBaseController
 {
     /**
      * Number Students.

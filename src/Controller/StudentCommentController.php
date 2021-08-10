@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\StudentComment;
 use App\Form\StudentCommentType;
 use Doctrine\ORM\NonUniqueResultException;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/student-comment')]
-class StudentCommentController extends BaseController
+class StudentCommentController extends AbstractBaseController
 {
     /**
      * @throws NonUniqueResultException|NoResultException

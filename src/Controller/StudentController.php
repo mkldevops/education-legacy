@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Api\FamilyApiController;
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\Document;
 use App\Entity\Family;
@@ -43,7 +43,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
  * @Route("/student")
  */
-class StudentController extends BaseController
+class StudentController extends AbstractBaseController
 {
     /**
      * @IsGranted("ROLE_TEACHER")
@@ -189,7 +189,7 @@ class StudentController extends BaseController
      * @Route("/new", name="app_student_new", methods={"GET"})
      * @IsGranted("ROLE_TEACHER")
      */
-    public function new() : Response
+    public function new(): Response
     {
         $student = new Student();
         $form = $this->createCreateForm($student);
@@ -277,6 +277,7 @@ class StudentController extends BaseController
 
     /**
      * @Route("/show/{id}", methods={"GET"}, name="app_student_show")
+     *
      * @throws InvalidArgumentException
      * @throws AppException
      */
@@ -386,7 +387,6 @@ class StudentController extends BaseController
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Route("/delete/{id}")
-     *
      *
      * @return RedirectResponse|Response
      */

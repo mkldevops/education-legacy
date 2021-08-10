@@ -99,7 +99,6 @@ class PhoneManager extends AbstractFullService
     /**
      * updatePhone.
      *
-     *
      * @throws \Exception
      */
     public function updatePhone(Person $person, string $value, string $key = null): bool

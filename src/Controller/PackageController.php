@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Package;
 use App\Form\PackageType;
 use Doctrine\ORM\NonUniqueResultException;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/package")
  */
-class PackageController extends BaseController
+class PackageController extends AbstractBaseController
 {
     /**
      * Lists all Package entities.

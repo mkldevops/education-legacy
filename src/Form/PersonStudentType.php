@@ -32,7 +32,7 @@ class PersonStudentType extends PersonSimpleType
                 'label' => 'form.birthday.label',
                 'required' => true,
                 'format' => 'dd/mm/yyyy',
-                'placeholder' => 'form.birthday.placeholder'
+                'placeholder' => 'form.birthday.placeholder',
             ])
             ->add('birthplace', null, [
                 'label' => 'form.birthplace.label',

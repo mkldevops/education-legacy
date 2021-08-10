@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Form\PackageStudentPeriodType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/package-student-period")
  */
-class PackageStudentPeriodController extends BaseController
+class PackageStudentPeriodController extends AbstractBaseController
 {
     /**
      * Lists all PackageStudentPeriod entities.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -14,9 +16,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserController extends EasyAdminController
 {
-    /**
-     * @var UserPasswordEncoderInterface
-     */
     private UserPasswordEncoderInterface $passwordEncoder;
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)

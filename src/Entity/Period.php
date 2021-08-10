@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\PeriodRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
-use App\Repository\PeriodRepository;
 
 /**
  * @ORM\Entity(repositoryClass=PeriodRepository::class)
@@ -69,7 +67,7 @@ class Period
         return $this;
     }
 
-    public function getId(): ? int
+    public function getId(): ?int
     {
         return $this->id;
     }

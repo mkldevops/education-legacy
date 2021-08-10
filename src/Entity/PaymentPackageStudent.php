@@ -63,6 +63,7 @@ class PaymentPackageStudent
     public function setPackageStudentPeriod(PackageStudentPeriod $packageStudentPeriod): self
     {
         $this->packageStudentPeriod = $packageStudentPeriod;
+
         return $this;
     }
 

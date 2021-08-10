@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Manager\DocumentManager;
@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/document")
  */
-class DocumentController extends BaseController
+class DocumentController extends AbstractBaseController
 {
     /**
      * Lists all Document entities.

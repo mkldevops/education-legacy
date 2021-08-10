@@ -93,7 +93,7 @@ class StudentRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
         ;
 
-        if ($limit !== null) {
+        if (null !== $limit) {
             $qb->setMaxResults($limit);
         }
 

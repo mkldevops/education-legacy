@@ -22,6 +22,7 @@ class ValidateOperationManager extends AccountableManager
      * @return Validate
      *
      * @throws \Exception
+     *
      * @param \DateTime|\DateTimeImmutable $operationDate
      */
     public function validate(Operation $operation, \DateTimeInterface $operationDate = null)

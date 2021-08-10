@@ -36,7 +36,6 @@ class OperationType extends AbstractType
     /**
      * @required
      *
-     *
      * @throws InvalidArgumentException
      */
     public function setUser(TokenStorageInterface $tokenStorage): self

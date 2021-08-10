@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Period;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/period')]
-class PeriodController extends BaseController
+class PeriodController extends AbstractBaseController
 {
     #[Route('/switch/{id}', name: 'app_period_switch', methods: ['GET'])]
     public function switch(Request $request, Period $period): RedirectResponse

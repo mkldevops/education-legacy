@@ -18,7 +18,7 @@ class DiplomaGenerateCommand extends Command
     public const OPTION_PERIOD = 'period';
     public const OPTION_LIMIT = 'limit';
     protected static $defaultName = 'app:diploma:generate';
-    
+
     public function __construct(public DiplomaService $service)
     {
         parent::__construct();

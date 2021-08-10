@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/operation")
  * @IsGranted("ROLE_ACCOUNTANT")
  */
-class OperationController extends BaseController
+class OperationController extends AbstractBaseController
 {
     /**
      * @Route("/{page}", name="app_operation_index", methods={"GET"}, requirements={"page":"\d+"})

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\AccountSlip;
 use App\Form\AccountSlipEditType;
 use App\Form\AccountSlipType;
@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/account-slip")
  */
-class AccountSlipController extends BaseController
+class AccountSlipController extends AbstractBaseController
 {
     /**
      * Lists all AccountSlip entities.
