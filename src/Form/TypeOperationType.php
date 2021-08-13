@@ -40,12 +40,11 @@ class TypeOperationType extends AbstractType
                 'label' => 'Type d\'opération parent',
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
-                'query_builder' => fn (TypeOperationRepository $er) => $er->getParents(),
+                'query_builder' => fn(TypeOperationRepository $er) => $er->getParents(),
             ])
             ->add('description')
             ->add('isInternalTransfert')
-            ->add('status')
-        ;
+            ->add('status');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

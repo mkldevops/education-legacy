@@ -33,7 +33,7 @@ class StudentApiController extends AbstractBaseController
             $this->addFlash('success', 'The student has been added.');
             $response->setData(json_encode($student));
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -50,7 +50,7 @@ class StudentApiController extends AbstractBaseController
         }
 
         if (!$form->isValid()) {
-            throw new AppException('The form is not valid '.$form->getErrors());
+            throw new AppException('The form is not valid ' . $form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -78,7 +78,7 @@ class StudentApiController extends AbstractBaseController
             $this->addFlash('success', sprintf('The student %s has been updated.', $student));
             $response->setData(['student' => json_encode($student)]);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])
                 ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }

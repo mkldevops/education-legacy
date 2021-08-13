@@ -23,8 +23,7 @@ class MeetType extends AbstractType
             ->add('date', DatePickerType::class)
             ->add('subject')
             ->add('text', CkeditorType::class)
-            ->add('enable')
-        ;
+            ->add('enable');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

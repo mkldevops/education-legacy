@@ -41,11 +41,9 @@ class Package
         return $this->getNameWithPrice();
     }
 
-    public function setPrice(float $price): static
+    public function getNameWithPrice(): string
     {
-        $this->price = $price;
-
-        return $this;
+        return $this->name . ' ⇒ ' . $this->price . ' €';
     }
 
     public function getPrice(): float
@@ -53,8 +51,10 @@ class Package
         return $this->price;
     }
 
-    public function getNameWithPrice(): string
+    public function setPrice(float $price): static
     {
-        return $this->name.' ⇒ '.$this->price.' €';
+        $this->price = $price;
+
+        return $this;
     }
 }

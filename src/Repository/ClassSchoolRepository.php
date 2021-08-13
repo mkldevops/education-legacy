@@ -33,7 +33,6 @@ class ClassSchoolRepository extends ServiceEntityRepository
     public function getQBAvailables(): QueryBuilder
     {
         return $this->createQueryBuilder('s')
-            ->where('s.enable = 1')
-            ;
+            ->where('s.enable = 1');
     }
 }

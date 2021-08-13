@@ -30,16 +30,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CourseType extends AbstractType
 {
-    protected \Symfony\Component\HttpFoundation\Session\Session|\Symfony\Component\HttpFoundation\Session\SessionInterface $session;
+    protected Session|SessionInterface $session;
 
     /**
      * @var RequestStack
      */
     protected $request;
 
-    protected ?\App\Entity\School $school = null;
+    protected ?School $school = null;
 
-    protected ?\App\Entity\Period $period = null;
+    protected ?Period $period = null;
 
     protected ?int $classPeriodId = null;
 
@@ -130,7 +130,7 @@ class CourseType extends AbstractType
                     'label' => 'form.label.class_period',
                     'class' => ClassPeriod::class,
                     'choice_label' => 'name',
-                    'query_builder' => fn (ClassPeriodRepository $er) => $er->getClassPeriodsQueryBuilder($this->period, $this->school),
+                    'query_builder' => fn(ClassPeriodRepository $er) => $er->getClassPeriodsQueryBuilder($this->period, $this->school),
                 ]);
         }
 
@@ -139,15 +139,14 @@ class CourseType extends AbstractType
                 'label' => 'form.label.teacher',
                 'class' => Teacher::class,
                 'choice_label' => 'name',
-                'query_builder' => fn (TeacherRepository $er) => $er->getAvailablesQB($this->school),
+                'query_builder' => fn(TeacherRepository $er) => $er->getAvailablesQB($this->school),
                 'multiple' => true,
                 'attr' => ['data-role' => 'multiselect'],
             ])
             ->add('hourBegin', TimePickerType::class, ['label' => 'form.label.hour_begin'])
             ->add('hourEnd', TimePickerType::class, ['label' => 'form.label.hour_end'])
             ->add('text', CkeditorType::class, ['label' => 'form.label.text'])
-            ->add('comment', TextareaType::class, ['label' => 'form.label.comment'])
-        ;
+            ->add('comment', TextareaType::class, ['label' => 'form.label.comment']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

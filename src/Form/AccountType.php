@@ -65,8 +65,7 @@ class AccountType extends AbstractType
             ->add('enable', CheckboxType::class, [
                 'required' => false,
                 'label' => 'form.label.status',
-            ])
-        ;
+            ]);
     }
 
     /**

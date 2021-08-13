@@ -17,8 +17,7 @@ class PaymentPackageStudentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options = []): void
     {
         $builder
-                ->add('operation', OperationPaymentStudentType::class, ['label' => false])
-        ;
+            ->add('operation', OperationPaymentStudentType::class, ['label' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

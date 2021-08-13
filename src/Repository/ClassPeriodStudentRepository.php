@@ -9,6 +9,7 @@ use App\Entity\ClassPeriodStudent;
 use App\Entity\Period;
 use App\Entity\Student;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -34,18 +35,18 @@ class ClassPeriodStudentRepository extends ServiceEntityRepository
      *
      * @return ClassPeriodStudent
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getCurrentClassPeriodStudent(Student $student, Period $period): ?ClassPeriodStudent
     {
         return $this->createQueryBuilder('cps')
-             ->join('cps.classPeriod', 'cp')
-             ->where('cps.student = :student')
-             ->andWhere('cp.period = :period')
-             ->setParameter('student', $student)
-             ->setParameter('period', $period)
-             ->getQuery()
-             ->getOneOrNullResult();
+            ->join('cps.classPeriod', 'cp')
+            ->where('cps.student = :student')
+            ->andWhere('cp.period = :period')
+            ->setParameter('student', $student)
+            ->setParameter('period', $period)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function remove(ClassPeriod $classPeriod)

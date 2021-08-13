@@ -87,7 +87,7 @@ class DiplomaController extends AbstractController
      */
     public function delete(Request $request, Diploma $diploma): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$diploma->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $diploma->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($diploma);
             $entityManager->flush();

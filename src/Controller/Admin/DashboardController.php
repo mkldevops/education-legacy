@@ -44,15 +44,15 @@ class DashboardController extends AbstractDashboardController
             ->update(
                 Crud::PAGE_INDEX,
                 Action::DETAIL,
-                fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
+                fn(Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::DELETE,
-                fn (Action $action) => $action->setIcon('fa fa-trash')->setLabel(false)
+                fn(Action $action) => $action->setIcon('fa fa-trash')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::EDIT,
-                fn (Action $action) => $action->setIcon('fa fa-edit')->setLabel(false)
+                fn(Action $action) => $action->setIcon('fa fa-edit')->setLabel(false)
             )
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');

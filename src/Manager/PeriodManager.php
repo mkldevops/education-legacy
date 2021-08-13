@@ -21,6 +21,7 @@ use Fardus\Traits\Symfony\Manager\SessionTrait;
 class PeriodManager extends AbstractFullService
 {
     use SessionTrait;
+
     public ?PeriodRepository $repository = null;
 
     /**

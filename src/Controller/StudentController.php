@@ -165,7 +165,7 @@ class StudentController extends AbstractBaseController
                 $studentManager->addPackage($student, $packageStudentPeriod);
                 $package = $packageStudentPeriod->getPackage()->getName();
 
-                $this->addFlash('success', 'Le forfait '.$package.' pour l\'élèves '.$student->getName().' a bien été enregistré');
+                $this->addFlash('success', 'Le forfait ' . $package . ' pour l\'élèves ' . $student->getName() . ' a bien été enregistré');
             } catch (ORMException $e) {
                 $this->addFlash('danger', $e->getMessage());
             } catch (Exception $e) {
@@ -176,7 +176,7 @@ class StudentController extends AbstractBaseController
                 'id' => $student->getId(),
             ]));
         } elseif ($form->isSubmitted() && !$form->isValid()) {
-            $this->addFlash('warning', 'l\'élève n\'a pas été enregistré <br /> : '.print_r($form->getErrors(), true));
+            $this->addFlash('warning', 'l\'élève n\'a pas été enregistré <br /> : ' . print_r($form->getErrors(), true));
         }
 
         return $this->render('student/add_package.html.twig', [
@@ -370,7 +370,7 @@ class StudentController extends AbstractBaseController
             $manager->flush();
 
             // Reste de la méthode qu'on avait déjà écrit
-            $this->addFlash('info', 'les information de l\'élève '.$student->getName().'  ont été modifié correctement');
+            $this->addFlash('info', 'les information de l\'élève ' . $student->getName() . '  ont été modifié correctement');
 
             return $this->redirect($this->generateUrl('app_student_show', ['id' => $student->getId()]));
         }
@@ -451,14 +451,14 @@ class StudentController extends AbstractBaseController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $student->setEnable((bool) $request->get('enable'));
+        $student->setEnable((bool)$request->get('enable'));
 
         $em->persist($student);
 
         $em->flush();
         $redirectRequest = $request->get('redirect', false);
 
-        if ((bool) $redirectRequest) {
+        if ((bool)$redirectRequest) {
             $this->addFlash('success', 'The status student is updated');
 
             return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
@@ -583,15 +583,15 @@ class StudentController extends AbstractBaseController
      */
     public function print(
         PackageStudentPeriod $packageStudentPeriod,
-        DocumentManager $documentManager,
-        string $format = 'html',
-        bool $force = false
+        DocumentManager      $documentManager,
+        string               $format = 'html',
+        bool                 $force = false
     ): Response {
         $pathFileTmp = implode(DIRECTORY_SEPARATOR, [
             $this->getParameter('kernel.project_dir'),
             'public/uploads/%format%',
             str_replace('/', '_', $packageStudentPeriod->getPeriod()),
-            $packageStudentPeriod->getStudent()->getId().'.%format%',
+            $packageStudentPeriod->getStudent()->getId() . '.%format%',
         ]);
 
         $pathFileHTML = strtr($pathFileTmp, ['%format%' => 'html']);
@@ -601,7 +601,7 @@ class StudentController extends AbstractBaseController
         if (!is_file($pathFileHTML) || $force) {
             $dir = dirname($pathFileHTML);
             if (!file_exists($dir) && !@mkdir($dir, 0775, true)) {
-                throw new AppException('Not create directory : '.$dir);
+                throw new AppException('Not create directory : ' . $dir);
             }
 
             $html = $this->renderView('student/print.html.twig', [
@@ -610,7 +610,7 @@ class StudentController extends AbstractBaseController
 
             $put = file_put_contents($pathFileHTML, $html);
             if (empty($put)) {
-                throw new AppException('Not put the content HTML '.$pathFileHTML);
+                throw new AppException('Not put the content HTML ' . $pathFileHTML);
             }
         } else {
             $html = file_get_contents($pathFileHTML);

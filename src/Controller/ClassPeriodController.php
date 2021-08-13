@@ -307,9 +307,9 @@ class ClassPeriodController extends AbstractBaseController
             $em->persist($classPeriod);
             $em->flush();
 
-            $this->addFlash('info', 'La Classe '.$classSchool->getName().' a bien ajouté à la periode '.$period->getName());
+            $this->addFlash('info', 'La Classe ' . $classSchool->getName() . ' a bien ajouté à la periode ' . $period->getName());
         } else {
-            $this->addFlash('error', 'La Classe '.$classSchool->getName().' n\'a pas été ajouté à la periode '.$period->getName().', celle-ci esxiste ');
+            $this->addFlash('error', 'La Classe ' . $classSchool->getName() . ' n\'a pas été ajouté à la periode ' . $period->getName() . ', celle-ci esxiste ');
         }
 
         return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
@@ -352,9 +352,9 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * @ParamConverter("from", options={"format": "Y-m-d"})
      *
+     * @param \DateTime|\DateTimeImmutable $from
      * @throws Exception
      *
-     * @param \DateTime|\DateTimeImmutable $from
      */
     #[Route(
         '/print-appeal-student/{id}/{page}/{from}',
@@ -362,10 +362,10 @@ class ClassPeriodController extends AbstractBaseController
         methods: ['GET']
     )]
     public function printAppealStudent(
-        Request $request,
-        ClassPeriod $classPeriod,
+        Request            $request,
+        ClassPeriod        $classPeriod,
         ClassPeriodManager $manager,
-        int $page = 1,
+        int                $page = 1,
         \DateTimeInterface $from = null
     ): Response {
         $from = $from ?? new DateTime();

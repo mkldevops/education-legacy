@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\CourseRepository;
 use App\Traits\AuthorEntityTrait;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -70,7 +71,7 @@ class Course
     {
         $this->setStudents(new ArrayCollection())
             ->setTeachers(new ArrayCollection())
-            ->setDate(new \DateTime());
+            ->setDate(new DateTime());
     }
 
     public function __toString(): string
@@ -162,7 +163,7 @@ class Course
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ').$teacher;
+            $str .= (empty($str) ? '' : ', ') . $teacher;
         }
 
         return $str;

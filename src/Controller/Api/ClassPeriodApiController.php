@@ -69,7 +69,7 @@ class ClassPeriodApiController extends AbstractBaseController
             }
         } catch (Exception $e) {
             $response->errors[] = $e->getMessage();
-            $this->getLogger()->error(__METHOD__.' '.$e->getMessage(), $e->getTrace());
+            $this->getLogger()->error(__METHOD__ . ' ' . $e->getMessage(), $e->getTrace());
         }
 
         return new JsonResponse($response, empty($response->errors) ? 200 : 500);

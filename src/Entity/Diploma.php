@@ -5,16 +5,21 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\DiplomaRepository;
-use App\Traits\BaseEntityTrait;
+use App\Traits\AuthorEntityTrait;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
+use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
+use Vich\UploaderBundle\Entity\File as VichFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -24,7 +29,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Diploma
 {
     use IdEntityTrait;
-    use BaseEntityTrait;
+    use NameEntityTrait;
+    use AuthorEntityTrait;
+    use EnableEntityTrait;
+    use TimestampableEntityTrait;
+    use SoftDeleteableEntity;
 
     /**
      * @ORM\OneToMany(targetEntity=Period::class, mappedBy="diploma")
@@ -34,12 +43,17 @@ class Diploma
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
-     * @Vich\UploadableField(mapping="document_diploma", fileNameProperty="document.name", size="document.size", mimeType="document.mime")
+     * @Vich\UploadableField(
+     *     mapping="document_diploma",
+     *     fileNameProperty="document.name",
+     *     size="document.size",
+     *     mimeType="document.mime"
+     * )
      */
     private ?File $imageFile = null;
 
     /**
-     * @ORM\Embedded(class="Vich\UploaderBundle\Entity\File")
+     * @ORM\Embedded(class=VichFile::class)
      */
     private ?EmbeddedFile $image = null;
 
@@ -85,6 +99,11 @@ class Diploma
         return $this;
     }
 
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
      * of 'UploadedFile' is injected into this setter to trigger the  update. If this
@@ -107,9 +126,9 @@ class Diploma
         }
     }
 
-    public function getImageFile(): ?File
+    public function getImage(): ?EmbeddedFile
     {
-        return $this->imageFile;
+        return $this->image;
     }
 
     public function setImage(EmbeddedFile $image): self
@@ -117,11 +136,6 @@ class Diploma
         $this->image = $image;
 
         return $this;
-    }
-
-    public function getImage(): ?EmbeddedFile
-    {
-        return $this->image;
     }
 
     public function getDocument(): ?Document

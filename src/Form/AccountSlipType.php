@@ -44,11 +44,10 @@ class AccountSlipType extends AbstractType
             ->add('reference')
             ->add('comment', CkeditorType::class, [
                 'required' => false,
-            ])
-        ;
+            ]);
 
         /**
-         * @param \Symfony\Component\Form\FormEvent $event
+         * @param FormEvent $event
          */
         $accountsFieldValidator = function (FormEvent $event): void {
             $form = $event->getForm();

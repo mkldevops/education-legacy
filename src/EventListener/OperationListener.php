@@ -21,15 +21,6 @@ class OperationListener extends AbstractFullService
             ->retrieveAccountStatement($operation);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function prePersist(Operation $operation, LifecycleEventArgs $args): bool
-    {
-        return $this->setEntityManager($args->getObjectManager())
-            ->retrieveAccountStatement($operation);
-    }
-
     public function retrieveAccountStatement(Operation $operation): bool
     {
         $this->logger->debug(__FUNCTION__, ['operation' => $operation]);
@@ -68,5 +59,14 @@ class OperationListener extends AbstractFullService
         }
 
         return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function prePersist(Operation $operation, LifecycleEventArgs $args): bool
+    {
+        return $this->setEntityManager($args->getObjectManager())
+            ->retrieveAccountStatement($operation);
     }
 }

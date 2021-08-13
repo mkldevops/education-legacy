@@ -11,12 +11,16 @@ namespace App\Manager;
 
 use App\Entity\Account;
 use App\Entity\AccountSlip;
+use App\Entity\Operation;
 use App\Entity\OperationGender;
 use App\Entity\TypeOperation;
 use App\Exception\AppException;
 use App\Model\TransferModel;
 use App\Services\GoogleDriveService;
+use Exception;
 use OfxParser\Entities\Transaction;
+use OfxParser\Ofx;
+use OfxParser\Parser;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -28,7 +32,7 @@ class OFXManager extends AccountManager
     public const STATUS_ADD_OPETION = 'add_operation';
     public const STATUS_ADD_TRANSFER = 'add_transfer';
 
-    private ?\App\Entity\Account $accountTransfer = null;
+    private ?Account $accountTransfer = null;
 
     private ?array $logs = null;
 
@@ -37,7 +41,7 @@ class OFXManager extends AccountManager
      *
      * @return bool
      *
-     * @throws \App\Exception\AppException
+     * @throws AppException
      */
     public function ofx(File $fileUpload)
     {
@@ -72,10 +76,10 @@ class OFXManager extends AccountManager
     /**
      * Extract Ofx To File.
      *
-     * @return \OfxParser\Ofx
+     * @return Ofx
      *
-     * @throws \App\Exception\AppException
-     * @throws \Exception
+     * @throws AppException
+     * @throws Exception
      */
     public function extractOfxToFile(File $fileUpload)
     {
@@ -84,7 +88,7 @@ class OFXManager extends AccountManager
         }
 
         $content = self::uniformizeContent(file_get_contents($fileUpload->getRealPath()));
-        $ofxParser = new \OfxParser\Parser();
+        $ofxParser = new Parser();
 
         return $ofxParser->loadFromString($content);
     }
@@ -106,9 +110,9 @@ class OFXManager extends AccountManager
     }
 
     /**
-     * @return \App\Entity\Operation|null
+     * @return Operation|null
      *
-     * @throws \App\Exception\AppException
+     * @throws AppException
      */
     private function transactionToOperation(Transaction $transaction)
     {
@@ -124,22 +128,21 @@ class OFXManager extends AccountManager
             );
 
             $operation = OperationManager::createOperationOfx($transaction)
-                                         ->setReference($reference)
-                                         ->setAccount($this->account)
-                                         ->setUniqueId($transaction->uniqueId)
-                                         ->setTypeOperation($type)
-                                         ->setAuthor($this->getUser())
-                                         ->setPublisher($this->getUser())
-                                         ->setOperationGender($gender)
-            ;
+                ->setReference($reference)
+                ->setAccount($this->account)
+                ->setUniqueId($transaction->uniqueId)
+                ->setTypeOperation($type)
+                ->setAuthor($this->getUser())
+                ->setPublisher($this->getUser())
+                ->setOperationGender($gender);
 
             try {
                 $this->getEntityManager()->persist($operation);
                 $this->getEntityManager()->flush();
-                $this->logger->info(__FUNCTION__.' Operation is saved');
+                $this->logger->info(__FUNCTION__ . ' Operation is saved');
                 $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPETION];
-            } catch (\Exception $e) {
-                $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+            } catch (Exception $e) {
+                $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
             }
         }
 
@@ -160,9 +163,9 @@ class OFXManager extends AccountManager
             'frais ret' => OperationGender::CODE_PRLVT,
         ];
 
-        $pattern = '#(?<gender>'.implode('|', array_keys($listLabels)).')#i';
+        $pattern = '#(?<gender>' . implode('|', array_keys($listLabels)) . ')#i';
         if (!preg_match($pattern, strtolower($transaction->name), $matches)) {
-            $this->logger->error(__FUNCTION__.' Not found gender on ofx type : "'.$transaction->name.'"');
+            $this->logger->error(__FUNCTION__ . ' Not found gender on ofx type : "' . $transaction->name . '"');
 
             return null;
         }
@@ -171,11 +174,10 @@ class OFXManager extends AccountManager
 
         $gender = $this->entityManager
             ->getRepository(OperationGender::class)
-            ->findOneBy(['code' => $genderCode])
-        ;
+            ->findOneBy(['code' => $genderCode]);
 
         if (empty($gender)) {
-            $this->logger->error(__FUNCTION__.' Nothing found gender with code : '.$genderCode);
+            $this->logger->error(__FUNCTION__ . ' Nothing found gender with code : ' . $genderCode);
         }
 
         return $gender;
@@ -187,71 +189,23 @@ class OFXManager extends AccountManager
     protected static function getReference(Transaction $transaction): ?string
     {
         $reference = null;
-        $text = trim($transaction->name).' '.trim($transaction->memo);
+        $text = trim($transaction->name) . ' ' . trim($transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
 
         if (preg_match('#(?<reference>\d+)#', $text, $mathes)) {
             $reference = $mathes['reference'];
         } else {
-            dump(__FUNCTION__.' not found :'.$text);
+            dump(__FUNCTION__ . ' not found :' . $text);
         }
 
         return $reference;
     }
 
     /**
-     * getAccountTransfer.
+     * @return Operation|null
      *
-     * @return Account
-     */
-    public function getAccountTransfer()
-    {
-        return $this->accountTransfer;
-    }
-
-    /**
-     * @return OFXManager
-     */
-    public function setAccountTransfer(Account $accountTransfer)
-    {
-        $this->accountTransfer = $accountTransfer;
-
-        return $this;
-    }
-
-    /**
-     * @return OFXManager
-     */
-    public function setLogs(array $logs)
-    {
-        $this->logs = $logs;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLogs()
-    {
-        return $this->logs;
-    }
-
-    /**
-     * setGoogleDrive.
-     *
-     * @return OFXManager
-     */
-    public function setGoogleDrive(GoogleDriveService $googleDrive)
-    {
-        return $this;
-    }
-
-    /**
-     * @return \App\Entity\Operation|null
-     *
-     * @throws \App\Exception\AppException
-     * @throws \Exception
+     * @throws AppException
+     * @throws Exception
      */
     private function transferOperation(Transaction $transaction, ?string $reference, ?OperationGender $gender)
     {
@@ -279,5 +233,53 @@ class OFXManager extends AccountManager
         $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_TRANSFER];
 
         return $operation;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @return OFXManager
+     */
+    public function setLogs(array $logs)
+    {
+        $this->logs = $logs;
+
+        return $this;
+    }
+
+    /**
+     * getAccountTransfer.
+     *
+     * @return Account
+     */
+    public function getAccountTransfer()
+    {
+        return $this->accountTransfer;
+    }
+
+    /**
+     * @return OFXManager
+     */
+    public function setAccountTransfer(Account $accountTransfer)
+    {
+        $this->accountTransfer = $accountTransfer;
+
+        return $this;
+    }
+
+    /**
+     * setGoogleDrive.
+     *
+     * @return OFXManager
+     */
+    public function setGoogleDrive(GoogleDriveService $googleDrive)
+    {
+        return $this;
     }
 }

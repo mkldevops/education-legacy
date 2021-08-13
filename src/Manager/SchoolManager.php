@@ -20,29 +20,12 @@ class SchoolManager extends AbstractFullService
     {
     }
 
-    public function setSchoolsOnSession(): bool
+    /**
+     * @throws AppException
+     */
+    public function getEntitySchool(): School
     {
-        $list = $this->user?->getSchoolAccessRight() ?? new ArrayCollection();
-
-        if ($list->isEmpty()) {
-            $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
-            if (null !== $school) {
-                $this->user->addSchoolAccessRight($school);
-                $this->entityManager->persist($this->user);
-                $this->entityManager->flush();
-            } else {
-                $msg = $this->trans('school.not_found', [], 'user');
-                $this->session->getFlashBag()->add('error', $msg);
-                $this->logger->error(__FUNCTION__.' Not found school');
-
-                return false;
-            }
-        }
-
-        $school = $list->current();
-        $this->session->set('school', new SchoolList($list->toArray(), $school));
-
-        return true;
+        return $this->repository->find($this->getSchool()->getId());
     }
 
     /**
@@ -64,12 +47,29 @@ class SchoolManager extends AbstractFullService
         return $schoolList->selected;
     }
 
-    /**
-     * @throws AppException
-     */
-    public function getEntitySchool(): School
+    public function setSchoolsOnSession(): bool
     {
-        return $this->repository->find($this->getSchool()->getId());
+        $list = $this->user?->getSchoolAccessRight() ?? new ArrayCollection();
+
+        if ($list->isEmpty()) {
+            $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
+            if (null !== $school) {
+                $this->user->addSchoolAccessRight($school);
+                $this->entityManager->persist($this->user);
+                $this->entityManager->flush();
+            } else {
+                $msg = $this->trans('school.not_found', [], 'user');
+                $this->session->getFlashBag()->add('error', $msg);
+                $this->logger->error(__FUNCTION__ . ' Not found school');
+
+                return false;
+            }
+        }
+
+        $school = $list->current();
+        $this->session->set('school', new SchoolList($list->toArray(), $school));
+
+        return true;
     }
 
     /**

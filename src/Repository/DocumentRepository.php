@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Document;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use ImagickException;
 
 /**
  * @method Document|null find($id, $lockMode = null, $lockVersion = null)
@@ -29,18 +30,18 @@ class DocumentRepository extends ServiceEntityRepository
      *
      * @return array
      *
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     public function last(array $exists, $firstResult = 0, $maxResult = 5)
     {
         $query = $this->createQueryBuilder('doc')
-                ->select('doc')
-                ->where('doc.id NOT IN (:exists)')
-                ->setParameter('exists', $exists)
-                ->setMaxResults($maxResult)
-                ->setFirstResult($firstResult)
-                ->orderBy('doc.id', 'DESC')
-                ->getQuery();
+            ->select('doc')
+            ->where('doc.id NOT IN (:exists)')
+            ->setParameter('exists', $exists)
+            ->setMaxResults($maxResult)
+            ->setFirstResult($firstResult)
+            ->orderBy('doc.id', 'DESC')
+            ->getQuery();
 
         $result = $query->getResult();
         $data = [];
@@ -63,7 +64,6 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('search', $search)
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 }

@@ -44,9 +44,9 @@ class OperationGenderController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.code LIKE :code')
-            ->setParameter(':code', '%'.$search.'%')
+            ->setParameter(':code', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -56,9 +56,9 @@ class OperationGenderController extends AbstractBaseController
             ->getRepository(OperationGender::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.code LIKE :code')
-            ->setParameter(':code', '%'.$search.'%')
+            ->setParameter(':code', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()

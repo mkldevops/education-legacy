@@ -73,7 +73,7 @@ class AccountManager extends AccountableManager
 
                 if ($accountStatement->getAmountCredit() === round($stats['sumCredit'], 2)
                     && $accountStatement->getAmountDebit() === round($stats['sumDebit'], 2)
-                    && $accountStatement->getNumberOperations() === (int) $stats['numberOperations']) {
+                    && $accountStatement->getNumberOperations() === (int)$stats['numberOperations']) {
                     $stats['isValid'] = true;
                 }
 
@@ -94,7 +94,7 @@ class AccountManager extends AccountableManager
     /**
      * Get TransferManager.
      *
-     * @return \App\Manager\TransferManager
+     * @return TransferManager
      */
     public function getTransferManager()
     {
@@ -118,7 +118,7 @@ class AccountManager extends AccountableManager
     /**
      * Get OperationManager.
      *
-     * @return \App\Manager\OperationManager
+     * @return OperationManager
      */
     public function getOperationManager()
     {

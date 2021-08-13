@@ -281,7 +281,7 @@ class ClassSchoolController extends AbstractBaseController
             if ($result) {
                 $this->addFlash(
                     'info',
-                    'Les élèves ont été ajouté à la Classe '.$classPeriod->getclassSchool()->getName().' pour la periode '.$classPeriod->getPeriod()->getName()
+                    'Les élèves ont été ajouté à la Classe ' . $classPeriod->getclassSchool()->getName() . ' pour la periode ' . $classPeriod->getPeriod()->getName()
                 );
 
                 return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));

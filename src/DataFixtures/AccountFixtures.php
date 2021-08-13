@@ -33,8 +33,7 @@ class AccountFixtures extends AppFixtures implements DependentFixtureInterface
                 ->setPrincipal($data['principal'])
                 ->setIsBank($data['isBank'])
                 ->setEnableAccountStatement($data['enableAccountStatement'])
-                ->setStructure($structure)
-            ;
+                ->setStructure($structure);
 
             $manager->persist($account);
             $manager->flush();

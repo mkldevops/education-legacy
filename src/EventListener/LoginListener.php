@@ -23,10 +23,15 @@ class LoginListener extends AbstractService
 
     public function __construct(
         private AuthorizationChecker $authorizationChecker,
-        private SessionInterface $session
+        private SessionInterface     $session
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->setSession($session);
+    }
+
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
     }
 
     /**
@@ -44,7 +49,7 @@ class LoginListener extends AbstractService
 
         $user = $event->getAuthenticationToken()->getUser();
         if (!$user instanceof User) {
-            throw new AppException('The User is not instance of '.User::class);
+            throw new AppException('The User is not instance of ' . User::class);
         }
 
         $this->setUser($user)->setDataDefault();
@@ -67,8 +72,7 @@ class LoginListener extends AbstractService
             /* @var $school School */
             $school = $this->entityManager
                 ->getRepository(School::class)
-                ->findOneBy([], ['principal' => 'DESC'])
-            ;
+                ->findOneBy([], ['principal' => 'DESC']);
 
             if (null !== $school) {
                 $this->user->addSchoolAccessRight($school);
@@ -84,7 +88,7 @@ class LoginListener extends AbstractService
         if (null !== $school) {
             $this->session->set('school', clone $school);
         } else {
-            $this->logger->warning(__FUNCTION__.' Not found school');
+            $this->logger->warning(__FUNCTION__ . ' Not found school');
         }
 
         $this->periodManager->setPeriodsOnSession();
@@ -102,10 +106,5 @@ class LoginListener extends AbstractService
     public function getSession(): SessionInterface
     {
         return $this->session;
-    }
-
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
     }
 }

@@ -4,7 +4,7 @@
     {% if operation.validate is not empty %}
         {% set textValidation = "text"|trans({
             "%name%" : operation.validate.author.nameComplete,
-            '%date%' : operation.validate.created.format('d/m/Y H:i:s')
+            '%date%' : operation.validate.createdAt.format('d/m/Y H:i:s')
         }) %}
 
         <span data-toggle="tooltip"

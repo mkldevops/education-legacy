@@ -58,7 +58,6 @@ class PersonRepository extends ServiceEntityRepository
             ->setParameter('search', preg_quote($search))
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 }

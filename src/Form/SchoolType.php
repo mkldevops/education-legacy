@@ -27,8 +27,7 @@ class SchoolType extends AbstractType
                 'label' => 'label.comment',
                 'required' => false,
             ])
-            ->add('enable', null, ['label' => 'label.status'])
-        ;
+            ->add('enable', null, ['label' => 'label.status']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

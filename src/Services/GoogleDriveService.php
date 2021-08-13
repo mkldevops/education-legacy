@@ -1,12 +1,6 @@
 <?php
 
 declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 10/08/18
- * Time: 10:31.
- */
 
 namespace App\Services;
 
@@ -15,11 +9,6 @@ use Exception;
 use Google_Service_Drive;
 use Google_Service_Drive_FileList;
 
-/**
- * Description of class GoogleCalendarManager.
- *
- * @author  fahari
- */
 class GoogleDriveService extends GoogleService
 {
     /**
@@ -30,15 +19,11 @@ class GoogleDriveService extends GoogleService
         $drive = new Google_Service_Drive($this->getClient());
         $files = $drive->files->listFiles();
 
-        dump($files);
+        dump($files, $path);
     }
 
     /**
-     * getListFiles.
-     *
-     * @param string[] $params
-     *
-     * @return string[]
+     * @throws AppException
      */
     public function getListFiles(array $params): array
     {
@@ -49,11 +34,12 @@ class GoogleDriveService extends GoogleService
 
             if (!$googleListFiles instanceof Google_Service_Drive_FileList) {
                 $msg = ' Error on get files to google drive';
-                $this->logger->error(__METHOD__.$msg, ['files' => $files, 'params' => $params]);
+                $this->logger->error(__METHOD__ . $msg, ['files' => $files, 'params' => $params]);
                 throw new AppException($msg);
             }
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['params' => $params]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['params' => $params]);
+            throw new AppException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $files;

@@ -81,7 +81,12 @@ class Structure
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
     }
 
     public function setLogo(string $logo): self
@@ -91,9 +96,9 @@ class Structure
         return $this;
     }
 
-    public function getLogo(): ?string
+    public function getPresident(): ?Member
     {
-        return $this->logo;
+        return $this->president;
     }
 
     public function setPresident(Member $president): static
@@ -103,9 +108,9 @@ class Structure
         return $this;
     }
 
-    public function getPresident(): ?Member
+    public function getTreasurer(): ?Member
     {
-        return $this->president;
+        return $this->treasurer;
     }
 
     public function setTreasurer(Member $treasurer): self
@@ -115,9 +120,9 @@ class Structure
         return $this;
     }
 
-    public function getTreasurer(): ?Member
+    public function getSecretary(): ?Member
     {
-        return $this->treasurer;
+        return $this->secretary;
     }
 
     /**
@@ -132,9 +137,9 @@ class Structure
         return $this;
     }
 
-    public function getSecretary(): ?Member
+    public function getMembers(): Collection
     {
-        return $this->secretary;
+        return $this->members;
     }
 
     public function setMembers(Collection $members): self
@@ -142,11 +147,6 @@ class Structure
         $this->members = $members;
 
         return $this;
-    }
-
-    public function getMembers(): Collection
-    {
-        return $this->members;
     }
 
     public function addMember(?Member $member): static
@@ -163,16 +163,16 @@ class Structure
         $this->members->removeElement($member);
     }
 
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
     public function setOptions(array $options): static
     {
         $this->options = $options;
 
         return $this;
-    }
-
-    public function getOptions(): array
-    {
-        return $this->options;
     }
 
     /**

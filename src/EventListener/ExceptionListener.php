@@ -8,11 +8,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Throwable;
 
 class ExceptionListener
 {
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function onKernelException(ExceptionEvent $event): void
     {

@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Exception\AppException;
 use App\Services\DiplomaService;
+use ImagickException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ class DiplomaGenerateCustomCommand extends Command
     public const OPTION_ID = 'id';
 
     protected static $defaultName = 'app:diploma:generate:custom';
-    private \App\Services\DiplomaService $service;
+    private DiplomaService $service;
 
     public function __construct(DiplomaService $service)
     {
@@ -31,14 +32,13 @@ class DiplomaGenerateCustomCommand extends Command
         $this
             ->setDescription('Add a short description for your command')
             ->addOption(self::OPTION_TEXT, 't', InputOption::VALUE_REQUIRED)
-            ->addOption(self::OPTION_ID, 'i', InputOption::VALUE_OPTIONAL)
-        ;
+            ->addOption(self::OPTION_ID, 'i', InputOption::VALUE_OPTIONAL);
     }
 
     /**
      * @return int|void|null
      *
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

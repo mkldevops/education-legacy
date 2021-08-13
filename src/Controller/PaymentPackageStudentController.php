@@ -42,9 +42,9 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('e.status LIKE :status')
-            ->setParameter(':status', '%'.$search.'%')
+            ->setParameter(':status', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -56,9 +56,9 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->getRepository(PaymentPackageStudent::class)
             ->createQueryBuilder('e')
             ->where('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('e.status LIKE :status')
-            ->setParameter(':status', '%'.$search.'%')
+            ->setParameter(':status', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -135,7 +135,7 @@ class PaymentPackageStudentController extends AbstractBaseController
 
     private function createCreateForm(
         PaymentPackageStudent $paymentPackageStudent,
-        PackageStudentPeriod $packageStudentPeriod
+        PackageStudentPeriod  $packageStudentPeriod
     ): FormInterface {
         $form = $this->createForm(PaymentPackageStudentType::class, $paymentPackageStudent, [
             'action' => $this->generateUrl('app_payment_package_student_create', [

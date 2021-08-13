@@ -62,7 +62,12 @@ class School
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
+    }
+
+    public function getPrincipal(): bool
+    {
+        return $this->principal;
     }
 
     public function setPrincipal(bool $principal)
@@ -72,9 +77,9 @@ class School
         return $this;
     }
 
-    public function getPrincipal(): bool
+    public function getDirector(): ?Member
     {
-        return $this->principal;
+        return $this->director;
     }
 
     public function setDirector(Member $director): self
@@ -82,11 +87,6 @@ class School
         $this->director = $director;
 
         return $this;
-    }
-
-    public function getDirector(): ?Member
-    {
-        return $this->director;
     }
 
     public function addPackage(Package $packages): self

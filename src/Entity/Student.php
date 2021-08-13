@@ -6,9 +6,13 @@ namespace App\Entity;
 
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Fardus\Traits\Symfony\Entity\EnableEntity;
 use Fardus\Traits\Symfony\Entity\IdEntity;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -30,7 +34,7 @@ class Student
     /**
      * @ORM\OneToOne(targetEntity=Person::class, inversedBy="student", cascade={"persist"})
      */
-    private ?\App\Entity\Person $person = null;
+    private ?Person $person = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -55,14 +59,14 @@ class Student
     private $letAlone;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime")
      */
     private $dateRegistration;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -71,39 +75,39 @@ class Student
     /**
      * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
      */
-    private ?\App\Entity\Grade $grade = null;
+    private ?Grade $grade = null;
 
     /**
      * @ORM\OneToMany(targetEntity=ClassPeriodStudent::class, mappedBy="student", cascade={"persist"})
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $classPeriods;
+    private array|Collection|ArrayCollection $classPeriods;
 
     /**
      * @ORM\OneToMany(targetEntity=PackageStudentPeriod::class, mappedBy="student", cascade={"persist"})
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $packagePeriods;
+    private array|Collection|ArrayCollection $packagePeriods;
 
     /**
      * @ORM\OneToMany(targetEntity=AppealCourse::class, mappedBy="student")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $courses;
+    private array|Collection|ArrayCollection $courses;
 
     /**
      * @ORM\OneToMany(targetEntity=StudentComment::class, mappedBy="student")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $comments;
+    private array|Collection|ArrayCollection $comments;
 
     /**
      * Constructor.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct()
     {
         $this->setPerson(new Person())
             ->setLetAlone(false)
             ->setEnable(true)
-            ->setDateRegistration(new \DateTime());
+            ->setDateRegistration(new DateTime());
 
         $this->classPeriods = new ArrayCollection();
         $this->packagePeriods = new ArrayCollection();
@@ -116,7 +120,7 @@ class Student
      *
      * @return Student
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function setEnable(bool $enable)
     {
@@ -125,7 +129,7 @@ class Student
         $this->setDateDesactivated(null);
 
         if (!$this->enable) {
-            $this->setDateDesactivated(new \DateTime());
+            $this->setDateDesactivated(new DateTime());
         }
 
         return $this;
@@ -228,11 +232,11 @@ class Student
     /**
      * Set birthday.
      *
+     * @param DateTime|DateTimeImmutable $birthday
      * @return Student
      *
-     * @param \DateTime|\DateTimeImmutable $birthday
      */
-    public function setBirthday(\DateTimeInterface $birthday)
+    public function setBirthday(DateTimeInterface $birthday)
     {
         $this->person->setBirthday($birthday);
 
@@ -242,7 +246,7 @@ class Student
     /**
      * Get birthday.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getBirthday()
     {
@@ -323,6 +327,19 @@ class Student
         return $this->getZip();
     }
 
+    /**
+     * Get zip.
+     */
+    public function getZip(): ?string
+    {
+        $zip = $this->person->getZip();
+        if (empty($zip) && !empty($this->person->getFamily())) {
+            $zip = $this->person->getFamily()->getZip();
+        }
+
+        return $zip;
+    }
+
     public function setTown(string $town): self
     {
         $this->person->setCity($town);
@@ -377,7 +394,7 @@ class Student
      *
      * @return self
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function addPhone($phone)
     {
@@ -391,7 +408,7 @@ class Student
      *
      * @param $key
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function removePhone(string $key): self
     {
@@ -421,6 +438,16 @@ class Student
         }
 
         return array_unique(array_values($phones));
+    }
+
+    /**
+     * Get letAlone.
+     *
+     * @return Family
+     */
+    public function getFamily(): ?Family
+    {
+        return $this->person->getFamily();
     }
 
     /**
@@ -577,14 +604,14 @@ class Student
     /**
      * Get dateDeactivated.
      *
-     * @return \DateTime
+     * @return DateTime
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getDateDesactivated()
     {
         if (!$this->isEnable() && empty($this->dateDesactivated)) {
-            $this->dateDesactivated = new \DateTime();
+            $this->dateDesactivated = new DateTime();
         }
 
         return $this->dateDesactivated;
@@ -593,11 +620,11 @@ class Student
     /**
      * Set dateDesactivated.
      *
+     * @param DateTime|DateTimeImmutable $dateDesactivated
      * @return Student
      *
-     * @param \DateTime|\DateTimeImmutable $dateDesactivated
      */
-    public function setDateDesactivated(\DateTimeInterface $dateDesactivated = null)
+    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null)
     {
         $this->dateDesactivated = $dateDesactivated;
 
@@ -637,7 +664,7 @@ class Student
     /**
      * Get dateRegistration.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDateRegistration()
     {
@@ -647,11 +674,11 @@ class Student
     /**
      * Set dateRegistration.
      *
+     * @param DateTime|DateTimeImmutable $dateRegistration
      * @return Student
      *
-     * @param \DateTime|\DateTimeImmutable $dateRegistration
      */
-    public function setDateRegistration(\DateTimeInterface $dateRegistration = null)
+    public function setDateRegistration(DateTimeInterface $dateRegistration = null)
     {
         $this->dateRegistration = $dateRegistration;
 
@@ -724,19 +751,6 @@ class Student
     }
 
     /**
-     * Get zip.
-     */
-    public function getZip(): ?string
-    {
-        $zip = $this->person->getZip();
-        if (empty($zip) && !empty($this->person->getFamily())) {
-            $zip = $this->person->getFamily()->getZip();
-        }
-
-        return $zip;
-    }
-
-    /**
      * Get letAlone.
      */
     public function getLetAlone(): bool
@@ -755,22 +769,12 @@ class Student
     }
 
     /**
-     * Get letAlone.
-     *
-     * @return Family
-     */
-    public function getFamily(): ?Family
-    {
-        return $this->person->getFamily();
-    }
-
-    /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function since(): int
     {
         $since = null;
-        $since = $this->createdAt->diff(new \DateTime())->y;
+        $since = $this->createdAt->diff(new DateTime())->y;
 
         return $since;
     }

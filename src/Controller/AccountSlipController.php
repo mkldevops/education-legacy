@@ -80,15 +80,15 @@ class AccountSlipController extends AbstractBaseController
             ->getRepository(AccountSlip::class)
             ->createQueryBuilder('e')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%'.$search.'%')
+            ->setParameter(':amount', '%' . $search . '%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%'.$search.'%')
+            ->setParameter(':gender', '%' . $search . '%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.reference LIKE :reference')
-            ->setParameter(':reference', '%'.$search.'%')
+            ->setParameter(':reference', '%' . $search . '%')
             ->orWhere('e.operationCredit = :credit')
             ->setParameter(':credit', $search)
             ->orWhere('e.operationDebit = :debit')
@@ -150,7 +150,7 @@ class AccountSlipController extends AbstractBaseController
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (Exception $e) {
-                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip').$e->getMessage());
+                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip') . $e->getMessage());
             }
         }
 
@@ -279,7 +279,7 @@ class AccountSlipController extends AbstractBaseController
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (Exception $e) {
-                $this->addFlash('danger', 'The AccountSlip has not updated : '.$e->getMessage());
+                $this->addFlash('danger', 'The AccountSlip has not updated : ' . $e->getMessage());
             }
         }
 
@@ -374,7 +374,7 @@ class AccountSlipController extends AbstractBaseController
                     $accountSlip->removeDocument($document);
                     break;
                 default:
-                    throw new InvalidDefinitionException('the action '.$action.' is not defined');
+                    throw new InvalidDefinitionException('the action ' . $action . ' is not defined');
             }
 
             $manager->persist($accountSlip);

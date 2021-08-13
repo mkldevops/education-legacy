@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Manager;
+namespace App\Fetcher;
 
 use App\Entity\Account;
 use App\Entity\AccountSlip;
@@ -10,15 +8,19 @@ use App\Entity\OperationGender;
 use App\Entity\Structure;
 use App\Entity\TypeOperation;
 use App\Exception\AppException;
+use App\Repository\AccountRepository;
+use App\Repository\AccountSlipRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Psr\Log\LoggerInterface;
 
-abstract class AccountableManager
+class AccountableFetcher
 {
     public function __construct(
-        protected EntityManagerInterface $entityManager,
-        protected LoggerInterface        $logger
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface        $logger,
+        private AccountSlipRepository  $accountSlipRepository,
+        private AccountRepository      $accountRepository,
     ) {
     }
 
@@ -27,8 +29,7 @@ abstract class AccountableManager
      */
     public function findAccountSlip(string $ref, Structure $structure, string $gender): ?AccountSlip
     {
-        $accountSlip = $this->entityManager
-            ->getRepository(AccountSlip::class)
+        $accountSlip = $this->accountSlipRepository
             ->getAccountSlipByRefs($ref, $structure, $gender);
 
         $this->logger->debug(__FUNCTION__, ['accountSlip' => $accountSlip]);
@@ -39,14 +40,13 @@ abstract class AccountableManager
     /**
      * @throws AppException
      */
-    public function findAccount(int $id): ?Account
+    public function findAccount(int $id): Account
     {
         if (empty($id)) {
             throw new AppException('Id to search account is empty');
         }
 
-        $account = $this->entityManager
-            ->find(Account::class, $id);
+        $account = $this->accountRepository->find($id);
 
         if (!$account instanceof Account) {
             throw new AppException('Not found account id  : ' . $id);
@@ -62,7 +62,7 @@ abstract class AccountableManager
             ->findOneBy(['code' => $code]);
     }
 
-    protected function findOperationGender(string $code): ?OperationGender
+    public function findOperationGender(string $code): ?OperationGender
     {
         return $this->entityManager
             ->getRepository(OperationGender::class)

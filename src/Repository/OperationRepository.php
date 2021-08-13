@@ -66,8 +66,8 @@ class OperationRepository extends ServiceEntityRepository
         $end = $accountStatement->getEnd();
         $interval = $accountStatement->getAccount()->getIntervalOperationsAccountStatement();
 
-        $begin->modify('-'.$interval.' days');
-        $end->modify($interval.' days');
+        $begin->modify('-' . $interval . ' days');
+        $end->modify($interval . ' days');
 
         return $this->createQueryBuilder('ope')
             ->select(['top.name AS typeOperation', 'ope.id', 'ope.date', 'ope.name', 'ope.amount'])
@@ -122,7 +122,7 @@ class OperationRepository extends ServiceEntityRepository
             throw new AppException(sprintf('%s Error on query', __FUNCTION__), $e->getCode(), $e);
         }
 
-        return (int) $result['nbOperations'];
+        return (int)$result['nbOperations'];
     }
 
     /**
@@ -215,11 +215,10 @@ class OperationRepository extends ServiceEntityRepository
 
         if (is_numeric($search)) {
             $qb->orWhere('REGEXP(p.amount, :amount) = 1')
-                ->setParameter('amount', (float) str_replace(',', '.', $search));
+                ->setParameter('amount', (float)str_replace(',', '.', $search));
         }
 
         return $qb->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 }

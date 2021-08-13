@@ -38,7 +38,7 @@ class CourseController extends AbstractBaseController
      * @Route("", name="app_course_index", methods={"GET"})
      * @Template()
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      *
      * @throws InvalidArgumentException
@@ -244,7 +244,7 @@ class CourseController extends AbstractBaseController
      */
     public function saveAppealAction(Request $request, Course $course)
     {
-        $response = (object) [
+        $response = (object)[
             'success' => false,
             'error' => [],
             'students' => [],
@@ -260,7 +260,7 @@ class CourseController extends AbstractBaseController
             $studentId = $appealCourse->getStudent()->getId();
 
             if (array_key_exists($studentId, $listStudentStatus)) {
-                $status = (int) $listStudentStatus[$studentId]['status'];
+                $status = (int)$listStudentStatus[$studentId]['status'];
             } else {
                 $name = $appealCourse->getStudent()->getNameComplete();
                 $response->error[] = sprintf('%s n\'est pas dans la liste', $name);
@@ -305,10 +305,10 @@ class CourseController extends AbstractBaseController
             $result = $courseManager->generate($this->getPeriod(), $this->getSchool());
 
             if (0 !== $result) {
-                $this->addFlash('success', 'The course is successfully generated : '.$result);
+                $this->addFlash('success', 'The course is successfully generated : ' . $result);
             } else {
                 $logs = $courseManager->getLogger()->getLogs();
-                $this->addFlash('danger', 'An error occurred during the process <br />'.print_r($logs, true));
+                $this->addFlash('danger', 'An error occurred during the process <br />' . print_r($logs, true));
             }
 
             return $this->redirectToRoute('app_course_index');

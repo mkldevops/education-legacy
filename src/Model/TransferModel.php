@@ -15,43 +15,39 @@ use App\Entity\Account;
 use App\Entity\AccountSlip;
 use App\Entity\OperationGender;
 use App\Entity\Structure;
+use DateTimeInterface;
 
 /**
  * Class TransferModel.
  */
 class TransferModel
 {
-    private ?\DateTimeInterface $date = null;
+    private ?DateTimeInterface $date = null;
 
-    private ?\App\Entity\OperationGender $gender = null;
+    private ?OperationGender $gender = null;
 
     private ?string $reference = null;
 
     private ?string $uniqueId = null;
 
-    private ?\App\Entity\AccountSlip $accountSlip = null;
+    private ?AccountSlip $accountSlip = null;
 
-    private ?\App\Entity\Account $accountCredit = null;
+    private ?Account $accountCredit = null;
 
-    private ?\App\Entity\Account $accountDebit = null;
+    private ?Account $accountDebit = null;
 
-    private ?\App\Entity\Structure $structure = null;
+    private ?Structure $structure = null;
 
     private ?float $amount = null;
 
     private ?string $comment = null;
 
-    /**
-     * Get AccountCredit.
-     */
-    public function getAccountCredit(): Account
+
+    public function getAccountCredit(): ?Account
     {
         return $this->accountCredit;
     }
 
-    /**
-     * Set AccountCredit.
-     */
     public function setAccountCredit(Account $accountCredit): self
     {
         $this->accountCredit = $accountCredit;
@@ -59,17 +55,11 @@ class TransferModel
         return $this;
     }
 
-    /**
-     * Get Gender.
-     */
-    public function getGender(): OperationGender
+    public function getGender(): ?OperationGender
     {
         return $this->gender;
     }
 
-    /**
-     * Set Gender.
-     */
     public function setGender(OperationGender $gender): self
     {
         $this->gender = $gender;
@@ -77,19 +67,12 @@ class TransferModel
         return $this;
     }
 
-    /**
-     * Get Reference.
-     */
-    public function getReference(): string
+    public function getReference(): ?string
     {
         return $this->reference;
     }
 
-    /**
-     * Set Reference.
-     *
-     * @param string $reference is the reference of transaction
-     */
+
     public function setReference(string $reference): self
     {
         $this->reference = $reference;
@@ -97,10 +80,8 @@ class TransferModel
         return $this;
     }
 
-    /**
-     * Get UniqueId.
-     */
-    public function getUniqueId(): string
+
+    public function getUniqueId(): ?string
     {
         return $this->uniqueId;
     }
@@ -172,7 +153,7 @@ class TransferModel
     /**
      * Get Date.
      */
-    public function getDate(): \DateTimeInterface
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
@@ -180,19 +161,9 @@ class TransferModel
     /**
      * Set Date.
      */
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    /**
-     * Set Amount.
-     */
-    public function setAmount(float $amount): self
-    {
-        $this->amount = $amount;
 
         return $this;
     }
@@ -206,11 +177,11 @@ class TransferModel
     }
 
     /**
-     * Set Comment.
+     * Set Amount.
      */
-    public function setComment(string $comment): self
+    public function setAmount(float $amount): self
     {
-        $this->comment = $comment;
+        $this->amount = $amount;
 
         return $this;
     }
@@ -221,5 +192,15 @@ class TransferModel
     public function getComment(): string
     {
         return $this->comment;
+    }
+
+    /**
+     * Set Comment.
+     */
+    public function setComment(string $comment): self
+    {
+        $this->comment = $comment;
+
+        return $this;
     }
 }

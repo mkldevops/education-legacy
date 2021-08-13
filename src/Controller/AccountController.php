@@ -52,7 +52,7 @@ class AccountController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Route("/create", name="app_account_create")
      */
-    public function create(Request $request): RedirectResponse | Response
+    public function create(Request $request): RedirectResponse|Response
     {
         $account = new Account();
         $form = $this->createCreateForm($account);
@@ -243,9 +243,9 @@ class AccountController extends AbstractBaseController
      * @throws Exception
      */
     public function ofxAction(
-        Request $request,
-        Account $account,
-        OFXManager $manager,
+        Request            $request,
+        Account            $account,
+        OFXManager         $manager,
         GoogleDriveService $googleDriveService
     ): Response {
         $files = $googleDriveService

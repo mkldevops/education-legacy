@@ -41,7 +41,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
             $this->addFlash('success', 'The package of student has been added.');
             $response->setData(json_encode($packageStudentPeriod));
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -59,7 +59,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
         }
 
         if (!$form->isValid()) {
-            throw new AppException('The form is not valid '.$form->getErrors());
+            throw new AppException('The form is not valid ' . $form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -91,7 +91,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
             $this->addFlash('success', sprintf('The package of student %s has been updated.', $packageStudentPeriod->getStudent()));
             $response->setData(json_encode($packageStudentPeriod));
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])
                 ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }

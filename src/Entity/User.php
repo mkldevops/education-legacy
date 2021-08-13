@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use App\Traits\AuthorEntityTrait;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,44 +28,37 @@ class User implements UserInterface
     use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
+
     public const USER_ROBOT = 0;
-
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private ?string $username = null;
-
-    /**
-     * @ORM\Column(type="json")
-     */
-    private array $roles = [];
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private string $password;
-
-    private ?string $plainPassword = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private ?string $surname = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true, unique=true)
-     */
-    private string $email;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private \DateTimeInterface $lastLogin;
-
     /**
      * @ORM\ManyToMany(targetEntity=School::class)
      */
     protected Collection $schoolAccessRight;
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private ?string $username = null;
+    /**
+     * @ORM\Column(type="json")
+     */
+    private array $roles = [];
+    /**
+     * @ORM\Column(type="string")
+     */
+    private string $password;
+    private ?string $plainPassword = null;
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $surname = null;
+    /**
+     * @ORM\Column(type="string", nullable=true, unique=true)
+     */
+    private string $email;
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private DateTimeInterface $lastLogin;
 
     public function __construct()
     {
@@ -79,7 +73,19 @@ class User implements UserInterface
 
     public function getNameComplete(): string
     {
-        return sprintf('%s %s', strtoupper($this->name), ucfirst($this->getSurname()));
+        return sprintf('%s %s', strtoupper((string) $this->name), ucfirst((string) $this->surname));
+    }
+
+    public function getSurname(): ?string
+    {
+        return $this->surname;
+    }
+
+    public function setSurname(string $surname): self
+    {
+        $this->surname = $surname;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -89,7 +95,7 @@ class User implements UserInterface
 
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     public function setUsername(string $username): self
@@ -136,18 +142,6 @@ class User implements UserInterface
         $this->plainPassword = null;
     }
 
-    public function getSurname(): ?string
-    {
-        return $this->surname;
-    }
-
-    public function setSurname(string $surname): self
-    {
-        $this->surname = $surname;
-
-        return $this;
-    }
-
     public function getEmail(): ?string
     {
         return $this->email;
@@ -160,12 +154,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getLastLogin(): ?\DateTimeInterface
+    public function getLastLogin(): ?DateTimeInterface
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(\DateTimeInterface $lastLogin): self
+    public function setLastLogin(DateTimeInterface $lastLogin): self
     {
         $this->lastLogin = $lastLogin;
 
@@ -202,15 +196,15 @@ class User implements UserInterface
         return $this->setRoles(array_unique($this->roles));
     }
 
-    public function setPlainPassword(string $plainPassword): User
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
 
         return $this;
-    }
-
-    public function getPlainPassword(): ?string
-    {
-        return $this->plainPassword;
     }
 }

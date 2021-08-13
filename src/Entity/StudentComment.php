@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\EnableEntity;
 use Fardus\Traits\Symfony\Entity\IdEntity;
@@ -21,6 +22,7 @@ class StudentComment
     use AuthorEntityTrait;
     use EnableEntity;
     use TimestampableEntity;
+
     public const COMMENT_APPRECIATION = 'success';
     public const COMMENT_INFORMATION = 'info';
     public const COMMENT_WARNING = 'warning';
@@ -100,7 +102,7 @@ class StudentComment
     /**
      * Set created.
      *
-     * @param \DateTime $created
+     * @param DateTime $created
      *
      * @return StudentComment
      */
@@ -114,7 +116,7 @@ class StudentComment
     /**
      * Get created.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreated()
     {

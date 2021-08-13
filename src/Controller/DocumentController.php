@@ -34,7 +34,7 @@ class DocumentController extends AbstractBaseController
      *
      * @Route("/list/{page}/{search}", name="app_document_index", methods={"GET"})
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      *
      * @return Response
@@ -54,9 +54,9 @@ class DocumentController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.path LIKE :path')
-            ->setParameter(':path', '%'.$search.'%')
+            ->setParameter(':path', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -68,9 +68,9 @@ class DocumentController extends AbstractBaseController
             ->getRepository(Document::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.path LIKE :path')
-            ->setParameter(':path', '%'.$search.'%')
+            ->setParameter(':path', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -324,7 +324,7 @@ class DocumentController extends AbstractBaseController
      */
     public function getBaseUrl(Request $request)
     {
-        return $request->getScheme().'://'.$request->getHttpHost().$request->getBasePath();
+        return $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
     }
 
     /**

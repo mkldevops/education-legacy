@@ -9,6 +9,8 @@ use App\Entity\Period;
 use App\Entity\School;
 use App\Model\DataStats;
 use App\Model\StatsByMonth;
+use DateTime;
+use Exception;
 
 /**
  * Created by PhpStorm.
@@ -38,14 +40,14 @@ class StatisticsManager extends AccountableManager
                 $dataStats = (new DataStats())
                     ->setRowId($operation['idTypeOperation'])
                     ->setRowLabel($operation['nameTypeOperation'])
-                    ->setColumnLabel((new \DateTime($operation['groupDate']))->format('M Y'))
+                    ->setColumnLabel((new DateTime($operation['groupDate']))->format('M Y'))
                     ->setColumnId($operation['groupDate'])
-                    ->setCount((int) $operation['numberOperations'])
-                    ->setSum((float) $operation['sumCredit'] + (float) $operation['sumDebit']);
+                    ->setCount((int)$operation['numberOperations'])
+                    ->setSum((float)$operation['sumCredit'] + (float)$operation['sumDebit']);
 
                 $stats->addData($dataStats);
-            } catch (\Exception $e) {
-                $this->logger->error(__METHOD__.' '.$e->getMessage(), compact($operation));
+            } catch (Exception $e) {
+                $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), compact($operation));
             }
         }
 

@@ -57,7 +57,7 @@ class ClassSchool
 
     public function __toString(): string
     {
-        return (string) $this->getName();
+        return (string)$this->getName();
     }
 
     public function addClassPeriod(ClassPeriod $classPeriods): self
@@ -87,6 +87,11 @@ class ClassSchool
         return $classPeriods;
     }
 
+    public function getAgeMinimum(): ?int
+    {
+        return $this->ageMinimum;
+    }
+
     public function setAgeMinimum(int $ageMinimum): self
     {
         $this->ageMinimum = $ageMinimum;
@@ -94,9 +99,9 @@ class ClassSchool
         return $this;
     }
 
-    public function getAgeMinimum(): ?int
+    public function getAgeMaximum(): ?int
     {
-        return $this->ageMinimum;
+        return $this->ageMaximum;
     }
 
     public function setAgeMaximum(int $ageMaximum): self
@@ -104,11 +109,6 @@ class ClassSchool
         $this->ageMaximum = $ageMaximum;
 
         return $this;
-    }
-
-    public function getAgeMaximum(): ?int
-    {
-        return $this->ageMaximum;
     }
 
     public function current(Period $period): ?ClassPeriod

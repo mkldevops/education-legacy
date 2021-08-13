@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\School;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,7 @@ class SchoolController extends AbstractBaseController
         try {
             $this->schoolManager->switch($school);
             $this->addFlash('success', $this->trans('flash.switch_school.success', ['%name' => $school], 'school'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('danger', $this->trans('flash.switch_school.failed', ['%name' => $school], 'school'));
         }
 

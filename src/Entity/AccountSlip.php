@@ -7,7 +7,7 @@ namespace App\Entity;
 use App\Exception\AppException;
 use App\Repository\AccountSlipRepository;
 use App\Traits\AmountEntityTrait;
-use App\Traits\BaseEntityTrait;
+use App\Traits\AuthorEntityTrait;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,8 +15,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
+use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -29,7 +32,10 @@ class AccountSlip
 {
     use IdEntityTrait;
     use NameEntityTrait;
-    use BaseEntityTrait;
+    use AuthorEntityTrait;
+    use EnableEntityTrait;
+    use TimestampableEntityTrait;
+    use SoftDeleteableEntity;
     use CommentEntityTrait;
     use AmountEntityTrait;
 
@@ -91,7 +97,7 @@ class AccountSlip
         self::GENDER_BANK_TRANSFER => 'string',
         self::GENDER_PAYMENT_SPECIES => 'string',
         self::GENDER_REBATE_CHECK => 'string',
-        self::GENDER_CASH_WITHDRAWAL => 'string', ])]
+        self::GENDER_CASH_WITHDRAWAL => 'string',])]
     public static function getGenders(): array
     {
         return [
@@ -104,7 +110,7 @@ class AccountSlip
 
     public function __toString(): string
     {
-        return $this->getName().' - '.$this->getDate()->format('d M Y');
+        return $this->getName() . ' - ' . $this->getDate()->format('d M Y');
     }
 
     public function getDate(): DateTimeInterface
@@ -254,7 +260,7 @@ class AccountSlip
         return $this->gender;
     }
 
-    public function setGender(string $gender): self
+    public function setGender(?string $gender): self
     {
         $this->gender = $gender;
 

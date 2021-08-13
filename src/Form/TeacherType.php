@@ -47,7 +47,7 @@ class TeacherType extends AbstractType
                 'class' => ClassPeriod::class,
                 'choice_label' => 'name',
                 'multiple' => 'true',
-                'query_builder' => fn (ClassPeriodRepository $cpr) => $cpr->getClassPeriodsQueryBuilder($period, $school),
+                'query_builder' => fn(ClassPeriodRepository $cpr) => $cpr->getClassPeriodsQueryBuilder($period, $school),
                 'attr' => ['data-toggle' => 'multiselect'],
                 'required' => false,
                 'label' => 'form.label.class_periods',
@@ -55,8 +55,7 @@ class TeacherType extends AbstractType
             ->add('enable', CheckboxType::class, [
                 'required' => false,
                 'label' => 'form.label.enabled',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

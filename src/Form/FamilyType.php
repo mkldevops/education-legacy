@@ -21,9 +21,9 @@ class FamilyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('father', PersonSimpleType::class, [
-                'label' => 'form.father.label',
-                'required' => false,
-            ])
+            'label' => 'form.father.label',
+            'required' => false,
+        ])
             ->add('mother', PersonSimpleType::class, [
                 'label' => 'form.mother.label',
                 'required' => false,

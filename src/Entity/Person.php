@@ -15,11 +15,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\AddressEntityTrait;
 use Fardus\Traits\Symfony\Entity\CityEntityTrait;
-use Fardus\Traits\Symfony\Entity\EmailEntity;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
-use Fardus\Traits\Symfony\Entity\NameEntity;
-use Fardus\Traits\Symfony\Entity\ZipEntity;
+use Fardus\Traits\Symfony\Entity\EmailEntityTrait;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
+use Fardus\Traits\Symfony\Entity\ZipEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -29,18 +29,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Person
 {
-    use IdEntity;
-    use NameEntity;
-    use EmailEntity;
-    use AddressEntityTrait;
-    use ZipEntity;
-    use CityEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntity;
-    use TimestampableEntity;
-    use SoftDeleteableEntity;
     public const GENDER_MALE = 'male';
     public const GENDER_FEMALE = 'female';
+
+    use IdEntityTrait;
+    use NameEntityTrait;
+    use EmailEntityTrait;
+    use AddressEntityTrait;
+    use ZipEntityTrait;
+    use CityEntityTrait;
+    use AuthorEntityTrait;
+    use EnableEntityTrait;
+    use TimestampableEntity;
+    use SoftDeleteableEntity;
 
     /**
      * @Assert\NotBlank
@@ -116,7 +117,7 @@ class Person
 
     public function getNameComplete(): string
     {
-        return strtoupper($this->name).' '.ucwords($this->forname);
+        return strtoupper($this->name) . ' ' . ucwords($this->forname);
     }
 
     public function getAge(): ?int
@@ -194,7 +195,7 @@ class Person
     {
         // Check if number phone is str
         if (!empty($phone) && $add && !empty($this->phone)) {
-            $phone = $this->phone.';'.$phone;
+            $phone = $this->phone . ';' . $phone;
         }
 
         $phone = PhoneManager::stringPhonesToArray($phone);

@@ -28,8 +28,7 @@ class OperationFixtures extends AppFixtures implements DependentFixtureInterface
                 ->setReference($faker->text(10))
                 ->setOperationGender($this->getReference(OperationGenderFixtures::getKey(random_int(1, 9))))
                 ->setTypeOperation($this->getReference(TypeOperationFixtures::getKey(random_int(0, 19))))
-                ->setAuthor($this->getReference(UserFixtures::getKey(0)))
-            ;
+                ->setAuthor($this->getReference(UserFixtures::getKey(0)));
 
             $manager->persist($entity);
             $manager->flush();

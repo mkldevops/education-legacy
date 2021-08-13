@@ -11,10 +11,12 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exception\AppException;
+use Exception;
 use Google_Client;
 use Google_Exception;
 use Google_Service_Calendar;
 use Google_Service_Drive;
+use Google_Service_Script;
 
 /**
  * Description of class GoogleCalendarManager.
@@ -36,12 +38,12 @@ class GoogleService extends AbstractService
      *
      * @return Google_Client the authorized client object
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getClient(): Google_Client
     {
         // Load previously authorized credentials from a file.
-        $credentialsPath = $this->pathTokens.DIRECTORY_SEPARATOR.'token.json';
+        $credentialsPath = $this->pathTokens . DIRECTORY_SEPARATOR . 'token.json';
         $accessToken = $this->getAccessToken($credentialsPath);
         $this->client->setAccessToken($accessToken);
 
@@ -77,7 +79,7 @@ class GoogleService extends AbstractService
     public function getAccessToken(string $credentialsPath): array
     {
         if (file_exists($credentialsPath)) {
-            $accessToken = json_decode((string) file_get_contents($credentialsPath), true);
+            $accessToken = json_decode((string)file_get_contents($credentialsPath), true);
         } else {
             // Request authorization from the user.
             $authUrl = $this->client->createAuthUrl();
@@ -98,7 +100,7 @@ class GoogleService extends AbstractService
             }
 
             file_put_contents($credentialsPath, json_encode($accessToken));
-            $this->logger->info('Credentials saved to '.$credentialsPath);
+            $this->logger->info('Credentials saved to ' . $credentialsPath);
         }
 
         return $accessToken;
@@ -110,7 +112,7 @@ class GoogleService extends AbstractService
         $this->client->setScopes([
             Google_Service_Calendar::CALENDAR,
             Google_Service_Drive::DRIVE,
-            \Google_Service_Script::WWW_GOOGLE_COM_M8_FEEDS,
+            Google_Service_Script::WWW_GOOGLE_COM_M8_FEEDS,
         ]);
 
         $this->client->setAccessType('offline');

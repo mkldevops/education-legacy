@@ -27,8 +27,7 @@ class OperationGenderFixtures extends AppFixtures implements DependentFixtureInt
             $gender = (new OperationGender())
                 ->setName($data['name'])
                 ->setEnable(true)
-                ->setCode($data['code'])
-            ;
+                ->setCode($data['code']);
 
             $manager->persist($gender);
             $manager->flush();

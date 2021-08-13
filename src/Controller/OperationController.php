@@ -146,7 +146,7 @@ class OperationController extends AbstractBaseController
                 return $this->redirect($this->generateUrl('app_operation_show', ['id' => $operation->getId()]));
             }
         } catch (Exception $e) {
-            $this->addFlash('danger', 'The Operation haven\'t been created. because : '.$e->getMessage());
+            $this->addFlash('danger', 'The Operation haven\'t been created. because : ' . $e->getMessage());
         }
 
         return $this->render('operation/new.html.twig', [
@@ -188,7 +188,7 @@ class OperationController extends AbstractBaseController
         $result = true;
 
         if (!$operation->hasStructure($this->getSchool()->getStructure())) {
-            $this->addFlash('danger', 'Vous n\'avez pas accès l\'opération numero '.$operation->getId().' avec cette structure');
+            $this->addFlash('danger', 'Vous n\'avez pas accès l\'opération numero ' . $operation->getId() . ' avec cette structure');
             $result = false;
         }
 
@@ -311,7 +311,7 @@ class OperationController extends AbstractBaseController
             $manager->remove($operation);
             $manager->flush();
 
-            $this->addFlash('success', 'L\'operation '.$operation->getId().' à été correctement supprimée');
+            $this->addFlash('success', 'L\'operation ' . $operation->getId() . ' à été correctement supprimée');
 
             return $this->redirect($this->generateUrl('app_operation_index'));
         }

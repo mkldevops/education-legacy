@@ -13,6 +13,8 @@ use App\Entity\School;
 use App\Entity\Student;
 use App\Services\AbstractFullService;
 use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
@@ -33,7 +35,7 @@ class ClassPeriodManager extends AbstractFullService
 
             $this->logger->debug(__FUNCTION__, ['classPeriod' => $classPeriod]);
         } catch (NonUniqueResultException $e) {
-            $this->logger->error('Not found class period with name : '.$name, ['name' => $name, 'period' => $period, 'school' => $school]);
+            $this->logger->error('Not found class period with name : ' . $name, ['name' => $name, 'period' => $period, 'school' => $school]);
         }
 
         return $classPeriod;
@@ -78,35 +80,34 @@ class ClassPeriodManager extends AbstractFullService
     }
 
     /**
+     * @param DateTime|DateTimeImmutable $from
      * @return array|Course[]
      *
-     * @param \DateTime|\DateTimeImmutable $from
      */
-    public function getCourses(ClassPeriod $classPeriod, int $page, int $maxResult, \DateTimeInterface $from): array
+    public function getCourses(ClassPeriod $classPeriod, int $page, int $maxResult, DateTimeInterface $from): array
     {
         $offset = ($page - 1) * $maxResult;
         $courses = $this->getEntityManager()
             ->getRepository(Course::class)
-            ->getCourseOfClass($classPeriod, $from, $maxResult, $offset)
-        ;
+            ->getCourseOfClass($classPeriod, $from, $maxResult, $offset);
 
         if (empty($courses)) {
             $courses = array_fill(0, 17, []);
         }
 
-        $this->logger->debug(__FUNCTION__.' length courses : '.count($courses));
+        $this->logger->debug(__FUNCTION__ . ' length courses : ' . count($courses));
 
         return $courses;
     }
 
     /**
-     * @param \DateTime|\DateTimeImmutable $from
+     * @param DateTime|DateTimeImmutable $from
      */
-    public function getNbCourses(ClassPeriod $classPeriod, \DateTimeInterface $from): ?int
+    public function getNbCourses(ClassPeriod $classPeriod, DateTimeInterface $from): ?int
     {
         $courses = null;
         try {
-            $courses = (int) $this->getEntityManager()
+            $courses = (int)$this->getEntityManager()
                 ->getRepository(Course::class)
                 ->createQueryBuilder('c')
                 ->select('count(c.id)')
@@ -116,7 +117,7 @@ class ClassPeriodManager extends AbstractFullService
                 ->setParameter('date', $from)
                 ->getQuery()
                 ->getSingleScalarResult();
-            $this->logger->debug(__FUNCTION__.' length total courses : '.$courses);
+            $this->logger->debug(__FUNCTION__ . ' length total courses : ' . $courses);
         } catch (NonUniqueResultException | NoResultException $e) {
             $this->logger->error($e->getMessage());
         }
@@ -145,7 +146,7 @@ class ClassPeriodManager extends AbstractFullService
                 ->findBy(['id' => $studentsId]);
 
             if (empty($students)) {
-                throw new Exception('Not found student id : '.implode(',', $studentsId));
+                throw new Exception('Not found student id : ' . implode(',', $studentsId));
             }
 
             foreach ($students as $student) {
@@ -162,7 +163,7 @@ class ClassPeriodManager extends AbstractFullService
                     $currentClassPeriodStudent->setEnd($end)
                         ->setEnable(false)
                         ->setAuthor($this->getUser())
-                        ->setComment('Change for new class '.$classPeriod->getClassSchool()->getName());
+                        ->setComment('Change for new class ' . $classPeriod->getClassSchool()->getName());
                 } else {
                     $this->logger->debug("don't have a current ClassPeriodStudent", compact($student));
                 }
@@ -234,7 +235,7 @@ class ClassPeriodManager extends AbstractFullService
             $registration = $student['dateRegistration'];
 
             $students[] = [
-                'DT_RowId' => 'student_'.$student['id'],
+                'DT_RowId' => 'student_' . $student['id'],
                 'DT_RowData' => ['id' => $student['id']],
                 'id' => $student['id'],
                 'name' => $student['name'],
@@ -279,9 +280,9 @@ class ClassPeriodManager extends AbstractFullService
             ->innerJoin('cp.classSchool', 'cs', Join::WITH, 'cs.school = :school')
             ->setParameter(':school', $school)
             ->where('cp.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('cp.enable LIKE :status')
-            ->setParameter(':status', '%'.$search.'%');
+            ->setParameter(':status', '%' . $search . '%');
     }
 
     /**
@@ -291,7 +292,7 @@ class ClassPeriodManager extends AbstractFullService
      */
     public function count(School $school, string $search)
     {
-        return (int) $this->getQueryBuilderList($school, $search)
+        return (int)$this->getQueryBuilderList($school, $search)
             ->select('count(cp.id)')
             ->getQuery()
             ->getSingleScalarResult();

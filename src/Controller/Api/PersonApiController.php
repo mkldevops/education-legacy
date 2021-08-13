@@ -30,7 +30,7 @@ class PersonApiController extends AbstractBaseController
                 'phones' => PhoneManager::getAllPhones($person),
             ])->setSuccess(true);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage());
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage());
             $response->setSuccess(false)
                 ->setMessage($e->getMessage());
         }
@@ -53,7 +53,7 @@ class PersonApiController extends AbstractBaseController
             $result = $manager->updatePhone($person, $value, $key);
             $response->setSuccess($result);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setSuccess(false)
                 ->setMessage($e->getMessage());
         }
@@ -75,7 +75,7 @@ class PersonApiController extends AbstractBaseController
             $result = $manager->deletePhone($person, $key);
             $response->setSuccess($result);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage());
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage());
             $response->setSuccess(false)
                 ->setMessage($e->getMessage());
         }

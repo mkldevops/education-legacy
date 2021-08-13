@@ -67,7 +67,12 @@ class ClassPeriod
 
     public function getName(): string
     {
-        return $this->getClassSchool()->getName().' - '.$this->period->getName();
+        return $this->getClassSchool()->getName() . ' - ' . $this->period->getName();
+    }
+
+    public function getClassSchool(): ClassSchool
+    {
+        return $this->classSchool;
     }
 
     public function setClassSchool(ClassSchool $classSchool): self
@@ -77,9 +82,9 @@ class ClassPeriod
         return $this;
     }
 
-    public function getClassSchool(): ClassSchool
+    public function getPeriod(): Period
     {
-        return $this->classSchool;
+        return $this->period;
     }
 
     public function setPeriod(Period $period): self
@@ -87,11 +92,6 @@ class ClassPeriod
         $this->period = $period;
 
         return $this;
-    }
-
-    public function getPeriod(): Period
-    {
-        return $this->period;
     }
 
     public function addStudent(ClassPeriodStudent $students): self
@@ -149,7 +149,7 @@ class ClassPeriod
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ').$teacher;
+            $str .= (empty($str) ? '' : ', ') . $teacher;
         }
 
         return $str;

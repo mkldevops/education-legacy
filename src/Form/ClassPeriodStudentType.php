@@ -21,13 +21,12 @@ class ClassPeriodStudentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-                ->add('period', TextType::class, ['label' => 'Nom'])
-                ->add('student', IntegerType::class, ['label' => 'Age minimum'])
-                ->add('comment', IntegerType::class, ['label' => 'Age maximum'])
-                ->add('professors', TextType::class, ['label' => 'Liste professeurs'])
-                ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false])
-                ->add('status', CheckboxType::class, ['label' => 'Etat', 'required' => false])
-        ;
+            ->add('period', TextType::class, ['label' => 'Nom'])
+            ->add('student', IntegerType::class, ['label' => 'Age minimum'])
+            ->add('comment', IntegerType::class, ['label' => 'Age maximum'])
+            ->add('professors', TextType::class, ['label' => 'Liste professeurs'])
+            ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false])
+            ->add('status', CheckboxType::class, ['label' => 'Etat', 'required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -38,7 +38,7 @@ class AccountStatementController extends AbstractBaseController
      *
      * @Route("/list/{page}/{search}", name="app_account_statement_index", methods={"GET"})
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      *
      * @return Response
@@ -58,9 +58,9 @@ class AccountStatementController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%'.$search.'%')
+            ->setParameter(':title', '%' . $search . '%')
             ->orWhere('e.enable LIKE :enable')
-            ->setParameter('enable', '%'.$search.'%')
+            ->setParameter('enable', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -73,9 +73,9 @@ class AccountStatementController extends AbstractBaseController
             ->getRepository(AccountStatement::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
-            ->setParameter('title', '%'.$search.'%')
+            ->setParameter('title', '%' . $search . '%')
             ->orWhere('e.enable LIKE :enable')
-            ->setParameter('enable', '%'.$search.'%')
+            ->setParameter('enable', '%' . $search . '%')
             ->orderBy('e.begin', 'DESC')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)

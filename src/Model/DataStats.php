@@ -35,8 +35,7 @@ class DataStats
     public function __construct()
     {
         $this->setSum(0)
-            ->setCount(0)
-            ;
+            ->setCount(0);
     }
 
     /**

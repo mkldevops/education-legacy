@@ -13,15 +13,15 @@ trait AmountEntityTrait
      */
     protected float $amount = 0.00;
 
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
     public function setAmount(float $amount): self
     {
         $this->amount = $amount;
 
         return $this;
-    }
-
-    public function getAmount(): ?float
-    {
-        return $this->amount;
     }
 }

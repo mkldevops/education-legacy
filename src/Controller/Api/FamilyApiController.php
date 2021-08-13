@@ -40,7 +40,7 @@ class FamilyApiController extends AbstractBaseController
                 ->setMessage('The family has been added.')
                 ->setData(['id' => $family->getId(), 'label' => $family->__toString()]);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $result->setMessage($e->getMessage())
                 ->setSuccess(false);
         }
@@ -70,7 +70,7 @@ class FamilyApiController extends AbstractBaseController
         }
 
         if (!$form->isValid()) {
-            throw new Exception('The form is not valid '.$form->getErrors());
+            throw new Exception('The form is not valid ' . $form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -102,7 +102,7 @@ class FamilyApiController extends AbstractBaseController
                 ->setMessage('The family has been updated.')
                 ->setData(['family' => $serializer->serialize($family, 'json')]);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $result->setMessage($e->getMessage())
                 ->setSuccess(false);
         }

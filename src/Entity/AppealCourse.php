@@ -26,6 +26,7 @@ class AppealCourse
     use EnableEntityTrait;
     use TimestampableEntity;
     use StudentEntityTrait;
+
     public const STATUS_NOTHING = 0;
     public const STATUS_PRESENT = 1;
     public const STATUS_ABSENT = 2;
@@ -43,6 +44,11 @@ class AppealCourse
      */
     private int $status = self::STATUS_NOTHING;
 
+    public function getCourse(): Course
+    {
+        return $this->course;
+    }
+
     public function setCourse(Course $course): self
     {
         $this->course = $course;
@@ -50,9 +56,9 @@ class AppealCourse
         return $this;
     }
 
-    public function getCourse(): Course
+    public function getStatus(): int
     {
-        return $this->course;
+        return $this->status;
     }
 
     public function setStatus(int $status): self
@@ -60,11 +66,6 @@ class AppealCourse
         $this->status = $status;
 
         return $this;
-    }
-
-    public function getStatus(): int
-    {
-        return $this->status;
     }
 
     /**

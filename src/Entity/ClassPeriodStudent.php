@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use App\Repository\ClassPeriodStudentRepository;
 use App\Traits\AuthorEntityTrait;
+use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
@@ -54,6 +56,11 @@ class ClassPeriodStudent
         return $this->getEnd()->getTimestamp() < time() && $this->getEnable();
     }
 
+    public function getEnd()
+    {
+        return $this->end;
+    }
+
     public function setEnd(DateTimeInterface $end): self
     {
         $this->end = $end;
@@ -61,29 +68,10 @@ class ClassPeriodStudent
         return $this;
     }
 
-    public function getEnd()
-    {
-        return $this->end;
-    }
-
-    /**
-     * Set begin.
-     *
-     * @return static
-     *
-     * @param \DateTime|\DateTimeImmutable $begin
-     */
-    public function setBegin(DateTimeInterface $begin)
-    {
-        $this->begin = $begin;
-
-        return $this;
-    }
-
     /**
      * Get begin.
      *
-     * @return \Datetime
+     * @return Datetime
      */
     public function getBegin()
     {
@@ -91,13 +79,15 @@ class ClassPeriodStudent
     }
 
     /**
-     * Set classPeriod.
+     * Set begin.
      *
+     * @param DateTime|DateTimeImmutable $begin
      * @return static
+     *
      */
-    public function setClassPeriod(ClassPeriod $classPeriod)
+    public function setBegin(DateTimeInterface $begin)
     {
-        $this->classPeriod = $classPeriod;
+        $this->begin = $begin;
 
         return $this;
     }
@@ -113,13 +103,13 @@ class ClassPeriodStudent
     }
 
     /**
-     * Set student.
+     * Set classPeriod.
      *
      * @return static
      */
-    public function setStudent(Student $student)
+    public function setClassPeriod(ClassPeriod $classPeriod)
     {
-        $this->student = $student;
+        $this->classPeriod = $classPeriod;
 
         return $this;
     }
@@ -132,5 +122,17 @@ class ClassPeriodStudent
     public function getStudent()
     {
         return $this->student;
+    }
+
+    /**
+     * Set student.
+     *
+     * @return static
+     */
+    public function setStudent(Student $student)
+    {
+        $this->student = $student;
+
+        return $this;
     }
 }

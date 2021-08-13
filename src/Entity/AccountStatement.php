@@ -25,65 +25,54 @@ class AccountStatement
     use TimestampableEntity;
 
     /**
+     * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="accountStatement")
+     */
+    protected Collection $operations;
+    /**
      * @ORM\Column(type="string", nullable=true)
      */
     private string $title;
-
     /**
      * @ORM\Column(type="datetime")
      */
     private DateTimeInterface $begin;
-
     /**
      * @ORM\Column(type="datetime")
      */
     private DateTimeInterface $end;
-
     /**
      * @ORM\Column(type="date", nullable=true)
      */
     private DateTimeInterface $month;
-
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private float $amountCredit = 0.00;
-
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private float $amountDebit = 0.00;
-
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private float $newBalance = 0.00;
-
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private int $numberOperations = 0;
-
     /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $reference = null;
-
     /**
      * @ORM\ManyToMany(targetEntity=Document::class, cascade={"persist"}, inversedBy="accountStatements")
      */
     private Collection $documents;
-
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="accountStatements", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private Account $account;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="accountStatement")
-     */
-    protected Collection $operations;
 
     public function __construct()
     {
@@ -97,21 +86,14 @@ class AccountStatement
         return $this->month->format('F Y');
     }
 
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setBegin(DateTimeInterface $begin): self
+    public function setTitle(string $title): self
     {
-        $this->begin = $begin;
+        $this->title = $title;
 
         return $this;
     }
@@ -121,9 +103,9 @@ class AccountStatement
         return $this->begin;
     }
 
-    public function setEnd(DateTimeInterface $end): self
+    public function setBegin(DateTimeInterface $begin): self
     {
-        $this->end = $end;
+        $this->begin = $begin;
 
         return $this;
     }
@@ -133,9 +115,9 @@ class AccountStatement
         return $this->end;
     }
 
-    public function setAccount(Account $account): self
+    public function setEnd(DateTimeInterface $end): self
     {
-        $this->account = $account;
+        $this->end = $end;
 
         return $this;
     }
@@ -143,6 +125,13 @@ class AccountStatement
     public function getAccount(): ?Account
     {
         return $this->account;
+    }
+
+    public function setAccount(Account $account): self
+    {
+        $this->account = $account;
+
+        return $this;
     }
 
     public function addDocument(Document $documents): self
@@ -185,16 +174,11 @@ class AccountStatement
         return $this->operations;
     }
 
-    public function setAmountCredit(float $amountCredit): self
+    public function calcAmount(): self
     {
-        $this->amountCredit = abs($amountCredit);
-
-        return $this;
-    }
-
-    public function addAmountCredit(float $amountCredit): self
-    {
-        $this->setAmountCredit($this->amountCredit + abs($amountCredit));
+        foreach ($this->operations as $operation) {
+            $this->addAmount($operation->getAmount());
+        }
 
         return $this;
     }
@@ -210,23 +194,9 @@ class AccountStatement
         return $this;
     }
 
-    public function calcAmount(): self
+    public function addAmountCredit(float $amountCredit): self
     {
-        foreach ($this->operations as $operation) {
-            $this->addAmount($operation->getAmount());
-        }
-
-        return $this;
-    }
-
-    public function getAmountCredit(): float
-    {
-        return $this->amountCredit;
-    }
-
-    public function setAmountDebit(float $amountDebit): self
-    {
-        $this->amountDebit = 0 - abs($amountDebit);
+        $this->setAmountCredit($this->amountCredit + abs($amountCredit));
 
         return $this;
     }
@@ -238,14 +208,26 @@ class AccountStatement
         return $this;
     }
 
+    public function getAmountCredit(): float
+    {
+        return $this->amountCredit;
+    }
+
+    public function setAmountCredit(float $amountCredit): self
+    {
+        $this->amountCredit = abs($amountCredit);
+
+        return $this;
+    }
+
     public function getAmountDebit(): float
     {
         return $this->amountDebit;
     }
 
-    public function setNewBalance(float $newBalance): self
+    public function setAmountDebit(float $amountDebit): self
     {
-        $this->newBalance = $newBalance;
+        $this->amountDebit = 0 - abs($amountDebit);
 
         return $this;
     }
@@ -255,9 +237,9 @@ class AccountStatement
         return $this->newBalance;
     }
 
-    public function setNumberOperations(int $numberOperations): self
+    public function setNewBalance(float $newBalance): self
     {
-        $this->numberOperations = $numberOperations;
+        $this->newBalance = $newBalance;
 
         return $this;
     }
@@ -274,9 +256,9 @@ class AccountStatement
         return $this->numberOperations;
     }
 
-    public function setReference(string $reference): self
+    public function setNumberOperations(int $numberOperations): self
     {
-        $this->reference = $reference;
+        $this->numberOperations = $numberOperations;
 
         return $this;
     }
@@ -286,9 +268,9 @@ class AccountStatement
         return $this->reference;
     }
 
-    public function setMonth(DateTimeInterface $month): self
+    public function setReference(string $reference): self
     {
-        $this->month = $month;
+        $this->reference = $reference;
 
         return $this;
     }
@@ -296,5 +278,12 @@ class AccountStatement
     public function getMonth(): DateTimeInterface
     {
         return $this->month;
+    }
+
+    public function setMonth(DateTimeInterface $month): self
+    {
+        $this->month = $month;
+
+        return $this;
     }
 }

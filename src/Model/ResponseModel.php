@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseModel
 {
-    protected bool $success;
-    protected string $message;
+    protected bool $success = false;
+    protected string $message = '';
     protected array $data = [];
 
     public static function responseDefault(array $data = []): object
@@ -45,7 +45,6 @@ class ResponseModel
         return $this;
     }
 
-    #[ArrayShape(['success' => 'bool', 'data' => 'array|null', 'message' => 'null|string'])]
     public function getResult(): array
     {
         return [

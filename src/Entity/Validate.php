@@ -18,6 +18,7 @@ class Validate
     use IdEntity;
     use AuthorEntityTrait;
     use TimestampableEntity;
+
     public const TYPE_MUTED = 'muted';
     public const TYPE_PRIMARY = 'primary';
     public const TYPE_INFO = 'info';
@@ -35,16 +36,25 @@ class Validate
      */
     private string $type = self::TYPE_MUTED;
 
-    public function setMessage(string $message): self
+    public function getData(): array
     {
-        $this->message = $message;
-
-        return $this;
+        return [
+            'type' => $this->getType(),
+            'created' => [
+                'time' => $this->getCreatedAt()->getTimestamp(),
+                'string' => $this->getCreatedAt()->format('d/m/Y H:i:s'),
+            ],
+            'author' => [
+                'id' => $this->getAuthor()?->getId(),
+                'name' => $this->getAuthor()?->getNameComplete(),
+            ],
+            'message' => $this->getMessage(),
+        ];
     }
 
-    public function getMessage(): ?string
+    public function getType(): string
     {
-        return $this->message;
+        return $this->type;
     }
 
     public function setType(?string $type): self
@@ -54,11 +64,6 @@ class Validate
         }
 
         return $this;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
     }
 
     public static function getListType(?string $type = null): array
@@ -83,19 +88,15 @@ class Validate
         return $list;
     }
 
-    public function getData(): array
+    public function getMessage(): ?string
     {
-        return [
-            'type' => $this->getType(),
-            'created' => [
-                'time' => $this->getCreatedAt()->getTimestamp(),
-                'string' => $this->getCreatedAt()->format('d/m/Y H:i:s'),
-            ],
-            'author' => [
-                'id' => $this->getAuthor()?->getId(),
-                'name' => $this->getAuthor()?->getNameComplete(),
-            ],
-            'message' => $this->getMessage(),
-        ];
+        return $this->message;
+    }
+
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
+
+        return $this;
     }
 }

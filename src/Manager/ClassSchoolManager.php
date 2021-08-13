@@ -14,6 +14,8 @@ use App\Entity\ClassPeriod;
 use App\Entity\ClassPeriodStudent;
 use App\Entity\Student;
 use App\Services\AbstractFullService;
+use DateTime;
+use Exception;
 
 /**
  * Description of class ClassSchoolManager.
@@ -25,7 +27,7 @@ class ClassSchoolManager extends AbstractFullService
     /**
      * @return bool
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function addStudentToClass(array $student, ClassPeriod $classPeriod)
     {
@@ -38,7 +40,7 @@ class ClassSchoolManager extends AbstractFullService
             foreach ($students as $student) {
                 $classPeriodStudent = new ClassPeriodStudent();
 
-                $oBegin = new \DateTime();
+                $oBegin = new DateTime();
 
                 // On verifie si la date debut de la periode n'est pas encore passé
                 if ($classPeriod->getPeriod()->getBegin()->getTimestamp() > time()) {

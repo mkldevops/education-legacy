@@ -35,7 +35,7 @@ class MemberController extends AbstractBaseController
         $count = $repository->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.positionName LIKE :function')
-            ->setParameter('function', '%'.$search.'%')
+            ->setParameter('function', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -43,7 +43,7 @@ class MemberController extends AbstractBaseController
 
         $memberList = $repository->createQueryBuilder('e')
             ->where('e.positionName LIKE :function')
-            ->setParameter('function', '%'.$search.'%')
+            ->setParameter('function', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()

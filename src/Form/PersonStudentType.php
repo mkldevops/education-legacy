@@ -56,8 +56,7 @@ class PersonStudentType extends PersonSimpleType
                     return $er->createQueryBuilder('f')
                         ->where('f.enable = 1');
                 },
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
