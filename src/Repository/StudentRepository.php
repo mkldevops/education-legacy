@@ -90,10 +90,9 @@ class StudentRepository extends ServiceEntityRepository
             ->setParameter(1, $period->getId())
             ->setParameter(2, $enable)
             ->setParameter(3, $school->getId())
-            ->setMaxResults($limit)
-        ;
+            ->setMaxResults($limit);
 
-        if ($limit !== null) {
+        if (null !== $limit) {
             $qb->setMaxResults($limit);
         }
 
@@ -188,6 +187,16 @@ class StudentRepository extends ServiceEntityRepository
     /**
      * Get stats student registered.
      *
+     * @return int[]
+     */
+    public function getStatsStudentRegistered(School $school, Period $period): array
+    {
+        return $this->getStatsMove($school, $period);
+    }
+
+    /**
+     * Get stats student registered.
+     *
      * @param string $fieldDate
      *
      * @return int[]
@@ -197,7 +206,7 @@ class StudentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('std')
             ->select('COUNT(std.id) + 0 AS nb')
             ->where('std.school = :school')
-            ->andWhere('std.'.$fieldDate.' BETWEEN :begin and :end')
+            ->andWhere('std.' . $fieldDate . ' BETWEEN :begin and :end')
             ->groupBy('dateMonth')
             ->orderBy('std.createdAt', 'ASC')
             ->setParameter('school', $school)
@@ -214,20 +223,10 @@ class StudentRepository extends ServiceEntityRepository
         $result = [];
 
         foreach ($data as $value) {
-            $result[$value['dateMonth']] = (int) $value['nb'];
+            $result[$value['dateMonth']] = (int)$value['nb'];
         }
 
         return $result;
-    }
-
-    /**
-     * Get stats student registered.
-     *
-     * @return int[]
-     */
-    public function getStatsStudentRegistered(School $school, Period $period): array
-    {
-        return $this->getStatsMove($school, $period);
     }
 
     /**

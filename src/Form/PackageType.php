@@ -26,8 +26,7 @@ class PackageType extends AbstractType
                 'empty_data' => 0,
                 'choices' => ['form.status_desactivate' => 0, 'form.status_activate' => 1],
             ])
-            ->add('school')
-        ;
+            ->add('school');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

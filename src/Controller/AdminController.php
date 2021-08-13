@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\Operation;
 use App\Entity\Person;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('')]
-class AdminController extends BaseController
+class AdminController extends AbstractBaseController
 {
     #[Route('/search', name: 'app_admin_seacrh', methods: ['GET', 'POST'])]
     public function search(Request $request, DashboardManager $dashboard): Response
@@ -36,7 +36,7 @@ class AdminController extends BaseController
     #[Route('', name: 'app_admin_home')]
     public function index(DashboardManager $dashboard, TranslatorInterface $translator): Response
     {
-        $data = (object) ['student' => false];
+        $data = (object)['student' => false];
         $manager = $this->getDoctrine()->getManager();
 
         $structure = $this->getEntitySchool()->getStructure();

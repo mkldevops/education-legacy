@@ -52,7 +52,6 @@ class FamilyRepository extends ServiceEntityRepository
             ->setParameter('search', $search)
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 }

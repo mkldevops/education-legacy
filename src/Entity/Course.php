@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\CourseRepository;
 use App\Traits\AuthorEntityTrait;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -70,10 +71,10 @@ class Course
     {
         $this->setStudents(new ArrayCollection())
             ->setTeachers(new ArrayCollection())
-            ->setDate(new \DateTime());
+            ->setDate(new DateTime());
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->getNameComplete();
     }
@@ -89,65 +90,67 @@ class Course
         );
     }
 
-    public function getClassPeriod() : ClassPeriod
+    public function getClassPeriod(): ClassPeriod
     {
         return $this->classPeriod;
     }
 
-    public function setClassPeriod(ClassPeriod $classPeriod) : self
+    public function setClassPeriod(ClassPeriod $classPeriod): self
     {
         $this->classPeriod = $classPeriod;
+
         return $this;
     }
 
-    public function getDate() : ?DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date) : self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
+
         return $this;
     }
 
-    public function getText() : string
+    public function getText(): string
     {
         return $this->text;
     }
 
-    public function setText(string $text) : static
+    public function setText(string $text): static
     {
         $this->text = $text;
 
         return $this;
     }
 
-    public function getHourBegin() : DateTimeInterface
+    public function getHourBegin(): DateTimeInterface
     {
         return $this->hourBegin;
     }
 
-    public function setHourBegin(DateTimeInterface $hourBegin) : static
+    public function setHourBegin(DateTimeInterface $hourBegin): static
     {
         $this->hourBegin = $hourBegin;
 
         return $this;
     }
 
-    public function getHourEnd() : ?DateTimeInterface
+    public function getHourEnd(): ?DateTimeInterface
     {
         return $this->hourEnd;
     }
 
-    public function setHourEnd(DateTimeInterface $hourEnd) : static
+    public function setHourEnd(DateTimeInterface $hourEnd): static
     {
         $this->hourEnd = $hourEnd;
 
         return $this;
     }
 
-    public function addTeacher(Teacher $teacher) : static
+    public function addTeacher(Teacher $teacher): static
     {
         if (!$this->teachers->contains($teacher)) {
             $this->teachers[] = $teacher;
@@ -156,11 +159,11 @@ class Course
         return $this;
     }
 
-    public function getTeachersToString() : string
+    public function getTeachersToString(): string
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ').$teacher;
+            $str .= (empty($str) ? '' : ', ') . $teacher;
         }
 
         return $str;
@@ -169,40 +172,44 @@ class Course
     /**
      * @return Teacher[]|Collection
      */
-    public function getTeachers() : Collection
+    public function getTeachers(): Collection
     {
         return $this->teachers;
     }
 
-    public function setTeachers(ArrayCollection $teachers) : self
+    public function setTeachers(ArrayCollection $teachers): self
     {
         $this->teachers = $teachers;
+
         return $this;
     }
 
-    public function addStudent(AppealCourse $students) : self
+    public function addStudent(AppealCourse $students): self
     {
         $this->students[] = $students;
+
         return $this;
     }
 
-    public function removeStudent(AppealCourse $students) : self
+    public function removeStudent(AppealCourse $students): self
     {
         $this->students->removeElement($students);
+
         return $this;
     }
 
     /**
      * @return Collection|Student[]
      */
-    public function getStudents() : ?Collection
+    public function getStudents(): ?Collection
     {
         return $this->students;
     }
 
-    public function setStudents(Collection $students) : self
+    public function setStudents(Collection $students): self
     {
         $this->students = $students;
+
         return $this;
     }
 
@@ -214,6 +221,7 @@ class Course
     public function setIdEvent(string $idEvent): self
     {
         $this->idEvent = $idEvent;
+
         return $this;
     }
 }

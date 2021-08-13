@@ -12,6 +12,7 @@ namespace App\Manager;
 
 use App\Entity\Person;
 use App\Services\AbstractFullService;
+use Exception;
 
 /**
  * Description of class CourseManager.
@@ -99,8 +100,7 @@ class PhoneManager extends AbstractFullService
     /**
      * updatePhone.
      *
-     *
-     * @throws \Exception
+     * @throws Exception
      */
     public function updatePhone(Person $person, string $value, string $key = null): bool
     {
@@ -119,7 +119,7 @@ class PhoneManager extends AbstractFullService
     /**
      * updatePhone.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function deletePhone(Person $person, string $key): bool
     {

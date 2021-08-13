@@ -49,6 +49,7 @@ class UserCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
             $nameComplete = TextareaField::new('NameComplete');
+
             return [$id, $username, $nameComplete, $email, $roles, $enable, $lastLogin];
         } elseif (Crud::PAGE_DETAIL === $pageName) {
             return [$id, $username, $roles, $password, $surname, $email, $lastLogin, $name, $enable, $createdAt, $updatedAt, $deletedAt, $schoolAccessRight, $author];

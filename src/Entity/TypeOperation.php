@@ -9,13 +9,9 @@ use App\Traits\AuthorEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\DescriptionEntity;
 use Fardus\Traits\Symfony\Entity\DescriptionEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntity;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntity;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -32,6 +28,7 @@ class TypeOperation
     use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
+
     public const TYPE_AMOUNT_NEGATIVE = 'negative';
     public const TYPE_AMOUNT_POSITIVE = 'positive';
     public const TYPE_AMOUNT_MIXTE = 'mixte';
@@ -39,17 +36,14 @@ class TypeOperation
     public const TYPE_CODE_PAYMENT_PACKAGE_STUDENT = 'PPS';
     public const TYPE_CODE_SPLIT = 'SPLIT';
     public const TYPE_CODE_TO_DEFINE = 'TO_DEFINE';
-
-    /**
-     * @ORM\ManyToOne(targetEntity=TypeOperation::class, inversedBy="typeOperations")
-     */
-    private ?TypeOperation $parent = null;
-
     /**
      * @ORM\OneToMany(targetEntity=TypeOperation::class, mappedBy="parent")
      */
     protected Collection $typeOperations;
-
+    /**
+     * @ORM\ManyToOne(targetEntity=TypeOperation::class, inversedBy="typeOperations")
+     */
+    private ?TypeOperation $parent = null;
     /**
      * @ORM\Column(type="string")
      */
@@ -78,7 +72,12 @@ class TypeOperation
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
+    }
+
+    public function getShortName(): ?string
+    {
+        return $this->shortName;
     }
 
     public function setShortName(?string $shortName): self
@@ -88,9 +87,9 @@ class TypeOperation
         return $this;
     }
 
-    public function getShortName(): ?string
+    public function getParent(): self
     {
-        return $this->shortName;
+        return $this->parent;
     }
 
     public function setParent(?TypeOperation $parent): self
@@ -98,11 +97,6 @@ class TypeOperation
         $this->parent = $parent;
 
         return $this;
-    }
-
-    public function getParent(): self
-    {
-        return $this->parent;
     }
 
     public function addTypeOperation(TypeOperation $typeOperations): self
@@ -124,21 +118,14 @@ class TypeOperation
         return $this->typeOperations;
     }
 
-    public function setCode(?string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
     public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function setTypeAmount(string $typeAmount): self
+    public function setCode(?string $code): self
     {
-        $this->typeAmount = $typeAmount;
+        $this->code = $code;
 
         return $this;
     }
@@ -148,12 +135,9 @@ class TypeOperation
         return $this->typeAmount;
     }
 
-    /**
-     * Set isInternalTransfert.
-     */
-    public function setIsInternalTransfert(bool $isInternalTransfert): self
+    public function setTypeAmount(string $typeAmount): self
     {
-        $this->isInternalTransfert = $isInternalTransfert;
+        $this->typeAmount = $typeAmount;
 
         return $this;
     }
@@ -166,5 +150,15 @@ class TypeOperation
     public function getIsInternalTransfert()
     {
         return $this->isInternalTransfert;
+    }
+
+    /**
+     * Set isInternalTransfert.
+     */
+    public function setIsInternalTransfert(bool $isInternalTransfert): self
+    {
+        $this->isInternalTransfert = $isInternalTransfert;
+
+        return $this;
     }
 }

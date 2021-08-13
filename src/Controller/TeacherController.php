@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Teacher;
 use App\Form\TeacherType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/teacher")
  * @IsGranted("ROLE_DIRECTOR")
  */
-class TeacherController extends BaseController
+class TeacherController extends AbstractBaseController
 {
     /**
      * @Route("", name="app_teacher_index", methods={"GET"})

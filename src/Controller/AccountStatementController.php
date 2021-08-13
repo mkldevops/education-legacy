@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
@@ -31,14 +31,14 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
  */
-class AccountStatementController extends BaseController
+class AccountStatementController extends AbstractBaseController
 {
     /**
      * Lists all AccountStatement entities.
      *
      * @Route("/list/{page}/{search}", name="app_account_statement_index", methods={"GET"})
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      *
      * @return Response
@@ -58,9 +58,9 @@ class AccountStatementController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%'.$search.'%')
+            ->setParameter(':title', '%' . $search . '%')
             ->orWhere('e.enable LIKE :enable')
-            ->setParameter('enable', '%'.$search.'%')
+            ->setParameter('enable', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -73,9 +73,9 @@ class AccountStatementController extends BaseController
             ->getRepository(AccountStatement::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
-            ->setParameter('title', '%'.$search.'%')
+            ->setParameter('title', '%' . $search . '%')
             ->orWhere('e.enable LIKE :enable')
-            ->setParameter('enable', '%'.$search.'%')
+            ->setParameter('enable', '%' . $search . '%')
             ->orderBy('e.begin', 'DESC')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)

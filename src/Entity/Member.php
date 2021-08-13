@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\MemberRepository;
 use App\Traits\AuthorEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
@@ -11,7 +12,6 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use App\Repository\MemberRepository;
 
 /**
  * @ORM\Table(name="`person_member`")
@@ -43,12 +43,17 @@ class Member
 
     public function __toString(): string
     {
-        return (string) $this->person;
+        return (string)$this->person;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPositionName(): ?string
+    {
+        return $this->positionName;
     }
 
     public function setPositionName(string $positionName): self
@@ -58,9 +63,9 @@ class Member
         return $this;
     }
 
-    public function getPositionName(): ?string
+    public function getPerson(): ?Person
     {
-        return $this->positionName;
+        return $this->person;
     }
 
     public function setPerson(?Person $person): self
@@ -73,9 +78,9 @@ class Member
         return $this;
     }
 
-    public function getPerson(): ?Person
+    public function getStructure(): ?Structure
     {
-        return $this->person;
+        return $this->structure;
     }
 
     public function setStructure(Structure $structure): ?Member
@@ -83,10 +88,5 @@ class Member
         $this->structure = $structure;
 
         return $this;
-    }
-
-    public function getStructure(): ?Structure
-    {
-        return $this->structure;
     }
 }

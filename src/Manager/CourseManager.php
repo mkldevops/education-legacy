@@ -18,7 +18,7 @@ use App\Entity\School;
 use App\Exception\AppException;
 use App\Services\AbstractFullService;
 use App\Services\GoogleCalendarService;
-use phpDocumentor\Reflection\DocBlock\Tags\Throws;
+use DateTime;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -31,60 +31,6 @@ class CourseManager extends AbstractFullService
     private GoogleCalendarService $googleCalendar;
 
     private ClassPeriodManager $classPeriodManager;
-
-    /**
-     * @throws AppException
-     */
-    public function generate(Period $period, School $school): int
-    {
-        $courseEvents = $this->googleCalendar
-            ->setTimeMin($period->getBegin())
-            ->setTimeMax($period->getEnd())
-            ->getEvents('Cours');
-
-        $this->logger->debug(__METHOD__, ['courseEvents' => $courseEvents]);
-
-        foreach ($courseEvents as $courseEvent) {
-            $course = $this->getEntityManager()
-                ->getRepository(Course::class)
-                ->findOneBy(['idEvent' => $courseEvent->getId()]);
-
-            if (!$course instanceof Course) {
-                $this->logger->debug(__FUNCTION__.' new instance of course', ['course' => $course]);
-                $course = new Course();
-            }
-
-            $name = preg_replace("/(\w+) (\w+)( .*+)?/", '$2', $courseEvent->getSummary());
-            $classPeriod = $this->classPeriodManager->findClassPeriod($name, $period, $school);
-
-            if (!$classPeriod instanceof ClassPeriod) {
-                $this->logger->warning(__FUNCTION__.' Not found class period : '.$name);
-                unset($course);
-                continue;
-            }
-
-            $begin = new \DateTime($courseEvent->getStart()->getDateTime());
-            $end = new \DateTime($courseEvent->getEnd()->getDateTime());
-
-            $course
-                ->setIdEvent($courseEvent->getId())
-                ->setClassPeriod($classPeriod)
-                ->setText($courseEvent->getSummary())
-                ->setComment($courseEvent->getDescription())
-                ->setEnable('confirmed' === $courseEvent->getStatus())
-                ->setDate($begin)
-                ->setHourBegin($begin)
-                ->setHourEnd($end)
-                ->setCreatedAt(new \DateTime($courseEvent->getCreated()))
-                ->setAuthor($this->getUser())
-            ;
-
-            $this->getEntityManager()->persist($course);
-            $this->getEntityManager()->flush();
-        }
-
-        return count($courseEvents);
-    }
 
     /**
      * @throws AppException
@@ -132,13 +78,71 @@ class CourseManager extends AbstractFullService
 
         if (!empty($status)) {
             if (!isset($list[$status])) {
-                throw new AppException('not found status : '.$status);
+                throw new AppException('not found status : ' . $status);
             }
 
             return $list[$status];
         }
 
         return $list;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function generate(Period $period, School $school): int
+    {
+        $courseEvents = $this->googleCalendar
+            ->setTimeMin($period->getBegin())
+            ->setTimeMax($period->getEnd())
+            ->getEvents('Cours');
+
+        $this->logger->debug(__METHOD__, ['courseEvents' => $courseEvents]);
+
+        foreach ($courseEvents as $courseEvent) {
+            $course = $this->getEntityManager()
+                ->getRepository(Course::class)
+                ->findOneBy(['idEvent' => $courseEvent->getId()]);
+
+            if (!$course instanceof Course) {
+                $this->logger->debug(__FUNCTION__ . ' new instance of course', ['course' => $course]);
+                $course = new Course();
+            }
+
+            $name = preg_replace("/(\w+) (\w+)( .*+)?/", '$2', $courseEvent->getSummary());
+            $classPeriod = $this->classPeriodManager->findClassPeriod($name, $period, $school);
+
+            if (!$classPeriod instanceof ClassPeriod) {
+                $this->logger->warning(__FUNCTION__ . ' Not found class period : ' . $name);
+                unset($course);
+                continue;
+            }
+
+            $begin = new DateTime($courseEvent->getStart()->getDateTime());
+            $end = new DateTime($courseEvent->getEnd()->getDateTime());
+
+            $course
+                ->setIdEvent($courseEvent->getId())
+                ->setClassPeriod($classPeriod)
+                ->setText($courseEvent->getSummary())
+                ->setComment($courseEvent->getDescription())
+                ->setEnable('confirmed' === $courseEvent->getStatus())
+                ->setDate($begin)
+                ->setHourBegin($begin)
+                ->setHourEnd($end)
+                ->setCreatedAt(new DateTime($courseEvent->getCreated()))
+                ->setAuthor($this->getUser());
+
+            $this->getEntityManager()->persist($course);
+            $this->getEntityManager()->flush();
+        }
+
+        return count($courseEvents);
+    }
+
+    public function getGoogleCalendar(): ?GoogleCalendarService
+    {
+        return $this->googleCalendar;
     }
 
     #[Required]
@@ -149,9 +153,9 @@ class CourseManager extends AbstractFullService
         return $this;
     }
 
-    public function getGoogleCalendar(): ?GoogleCalendarService
+    public function getClassPeriodManager(): ClassPeriodManager
     {
-        return $this->googleCalendar;
+        return $this->classPeriodManager;
     }
 
     #[Required]
@@ -160,10 +164,5 @@ class CourseManager extends AbstractFullService
         $this->classPeriodManager = $classPeriodManager;
 
         return $this;
-    }
-
-    public function getClassPeriodManager(): ClassPeriodManager
-    {
-        return $this->classPeriodManager;
     }
 }

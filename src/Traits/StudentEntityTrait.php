@@ -14,15 +14,15 @@ trait StudentEntityTrait
      */
     protected ?Student $student = null;
 
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
     public function setStudent(Student $student): self
     {
         $this->student = $student;
 
         return $this;
-    }
-
-    public function getStudent(): ?Student
-    {
-        return $this->student;
     }
 }

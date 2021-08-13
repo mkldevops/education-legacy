@@ -6,9 +6,6 @@ namespace App\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController as AdminController;
 
-/**
- * Class EasyAdminController.
- */
 class EasyAdminController extends AdminController
 {
     /**

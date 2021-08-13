@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\AppealCourse;
 use App\Entity\Course;
 use App\Exception\InvalidArgumentException;
@@ -32,13 +32,13 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/course")
  * @IsGranted("ROLE_TEACHER")
  */
-class CourseController extends BaseController
+class CourseController extends AbstractBaseController
 {
     /**
      * @Route("", name="app_course_index", methods={"GET"})
      * @Template()
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      *
      * @throws InvalidArgumentException
@@ -244,7 +244,7 @@ class CourseController extends BaseController
      */
     public function saveAppealAction(Request $request, Course $course)
     {
-        $response = (object) [
+        $response = (object)[
             'success' => false,
             'error' => [],
             'students' => [],
@@ -260,7 +260,7 @@ class CourseController extends BaseController
             $studentId = $appealCourse->getStudent()->getId();
 
             if (array_key_exists($studentId, $listStudentStatus)) {
-                $status = (int) $listStudentStatus[$studentId]['status'];
+                $status = (int)$listStudentStatus[$studentId]['status'];
             } else {
                 $name = $appealCourse->getStudent()->getNameComplete();
                 $response->error[] = sprintf('%s n\'est pas dans la liste', $name);
@@ -304,11 +304,11 @@ class CourseController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $courseManager->generate($this->getPeriod(), $this->getSchool());
 
-            if ($result !== 0) {
-                $this->addFlash('success', 'The course is successfully generated : '.$result);
+            if (0 !== $result) {
+                $this->addFlash('success', 'The course is successfully generated : ' . $result);
             } else {
                 $logs = $courseManager->getLogger()->getLogs();
-                $this->addFlash('danger', 'An error occurred during the process <br />'.print_r($logs, true));
+                $this->addFlash('danger', 'An error occurred during the process <br />' . print_r($logs, true));
             }
 
             return $this->redirectToRoute('app_course_index');

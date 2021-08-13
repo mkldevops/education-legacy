@@ -40,8 +40,7 @@ class StudentCommentType extends AbstractType
                     StudentComment::COMMENT_WARNING => 'Avertissement',
                     StudentComment::COMMENT_ALERT => 'Alerte',
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

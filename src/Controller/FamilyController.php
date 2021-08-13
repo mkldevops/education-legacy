@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Student;
@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/family")
  */
-class FamilyController extends BaseController
+class FamilyController extends AbstractBaseController
 {
     /**
      * Lists all family entities.

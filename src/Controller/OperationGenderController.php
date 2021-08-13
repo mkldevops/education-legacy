@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\OperationGender;
 use App\Form\OperationGenderType;
 use Doctrine\ORM\NonUniqueResultException;
@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/operation-gender")
  * @IsGranted("ROLE_ACCOUNTANT")
  */
-class OperationGenderController extends BaseController
+class OperationGenderController extends AbstractBaseController
 {
     /**
      * Lists all OperationGender entities.
@@ -44,9 +44,9 @@ class OperationGenderController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.code LIKE :code')
-            ->setParameter(':code', '%'.$search.'%')
+            ->setParameter(':code', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -56,9 +56,9 @@ class OperationGenderController extends BaseController
             ->getRepository(OperationGender::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.code LIKE :code')
-            ->setParameter(':code', '%'.$search.'%')
+            ->setParameter(':code', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -222,7 +222,7 @@ class OperationGenderController extends BaseController
 
         $operationGender = $em->getRepository('OperationGender')->find($id);
 
-        if ($operationGender === null) {
+        if (null === $operationGender) {
             throw $this->createNotFoundException('Unable to find OperationGender entity.');
         }
 

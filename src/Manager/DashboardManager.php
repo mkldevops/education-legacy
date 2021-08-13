@@ -25,68 +25,11 @@ use Symfony\Component\Yaml\Yaml;
 class DashboardManager extends AbstractFullService
 {
     /**
-     * Get highChartStatsNumberStudents.
-     *
-     * @throws Exception
-     */
-    public function highChartStatsNumberStudents(Period $period, School $school): Highchart
-    {
-        $manager = $this->getEntityManager();
-
-        $registred = $manager->getRepository(Student::class)
-            ->getStatsStudentRegistered($school, $period)
-        ;
-        $desactivated = $manager->getRepository(Student::class)
-            ->getStatsStudentDeactivated($school, $period)
-        ;
-
-        $data = (object) ['registred' => [], 'desactivated' => [], 'average' => []];
-        $tmp = array_merge($registred, $desactivated);
-        ksort($tmp);
-        $current = new DateTime(key($tmp));
-
-        $chart = new Highchart();
-        $chart->chart->renderTo = 'stats-number-students';
-        $chart->title->text = 'Stats Number Students';
-
-        while ($current->getTimeStamp() <= time()) {
-            $key = $current->format('Y-m');
-            $chart->xAxis->categories[] = $current->format('M Y');
-
-            $data->registred[] = $nbRregistred = isset($registred[$key]) ? $registred[$key] : 0;
-            $data->desactivated[] = $nbDesactivated = isset($desactivated[$key]) ? -$desactivated[$key] : 0;
-            $data->average[] = $nbRregistred + $nbDesactivated;
-
-            $current->add(new DateInterval('P1M'));
-        }
-
-        $chart->series[] = [
-            'type' => 'column',
-            'name' => 'Registred',
-            'data' => $data->registred,
-        ];
-
-        $chart->series[] = [
-            'type' => 'column',
-            'name' => 'Desactivated',
-            'data' => $data->desactivated,
-        ];
-
-        $chart->series[] = [
-            'type' => 'spline',
-            'name' => 'Average',
-            'data' => $data->average,
-        ];
-
-        return $chart;
-    }
-
-    /**
      * @throws Exception
      */
     public static function generateItemsOfMenu(string $route = null): array
     {
-        $file = __DIR__.'/../../config/menu.yml';
+        $file = __DIR__ . '/../../config/menu.yml';
         if (!is_file($file)) {
             throw new AppException("No such file or directory : $file");
         }
@@ -136,6 +79,70 @@ class DashboardManager extends AbstractFullService
         return $menus;
     }
 
+    public static function size(float $int): string
+    {
+        $si_prefix = ['B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB'];
+        $base = 1024;
+        $class = min((int)log($int, $base), count($si_prefix) - 1);
+
+        return sprintf('%1.2f', $int / $base ** $class) . ' ' . $si_prefix[$class];
+    }
+
+    /**
+     * Get highChartStatsNumberStudents.
+     *
+     * @throws Exception
+     */
+    public function highChartStatsNumberStudents(Period $period, School $school): Highchart
+    {
+        $manager = $this->getEntityManager();
+
+        $registred = $manager->getRepository(Student::class)
+            ->getStatsStudentRegistered($school, $period);
+        $desactivated = $manager->getRepository(Student::class)
+            ->getStatsStudentDeactivated($school, $period);
+
+        $data = (object)['registred' => [], 'desactivated' => [], 'average' => []];
+        $tmp = array_merge($registred, $desactivated);
+        ksort($tmp);
+        $current = new DateTime(key($tmp));
+
+        $chart = new Highchart();
+        $chart->chart->renderTo = 'stats-number-students';
+        $chart->title->text = 'Stats Number Students';
+
+        while ($current->getTimeStamp() <= time()) {
+            $key = $current->format('Y-m');
+            $chart->xAxis->categories[] = $current->format('M Y');
+
+            $data->registred[] = $nbRregistred = isset($registred[$key]) ? $registred[$key] : 0;
+            $data->desactivated[] = $nbDesactivated = isset($desactivated[$key]) ? -$desactivated[$key] : 0;
+            $data->average[] = $nbRregistred + $nbDesactivated;
+
+            $current->add(new DateInterval('P1M'));
+        }
+
+        $chart->series[] = [
+            'type' => 'column',
+            'name' => 'Registred',
+            'data' => $data->registred,
+        ];
+
+        $chart->series[] = [
+            'type' => 'column',
+            'name' => 'Desactivated',
+            'data' => $data->desactivated,
+        ];
+
+        $chart->series[] = [
+            'type' => 'spline',
+            'name' => 'Average',
+            'data' => $data->average,
+        ];
+
+        return $chart;
+    }
+
     public function search(string $search = null): array
     {
         $result = [];
@@ -161,18 +168,9 @@ class DashboardManager extends AbstractFullService
                 ->getRepository(Document::class)
                 ->search($search);
         } catch (Exception $exception) {
-            $this->logger->error(__METHOD__.' '.$exception->getMessage());
+            $this->logger->error(__METHOD__ . ' ' . $exception->getMessage());
         }
 
         return $result;
-    }
-
-    public static function size(int $int)
-    {
-        $si_prefix = ['B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB'];
-        $base = 1024;
-        $class = min((int) log($int, $base), count($si_prefix) - 1);
-
-        return sprintf('%1.2f', $int / $base ** $class).' '.$si_prefix[$class];
     }
 }

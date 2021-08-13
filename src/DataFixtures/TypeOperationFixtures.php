@@ -35,13 +35,12 @@ class TypeOperationFixtures extends AppFixtures
                 ->setIsInternalTransfert($item['INTERNAL_TRANSFERT'])
                 ->setShortName($item['SHORT_NAME'])
                 ->setStatus($item['STATUS'])
-                ->setParent($parent)
-            ;
+                ->setParent($parent);
 
             $manager->persist($entity);
             $manager->flush();
 
-            $this->addReference(self::getKey((int) $item['ID']), $entity);
+            $this->addReference(self::getKey((int)$item['ID']), $entity);
         }
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\Student;
 use App\Exception\InvalidArgumentException;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/api/class-period")
  */
-class ClassPeriodApiController extends BaseController
+class ClassPeriodApiController extends AbstractBaseController
 {
     /**
      * Get student WithOut Class School to Period selected.
@@ -49,7 +49,6 @@ class ClassPeriodApiController extends BaseController
      *     options={"expose"=true}
      *    )
      *
-     *
      * @return JsonResponse
      */
     public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null)
@@ -70,7 +69,7 @@ class ClassPeriodApiController extends BaseController
             }
         } catch (Exception $e) {
             $response->errors[] = $e->getMessage();
-            $this->getLogger()->error(__METHOD__.' '.$e->getMessage(), $e->getTrace());
+            $this->getLogger()->error(__METHOD__ . ' ' . $e->getMessage(), $e->getTrace());
         }
 
         return new JsonResponse($response, empty($response->errors) ? 200 : 500);

@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Services\GoogleService;
 use Exception;
-use Google_Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,6 +40,7 @@ class GoogleController extends AbstractController
             $client = $googleService->setAuthCode($form->get('code')->getData())
                 ->getClient();
             $this->addFlash('success', 'You are authentified');
+
             return $this->redirectToRoute('app_course_generate');
 
             $this->addFlash('danger', 'You are not authentified');

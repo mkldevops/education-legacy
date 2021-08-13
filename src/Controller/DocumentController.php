@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Manager\DocumentManager;
@@ -27,14 +27,14 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/document")
  */
-class DocumentController extends BaseController
+class DocumentController extends AbstractBaseController
 {
     /**
      * Lists all Document entities.
      *
      * @Route("/list/{page}/{search}", name="app_document_index", methods={"GET"})
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      *
      * @return Response
@@ -54,9 +54,9 @@ class DocumentController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.path LIKE :path')
-            ->setParameter(':path', '%'.$search.'%')
+            ->setParameter(':path', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -68,9 +68,9 @@ class DocumentController extends BaseController
             ->getRepository(Document::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.path LIKE :path')
-            ->setParameter(':path', '%'.$search.'%')
+            ->setParameter(':path', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -324,7 +324,7 @@ class DocumentController extends BaseController
      */
     public function getBaseUrl(Request $request)
     {
-        return $request->getScheme().'://'.$request->getHttpHost().$request->getBasePath();
+        return $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
     }
 
     /**

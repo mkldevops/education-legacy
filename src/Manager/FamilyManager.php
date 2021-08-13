@@ -36,7 +36,7 @@ class FamilyManager extends AbstractFullService
      */
     public function getPackages(array $persons, Period $period): void
     {
-        $students = array_map(fn ($person) => $person->getStudent() ?? null, $persons);
+        $students = array_map(fn($person) => $person->getStudent() ?? null, $persons);
 
         $packages = $this->entityManager->getRepository(PackageStudentPeriod::class)
             ->findBy(['student' => $students, 'period' => $period]);

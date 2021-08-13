@@ -30,7 +30,6 @@ class TeacherRepository extends ServiceEntityRepository
             ->innerJoin('cp.classSchool', 'cs')
             ->where('cs.school = :school')
             ->setParameter('school', $school)
-            ->andWhere('t.enable = true')
-            ;
+            ->andWhere('t.enable = true');
     }
 }

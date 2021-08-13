@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\StudentComment;
 use App\Form\StudentCommentType;
 use Doctrine\ORM\NonUniqueResultException;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/student-comment')]
-class StudentCommentController extends BaseController
+class StudentCommentController extends AbstractBaseController
 {
     /**
      * @throws NonUniqueResultException|NoResultException
@@ -35,11 +35,11 @@ class StudentCommentController extends BaseController
             ->innerJoin('e.author', 'a')
             ->innerJoin('e.student', 's')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%'.$search.'%')
+            ->setParameter(':title', '%' . $search . '%')
             ->orWhere('e.text LIKE :text')
-            ->setParameter(':text', '%'.$search.'%')
+            ->setParameter(':text', '%' . $search . '%')
             ->orWhere('e.type LIKE :type')
-            ->setParameter(':type', '%'.$search.'%')
+            ->setParameter(':type', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -49,11 +49,11 @@ class StudentCommentController extends BaseController
             ->getRepository(StudentComment::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%'.$search.'%')
+            ->setParameter(':title', '%' . $search . '%')
             ->orWhere('e.text LIKE :text')
-            ->setParameter(':text', '%'.$search.'%')
+            ->setParameter(':text', '%' . $search . '%')
             ->orWhere('e.type LIKE :type')
-            ->setParameter(':type', '%'.$search.'%')
+            ->setParameter(':type', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()

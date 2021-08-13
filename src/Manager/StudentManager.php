@@ -39,12 +39,12 @@ class StudentManager extends AbstractFullService
 
             // if student is desactivated
             if (empty($data['student']['enable'])) {
-                $data['amountTotal'] = (float) $data['paymentTotal'];
+                $data['amountTotal'] = (float)$data['paymentTotal'];
                 $data['status'] = PackageStudentPeriod::STATUS_PAYMENT_SUCCESS;
                 $data['percentage'] = 100;
             } else {
                 if (!empty($data['amountTotal'])) {
-                    $data['percentage'] = round((float) $data['paymentTotal'] / (float) $data['amountTotal'] * 100);
+                    $data['percentage'] = round((float)$data['paymentTotal'] / (float)$data['amountTotal'] * 100);
                 }
 
                 $data['status'] = PackageStudentPeriod::getStatusPaymentsStatic($data['percentage'], $period);
@@ -54,8 +54,8 @@ class StudentManager extends AbstractFullService
             ++$list['total']['type'][$data['status']];
 
             $list['total']['discount'] += isset($student['packagePeriods'][0]) ? $student['packagePeriods'][0]['discount'] : 0;
-            $list['total']['totalPaid'] += (int) $data['paymentTotal'];
-            $list['total']['totalPreview'] += (int) $data['amountTotal'];
+            $list['total']['totalPaid'] += (int)$data['paymentTotal'];
+            $list['total']['totalPreview'] += (int)$data['amountTotal'];
         }
 
         if (!empty($list['total']['totalPreview'])) {
@@ -99,8 +99,7 @@ class StudentManager extends AbstractFullService
 
         $students = $this->getEntityManager()
             ->getRepository(Student::class)
-            ->findBy(['person' => null])
-            ;
+            ->findBy(['person' => null]);
 
         if (empty($students)) {
             return $response->setSuccess(true)
@@ -110,7 +109,7 @@ class StudentManager extends AbstractFullService
         foreach ($students as $student) {
             $person = (new Person())
                 ->setAuthor($student->getAuthor())
-                ->setEnable((bool) $student->getStatus())
+                ->setEnable((bool)$student->getStatus())
                 ->setAddress($student->getAddress())
                 ->setBirthday($student->getBirthday())
                 ->setBirthplace($student->getBirthplace())
@@ -122,8 +121,7 @@ class StudentManager extends AbstractFullService
                 ->setImage($student->getImage())
                 ->setPhone($student->getPhone())
                 ->setZip($student->getPostcode())
-                ->setCreatedAt($student->getCreatedAt())
-                ;
+                ->setCreatedAt($student->getCreatedAt());
 
             $student->setPerson($person);
             $this->getEntityManager()->persist($person);
@@ -147,8 +145,7 @@ class StudentManager extends AbstractFullService
                 'period' => $packageStudentPeriod->getPeriod(),
                 'package' => $packageStudentPeriod->getPackage(),
                 'student' => $packageStudentPeriod->getStudent(),
-            ])
-        ;
+            ]);
 
         if (!empty($hasPackage)) {
             throw new Exception('The package is already affected to student');

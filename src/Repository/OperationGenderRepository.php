@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\OperationGender;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,7 +25,7 @@ class OperationGenderRepository extends ServiceEntityRepository
     /**
      * Get period available.
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getAvailable()
     {

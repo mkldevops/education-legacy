@@ -6,18 +6,15 @@ namespace App\Services;
 
 use App\Entity\Period;
 use App\Entity\School;
-use App\Entity\Student;
 use App\Repository\PeriodRepository;
 use App\Repository\StudentRepository;
 use Imagick;
 use ImagickDraw;
+use ImagickDrawException;
 use ImagickException;
 use ImagickPixel;
 use Symfony\Component\HttpFoundation\File\File;
 
-/**
- * Class DiplomaService.
- */
 class DiplomaService extends AbstractFullService
 {
     public const FONT_MILLENIA = 'millenia.ttf';
@@ -30,18 +27,17 @@ class DiplomaService extends AbstractFullService
     private string $pathUploads;
 
     public function __construct(
-        private PeriodRepository $periodRepository,
+        private PeriodRepository  $periodRepository,
         private StudentRepository $studentRepository
-    )
-    {
+    ) {
     }
 
     /**
      * @throws ImagickException
      */
-    public function generate(School $school, Period $period = null, int $limit = 1) : bool
+    public function generate(School $school, Period $period = null, int $limit = 1): bool
     {
-        if ($period === null) {
+        if (null === $period) {
             $period = $this->periodRepository->getCurrentPeriod();
         }
 
@@ -56,7 +52,7 @@ class DiplomaService extends AbstractFullService
 
     /**
      * @throws ImagickException
-     * @throws \ImagickDrawException
+     * @throws ImagickDrawException
      */
     public function getDiplomaStudent(string $student, string|int $id = null): Imagick
     {
@@ -65,7 +61,7 @@ class DiplomaService extends AbstractFullService
         $image = new Imagick($this->file->getRealPath());
 
         $draw = new ImagickDraw();
-        $draw->setFont($this->pathFont.DIRECTORY_SEPARATOR.self::FONT_MILLENIA);
+        $draw->setFont($this->pathFont . DIRECTORY_SEPARATOR . self::FONT_MILLENIA);
         $draw->setFontSize(200);
         $draw->setFontWeight(900);
         $draw->setFillColor('#444');
@@ -80,7 +76,7 @@ class DiplomaService extends AbstractFullService
         $draw->annotation($x, $y, wordwrap(ucwords(strtolower($student)), 20, "\n"));
 
         $draw->setFontSize(250);
-        $draw->setFont($this->pathFont.DIRECTORY_SEPARATOR.self::FONT_SIGNATARA);
+        $draw->setFont($this->pathFont . DIRECTORY_SEPARATOR . self::FONT_SIGNATARA);
         $x = $image->getImageWidth() / 5.5;
         $y = $image->getImageHeight() / 1.11;
 
@@ -89,7 +85,7 @@ class DiplomaService extends AbstractFullService
         $image->drawImage($draw);
         $image->setImageFormat('jpeg');
 
-        $image->writeImage($this->pathUploads.DIRECTORY_SEPARATOR.$id.'.jpeg');
+        $image->writeImage($this->pathUploads . DIRECTORY_SEPARATOR . $id . '.jpeg');
 
         return $image;
     }
@@ -101,16 +97,16 @@ class DiplomaService extends AbstractFullService
         return $this;
     }
 
+    public function setFileFromPath(string $path): self
+    {
+        return $this->setFile(new File($path));
+    }
+
     public function setFile(File $file): self
     {
         $this->file = $file;
 
         return $this;
-    }
-
-    public function setFileFromPath(string $path): self
-    {
-        return $this->setFile(new File($path));
     }
 
     public function setPathUploads(string $pathUploads): DiplomaService

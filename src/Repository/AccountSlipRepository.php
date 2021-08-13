@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\AccountSlip;
 use App\Entity\Structure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,7 +24,7 @@ class AccountSlipRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getAccountSlipByRefs(string $ref, Structure $structure, string $gender): ?AccountSlip
     {
@@ -35,8 +36,7 @@ class AccountSlipRepository extends ServiceEntityRepository
             ->andWhere('a.gender = :gender')
             ->setParameter('ref', $ref)
             ->setParameter('structure', $structure)
-            ->setParameter('gender', $gender)
-        ;
+            ->setParameter('gender', $gender);
 
         return $qb->getQuery()->getSingleResult();
     }

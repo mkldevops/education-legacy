@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Manager\StudentManager;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +23,7 @@ class StudentCommand extends Command
 
     protected static $defaultName = 'app:education:student';
 
-    private \App\Manager\StudentManager $studentManager;
+    private StudentManager $studentManager;
 
     /**
      * StudentCommand constructor.
@@ -41,14 +42,13 @@ class StudentCommand extends Command
         $this
             ->setDescription('...')
             ->addArgument(self::ARG_ACTION, InputArgument::REQUIRED, 'Argument description')
-            ->addOption(self::OPT_LIMIT, null, InputOption::VALUE_NONE, 'Option description')
-        ;
+            ->addOption(self::OPT_LIMIT, null, InputOption::VALUE_NONE, 'Option description');
     }
 
     /**
      * @return int|void|null
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -59,13 +59,13 @@ class StudentCommand extends Command
             switch ($action) {
                 case self::ACTION_SYNCHRONIZE:
                     $result = $this->studentManager->synchronize($limit);
-                    $output->writeln('SUCCESS : '.json_encode($result->getResult()));
+                    $output->writeln('SUCCESS : ' . json_encode($result->getResult()));
                     break;
                 default:
-                    throw new \Exception('The action '.$action.' is not supported');
+                    throw new Exception('The action ' . $action . ' is not supported');
             }
-        } catch (\Exception $e) {
-            $output->writeln('ERROR : '.$e->getMessage());
+        } catch (Exception $e) {
+            $output->writeln('ERROR : ' . $e->getMessage());
         }
     }
 }

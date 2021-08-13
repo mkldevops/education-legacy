@@ -16,15 +16,15 @@ class AccountStatementListener extends AbstractFullService
             ->calculate($accountStatement);
     }
 
-    public function prePersist(AccountStatement $accountStatement, LifecycleEventArgs $args): void
-    {
-        $this->setEntityManager($args->getObjectManager())
-            ->calculate($accountStatement);
-    }
-
     private function calculate(AccountStatement $accountStatement): void
     {
         $accountStatement->calcNumberOperations()
             ->calcAmount();
+    }
+
+    public function prePersist(AccountStatement $accountStatement, LifecycleEventArgs $args): void
+    {
+        $this->setEntityManager($args->getObjectManager())
+            ->calculate($accountStatement);
     }
 }

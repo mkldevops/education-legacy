@@ -32,8 +32,7 @@ class StudentType extends AbstractType
             ->add('lastSchool', null, ['label' => 'label.lastSchool', 'required' => false])
             ->add('personAuthorized', TextareaType::class, ['label' => 'label.personAuthorized', 'required' => false])
             ->add('remarksHealth', TextareaType::class, ['label' => 'label.remarksHealth', 'required' => false])
-            ->add('letAlone', null, ['label' => 'label.letAlone', 'required' => false])
-        ;
+            ->add('letAlone', null, ['label' => 'label.letAlone', 'required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

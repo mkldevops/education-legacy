@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\SchoolRepository;
 use App\Traits\AuthorEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,7 +16,6 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
-use App\Repository\SchoolRepository;
 use Fardus\Traits\Symfony\Entity\ZipEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
@@ -62,7 +62,12 @@ class School
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
+    }
+
+    public function getPrincipal(): bool
+    {
+        return $this->principal;
     }
 
     public function setPrincipal(bool $principal)
@@ -72,44 +77,41 @@ class School
         return $this;
     }
 
-    public function getPrincipal() : bool
-    {
-        return $this->principal;
-    }
-
-    public function setDirector(Member $director) : self
-    {
-        $this->director = $director;
-        return $this;
-    }
-
-    public function getDirector() : ?Member
+    public function getDirector(): ?Member
     {
         return $this->director;
     }
 
-    public function addPackage(Package $packages) : self
+    public function setDirector(Member $director): self
     {
-        $this->packages[] = $packages;
+        $this->director = $director;
+
         return $this;
     }
 
-    public function removePackage(Package $packages)
+    public function addPackage(Package $packages): self
+    {
+        $this->packages[] = $packages;
+
+        return $this;
+    }
+
+    public function removePackage(Package $packages): void
     {
         $this->packages->removeElement($packages);
     }
 
-    public function getPackages() : Collection
+    public function getPackages(): Collection
     {
         return $this->packages;
     }
 
-    public function getStructure() : Structure
+    public function getStructure(): Structure
     {
         return $this->structure;
     }
 
-    public function setStructure(Structure $structure) : self
+    public function setStructure(Structure $structure): self
     {
         $this->structure = $structure;
 

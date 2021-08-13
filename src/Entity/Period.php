@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\PeriodRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
-use App\Repository\PeriodRepository;
 
 /**
  * @ORM\Entity(repositoryClass=PeriodRepository::class)
@@ -40,12 +40,12 @@ class Period
     /**
      * @ORM\Column(type="datetime")
      */
-    protected ?\DateTimeInterface $begin = null;
+    protected ?DateTimeInterface $begin = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    protected ?\DateTimeInterface $end;
+    protected ?DateTimeInterface $end;
 
     /**
      * @ORM\ManyToOne(targetEntity=Diploma::class, inversedBy="periods")
@@ -59,7 +59,7 @@ class Period
 
     public function __toString(): string
     {
-        return (string) $this->getName();
+        return (string)$this->getName();
     }
 
     public function setId(int $id): self
@@ -69,39 +69,39 @@ class Period
         return $this;
     }
 
-    public function getId(): ? int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
+    public function getBegin(): ?DateTimeInterface
+    {
+        return $this->begin;
+    }
+
     /**
-     * @param \DateTime|\DateTimeImmutable $begin
+     * @param DateTime|DateTimeImmutable $begin
      */
-    public function setBegin(\DateTimeInterface $begin): self
+    public function setBegin(DateTimeInterface $begin): self
     {
         $this->begin = $begin;
 
         return $this;
     }
 
-    public function getBegin(): ?\DateTimeInterface
+    public function getEnd(): ?DateTimeInterface
     {
-        return $this->begin;
+        return $this->end;
     }
 
     /**
-     * @param \DateTime|\DateTimeImmutable $end
+     * @param DateTime|DateTimeImmutable $end
      */
-    public function setEnd(\DateTimeInterface $end): self
+    public function setEnd(DateTimeInterface $end): self
     {
         $this->end = $end;
 
         return $this;
-    }
-
-    public function getEnd(): ?\DateTimeInterface
-    {
-        return $this->end;
     }
 
     public function addClassPeriod(ClassPeriod $classPeriods): self
@@ -127,7 +127,7 @@ class Period
     {
         $diffNow = $this->begin?->diff(new DateTime());
         $diffPeriod = $this->begin?->diff($this->end);
-        $percent = (int) $diffNow?->format('%R%a') / (int) $diffPeriod?->format('%R%a') * 100;
+        $percent = (int)$diffNow?->format('%R%a') / (int)$diffPeriod?->format('%R%a') * 100;
 
         return $percent > 100 ? 100 : $percent;
     }

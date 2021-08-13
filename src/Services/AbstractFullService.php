@@ -9,38 +9,31 @@ use App\Entity\User;
 use App\Exception\SchoolException;
 use App\Traits\PeriodManagerTrait;
 use Fardus\Traits\Symfony\Manager\EntityManagerTrait;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Fardus\Traits\Symfony\Manager\LoggerTrait;
+use Fardus\Traits\Symfony\Manager\TranslatorTrait;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Service\Attribute\Required;
 
-abstract class AbstractFullService extends AbstractService
+abstract class AbstractFullService
 {
+    use LoggerTrait;
+    use TranslatorTrait;
     use EntityManagerTrait;
     use PeriodManagerTrait;
 
     protected ?User $user = null;
 
     #[Required]
-    public function setUserWithToken(TokenStorageInterface $token): static
+    public function setUserWithToken(Security $security): void
     {
-        if (null !== $token->getToken() && $token->getToken()?->getUser() instanceof User) {
-            /** @var User $user */
-            $user = $token->getToken()?->getUser();
-            $this->setUser($user);
+        if (($user = $security->getUser()) && $user instanceof User) {
+            $this->user = $user;
         }
-
-        return $this;
     }
 
     public function getUser(): ?User
     {
         return $this->user;
-    }
-
-    public function setUser(User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     /**

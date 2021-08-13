@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Meet;
 use App\Form\MeetType;
 use Doctrine\ORM\NonUniqueResultException;
@@ -17,12 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Meet controller.
- *
- * @Route("/meet")
- */
-class MeetController extends BaseController
+#[Route('/meet')]
+class MeetController extends AbstractBaseController
 {
     /**
      * Lists all Meet entities.
@@ -44,11 +40,11 @@ class MeetController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%'.$search.'%')
+            ->setParameter(':title', '%' . $search . '%')
             ->orWhere('e.subject LIKE :subject')
-            ->setParameter(':subject', '%'.$search.'%')
+            ->setParameter(':subject', '%' . $search . '%')
             ->orWhere('e.text LIKE :text')
-            ->setParameter(':text', '%'.$search.'%')
+            ->setParameter(':text', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -61,11 +57,11 @@ class MeetController extends BaseController
             ->getRepository(Meet::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%'.$search.'%')
+            ->setParameter(':title', '%' . $search . '%')
             ->orWhere('e.subject LIKE :subject')
-            ->setParameter(':subject', '%'.$search.'%')
+            ->setParameter(':subject', '%' . $search . '%')
             ->orWhere('e.text LIKE :text')
-            ->setParameter(':text', '%'.$search.'%')
+            ->setParameter(':text', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()

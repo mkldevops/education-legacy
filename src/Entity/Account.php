@@ -23,6 +23,7 @@ class Account
     use TimestampableEntity;
     use EnableEntityTrait;
     use NameEntityTrait;
+
     public const DEFAULT_INTERVAL_STATEMENT = 5;
 
     /**
@@ -89,7 +90,7 @@ class Account
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
 
     public function addOperation(Operation $operations): self
@@ -111,26 +112,29 @@ class Account
         return $this->operations;
     }
 
-    public function setPrincipal(bool $principal): self
-    {
-        $this->principal = $principal;
-        return $this;
-    }
-
     public function getPrincipal(): bool
     {
         return $this->principal;
     }
 
+    public function setPrincipal(bool $principal): self
+    {
+        $this->principal = $principal;
+
+        return $this;
+    }
+
     public function addAccountStatement(AccountStatement $accountStatements): self
     {
         $this->accountStatements[] = $accountStatements;
+
         return $this;
     }
 
     public function removeAccountStatement(AccountStatement $accountStatements): self
     {
         $this->accountStatements->removeElement($accountStatements);
+
         return $this;
     }
 
@@ -147,12 +151,6 @@ class Account
     public function setIsBank(bool $isBank): self
     {
         $this->isBank = $isBank;
-        return $this;
-    }
-
-    public function setBankName(string $bankName): self
-    {
-        $this->bankName = $bankName;
 
         return $this;
     }
@@ -162,9 +160,9 @@ class Account
         return $this->bankName;
     }
 
-    public function setBankAddress(string $bankAddress): self
+    public function setBankName(string $bankName): self
     {
-        $this->bankAddress = $bankAddress;
+        $this->bankName = $bankName;
 
         return $this;
     }
@@ -174,9 +172,9 @@ class Account
         return $this->bankAddress;
     }
 
-    public function setBankIban(string $bankIban): self
+    public function setBankAddress(string $bankAddress): self
     {
-        $this->bankIban = $bankIban;
+        $this->bankAddress = $bankAddress;
 
         return $this;
     }
@@ -186,9 +184,9 @@ class Account
         return $this->bankIban;
     }
 
-    public function setBankBic(string $bankBic): self
+    public function setBankIban(string $bankIban): self
     {
-        $this->bankBic = $bankBic;
+        $this->bankIban = $bankIban;
 
         return $this;
     }
@@ -198,9 +196,9 @@ class Account
         return $this->bankBic;
     }
 
-    public function setIntervalOperationsAccountStatement(int $intervalOperationsAccountStatement): self
+    public function setBankBic(string $bankBic): self
     {
-        $this->intervalOperationsAccountStatement = $intervalOperationsAccountStatement;
+        $this->bankBic = $bankBic;
 
         return $this;
     }
@@ -210,9 +208,9 @@ class Account
         return $this->intervalOperationsAccountStatement;
     }
 
-    public function setEnableAccountStatement(bool $enableAccountStatement): self
+    public function setIntervalOperationsAccountStatement(int $intervalOperationsAccountStatement): self
     {
-        $this->enableAccountStatement = $enableAccountStatement;
+        $this->intervalOperationsAccountStatement = $intervalOperationsAccountStatement;
 
         return $this;
     }
@@ -222,14 +220,22 @@ class Account
         return $this->enableAccountStatement;
     }
 
-    public function setStructure(?Structure $structure): self
+    public function setEnableAccountStatement(bool $enableAccountStatement): self
     {
-        $this->structure = $structure;
+        $this->enableAccountStatement = $enableAccountStatement;
+
         return $this;
     }
 
     public function getStructure(): ?Structure
     {
         return $this->structure;
+    }
+
+    public function setStructure(?Structure $structure): self
+    {
+        $this->structure = $structure;
+
+        return $this;
     }
 }

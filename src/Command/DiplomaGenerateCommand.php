@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Exception\AppException;
 use App\Services\DiplomaService;
+use ImagickException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +19,7 @@ class DiplomaGenerateCommand extends Command
     public const OPTION_PERIOD = 'period';
     public const OPTION_LIMIT = 'limit';
     protected static $defaultName = 'app:diploma:generate';
-    
+
     public function __construct(public DiplomaService $service)
     {
         parent::__construct();
@@ -30,22 +31,21 @@ class DiplomaGenerateCommand extends Command
             ->setDescription('Add a short description for your command')
             ->addOption(self::OPTION_SCHOOL, 's', InputOption::VALUE_REQUIRED)
             ->addOption(self::OPTION_PERIOD, 'p', InputOption::VALUE_OPTIONAL)
-            ->addOption(self::OPTION_LIMIT, 'l', InputOption::VALUE_OPTIONAL, 1)
-        ;
+            ->addOption(self::OPTION_LIMIT, 'l', InputOption::VALUE_OPTIONAL, 1);
     }
 
     /**
      * @return int|void|null
      *
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $limit = $input->hasOption(self::OPTION_LIMIT) ? (int) $input->getOption(self::OPTION_LIMIT) : 1;
-            $idSchool = (int) $input->getOption(self::OPTION_SCHOOL);
+            $limit = $input->hasOption(self::OPTION_LIMIT) ? (int)$input->getOption(self::OPTION_LIMIT) : 1;
+            $idSchool = (int)$input->getOption(self::OPTION_SCHOOL);
             $school = $this->service->findSchool($idSchool);
             $period = $input->getOption(self::OPTION_PERIOD);
 

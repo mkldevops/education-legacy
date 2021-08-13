@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Period;
@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/class-school")
  */
-class ClassSchoolController extends BaseController
+class ClassSchoolController extends AbstractBaseController
 {
     /**
      * @Route("", name="app_class_school_index", methods={"GET"})
@@ -52,12 +52,13 @@ class ClassSchoolController extends BaseController
 
     /**
      * @Route("/create", name="app_class_school_create", methods={"POST"})
+     *
      * @throws AppException
      */
     public function create(Request $request): Response
     {
         $classSchool = new ClassSchool();
-        $form        = $this->createCreateForm($classSchool);
+        $form = $this->createCreateForm($classSchool);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -280,7 +281,7 @@ class ClassSchoolController extends BaseController
             if ($result) {
                 $this->addFlash(
                     'info',
-                    'Les élèves ont été ajouté à la Classe '.$classPeriod->getclassSchool()->getName().' pour la periode '.$classPeriod->getPeriod()->getName()
+                    'Les élèves ont été ajouté à la Classe ' . $classPeriod->getclassSchool()->getName() . ' pour la periode ' . $classPeriod->getPeriod()->getName()
                 );
 
                 return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));

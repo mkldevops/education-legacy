@@ -1,12 +1,6 @@
 <?php
 
 declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 10/08/18
- * Time: 14:40.
- */
 
 namespace App\Manager;
 
@@ -17,30 +11,18 @@ use Imagick;
 use ImagickException;
 use stdClass;
 
-/**
- * Description of class CourseManager.
- *
- * @author  fahari
- */
+
 class DocumentManager extends AbstractFullService
 {
     public const IMAGE = 'image';
     public const PNG = 'png';
     public const PDF = 'pdf';
-    /**
-     * @var string
-     */
-    private static $pathUploads = 'uploads/documents';
 
-    /**
-     * Creates a form to delete a Document entity by id.
-     *
-     * @return bool
-     */
-    public function removesWithLinks(Document $document)
+    private static string $pathUploads = 'uploads/documents';
+
+
+    public function removesWithLinks(Document $document) : bool
     {
-        $manager = $this->getEntityManager();
-
         $operations = $document->getOperations();
 
         foreach ($operations as $operation) {
@@ -52,8 +34,8 @@ class DocumentManager extends AbstractFullService
         foreach ($persons as $person) {
             $document->removeStudent($person);
             $person->setImage(null);
-            $manager->persist($person);
-            $manager->flush();
+            $this->entityManager->persist($person);
+            $this->entityManager->flush();
         }
 
         // Remove all documents account statement linked
@@ -62,18 +44,16 @@ class DocumentManager extends AbstractFullService
             $document->removeAccountStatement($accountStatement);
         }
 
-        $manager->remove($document);
-        $manager->flush();
+        $this->entityManager->remove($document);
+        $this->entityManager->flush();
 
         return true;
     }
 
     /**
-     * @return array
-     *
      * @throws FileNotFoundException
      */
-    public function upload(Document $document)
+    public function upload(Document $document) : array
     {
         $data = [
             'move' => false,
@@ -86,13 +66,13 @@ class DocumentManager extends AbstractFullService
             throw new FileNotFoundException('No file uploaded');
         }
 
-        $document->setFileName(sha1(uniqid(mt_rand(), true)))
+        $document->setFileName(sha1(uniqid((string) mt_rand(), true)))
             ->setExtension($document->getFile()->guessClientExtension());
 
-        $name = str_replace('.'.$document->getExtension(), '', $document->getFile()->getClientOriginalName());
+        $name = str_replace('.' . $document->getExtension(), '', $document->getFile()->getClientOriginalName());
 
         if (!empty($document->getPrefix())) {
-            $name = $document->getPrefix().' '.$name;
+            $name = $document->getPrefix() . ' ' . $name;
         }
 
         $document->setPath()
@@ -112,19 +92,26 @@ class DocumentManager extends AbstractFullService
             ];
         }
 
-        unset($this->file);
-
         return $data;
     }
 
+    public static function getPathUploads(string $dir = null): string
+    {
+        $path = self::$pathUploads;
+
+        if (in_array($dir, [Document::DIR_FILE, Document::DIR_THUMB, Document::DIR_PREVIEW], true)) {
+            $path .= DIRECTORY_SEPARATOR . $dir;
+        }
+
+        return $path;
+    }
+
     /**
-     * @return stdClass
-     *
      * @throws FileNotFoundException
      */
-    private function generateImages(Document $document)
+    private function generateImages(Document $document) : array
     {
-        $filepath = self::getPathUploads(Document::DIR_FILE).DIRECTORY_SEPARATOR.$document->getPath();
+        $filepath = self::getPathUploads(Document::DIR_FILE) . DIRECTORY_SEPARATOR . $document->getPath();
 
         // If file is not supported
         if (!is_file($filepath) || !$document->isFormat([self::PDF, self::IMAGE])) {
@@ -135,6 +122,8 @@ class DocumentManager extends AbstractFullService
 
         chmod($filepath, 0777);
         $error = false;
+        $preview = null;
+        $thumb = null;
         try {
             $img = new Imagick($filepath);
 
@@ -150,7 +139,12 @@ class DocumentManager extends AbstractFullService
                 $img->writeImage();
             }
 
-            $filePreview = self::getPathUploads(Document::DIR_PREVIEW).DIRECTORY_SEPARATOR.$document->getFileName().'.'.Document::EXT_PNG;
+            $filePreview = sprintf("%s%s%s.%s",
+                self::getPathUploads(Document::DIR_PREVIEW),
+                DIRECTORY_SEPARATOR,
+                $document->getFileName(),
+                Document::EXT_PNG
+            );
             $this->logger->debug(__FUNCTION__, compact('filePreview'));
 
             if (!is_file($filePreview)) {
@@ -159,7 +153,7 @@ class DocumentManager extends AbstractFullService
                 $preview = $img->writeImage($filePreview);
             }
 
-            $fileThumb = self::getPathUploads(Document::DIR_THUMB).DIRECTORY_SEPARATOR.$document->getFileName().'.'.Document::EXT_PNG;
+            $fileThumb = self::getPathUploads(Document::DIR_THUMB) . DIRECTORY_SEPARATOR . $document->getFileName() . '.' . Document::EXT_PNG;
             $this->logger->debug(__FUNCTION__, compact('fileThumb'));
 
             if (!is_file($fileThumb)) {
@@ -174,16 +168,5 @@ class DocumentManager extends AbstractFullService
         }
 
         return compact('filepath', 'preview', 'thumb', 'error');
-    }
-
-    public static function getPathUploads(string $dir = null): string
-    {
-        $path = self::$pathUploads;
-
-        if (in_array($dir, [Document::DIR_FILE, Document::DIR_THUMB, Document::DIR_PREVIEW], true)) {
-            $path .= DIRECTORY_SEPARATOR.$dir;
-        }
-
-        return $path;
     }
 }

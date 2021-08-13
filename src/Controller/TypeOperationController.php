@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Operation;
 use App\Entity\TypeOperation;
 use App\Exception\InvalidArgumentException;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/type-operation")
  */
-class TypeOperationController extends BaseController
+class TypeOperationController extends AbstractBaseController
 {
     /**
      * Finds and displays a TypeOperation entity.

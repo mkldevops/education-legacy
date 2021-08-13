@@ -6,6 +6,10 @@ namespace App\Manager;
 
 use App\Entity\Operation;
 use App\Entity\Validate;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
+use Exception;
 
 /**
  * Created by PhpStorm.
@@ -19,15 +23,16 @@ use App\Entity\Validate;
 class ValidateOperationManager extends AccountableManager
 {
     /**
+     * @param DateTime|DateTimeImmutable $operationDate
      * @return Validate
      *
-     * @throws \Exception
-     * @param \DateTime|\DateTimeImmutable $operationDate
+     * @throws Exception
+     *
      */
-    public function validate(Operation $operation, \DateTimeInterface $operationDate = null)
+    public function validate(Operation $operation, DateTimeInterface $operationDate = null)
     {
         if (!empty($operationDate)) {
-            $operation->setDate(\DateTime::createFromFormat('d/m/Y', $operationDate), true);
+            $operation->setDate(DateTime::createFromFormat('d/m/Y', $operationDate), true);
         }
 
         $validate = new Validate();
@@ -36,8 +41,8 @@ class ValidateOperationManager extends AccountableManager
         $validate->setMessage($this->trans(
             'operation.validate.title',
             [
-            '%id%' => $operation->getId(),
-            '%name%' => $operation->getName(),
+                '%id%' => $operation->getId(),
+                '%name%' => $operation->getName(),
             ],
             'operation'
         ));

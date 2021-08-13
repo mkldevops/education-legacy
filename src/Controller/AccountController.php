@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\Operation;
 use App\Exception\AppException;
@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/account")
  * @IsGranted("ROLE_ACCOUNTANT")
  */
-class AccountController extends BaseController
+class AccountController extends AbstractBaseController
 {
     /**
      * @Route("/{page}", name="app_account_index", methods={"GET"})
@@ -52,7 +52,7 @@ class AccountController extends BaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Route("/create", name="app_account_create")
      */
-    public function create(Request $request): RedirectResponse | Response
+    public function create(Request $request): RedirectResponse|Response
     {
         $account = new Account();
         $form = $this->createCreateForm($account);
@@ -243,9 +243,9 @@ class AccountController extends BaseController
      * @throws Exception
      */
     public function ofxAction(
-        Request $request,
-        Account $account,
-        OFXManager $manager,
+        Request            $request,
+        Account            $account,
+        OFXManager         $manager,
         GoogleDriveService $googleDriveService
     ): Response {
         $files = $googleDriveService

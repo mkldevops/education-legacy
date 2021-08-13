@@ -8,12 +8,12 @@ use App\Repository\PackageStudentPeriodRepository;
 use App\Traits\AmountEntityTrait;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
-use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\CommentEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -24,10 +24,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class PackageStudentPeriod
 {
-    use IdEntity;
+    use IdEntityTrait;
     use TimestampableEntity;
     use AuthorEntityTrait;
-    use CommentEntity;
+    use CommentEntityTrait;
     use StudentEntityTrait;
     use AmountEntityTrait;
 
@@ -52,7 +52,7 @@ class PackageStudentPeriod
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTime $dateExpire;
+    private ?DateTimeInterface $dateExpire;
 
     /**
      * @ORM\Column(type="float")
@@ -76,7 +76,7 @@ class PackageStudentPeriod
 
     public function __toString(): string
     {
-        return $this->getStudent().' - '.$this->getPackage();
+        return $this->getStudent() . ' - ' . $this->getPackage();
     }
 
     public function getPackage(): ?Package
@@ -103,16 +103,11 @@ class PackageStudentPeriod
         return $this;
     }
 
-    public function getDateExpire(): \DateTimeInterface
+    public function getDateExpire(): DateTimeInterface
     {
         return $this->dateExpire;
     }
 
-    /**
-     * Set dateExpire.
-     *
-     * @param DateTime $dateExpire
-     */
     public function setDateExpire(DateTimeInterface $dateExpire): self
     {
         $this->dateExpire = $dateExpire;
@@ -155,7 +150,7 @@ class PackageStudentPeriod
         return self::getStatusPaymentsStatic($this->getPercentPayments(), $this->period);
     }
 
-    public static function getStatusPaymentsStatic($percentPayment, Period $period) : string
+    public static function getStatusPaymentsStatic($percentPayment, Period $period): string
     {
         $status = self::STATUS_PAYMENT_INFO;
 

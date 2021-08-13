@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Entity\Member;
 use App\Entity\Person;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/person")
  */
-class PersonController extends BaseController
+class PersonController extends AbstractBaseController
 {
     /**
      * Lists all Person entities.
@@ -46,23 +46,23 @@ class PersonController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.forname LIKE :forname')
-            ->setParameter(':forname', '%'.$search.'%')
+            ->setParameter(':forname', '%' . $search . '%')
             ->orWhere('e.phone LIKE :phone')
-            ->setParameter(':phone', '%'.$search.'%')
+            ->setParameter(':phone', '%' . $search . '%')
             ->orWhere('e.email LIKE :email')
-            ->setParameter(':email', '%'.$search.'%')
+            ->setParameter(':email', '%' . $search . '%')
             ->orWhere('e.birthplace LIKE :birthplace')
-            ->setParameter(':birthplace', '%'.$search.'%')
+            ->setParameter(':birthplace', '%' . $search . '%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%'.$search.'%')
+            ->setParameter(':gender', '%' . $search . '%')
             ->orWhere('e.address LIKE :address')
-            ->setParameter(':address', '%'.$search.'%')
+            ->setParameter(':address', '%' . $search . '%')
             ->orWhere('e.zip LIKE :zip')
-            ->setParameter(':zip', '%'.$search.'%')
+            ->setParameter(':zip', '%' . $search . '%')
             ->orWhere('e.city LIKE :city')
-            ->setParameter(':city', '%'.$search.'%')
+            ->setParameter(':city', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -73,23 +73,23 @@ class PersonController extends BaseController
             ->getRepository(Person::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.forname LIKE :forname')
-            ->setParameter(':forname', '%'.$search.'%')
+            ->setParameter(':forname', '%' . $search . '%')
             ->orWhere('e.phone LIKE :phone')
-            ->setParameter(':phone', '%'.$search.'%')
+            ->setParameter(':phone', '%' . $search . '%')
             ->orWhere('e.email LIKE :email')
-            ->setParameter(':email', '%'.$search.'%')
+            ->setParameter(':email', '%' . $search . '%')
             ->orWhere('e.birthplace LIKE :birthplace')
-            ->setParameter(':birthplace', '%'.$search.'%')
+            ->setParameter(':birthplace', '%' . $search . '%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%'.$search.'%')
+            ->setParameter(':gender', '%' . $search . '%')
             ->orWhere('e.address LIKE :address')
-            ->setParameter(':address', '%'.$search.'%')
+            ->setParameter(':address', '%' . $search . '%')
             ->orWhere('e.zip LIKE :zip')
-            ->setParameter(':zip', '%'.$search.'%')
+            ->setParameter(':zip', '%' . $search . '%')
             ->orWhere('e.city LIKE :city')
-            ->setParameter(':city', '%'.$search.'%')
+            ->setParameter(':city', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -150,7 +150,7 @@ class PersonController extends BaseController
             $manager->persist($person);
             $manager->flush();
 
-            $this->addFlash('success', 'The Person '.$person->getNameComplete().' has been created.');
+            $this->addFlash('success', 'The Person ' . $person->getNameComplete() . ' has been created.');
 
             $pathRedirect = $form->get('pathRedirect')->getData();
             $parameters = ['person' => $person->getId()];
@@ -172,8 +172,8 @@ class PersonController extends BaseController
     /**
      * Creates a form to create a Person entity.
      *
-     * @param Person $person       The entity
-     * @param null   $pathRedirect
+     * @param Person $person The entity
+     * @param null $pathRedirect
      *
      * @return FormInterface
      */

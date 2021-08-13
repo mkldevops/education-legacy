@@ -46,13 +46,7 @@ class ClassPeriod
     private Collection $students;
 
     /**
-<<<<<<< HEAD
-     * @var Collection|Course[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="classPeriod", cascade={"all"}, orphanRemoval=true)
-=======
      * @ORM\ManyToMany(targetEntity=Teacher::class, mappedBy="classPeriods", cascade={"persist"})
->>>>>>> c2d4b0fd76e4fd56cdf1aeabe509a61fa2f601ed
      */
     private Collection $teachers;
 
@@ -73,7 +67,12 @@ class ClassPeriod
 
     public function getName(): string
     {
-        return $this->getClassSchool()->getName().' - '.$this->period->getName();
+        return $this->getClassSchool()->getName() . ' - ' . $this->period->getName();
+    }
+
+    public function getClassSchool(): ClassSchool
+    {
+        return $this->classSchool;
     }
 
     public function setClassSchool(ClassSchool $classSchool): self
@@ -83,9 +82,9 @@ class ClassPeriod
         return $this;
     }
 
-    public function getClassSchool(): ClassSchool
+    public function getPeriod(): Period
     {
-        return $this->classSchool;
+        return $this->period;
     }
 
     public function setPeriod(Period $period): self
@@ -93,11 +92,6 @@ class ClassPeriod
         $this->period = $period;
 
         return $this;
-    }
-
-    public function getPeriod(): Period
-    {
-        return $this->period;
     }
 
     public function addStudent(ClassPeriodStudent $students): self
@@ -134,7 +128,7 @@ class ClassPeriod
         return $this->courses;
     }
 
-    public function addTeacher(Teacher $teachers) : self
+    public function addTeacher(Teacher $teachers): self
     {
         $this->teachers[] = $teachers;
 
@@ -151,11 +145,11 @@ class ClassPeriod
         return $this->teachers;
     }
 
-    public function getTeachersToString() : string
+    public function getTeachersToString(): string
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ').$teacher;
+            $str .= (empty($str) ? '' : ', ') . $teacher;
         }
 
         return $str;

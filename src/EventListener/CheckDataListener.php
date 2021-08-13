@@ -20,25 +20,26 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CheckDataListener
 {
     use EntityManagerTrait;
+
     public bool $checked = false;
 
     public function __construct(
-        public SessionInterface $session,
+        public SessionInterface      $session,
         public UrlGeneratorInterface $urlGenerator,
-        public TranslatorInterface $translator,
-        public Security $security
+        public TranslatorInterface   $translator,
+        public Security              $security
     ) {
     }
 
     public function onKernelFinishRequest(FinishRequestEvent $event = null): void
     {
-        if ($this->security->getUser() === null) {
+        if (null === $this->security->getUser()) {
             return;
         }
 
         if (!$this->checked) {
             $this->session->getFlashBag()->clear();
-            $packages = $this->entityManager->getRepository(Package::class)->count(['status' => true]);
+            $packages = $this->entityManager->getRepository(Package::class)->count(['enable' => true]);
             if (empty($packages)) {
                 $this->session->getFlashBag()->add('danger', $this->trans('Package'));
             }
@@ -55,7 +56,7 @@ class CheckDataListener
     private function trans(string $class, string $text = null): string
     {
         return $this->translator->trans(
-            $class.($text ? '.'.$text : null),
+            $class . ($text ? '.' . $text : null),
             ['%url%' => $this->urlGenerator->generate('easyadmin', ['entity' => $class])],
             'check_data'
         );

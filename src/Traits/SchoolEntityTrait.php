@@ -14,15 +14,15 @@ trait SchoolEntityTrait
      */
     protected ?School $school = null;
 
+    public function getSchool(): ?School
+    {
+        return $this->school;
+    }
+
     public function setSchool(School $school): self
     {
         $this->school = $school;
 
         return $this;
-    }
-
-    public function getSchool(): ?School
-    {
-        return $this->school;
     }
 }

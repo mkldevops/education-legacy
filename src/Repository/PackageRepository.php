@@ -31,7 +31,7 @@ class PackageRepository extends ServiceEntityRepository
      */
     public function countPackages(School $school): int
     {
-        return (int) $this->getAvailable($school)
+        return (int)$this->getAvailable($school)
             ->select('COUNT(pck.id)')
             ->getQuery()
             ->getSingleScalarResult();

@@ -18,10 +18,7 @@ use Fardus\Traits\Symfony\Manager\LoggerTrait;
 use Fardus\Traits\Symfony\Manager\TranslatorTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Class BaseController.
- */
-abstract class BaseController extends AbstractController
+abstract class AbstractBaseController extends AbstractController
 {
     use LoggerTrait;
     use TranslatorTrait;

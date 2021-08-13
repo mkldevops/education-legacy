@@ -4,33 +4,32 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\PackageRepository;
 use App\Traits\SchoolEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\DescriptionEntity;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
-use Fardus\Traits\Symfony\Entity\NameEntity;
+use Fardus\Traits\Symfony\Entity\DescriptionEntityTrait;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * Package.
- *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="App\Repository\PackageRepository")
+ * @ORM\Entity(repositoryClass=PackageRepository::class)
  */
 class Package
 {
-    use IdEntity;
+    use IdEntityTrait;
     use SchoolEntityTrait;
-    use NameEntity;
-    use DescriptionEntity;
+    use NameEntityTrait;
+    use DescriptionEntityTrait;
     use TimestampableEntity;
-    use EnableEntity;
+    use EnableEntityTrait;
 
     /**
      * @ORM\Column(type="float")
      */
-    private float $price;
+    private float $price = 0.00;
 
     public function __construct()
     {
@@ -42,37 +41,20 @@ class Package
         return $this->getNameWithPrice();
     }
 
-    /**
-     * Set price.
-     *
-     * @param float $price
-     *
-     * @return Package
-     */
-    public function setPrice($price)
+    public function getNameWithPrice(): string
     {
-        $this->price = $price;
-
-        return $this;
+        return $this->name . ' ⇒ ' . $this->price . ' €';
     }
 
-    /**
-     * Get price.
-     *
-     * @return float
-     */
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    /**
-     * Get status.
-     *
-     * @return string
-     */
-    public function getNameWithPrice()
+    public function setPrice(float $price): static
     {
-        return $this->name.' ⇒ '.$this->price.' €';
+        $this->price = $price;
+
+        return $this;
     }
 }

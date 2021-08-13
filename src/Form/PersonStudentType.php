@@ -32,7 +32,7 @@ class PersonStudentType extends PersonSimpleType
                 'label' => 'form.birthday.label',
                 'required' => true,
                 'format' => 'dd/mm/yyyy',
-                'placeholder' => 'form.birthday.placeholder'
+                'placeholder' => 'form.birthday.placeholder',
             ])
             ->add('birthplace', null, [
                 'label' => 'form.birthplace.label',
@@ -56,8 +56,7 @@ class PersonStudentType extends PersonSimpleType
                     return $er->createQueryBuilder('f')
                         ->where('f.enable = 1');
                 },
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

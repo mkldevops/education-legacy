@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\PaymentPackageStudent;
 use App\Entity\TypeOperation;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("payment-package-student")
  */
-class PaymentPackageStudentController extends BaseController
+class PaymentPackageStudentController extends AbstractBaseController
 {
     /**
      * Lists all PaymentPackageStudent entities.
@@ -42,9 +42,9 @@ class PaymentPackageStudentController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('e.status LIKE :status')
-            ->setParameter(':status', '%'.$search.'%')
+            ->setParameter(':status', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -56,9 +56,9 @@ class PaymentPackageStudentController extends BaseController
             ->getRepository(PaymentPackageStudent::class)
             ->createQueryBuilder('e')
             ->where('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('e.status LIKE :status')
-            ->setParameter(':status', '%'.$search.'%')
+            ->setParameter(':status', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -135,7 +135,7 @@ class PaymentPackageStudentController extends BaseController
 
     private function createCreateForm(
         PaymentPackageStudent $paymentPackageStudent,
-        PackageStudentPeriod $packageStudentPeriod
+        PackageStudentPeriod  $packageStudentPeriod
     ): FormInterface {
         $form = $this->createForm(PaymentPackageStudentType::class, $paymentPackageStudent, [
             'action' => $this->generateUrl('app_payment_package_student_create', [

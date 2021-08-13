@@ -28,24 +28,21 @@ class Teacher
     use SoftDeleteableEntity;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="teachers", cascade={"persist", "merge"})
+     */
+    protected Collection $courses;
+    /**
      * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist", "merge", "remove"})
      */
     private ?Person $person = null;
-
     /**
      * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
      */
     private ?Grade $grade = null;
-
     /**
      * @ORM\ManyToMany(targetEntity=ClassPeriod::class, inversedBy="teachers", cascade={"persist", "merge"})
      */
     private Collection $classPeriods;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="teachers", cascade={"persist", "merge"})
-     */
-    protected Collection $courses;
 
     public function __construct()
     {
@@ -58,34 +55,14 @@ class Teacher
         return empty($this->name) ? $this->person->getNameComplete() : $this->name;
     }
 
-    public function setGrade(Grade $grade): self
-    {
-        $this->grade = $grade;
-
-        return $this;
-    }
-
     public function getGrade(): ?Grade
     {
         return $this->grade;
     }
 
-    public function addClassPeriod(ClassPeriod $classPeriods): self
+    public function setGrade(Grade $grade): self
     {
-        $this->classPeriods->add($classPeriods);
-
-        return $this;
-    }
-
-    public function setClassPeriods(array | Collection $items): self
-    {
-        if ($items instanceof ArrayCollection || is_array($items)) {
-            foreach ($items as $item) {
-                $this->addClassPeriod($item);
-            }
-        } elseif ($items instanceof ClassPeriod) {
-            $this->addClassPeriod($items);
-        }
+        $this->grade = $grade;
 
         return $this;
     }
@@ -102,9 +79,22 @@ class Teacher
         return $this->classPeriods;
     }
 
-    public function setPerson(Person $person): self
+    public function setClassPeriods(array|Collection $items): self
     {
-        $this->person = $person;
+        if ($items instanceof ArrayCollection || is_array($items)) {
+            foreach ($items as $item) {
+                $this->addClassPeriod($item);
+            }
+        } elseif ($items instanceof ClassPeriod) {
+            $this->addClassPeriod($items);
+        }
+
+        return $this;
+    }
+
+    public function addClassPeriod(ClassPeriod $classPeriods): self
+    {
+        $this->classPeriods->add($classPeriods);
 
         return $this;
     }
@@ -112,6 +102,13 @@ class Teacher
     public function getPerson(): ?Person
     {
         return $this->person;
+    }
+
+    public function setPerson(Person $person): self
+    {
+        $this->person = $person;
+
+        return $this;
     }
 
     public function addCourse(Course $courses): self

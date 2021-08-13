@@ -9,11 +9,15 @@ use App\Entity\Operation;
 use App\Entity\OperationGender;
 use App\Entity\TypeOperation;
 use App\Entity\User;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Form\Type\CkeditorType;
+use App\Model\SchoolList;
 use App\Repository\AccountRepository;
 use App\Repository\OperationGenderRepository;
 use App\Repository\UserRepository;
+use DateTime;
+use Exception;
 use Fardus\Traits\Symfony\Manager\SessionTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -36,7 +40,6 @@ class OperationType extends AbstractType
     /**
      * @required
      *
-     *
      * @throws InvalidArgumentException
      */
     public function setUser(TokenStorageInterface $tokenStorage): self
@@ -51,7 +54,7 @@ class OperationType extends AbstractType
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -61,9 +64,13 @@ class OperationType extends AbstractType
                 'class' => Account::class,
                 'choice_label' => 'name',
                 'query_builder' => function (AccountRepository $er) {
-                    $school = $this->getSession()->get('school');
+                    /** @var SchoolList $schoolList */
+                    $schoolList = $this->getSession()->get('school');
+                    if($schoolList->selected === null) {
+                        throw new AppException('School selected not set');
+                    }
 
-                    return $er->getAccountsQB($school, false);
+                    return $er->getAccountsQB($schoolList->selected, false);
                 },
             ])
             ->add('name', TextType::class, [
@@ -73,13 +80,13 @@ class OperationType extends AbstractType
             ->add('date', DateType::class, [
                 'label' => 'form.date',
                 'widget' => 'single_text',
-                'empty_data' => new \DateTime(),
+                'empty_data' => new DateTime(),
             ])
             ->add('operationGender', EntityType::class, [
                 'label' => 'form.operation_gender',
                 'class' => OperationGender::class,
                 'choice_label' => 'name',
-                'query_builder' => fn (OperationGenderRepository $er) => $er->getAvailable(),
+                'query_builder' => fn(OperationGenderRepository $er) => $er->getAvailable(),
             ])
             ->add('typeOperation', EntityType::class, [
                 'label' => 'form.type_operation',
@@ -100,9 +107,8 @@ class OperationType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'nameComplete',
                 'preferred_choices' => [$this->user],
-                'query_builder' => fn (UserRepository $er) => $er->getAvailable(),
-            ])
-        ;
+                'query_builder' => fn(UserRepository $er) => $er->getAvailable(),
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

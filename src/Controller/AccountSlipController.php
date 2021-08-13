@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\AccountSlip;
 use App\Form\AccountSlipEditType;
 use App\Form\AccountSlipType;
@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/account-slip")
  */
-class AccountSlipController extends BaseController
+class AccountSlipController extends AbstractBaseController
 {
     /**
      * Lists all AccountSlip entities.
@@ -80,15 +80,15 @@ class AccountSlipController extends BaseController
             ->getRepository(AccountSlip::class)
             ->createQueryBuilder('e')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%'.$search.'%')
+            ->setParameter(':amount', '%' . $search . '%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%'.$search.'%')
+            ->setParameter(':gender', '%' . $search . '%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->orWhere('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
+            ->setParameter(':name', '%' . $search . '%')
             ->orWhere('e.reference LIKE :reference')
-            ->setParameter(':reference', '%'.$search.'%')
+            ->setParameter(':reference', '%' . $search . '%')
             ->orWhere('e.operationCredit = :credit')
             ->setParameter(':credit', $search)
             ->orWhere('e.operationDebit = :debit')
@@ -150,7 +150,7 @@ class AccountSlipController extends BaseController
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (Exception $e) {
-                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip').$e->getMessage());
+                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip') . $e->getMessage());
             }
         }
 
@@ -279,7 +279,7 @@ class AccountSlipController extends BaseController
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (Exception $e) {
-                $this->addFlash('danger', 'The AccountSlip has not updated : '.$e->getMessage());
+                $this->addFlash('danger', 'The AccountSlip has not updated : ' . $e->getMessage());
             }
         }
 
@@ -374,7 +374,7 @@ class AccountSlipController extends BaseController
                     $accountSlip->removeDocument($document);
                     break;
                 default:
-                    throw new InvalidDefinitionException('the action '.$action.' is not defined');
+                    throw new InvalidDefinitionException('the action ' . $action . ' is not defined');
             }
 
             $manager->persist($accountSlip);

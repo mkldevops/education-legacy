@@ -20,25 +20,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ClassPeriodType extends AbstractType
 {
-    protected ?\App\Entity\School $school = null;
+    protected ?School $school = null;
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('classSchool', EntityType::class, [
                 'class' => ClassSchool::class,
-                'query_builder' => fn (ClassSchoolRepository $er) => $er->getQBAvailables(),
+                'query_builder' => fn(ClassSchoolRepository $er) => $er->getQBAvailables(),
             ])
             ->add('period', EntityType::class, [
                 'class' => Period::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')
-                              ->orderBy('p.begin', 'DESC');
+                        ->orderBy('p.begin', 'DESC');
                 },
             ])
             ->add('comment')
-            ->add('status')
-        ;
+            ->add('status');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

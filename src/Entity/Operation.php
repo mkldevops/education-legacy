@@ -13,10 +13,10 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\CommentEntity;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
-use Fardus\Traits\Symfony\Entity\NameEntity;
+use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -26,13 +26,13 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Operation
 {
-    use IdEntity;
-    use NameEntity;
+    use IdentityTrait;
+    use NameEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
-    use CommentEntity;
+    use CommentEntityTrait;
     use PublisherEntityTrait;
     use AmountEntityTrait;
 
@@ -45,7 +45,7 @@ class Operation
     /**
      * @ORM\ManyToOne(targetEntity=AccountStatement::class, inversedBy="operations", cascade={"persist"})
      */
-    private AccountStatement $accountStatement;
+    private ?AccountStatement $accountStatement = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=TypeOperation::class)
@@ -114,7 +114,12 @@ class Operation
 
     public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
+    }
+
+    public function getDate(): ?DateTimeInterface
+    {
+        return $this->date;
     }
 
     public function setDate(DateTimeInterface $date, bool $force = false): self
@@ -129,14 +134,14 @@ class Operation
         return $this;
     }
 
-    public function getDate(): ?DateTimeInterface
-    {
-        return $this->date;
-    }
-
     public function getValueDate(): ?DateTimeInterface
     {
         return $this->date ?? $this->datePlanned;
+    }
+
+    public function getDatePlanned(): ?DateTimeInterface
+    {
+        return $this->datePlanned;
     }
 
     public function setDatePlanned(?DateTimeInterface $datePlanned): self
@@ -146,36 +151,16 @@ class Operation
         return $this;
     }
 
-    public function getDatePlanned(): ?DateTimeInterface
-    {
-        return $this->datePlanned;
-    }
-
     public function isPlanned(): bool
     {
-        return !(bool) $this->date;
+        return !(bool)$this->date;
     }
 
-    public function setAccount(Account $account): self
+    public function getTypeOperation(): ?TypeOperation
     {
-        $this->account = $account;
-
-        return $this;
+        return $this->typeOperation;
     }
 
-    /**
-     * Get account.
-     *
-     * @return Account
-     */
-    public function getAccount(): ?Account
-    {
-        return $this->account;
-    }
-
-    /**
-     * Set typeOperation.
-     */
     public function setTypeOperation(TypeOperation $typeOperation): self
     {
         $this->typeOperation = $typeOperation;
@@ -183,21 +168,11 @@ class Operation
         return $this;
     }
 
-    /**
-     * Get typeOperation.
-     *
-     * @return TypeOperation
-     */
-    public function getTypeOperation(): ?TypeOperation
+    public function getPaymentPackageStudent(): ?PaymentPackageStudent
     {
-        return $this->typeOperation;
+        return $this->paymentPackageStudent;
     }
 
-    /**
-     * Set PaymentPackageStudent.
-     *
-     *
-     */
     public function setPaymentPackageStudent(PaymentPackageStudent $paymentPackageStudent = null): self
     {
         $this->paymentPackageStudent = $paymentPackageStudent;
@@ -205,19 +180,11 @@ class Operation
         return $this;
     }
 
-    /**
-     * Get PaymentPackageStudent.
-     *
-     * @return PaymentPackageStudent
-     */
-    public function getPaymentPackageStudent(): ?PaymentPackageStudent
+    public function getReference() : ?string
     {
-        return $this->paymentPackageStudent;
+        return $this->reference;
     }
 
-    /**
-     * Set reference.
-     */
     public function setReference(string $reference): self
     {
         $this->reference = $reference;
@@ -225,19 +192,11 @@ class Operation
         return $this;
     }
 
-    /**
-     * Get reference.
-     *
-     * @return string
-     */
-    public function getReference()
+    public function getOperationGender(): ?OperationGender
     {
-        return $this->reference;
+        return $this->operationGender;
     }
 
-    /**
-     * Set gender to Operation.
-     */
     public function setOperationGender(?OperationGender $operationGender): self
     {
         $this->operationGender = $operationGender;
@@ -245,42 +204,22 @@ class Operation
         return $this;
     }
 
-    /**
-     * @return OperationGender
-     */
-    public function getOperationGender(): ?OperationGender
-    {
-        return $this->operationGender;
-    }
 
-    /**
-     * Check if school is good.
-     */
     public function hasStructure(Structure $structure): bool
     {
-        return $this->account->getStructure() instanceof Structure && $this->account->getStructure()->getId() === $structure->getId();
+        return $this->account->getStructure()?->getId() === $structure->getId();
     }
 
-    /**
-     * Set validate.
-     *
-     *
-     */
+    public function getValidate(): ?Validate
+    {
+        return $this->validate;
+    }
+
     public function setValidate(Validate $validate = null): self
     {
         $this->validate = $validate;
 
         return $this;
-    }
-
-    /**
-     * Get validate.
-     *
-     * @return Validate
-     */
-    public function getValidate(): ?Validate
-    {
-        return $this->validate;
     }
 
     /**
@@ -320,19 +259,6 @@ class Operation
     }
 
     /**
-     * Set accountStatement.
-     *
-     *
-     * @return Operation
-     */
-    public function setAccountStatement(AccountStatement $accountStatement = null)
-    {
-        $this->accountStatement = $accountStatement;
-
-        return $this;
-    }
-
-    /**
      * Get accountStatement.
      *
      * @return AccountStatement
@@ -343,29 +269,37 @@ class Operation
     }
 
     /**
-     * Has accountStatement.
+     * Set accountStatement.
+     *
+     * @return Operation
      */
+    public function setAccountStatement(AccountStatement $accountStatement = null)
+    {
+        $this->accountStatement = $accountStatement;
+
+        return $this;
+    }
+
     public function hasAccountStatement(): bool
     {
         return $this->accountStatement instanceof AccountStatement;
     }
 
-    /**
-     * Set slipsDebit.
-     *
-     *
-     * @return Operation
-     */
-    public function setSlipsDebit(AccountSlip $slipsDebit = null)
+    public function getSlipsDebit(): ?AccountSlip
+    {
+        return $this->slipsDebit;
+    }
+
+    public function setSlipsDebit(AccountSlip $slipsDebit = null) : static
     {
         $this->slipsDebit = $slipsDebit;
 
         return $this;
     }
 
-    public function getSlipsDebit(): AccountSlip
+    public function getSlipsCredit(): ?AccountSlip
     {
-        return $this->slipsDebit;
+        return $this->slipsCredit;
     }
 
     public function setSlipsCredit(AccountSlip $slipsCredit): self
@@ -375,14 +309,9 @@ class Operation
         return $this;
     }
 
-    /**
-     * Get slipsCredit.
-     *
-     * @return AccountSlip
-     */
-    public function getSlipsCredit(): ?AccountSlip
+    public function getUniqueId(): ?string
     {
-        return $this->slipsCredit;
+        return $this->uniqueId;
     }
 
     public function setUniqueId(string $uniqueId = null): self
@@ -394,8 +323,20 @@ class Operation
         return $this;
     }
 
-    public function getUniqueId(): ?string
+    /**
+     * Get account.
+     *
+     * @return Account
+     */
+    public function getAccount(): ?Account
     {
-        return $this->uniqueId;
+        return $this->account;
+    }
+
+    public function setAccount(Account $account): self
+    {
+        $this->account = $account;
+
+        return $this;
     }
 }

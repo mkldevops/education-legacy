@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace App\Manager;
 
 use App\Entity\Account;
@@ -19,8 +18,9 @@ abstract class AccountableManager
 {
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected LoggerInterface $logger
-    ) { }
+        protected LoggerInterface        $logger
+    ) {
+    }
 
     /**
      * @throws NonUniqueResultException
@@ -49,7 +49,7 @@ abstract class AccountableManager
             ->find(Account::class, $id);
 
         if (!$account instanceof Account) {
-            throw new AppException('Not found account id  : '.$id);
+            throw new AppException('Not found account id  : ' . $id);
         }
 
         return $account;

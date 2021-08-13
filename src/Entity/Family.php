@@ -97,38 +97,6 @@ class Family
         return $this;
     }
 
-    public function getNameComplete(): string
-    {
-        $persons = [];
-        if ($this->mother !== null) {
-            $persons[] = (string) $this->mother;
-        }
-
-        if ($this->father !== null) {
-            $persons[] = (string) $this->father;
-        }
-
-        if (count($persons) < 2 && $this->legalGuardian !== null) {
-            $persons[] = (string) $this->getLegalGuardian();
-        }
-
-        if (!empty($this->persons)) {
-            if (count($persons) < 2 && !empty($this->persons?->get(0))) {
-                $persons[] = sprintf('[%s]', (string) $this->persons?->first());
-            }
-
-            if (count($persons) < 2 && !empty($this->getPersons()->get(1))) {
-                $persons[] = sprintf('[%s]', (string) $this->getPersons()->get(1));
-            }
-
-            if (count($this->getPersons()) > 2) {
-                $persons[] = '...';
-            }
-        }
-
-        return implode(', ', $persons);
-    }
-
     public function __toString(): string
     {
         return sprintf('%d - %s', $this->getId(), $this->getNameComplete());
@@ -139,16 +107,62 @@ class Family
         return $this->id;
     }
 
-
-    public function setFather(Person $father = null): self
+    public function getNameComplete(): string
     {
-        $this->father = $father;
+        $persons = [];
+        if (null !== $this->mother) {
+            $persons[] = (string)$this->mother;
+        }
 
-        if (!$this->father->hasGender()) {
-            $this->father->setGender(Person::GENDER_MALE);
+        if (null !== $this->father) {
+            $persons[] = (string)$this->father;
+        }
+
+        if (count($persons) < 2 && null !== $this->legalGuardian) {
+            $persons[] = (string)$this->getLegalGuardian();
+        }
+
+        if (!empty($this->persons)) {
+            if (count($persons) < 2 && !empty($this->persons?->get(0))) {
+                $persons[] = sprintf('[%s]', (string)$this->persons?->first());
+            }
+
+            if (count($persons) < 2 && !empty($this->getPersons()->get(1))) {
+                $persons[] = sprintf('[%s]', (string)$this->getPersons()->get(1));
+            }
+
+            if (count($this->getPersons()) > 2) {
+                $persons[] = '...';
+            }
+        }
+
+        return implode(', ', $persons);
+    }
+
+    public function getLegalGuardian(): ?Person
+    {
+        return $this->legalGuardian;
+    }
+
+    public function setLegalGuardian(Person $legalGuardian = null): self
+    {
+        $this->legalGuardian = $legalGuardian;
+
+        if (!$this->legalGuardian->hasGender()) {
+            $this->legalGuardian->setGender(Person::GENDER_FEMALE);
         }
 
         return $this;
+    }
+
+    /**
+     * Get persons.
+     *
+     * @return Person[]|Collection
+     */
+    public function getPersons()
+    {
+        return $this->persons;
     }
 
     /**
@@ -169,6 +183,22 @@ class Family
         return $this->father;
     }
 
+    public function setFather(Person $father = null): self
+    {
+        $this->father = $father;
+
+        if (!$this->father->hasGender()) {
+            $this->father->setGender(Person::GENDER_MALE);
+        }
+
+        return $this;
+    }
+
+    public function getMother(): ?Person
+    {
+        return $this->mother;
+    }
+
     /**
      * Set mother.
      *
@@ -185,25 +215,14 @@ class Family
         return $this;
     }
 
-    public function getMother(): ?Person
+    /**
+     * Get language.
+     *
+     * @return string|null
+     */
+    public function getLanguage()
     {
-        return $this->mother;
-    }
-
-    public function setLegalGuardian(Person $legalGuardian = null): self
-    {
-        $this->legalGuardian = $legalGuardian;
-
-        if (!$this->legalGuardian->hasGender()) {
-            $this->legalGuardian->setGender(Person::GENDER_FEMALE);
-        }
-
-        return $this;
-    }
-
-    public function getLegalGuardian(): ?Person
-    {
-        return $this->legalGuardian;
+        return $this->language;
     }
 
     /**
@@ -221,13 +240,13 @@ class Family
     }
 
     /**
-     * Get language.
+     * Get numberChildren.
      *
-     * @return string|null
+     * @return int
      */
-    public function getLanguage()
+    public function getNumberChildren()
     {
-        return $this->language;
+        return $this->numberChildren;
     }
 
     /**
@@ -242,16 +261,6 @@ class Family
         $this->numberChildren = $numberChildren;
 
         return $this;
-    }
-
-    /**
-     * Get numberChildren.
-     *
-     * @return int
-     */
-    public function getNumberChildren()
-    {
-        return $this->numberChildren;
     }
 
     /**
@@ -303,6 +312,16 @@ class Family
     }
 
     /**
+     * Get personAuthorized.
+     *
+     * @return string|null
+     */
+    public function getPersonAuthorized()
+    {
+        return $this->personAuthorized;
+    }
+
+    /**
      * Set personAuthorized.
      *
      * @param string|null $personAuthorized
@@ -317,13 +336,13 @@ class Family
     }
 
     /**
-     * Get personAuthorized.
+     * Get personEmergency.
      *
      * @return string|null
      */
-    public function getPersonAuthorized()
+    public function getPersonEmergency()
     {
-        return $this->personAuthorized;
+        return $this->personEmergency;
     }
 
     /**
@@ -338,16 +357,6 @@ class Family
         $this->personEmergency = $personEmergency;
 
         return $this;
-    }
-
-    /**
-     * Get personEmergency.
-     *
-     * @return string|null
-     */
-    public function getPersonEmergency()
-    {
-        return $this->personEmergency;
     }
 
     /**
@@ -370,15 +379,5 @@ class Family
     public function removePerson(Person $person)
     {
         return $this->persons->removeElement($person);
-    }
-
-    /**
-     * Get persons.
-     *
-     * @return Person[]|Collection
-     */
-    public function getPersons()
-    {
-        return $this->persons;
     }
 }

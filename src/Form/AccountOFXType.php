@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Account;
+use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -39,11 +40,10 @@ class AccountOFXType extends AbstractType
                 'class' => Account::class,
                 'label' => 'account.ofx.form.account_transfer',
                 'mapped' => false,
-            ])
-        ;
+            ]);
 
         /**
-         * @param \Symfony\Component\Form\FormEvent $event
+         * @param FormEvent $event
          */
         $accountsFieldValidator = function (FormEvent $event): void {
             $form = $event->getForm();
@@ -51,14 +51,14 @@ class AccountOFXType extends AbstractType
             try {
                 $file = $form->get('file')->getData();
                 if (!$file instanceof File) {
-                    throw new \Exception('Is not file');
+                    throw new Exception('Is not file');
                 }
 
                 $types = ['application/x-ofx', 'text/plain'];
                 if (!in_array($file->getMimeType(), $types, true)) {
-                    throw new \Exception('Is not a file of ofx');
+                    throw new Exception('Is not a file of ofx');
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $form->get('file')->addError(new FormError($e->getMessage()));
             }
         };

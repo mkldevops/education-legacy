@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\BaseController;
+use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Form\PackageStudentPeriodType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,14 +20,14 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/package-student-period")
  */
-class PackageStudentPeriodController extends BaseController
+class PackageStudentPeriodController extends AbstractBaseController
 {
     /**
      * Lists all PackageStudentPeriod entities.
      *
      * @Route("/list/{page}/{search}", name="app_package_student_period_index", methods={"GET"})
      *
-     * @param int    $page
+     * @param int $page
      * @param string $search
      */
     public function index($page = 1, $search = ''): Response
@@ -39,13 +39,13 @@ class PackageStudentPeriodController extends BaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%'.$search.'%')
+            ->setParameter(':amount', '%' . $search . '%')
             ->orWhere('e.discount LIKE :discount')
-            ->setParameter(':discount', '%'.$search.'%')
+            ->setParameter(':discount', '%' . $search . '%')
             ->orWhere('e.paid LIKE :paid')
-            ->setParameter(':paid', '%'.$search.'%')
+            ->setParameter(':paid', '%' . $search . '%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -55,13 +55,13 @@ class PackageStudentPeriodController extends BaseController
             ->getRepository(PackageStudentPeriod::class)
             ->createQueryBuilder('e')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%'.$search.'%')
+            ->setParameter(':amount', '%' . $search . '%')
             ->orWhere('e.discount LIKE :discount')
-            ->setParameter(':discount', '%'.$search.'%')
+            ->setParameter(':discount', '%' . $search . '%')
             ->orWhere('e.paid LIKE :paid')
-            ->setParameter(':paid', '%'.$search.'%')
+            ->setParameter(':paid', '%' . $search . '%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':comment', '%' . $search . '%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()

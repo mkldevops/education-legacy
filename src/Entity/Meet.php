@@ -48,7 +48,12 @@ class Meet
 
     public function __toString(): string
     {
-        return (string) $this->title;
+        return (string)$this->title;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
     }
 
     public function setTitle(?string $title): self
@@ -58,9 +63,9 @@ class Meet
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getDate(): DateTimeInterface
     {
-        return $this->title;
+        return $this->date;
     }
 
     public function setDate(DateTimeInterface $date): self
@@ -70,9 +75,9 @@ class Meet
         return $this;
     }
 
-    public function getDate(): DateTimeInterface
+    public function getSubject(): ?string
     {
-        return $this->date;
+        return $this->subject;
     }
 
     public function setSubject(?string $subject): self
@@ -82,9 +87,9 @@ class Meet
         return $this;
     }
 
-    public function getSubject(): ?string
+    public function getText(): ?string
     {
-        return $this->subject;
+        return $this->text;
     }
 
     public function setText(?string $text): self
@@ -92,10 +97,5 @@ class Meet
         $this->text = $text;
 
         return $this;
-    }
-
-    public function getText(): ?string
-    {
-        return $this->text;
     }
 }

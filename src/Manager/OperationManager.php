@@ -7,6 +7,7 @@ namespace App\Manager;
 use App\Entity\Operation;
 use App\Entity\Period;
 use App\Exception\AppException;
+use Exception;
 use OfxParser\Entities\Transaction;
 
 /**
@@ -39,6 +40,20 @@ class OperationManager extends AccountableManager
     }
 
     /**
+     * create Operation with Transaction of ofx.
+     *
+     * @return Operation
+     */
+    public static function createOperationOfx(Transaction $transaction)
+    {
+        return (new Operation())
+            ->setName($transaction->name)
+            ->setAmount($transaction->amount)
+            ->setDate($transaction->date)
+            ->setComment($transaction->memo);
+    }
+
+    /**
      * Find Operation By UniqueId.
      *
      * @param int $uniqueId
@@ -57,28 +72,12 @@ class OperationManager extends AccountableManager
         try {
             $operation = $this->entityManager
                 ->getRepository(Operation::class)
-                ->findOneBy(['uniqueId' => $uniqueId])
-            ;
-        } catch (\Exception $e) {
-            $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+                ->findOneBy(['uniqueId' => $uniqueId]);
+        } catch (Exception $e) {
+            $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
         }
 
         return $operation;
-    }
-
-    /**
-     * create Operation with Transaction of ofx.
-     *
-     * @return Operation
-     */
-    public static function createOperationOfx(Transaction $transaction)
-    {
-        return (new Operation())
-            ->setName($transaction->name)
-            ->setAmount($transaction->amount)
-            ->setDate($transaction->date)
-            ->setComment($transaction->memo)
-        ;
     }
 
     /**
@@ -86,12 +85,12 @@ class OperationManager extends AccountableManager
      *
      * @return bool
      *
-     * @throws \App\Exception\AppException
+     * @throws AppException
      */
     public function update(Operation $operation, array $data)
     {
         foreach ($data as $property => $value) {
-            $method = 'set'.ucfirst($property);
+            $method = 'set' . ucfirst($property);
 
             if (is_array($value) && (!empty($value['class']) && !empty($value['id']))) {
                 $value = $this->findEntity($value['class'], $value['id']);
@@ -112,16 +111,16 @@ class OperationManager extends AccountableManager
     /**
      * @return object|null
      *
-     * @throws \App\Exception\AppException
+     * @throws AppException
      */
     private function findEntity(string $class, int $id)
     {
         $result = $this->getEntityManager()
-                      ->getRepository($class)
-                      ->find($id);
+            ->getRepository($class)
+            ->find($id);
 
         if (empty($result)) {
-            throw new AppException('Not found entity '.$class.' with id '.$id);
+            throw new AppException('Not found entity ' . $class . ' with id ' . $id);
         }
 
         return $result;

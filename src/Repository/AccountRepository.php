@@ -24,45 +24,7 @@ class AccountRepository extends ServiceEntityRepository
         parent::__construct($registry, Account::class);
     }
 
-    public function getAccountsQB(School $school, bool $principalOnly = true, array $listAccountId = []): QueryBuilder
-    {
-        $query = $this
-            ->createQueryBuilder('acc')
-            ->where('acc.structure = :structure')
-            ->setParameter('structure', $school->getStructure());
-
-        if ($principalOnly) {
-            $query
-                ->andWhere('acc.principal in (:principal)')
-                ->setParameter('principal', 1);
-        }
-
-        if (!empty($listAccountId)) {
-            $query
-                ->andWhere('acc.id in (:accounts)')
-                ->setParameter('accounts', $listAccountId);
-        }
-
-        return $query;
-    }
-
-    public function getAccounts(School $school, bool $principalOnly = true, array $listAccountId = []) : Query
-    {
-        return $this->getAccountsQB($school, $principalOnly, $listAccountId)
-            ->leftJoin('acc.operations', 'ope')
-            ->leftJoin('ope.typeOperation', 'top')
-            ->addSelect('acc.name')
-            ->addSelect('COUNT(ope.id) AS countOperations')
-            ->addSelect('SUM(ope.amount) AS amount')
-            ->addSelect('SUM(CASE WHEN ope.amount > 0 THEN ope.amount ELSE 0 END) AS amountCredit')
-            ->addSelect('SUM(CASE WHEN ope.amount > 0 AND top.isInternalTransfert = 1 THEN ope.amount ELSE 0 END) AS amountITC')
-            ->addSelect('SUM(CASE WHEN ope.amount < 0 THEN ope.amount ELSE 0 END) AS amountDebit')
-            ->addSelect('SUM(CASE WHEN ope.amount < 0 AND top.isInternalTransfert = 0 THEN ope.amount ELSE 0 END) AS amountITD')
-            ->groupBy('acc.id')
-            ->getQuery();
-    }
-
-    public function getStatsAccount(School $school, $principalOnly = true, array $listAccountId = []) : array
+    public function getStatsAccount(School $school, $principalOnly = true, array $listAccountId = []): array
     {
         $result = $this
             ->getAccounts($school, $principalOnly, $listAccountId)
@@ -83,5 +45,43 @@ class AccountRepository extends ServiceEntityRepository
         $result['total'] = $total;
 
         return $result;
+    }
+
+    public function getAccounts(School $school, bool $principalOnly = true, array $listAccountId = []): Query
+    {
+        return $this->getAccountsQB($school, $principalOnly, $listAccountId)
+            ->leftJoin('acc.operations', 'ope')
+            ->leftJoin('ope.typeOperation', 'top')
+            ->addSelect('acc.name')
+            ->addSelect('COUNT(ope.id) AS countOperations')
+            ->addSelect('SUM(ope.amount) AS amount')
+            ->addSelect('SUM(CASE WHEN ope.amount > 0 THEN ope.amount ELSE 0 END) AS amountCredit')
+            ->addSelect('SUM(CASE WHEN ope.amount > 0 AND top.isInternalTransfert = 1 THEN ope.amount ELSE 0 END) AS amountITC')
+            ->addSelect('SUM(CASE WHEN ope.amount < 0 THEN ope.amount ELSE 0 END) AS amountDebit')
+            ->addSelect('SUM(CASE WHEN ope.amount < 0 AND top.isInternalTransfert = 0 THEN ope.amount ELSE 0 END) AS amountITD')
+            ->groupBy('acc.id')
+            ->getQuery();
+    }
+
+    public function getAccountsQB(School $school, bool $principalOnly = true, array $listAccountId = []): QueryBuilder
+    {
+        $query = $this
+            ->createQueryBuilder('acc')
+            ->where('acc.structure = :structure')
+            ->setParameter('structure', $school->getStructure());
+
+        if ($principalOnly) {
+            $query
+                ->andWhere('acc.principal in (:principal)')
+                ->setParameter('principal', 1);
+        }
+
+        if (!empty($listAccountId)) {
+            $query
+                ->andWhere('acc.id in (:accounts)')
+                ->setParameter('accounts', $listAccountId);
+        }
+
+        return $query;
     }
 }
