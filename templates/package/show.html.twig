@@ -35,12 +35,12 @@
 
                 <dt>{%trans%}Record{%endtrans%}</dt>
                 <dd>
-                    {{ package.record|date('d/m/Y H:i:s') }}
+                    {{ package.createdAt|date('d/m/Y H:i:s') }}
                 </dd>
 
-                <dt>{%trans%}Status{%endtrans%}</dt>
+                <dt>{%trans%}Enable{%endtrans%}</dt>
                 <dd>
-                    {{ 'status'|trans({count: package.status}) }}
+                    {{ 'status'|trans({count: package.enable}) }}
                 </dd>
             </dl>
         {% endblock %}

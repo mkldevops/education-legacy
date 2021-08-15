@@ -7,7 +7,8 @@ namespace App\Entity;
 use App\Repository\ValidateRepository;
 use App\Traits\AuthorEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -15,9 +16,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Validate
 {
-    use IdEntity;
+    use IdEntityTrait;
     use AuthorEntityTrait;
-    use TimestampableEntity;
+    use TimestampableEntityTrait;
 
     public const TYPE_MUTED = 'muted';
     public const TYPE_PRIMARY = 'primary';
@@ -38,6 +39,7 @@ class Validate
 
     public function getData(): array
     {
+        dump($this);
         return [
             'type' => $this->getType(),
             'created' => [

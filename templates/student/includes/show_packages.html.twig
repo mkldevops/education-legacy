@@ -66,7 +66,7 @@
     {% if haveCurrentPackage is empty %}
         {% if student.enable is empty %}
             <a href="{{ path('app_student_edit_status', { id : student.id, enable : true, redirect : true }) }}" class="btn btn-default btn-lg btn-block">{% trans %}btn.activate_student{% endtrans %}</a>
-        {% elseif is_granted('ROLE_DIRECTOR') and currentPeriod.isEnable %}
+        {% elseif is_granted('ROLE_DIRECTOR') and currentPeriod.enable %}
             <a href="{{ path('app_student_addpackage', { 'id' : student.id, 'period' : currentPeriod.id }) }}" type="button" class="btn btn-primary btn-lg btn-block"><i class="fa fa-cube"></i> {{ 'btn.add_package'|trans({ '%period%' : currentPeriod } ) }}</a>
         {% else %}
             <div class="alert text-center alert-danger">

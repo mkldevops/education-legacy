@@ -19,9 +19,7 @@ use Exception;
 use Ghunti\HighchartsPHP\Highchart;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class DashboardManager.
- */
+
 class DashboardManager extends AbstractFullService
 {
     /**
@@ -105,7 +103,7 @@ class DashboardManager extends AbstractFullService
         $data = (object)['registred' => [], 'desactivated' => [], 'average' => []];
         $tmp = array_merge($registred, $desactivated);
         ksort($tmp);
-        $current = new DateTime(key($tmp));
+        $current = new DateTime(key($tmp) ?? 'now');
 
         $chart = new Highchart();
         $chart->chart->renderTo = 'stats-number-students';

@@ -55,11 +55,20 @@ abstract class AccountableManager
         return $account;
     }
 
-    public function findTypeOperationByCode(string $code): ?TypeOperation
+    /**
+     * @throws AppException
+     */
+    public function findTypeOperationByCode(string $code): TypeOperation
     {
-        return $this->entityManager
+        $typeOperation =  $this->entityManager
             ->getRepository(TypeOperation::class)
             ->findOneBy(['code' => $code]);
+
+        if ($typeOperation === null) {
+            throw new AppException('Not Found Type operation with code : '.$code);
+        }
+
+        return $typeOperation;
     }
 
     protected function findOperationGender(string $code): ?OperationGender

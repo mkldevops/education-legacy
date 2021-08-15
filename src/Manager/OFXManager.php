@@ -18,18 +18,16 @@ use App\Exception\AppException;
 use App\Model\TransferModel;
 use App\Services\GoogleDriveService;
 use Exception;
+use OfxParser\Entities\BankAccount;
 use OfxParser\Entities\Transaction;
 use OfxParser\Ofx;
 use OfxParser\Parser;
 use Symfony\Component\HttpFoundation\File\File;
 
-/**
- * Class OFXManager.
- */
 class OFXManager extends AccountManager
 {
     public const STATUS_ALREADY = 'already';
-    public const STATUS_ADD_OPETION = 'add_operation';
+    public const STATUS_ADD_OPERATION = 'add_operation';
     public const STATUS_ADD_TRANSFER = 'add_transfer';
 
     private ?Account $accountTransfer = null;
@@ -37,51 +35,48 @@ class OFXManager extends AccountManager
     private ?array $logs = null;
 
     /**
-     * ofx.
-     *
-     * @return bool
-     *
      * @throws AppException
      */
-    public function ofx(File $fileUpload)
+    public function ofx(File $fileUpload) : bool
     {
         set_time_limit(300);
         $ofx = $this->extractOfxToFile($fileUpload);
+        $count = 0;
 
-        foreach ($ofx->bankAccounts as $bank) {
-            if (!empty($bank->statement->transactions)) {
-                foreach ($bank->statement->transactions as $transaction) {
-                    $operation = $this->operationManager
-                        ->findOperationByUniqueId($transaction->uniqueId);
-
-                    if (!empty($operation)) {
-                        $operation->setAmount($transaction->amount);
-                        $this->getEntityManager()->persist($operation);
-                        $this->getEntityManager()->flush();
-
-                        if (!self::isTransfer($transaction->name)) {
-                            $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ALREADY];
-                            continue;
-                        }
-                    }
-
-                    $this->transactionToOperation($transaction);
-                }
+        /** @var BankAccount $bank */
+        foreach ($ofx->BankAccounts as $bank) {
+            if (empty($bank->statement->transactions)) {
+                continue;
             }
+
+            foreach ($bank->statement->transactions as $transaction) {
+                $operation = $this->operationManager
+                    ->findOperationByUniqueId($transaction->uniqueId);
+
+                if ($operation !== null) {
+                    $operation->setAmount($transaction->amount);
+                    $this->entityManager->persist($operation);
+                    $this->entityManager->flush();
+
+                    if (!self::isTransfer($transaction->name)) {
+                        $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ALREADY];
+                        continue;
+                    }
+                }
+
+                $this->transactionToOperation($transaction);
+            }
+            $count += count($bank->statement->transactions);
         }
 
-        return count($this->getLogs()) === count($bank->statement->transactions);
+        return count($this->getLogs()) === $count;
     }
 
     /**
-     * Extract Ofx To File.
-     *
-     * @return Ofx
-     *
      * @throws AppException
      * @throws Exception
      */
-    public function extractOfxToFile(File $fileUpload)
+    public function extractOfxToFile(File $fileUpload) : Ofx
     {
         if (empty($fileUpload->getRealPath())) {
             throw new AppException('The file was not path');
@@ -93,28 +88,20 @@ class OFXManager extends AccountManager
         return $ofxParser->loadFromString($content);
     }
 
-    /**
-     * @return string|string[]|null
-     */
-    public static function uniformizeContent(string $content)
+    public static function uniformizeContent(string $content) : string
     {
         return preg_replace("#<TRNAMT>([\-]?\d+)\n<FITID>#", "<TRNAMT>$1.00\n<FITID>", $content);
     }
 
-    /**
-     * @return false|int
-     */
-    public static function isTransfer(string $txt)
+    public static function isTransfer(string $txt) : bool
     {
-        return preg_match('#REMISE CHEQUE|VERSEMENT|VRST|RETRAIT#i', $txt);
+        return (bool) preg_match('#REMISE CHEQUE|VERSEMENT|VRST|RETRAIT#i', $txt);
     }
 
     /**
-     * @return Operation|null
-     *
      * @throws AppException
      */
-    private function transactionToOperation(Transaction $transaction)
+    private function transactionToOperation(Transaction $transaction) : void
     {
         $transaction->memo = trim($transaction->memo);
         $gender = $this->getGenderByOFX($transaction);
@@ -123,9 +110,7 @@ class OFXManager extends AccountManager
         if (self::isTransfer($transaction->name)) {
             $operation = $this->transferOperation($transaction, $reference, $gender);
         } else {
-            $type = $this->findTypeOperationByCode(
-                TypeOperation::TYPE_CODE_TO_DEFINE
-            );
+            $type = $this->findTypeOperationByCode(TypeOperation::TYPE_CODE_TO_DEFINE);
 
             $operation = OperationManager::createOperationOfx($transaction)
                 ->setReference($reference)
@@ -137,16 +122,15 @@ class OFXManager extends AccountManager
                 ->setOperationGender($gender);
 
             try {
-                $this->getEntityManager()->persist($operation);
-                $this->getEntityManager()->flush();
+                $this->entityManager->persist($operation);
+                $this->entityManager->flush();
                 $this->logger->info(__FUNCTION__ . ' Operation is saved');
-                $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPETION];
+                $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
             } catch (Exception $e) {
                 $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
+                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }
-
-        return $operation;
     }
 
     protected function getGenderByOFX(Transaction $transaction): ?OperationGender
@@ -183,19 +167,14 @@ class OFXManager extends AccountManager
         return $gender;
     }
 
-    /**
-     * Get Reference extract on text ofx.
-     */
     protected static function getReference(Transaction $transaction): ?string
     {
-        $reference = null;
         $text = trim($transaction->name) . ' ' . trim($transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
 
+        $reference = '';
         if (preg_match('#(?<reference>\d+)#', $text, $mathes)) {
             $reference = $mathes['reference'];
-        } else {
-            dump(__FUNCTION__ . ' not found :' . $text);
         }
 
         return $reference;
@@ -224,7 +203,7 @@ class OFXManager extends AccountManager
         $accountSlip = $this->transferManager
             ->createByTransferModel($transferModel);
 
-        if ($accountSlip->getOperationCredit()->getAccount() === $this->account) {
+        if ($accountSlip->getOperationCredit()?->getAccount() === $this->account) {
             $operation = $accountSlip->getOperationCredit();
         } else {
             $operation = $accountSlip->getOperationDebit();
@@ -235,51 +214,27 @@ class OFXManager extends AccountManager
         return $operation;
     }
 
-    /**
-     * @return array
-     */
-    public function getLogs()
+    public function getLogs() : ?array
     {
         return $this->logs;
     }
 
-    /**
-     * @return OFXManager
-     */
-    public function setLogs(array $logs)
+    public function setLogs(array $logs) : static
     {
         $this->logs = $logs;
 
         return $this;
     }
 
-    /**
-     * getAccountTransfer.
-     *
-     * @return Account
-     */
-    public function getAccountTransfer()
+    public function getAccountTransfer() : ?Account
     {
         return $this->accountTransfer;
     }
 
-    /**
-     * @return OFXManager
-     */
-    public function setAccountTransfer(Account $accountTransfer)
+    public function setAccountTransfer(Account $accountTransfer) : static
     {
         $this->accountTransfer = $accountTransfer;
 
-        return $this;
-    }
-
-    /**
-     * setGoogleDrive.
-     *
-     * @return OFXManager
-     */
-    public function setGoogleDrive(GoogleDriveService $googleDrive)
-    {
         return $this;
     }
 }

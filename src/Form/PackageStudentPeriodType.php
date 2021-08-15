@@ -15,20 +15,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Service\Attribute\Required;
 
-/**
- * Class PackageStudentPeriodType.
- */
 class PackageStudentPeriodType extends AbstractType
 {
-    /**
-     * @var School
-     */
-    protected ?School $school = null;
+    protected School $school;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setSchoolBySession(SessionInterface $session): void
     {
         $this->school = $session->get('school')->selected;

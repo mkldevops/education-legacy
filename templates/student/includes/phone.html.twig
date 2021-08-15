@@ -9,8 +9,8 @@
         {{ student.getListPhones|first }}
     </a>
     {% if student.getListPhones|length >  1 %}
-        | <a href="tel:{{ student.getListPhones[1] }}" class="phone pointer">
-        {{ student.getListPhones[1] }}
+        | <a href="tel:{{ student.getListPhones|first }}" class="phone pointer">
+        {{ student.getListPhones|first }}
     </a>
     {% endif %}
 {% endif %}

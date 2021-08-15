@@ -7,6 +7,7 @@ namespace App\EventListener;
 use App\Entity\School;
 use App\Entity\User;
 use App\Exception\AppException;
+use App\Model\SchoolList;
 use App\Services\AbstractService;
 use App\Traits\PeriodManagerTrait;
 use Fardus\Traits\Symfony\Manager\EntityManagerTrait;
@@ -25,8 +26,6 @@ class LoginListener extends AbstractService
         private AuthorizationChecker $authorizationChecker,
         private SessionInterface     $session
     ) {
-        $this->authorizationChecker = $authorizationChecker;
-        $this->setSession($session);
     }
 
     public function setSession(SessionInterface $session): void
@@ -86,7 +85,8 @@ class LoginListener extends AbstractService
             $school = $this->user->getSchoolAccessRight()->current();
         }
         if (null !== $school) {
-            $this->session->set('school', clone $school);
+            $list = new SchoolList([$school], $school);
+            $this->session->set('school', $list);
         } else {
             $this->logger->warning(__FUNCTION__ . ' Not found school');
         }

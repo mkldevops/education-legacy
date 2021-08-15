@@ -7,44 +7,37 @@ namespace App\Manager;
 use App\Entity\Operation;
 use App\Entity\Period;
 use App\Exception\AppException;
+use App\Fetcher\AccountableFetcher;
+use App\Repository\OperationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use OfxParser\Entities\Transaction;
+use Psr\Log\LoggerInterface;
 
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 13/05/2016
- * Time: 22:13
- * PHP version : 7.1.
- *
- * @author fardus <h.fahari@gmail.com>
- */
-class OperationManager extends AccountableManager
+
+class OperationManager
 {
-    /**
-     * getData.
-     *
-     * @return array
-     */
-    public static function getData(Operation $operation)
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected LoggerInterface        $logger,
+        protected OperationRepository    $repository,
+    ) {
+    }
+
+    public static function getData(Operation $operation) : array
     {
         return [
             'typeOperation' => [
-                'id' => $operation->getTypeOperation()->getId(),
-                'name' => $operation->getTypeOperation()->getName(),
+                'id' => $operation->getTypeOperation()?->getId(),
+                'name' => $operation->getTypeOperation()?->getName(),
             ],
-            'date' => $operation->getDate()->getTimestamp(),
-            'datePlanned' => $operation->getDatePlanned()->getTimestamp(),
+            'date' => $operation->getDate()?->getTimestamp(),
+            'datePlanned' => $operation->getDatePlanned()?->getTimestamp(),
             'amount' => $operation->getAmount(),
         ];
     }
 
-    /**
-     * create Operation with Transaction of ofx.
-     *
-     * @return Operation
-     */
-    public static function createOperationOfx(Transaction $transaction)
+    public static function createOperationOfx(Transaction $transaction) : Operation
     {
         return (new Operation())
             ->setName($transaction->name)
@@ -54,40 +47,28 @@ class OperationManager extends AccountableManager
     }
 
     /**
-     * Find Operation By UniqueId.
-     *
-     * @param int $uniqueId
-     *
-     * @return Operation|null
-     *
      * @throws AppException
      */
-    public function findOperationByUniqueId($uniqueId)
+    public function findOperationByUniqueId(int $uniqueId) : ?Operation
     {
         if (empty($uniqueId)) {
             throw new AppException('Unique id is empty');
         }
 
-        $operation = null;
         try {
-            $operation = $this->entityManager
-                ->getRepository(Operation::class)
-                ->findOneBy(['uniqueId' => $uniqueId]);
+            $operation = $this->repository->findOneBy(['uniqueId' => $uniqueId]);
         } catch (Exception $e) {
             $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
         return $operation;
     }
 
     /**
-     * Update operation.
-     *
-     * @return bool
-     *
      * @throws AppException
      */
-    public function update(Operation $operation, array $data)
+    public function update(Operation $operation, array $data) : bool
     {
         foreach ($data as $property => $value) {
             $method = 'set' . ucfirst($property);
@@ -101,9 +82,8 @@ class OperationManager extends AccountableManager
             }
         }
 
-        $manager = $this->getEntityManager();
-        $manager->persist($operation);
-        $manager->flush();
+        $this->entityManager->persist($operation);
+        $this->entityManager->flush();
 
         return true;
     }
@@ -115,7 +95,7 @@ class OperationManager extends AccountableManager
      */
     private function findEntity(string $class, int $id)
     {
-        $result = $this->getEntityManager()
+        $result = $this->entityManager
             ->getRepository($class)
             ->find($id);
 
@@ -126,9 +106,8 @@ class OperationManager extends AccountableManager
         return $result;
     }
 
-    public function toValidate(Period $period): void
+    public function toValidate(Period $period): array
     {
-        $this->entityManager->getRepository(Operation::class)
-            ->toValidate($period);
+        return $this->repository->toValidate($period);
     }
 }

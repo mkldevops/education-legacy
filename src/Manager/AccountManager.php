@@ -12,24 +12,16 @@ namespace App\Manager;
 use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
+use Symfony\Contracts\Service\Attribute\Required;
 
-/**
- * Class AccountManager.
- */
 class AccountManager extends AccountableManager
 {
     protected TransferManager $transferManager;
-
     protected OperationManager $operationManager;
-
     protected Account $account;
 
-    /**
-     * Get Data AccountStatement.
-     *
-     * @return array
-     */
-    public function getDataAccountStatement(Account $account)
+
+    public function getDataAccountStatement(Account $account) : array
     {
         $data = ['accountStatements' => [], 'nbWithoutAccountStatements' => 0];
 
@@ -42,7 +34,7 @@ class AccountManager extends AccountableManager
 
         /** @var AccountStatement[] $accountStatements */
         $accountStatements = [];
-        $result = $this->getEntityManager()
+        $result = $this->entityManager
             ->getRepository(AccountStatement::class)
             ->findBy(['account' => $account->getId()], ['begin' => 'DESC']);
 
@@ -58,7 +50,7 @@ class AccountManager extends AccountableManager
             $listAccountStatementId[] = $id;
         }
 
-        $result = $this->getEntityManager()
+        $result = $this->entityManager
             ->getRepository(Operation::class)
             ->getQueryStatsAccountStatement($listAccountStatementId)
             ->getQuery()
@@ -71,9 +63,9 @@ class AccountManager extends AccountableManager
 
                 $accountStatement = $accountStatements[$id];
 
-                if ($accountStatement->getAmountCredit() === round($stats['sumCredit'], 2)
-                    && $accountStatement->getAmountDebit() === round($stats['sumDebit'], 2)
-                    && $accountStatement->getNumberOperations() === (int)$stats['numberOperations']) {
+                if ($accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
+                    && $accountStatement->getAmountDebit() === round((float) $stats['sumDebit'], 2)
+                    && $accountStatement->getNumberOperations() === (int) $stats['numberOperations']) {
                     $stats['isValid'] = true;
                 }
 
@@ -81,7 +73,7 @@ class AccountManager extends AccountableManager
             }
         }
 
-        $result = $this->getEntityManager()
+        $result = $this->entityManager
             ->getRepository(Operation::class)
             ->getNumberWithoutAccountStatement($account);
 
@@ -91,60 +83,23 @@ class AccountManager extends AccountableManager
         return $data;
     }
 
-    /**
-     * Get TransferManager.
-     *
-     * @return TransferManager
-     */
-    public function getTransferManager()
-    {
-        return $this->transferManager;
-    }
-
-    /**
-     * Set TransferManager.
-     *
-     * @required
-     *
-     * @return static
-     */
-    public function setTransferManager(TransferManager $transferManager)
+    #[Required]
+    public function setTransferManager(TransferManager $transferManager) : static
     {
         $this->transferManager = $transferManager;
 
         return $this;
     }
 
-    /**
-     * Get OperationManager.
-     *
-     * @return OperationManager
-     */
-    public function getOperationManager()
-    {
-        return $this->operationManager;
-    }
-
-    /**
-     * Set OperationManager.
-     *
-     * @required
-     *
-     * @return static
-     */
-    public function setOperationManager(OperationManager $operationManager)
+    #[Required]
+    public function setOperationManager(OperationManager $operationManager) : static
     {
         $this->operationManager = $operationManager;
 
         return $this;
     }
 
-    /**
-     * Set AccountCredit.
-     *
-     * @return static
-     */
-    public function setAccount(Account $account)
+    public function setAccount(Account $account) : static
     {
         $this->account = $account;
 

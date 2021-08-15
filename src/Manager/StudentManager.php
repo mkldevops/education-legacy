@@ -1,12 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 04/06/2016
- * Time: 20:37.
- */
+
 
 namespace App\Manager;
 
@@ -14,21 +9,26 @@ use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Person;
 use App\Entity\Student;
+use App\Exception\AppException;
 use App\Model\ResponseModel;
-use App\Services\AbstractFullService;
+use App\Repository\StudentRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Security;
 
-/**
- * Class StudentManager.
- */
-class StudentManager extends AbstractFullService
+class StudentManager
 {
-    /**
-     * Organize the type pament to package student.
-     *
-     * @return array
-     */
-    public function dataPayementsStudents(array $students, Period $period)
+
+    public function __construct(
+        private LoggerInterface $logger,
+        private StudentRepository $repository,
+        private Security $security,
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
+
+    public function dataPayementsStudents(array $students, Period $period) : array
     {
         $list = self::getDataListDefault();
 
@@ -67,12 +67,7 @@ class StudentManager extends AbstractFullService
         return $list;
     }
 
-    /**
-     * Get Data List Default.
-     *
-     * @return array
-     */
-    private static function getDataListDefault()
+    private static function getDataListDefault() : array
     {
         return [
             'students' => [],
@@ -97,9 +92,7 @@ class StudentManager extends AbstractFullService
     {
         $response = new ResponseModel();
 
-        $students = $this->getEntityManager()
-            ->getRepository(Student::class)
-            ->findBy(['person' => null]);
+        $students = $this->repository->findBy(['person' => null]);
 
         if (empty($students)) {
             return $response->setSuccess(true)
@@ -109,7 +102,7 @@ class StudentManager extends AbstractFullService
         foreach ($students as $student) {
             $person = (new Person())
                 ->setAuthor($student->getAuthor())
-                ->setEnable((bool)$student->getStatus())
+                ->setEnable($student->getEnable())
                 ->setAddress($student->getAddress())
                 ->setBirthday($student->getBirthday())
                 ->setBirthplace($student->getBirthplace())
@@ -124,10 +117,10 @@ class StudentManager extends AbstractFullService
                 ->setCreatedAt($student->getCreatedAt());
 
             $student->setPerson($person);
-            $this->getEntityManager()->persist($person);
-            $this->getEntityManager()->persist($student);
-            $this->getEntityManager()->flush();
+            $this->entityManager->persist($person);
+            $this->entityManager->persist($student);
         }
+        $this->entityManager->flush();
 
         return $response->setSuccess(true)
             ->setMessage('The synchronization had successfully');
@@ -139,7 +132,7 @@ class StudentManager extends AbstractFullService
     public function addPackage(Student $student, PackageStudentPeriod $packageStudentPeriod): Student
     {
         $this->logger->debug(__METHOD__, ['student' => $student, 'packageStudentPeriod' => $packageStudentPeriod]);
-        $hasPackage = $this->getEntityManager()
+        $hasPackage = $this->entityManager
             ->getRepository(PackageStudentPeriod::class)
             ->findBy([
                 'period' => $packageStudentPeriod->getPeriod(),
@@ -148,20 +141,19 @@ class StudentManager extends AbstractFullService
             ]);
 
         if (!empty($hasPackage)) {
-            throw new Exception('The package is already affected to student');
+            throw new AppException('The package is already affected to student');
         }
 
-        $manager = $this->getEntityManager();
-
         $packageStudentPeriod->setStudent($student);
-        $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()->getEnd());
-        $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()->getPrice());
+        $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()?->getEnd());
+        $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
 
-        $oUser = $this->getUser();
-        $packageStudentPeriod->setAuthor($oUser);
+        if ($user = $this->security->getUser()) {
+            $packageStudentPeriod->setAuthor($user);
+        }
 
-        $manager->persist($packageStudentPeriod);
-        $manager->flush();
+        $this->entityManager->persist($packageStudentPeriod);
+        $this->entityManager->flush();
 
         return $student;
     }
