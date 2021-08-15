@@ -15,7 +15,6 @@ services:
         ports:
             - "${PROJECT_APP_PORT}:80"
         volumes:
-            - ./docker/.env.app:/var/www/html/.env
             - ./public/uploads:/var/www/html/public/uploads
 
     nice:
@@ -34,7 +33,6 @@ services:
         ports:
             - "${PROJECT_NICE_PORT}:80"
         volumes:
-            - ./docker/.env.nice:/var/www/html/.env
             - ./public/uploads:/var/www/html/public/uploads
 
     db:

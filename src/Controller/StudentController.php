@@ -112,7 +112,6 @@ class StudentController extends AbstractBaseController
         $studentsWithoutPackage = $manager->getRepository(Student::class)
             ->getListStudentsWithoutPackagePeriod($period, $school);
 
-        unset($school, $period, $students);
         $listPayment = $studentManager->dataPayementsStudents($students, $period);
 
         return [

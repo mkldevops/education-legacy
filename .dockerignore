@@ -6,5 +6,6 @@ docker-compose.yaml
 .env.local
 vendor
 public/bundles
+public/uploads
 *.cache
 symfony

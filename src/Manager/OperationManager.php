@@ -10,23 +10,11 @@ use App\Exception\AppException;
 use Exception;
 use OfxParser\Entities\Transaction;
 
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 13/05/2016
- * Time: 22:13
- * PHP version : 7.1.
- *
- * @author fardus <h.fahari@gmail.com>
- */
+
 class OperationManager extends AccountableManager
 {
-    /**
-     * getData.
-     *
-     * @return array
-     */
-    public static function getData(Operation $operation)
+
+    public static function getData(Operation $operation) : array
     {
         return [
             'typeOperation' => [
@@ -39,12 +27,7 @@ class OperationManager extends AccountableManager
         ];
     }
 
-    /**
-     * create Operation with Transaction of ofx.
-     *
-     * @return Operation
-     */
-    public static function createOperationOfx(Transaction $transaction)
+    public static function createOperationOfx(Transaction $transaction) : Operation
     {
         return (new Operation())
             ->setName($transaction->name)
@@ -54,15 +37,9 @@ class OperationManager extends AccountableManager
     }
 
     /**
-     * Find Operation By UniqueId.
-     *
-     * @param int $uniqueId
-     *
-     * @return Operation|null
-     *
      * @throws AppException
      */
-    public function findOperationByUniqueId($uniqueId)
+    public function findOperationByUniqueId(int $uniqueId) : ?Operation
     {
         if (empty($uniqueId)) {
             throw new AppException('Unique id is empty');
@@ -81,13 +58,9 @@ class OperationManager extends AccountableManager
     }
 
     /**
-     * Update operation.
-     *
-     * @return bool
-     *
      * @throws AppException
      */
-    public function update(Operation $operation, array $data)
+    public function update(Operation $operation, array $data) : bool
     {
         foreach ($data as $property => $value) {
             $method = 'set' . ucfirst($property);
@@ -101,9 +74,8 @@ class OperationManager extends AccountableManager
             }
         }
 
-        $manager = $this->getEntityManager();
-        $manager->persist($operation);
-        $manager->flush();
+        $this->entityManager->persist($operation);
+        $this->entityManager->flush();
 
         return true;
     }
@@ -115,7 +87,7 @@ class OperationManager extends AccountableManager
      */
     private function findEntity(string $class, int $id)
     {
-        $result = $this->getEntityManager()
+        $result = $this->entityManager
             ->getRepository($class)
             ->find($id);
 

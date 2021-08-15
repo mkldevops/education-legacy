@@ -163,7 +163,7 @@ class TransferManager
         }
 
         if (!empty($uniqueId)) {
-            $operationUnique = $this->getEntityManager()
+            $operationUnique = $this->entityManager
                 ->getRepository(Operation::class)
                 ->findOneBy(['uniqueId' => $uniqueId, 'account' => $account]);
 
