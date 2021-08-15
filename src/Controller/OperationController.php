@@ -9,6 +9,7 @@ use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
 use App\Entity\Validate;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Form\OperationType;
 use App\Manager\OperationManager;
@@ -27,11 +28,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
-/**
- * @Route("/operation")
- * @IsGranted("ROLE_ACCOUNTANT")
- */
+#[Route("/operation")]
+#[IsGranted("ROLE_ACCOUNTANT")]
 class OperationController extends AbstractBaseController
 {
     /**
@@ -105,11 +105,10 @@ class OperationController extends AbstractBaseController
     }
 
     /**
-     * Creates a new Operation entity.
-     *
-     * @Route("/create", name="app_operation_create", methods={"POST", "PUT"})
+     * @throws AppException
      */
-    public function create(Request $request): Response
+    #[Route("/create", name : "app_operation_create", methods: ["POST", "PUT"])]
+    public function create(Request $request, Security $security): Response
     {
         $operation = new Operation();
         $form = $this->createCreateForm($operation, []);
@@ -136,7 +135,9 @@ class OperationController extends AbstractBaseController
                     $operation->setAccount($account);
                 }
 
-                $operation->setPublisher($this->getUser());
+                if ($user = $security->getUser()) {
+                    $operation->setPublisher($user);
+                }
 
                 $manager->persist($operation);
                 $manager->flush();
@@ -147,6 +148,7 @@ class OperationController extends AbstractBaseController
             }
         } catch (Exception $e) {
             $this->addFlash('danger', 'The Operation haven\'t been created. because : ' . $e->getMessage());
+            throw new AppException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $this->render('operation/new.html.twig', [
@@ -156,26 +158,18 @@ class OperationController extends AbstractBaseController
     }
 
     /**
-     * Displays a form to edit an existing Operation entity.
-     *
      * @Route("/edit/{id}", name="app_operation_edit", methods={"GET"})
-     * @Template()
-     *
-     * @return RedirectResponse|array
      */
-    public function edit(Operation $operation)
+    public function edit(Operation $operation) : Response
     {
-        // Check if the school is good
         if (!$this->hasStructure($operation)) {
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
 
-        $editForm = $this->createEditForm($operation);
-
-        return [
+        return $this->render('operation/edit.html.twig', [
             'operation' => $operation,
-            'edit_form' => $editForm->createView(),
-        ];
+            'edit_form' => $this->createEditForm($operation)->createView(),
+        ]);
     }
 
     /**
@@ -370,18 +364,16 @@ class OperationController extends AbstractBaseController
     }
 
     /**
-     * Add document to operation.
-     *
-     * @IsGranted("ROLE_ACCOUNTANT")
-     * @Route("/to-validate/{id}", name="app_operation_tovalidate", methods={"GET"}, options={"expose"=true})
-     *
-     * @return Response
+     * @throws AppException
+     * @throws InvalidArgumentException
      */
-    public function toValidate(OperationManager $operationManager)
+    #[IsGranted("ROLE_ACCOUNTANT")]
+    #[Route("/to-validate/{id}", name: "app_operation_tovalidate", options: ["expose" => true], methods: ["GET"])]
+    public function toValidate(OperationManager $operationManager) : Response
     {
-        $operationManager->toValidate();
-
-        return $this->render('operation/to_valiate.html.twig', ['operation' => $operations]);
+        return $this->render('operation/to_valiate.html.twig', [
+            'operation' => $operationManager->toValidate($this->getPeriod())
+        ]);
     }
 
     /**
@@ -392,7 +384,7 @@ class OperationController extends AbstractBaseController
      *
      * @return JsonResponse
      */
-    public function validate(Operation $operation, Request $request)
+    public function validate(Operation $operation, Request $request, Security $security)
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
@@ -411,7 +403,6 @@ class OperationController extends AbstractBaseController
             }
 
             $validate = new Validate();
-            $validate->setAuthor($this->getUser());
             $validate->setType(Validate::TYPE_SUCCESS);
             $validate->setMessage($this->trans(
                 'Validate operation : %id% - %name%',
@@ -419,20 +410,21 @@ class OperationController extends AbstractBaseController
                 'operation'
             ));
 
-            $response->data['validate'] = $validate->getData();
+            if($user = $security->getUser()) {
+                $validate->setAuthor($user);
+            }
 
             $em->persist($validate);
-
             $operation->setValidate($validate);
-
             $em->persist($operation);
             $em->flush();
 
+            $response->data['validate'] = $validate->getData();
             $response->message = $this->trans(
                 'Validated by %name% <br />Date : %date%',
                 [
-                    '%name%' => $validate->getAuthor()->getNameComplete(),
-                    '%date%' => $validate->getCreated()->format('d/m/Y H:i:s'),
+                    '%name%' => $validate->getAuthor()?->getNameComplete() ?? 'unknow',
+                    '%date%' => $validate->getCreatedAt()->format('d/m/Y H:i:s'),
                 ],
                 'operation'
             );

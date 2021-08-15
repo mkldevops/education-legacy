@@ -10,8 +10,8 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -19,19 +19,20 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class AccountStatement
 {
-    use IdEntity;
+    use IdEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     /**
+     * @var Collection|Operation[]
      * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="accountStatement")
      */
-    protected Collection $operations;
+    protected array|Collection $operations;
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private string $title;
+    private ?string $title = null;
     /**
      * @ORM\Column(type="datetime")
      */
@@ -47,19 +48,19 @@ class AccountStatement
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private float $amountCredit = 0.00;
+    private ?float $amountCredit = 0.00;
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private float $amountDebit = 0.00;
+    private ?float $amountDebit = 0.00;
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private float $newBalance = 0.00;
+    private ?float $newBalance = 0.00;
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $numberOperations = 0;
+    private ?int $numberOperations = 0;
     /**
      * @ORM\Column(type="string", nullable=true)
      */
@@ -169,7 +170,7 @@ class AccountStatement
         return $this;
     }
 
-    public function getOperations(): Collection
+    public function getOperations(): array|Collection
     {
         return $this->operations;
     }
@@ -177,7 +178,7 @@ class AccountStatement
     public function calcAmount(): self
     {
         foreach ($this->operations as $operation) {
-            $this->addAmount($operation->getAmount());
+            $this->addAmount((float) $operation->getAmount());
         }
 
         return $this;
@@ -210,7 +211,7 @@ class AccountStatement
 
     public function getAmountCredit(): float
     {
-        return $this->amountCredit;
+        return $this->amountCredit ?? 0.00;
     }
 
     public function setAmountCredit(float $amountCredit): self
@@ -222,7 +223,7 @@ class AccountStatement
 
     public function getAmountDebit(): float
     {
-        return $this->amountDebit;
+        return $this->amountDebit ?? 0.00;
     }
 
     public function setAmountDebit(float $amountDebit): self
@@ -234,7 +235,7 @@ class AccountStatement
 
     public function getNewBalance(): float
     {
-        return $this->newBalance;
+        return $this->newBalance ?? 0.00;
     }
 
     public function setNewBalance(float $newBalance): self
@@ -253,7 +254,7 @@ class AccountStatement
 
     public function getNumberOperations(): int
     {
-        return $this->numberOperations;
+        return $this->numberOperations ?? 0;
     }
 
     public function setNumberOperations(int $numberOperations): self

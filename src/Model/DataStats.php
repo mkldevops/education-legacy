@@ -10,18 +10,13 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-/**
- * Description of class DataStats.
- *
- * @author fahari
- */
 class DataStats
 {
     private ?string $columnId = null;
 
     private ?string $columnLabel = null;
 
-    private ?string $rowId = null;
+    private null|int|string $rowId = null;
 
     private ?string $rowLabel = null;
 
@@ -53,15 +48,12 @@ class DataStats
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getRowId(): ?string
+    public function getRowId(): null|int|string
     {
         return $this->rowId;
     }
 
-    public function setRowId(string $rowId = null): DataStats
+    public function setRowId(int|string $rowId): DataStats
     {
         $this->rowId = $rowId;
 

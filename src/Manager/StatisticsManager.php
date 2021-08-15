@@ -7,32 +7,32 @@ namespace App\Manager;
 use App\Entity\Operation;
 use App\Entity\Period;
 use App\Entity\School;
+use App\Exception\AppException;
 use App\Model\DataStats;
 use App\Model\StatsByMonth;
+use App\Repository\OperationRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 13/05/2016
- * Time: 22:13
- * PHP version : 7.1.
- *
- * @author fardus <h.fahari@gmail.com>
- */
-class StatisticsManager extends AccountableManager
+
+class StatisticsManager
 {
+    public function __construct(
+        private LoggerInterface        $logger,
+        private OperationRepository $repository,
+    ) {
+    }
+
     /**
-     * Get Stats By Month.
-     *
-     * @return StatsByMonth
+     * @throws AppException
      */
-    public function getStatsByMonth(Period $period, School $school)
+    public function getStatsByMonth(Period $period, School $school) : StatsByMonth
     {
         $this->logger->debug(__FUNCTION__, ['period' => $period, 'school' => $school]);
 
-        $operations = $this->findOperationOfStats($period, $school);
+        $operations = $this->repository->getStatsByMonthly($period, $school);
         $stats = new StatsByMonth();
 
         foreach ($operations as $operation) {
@@ -48,22 +48,10 @@ class StatisticsManager extends AccountableManager
                 $stats->addData($dataStats);
             } catch (Exception $e) {
                 $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), compact($operation));
+                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }
 
         return $stats;
-    }
-
-    /**
-     * findOperationofStats.
-     *
-     * @return array
-     */
-    private function findOperationOfStats(Period $period, School $school)
-    {
-        return $this
-            ->getEntityManager()
-            ->getRepository(Operation::class)
-            ->getStatsByMonthly($period, $school);
     }
 }

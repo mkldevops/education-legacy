@@ -268,12 +268,7 @@ class Operation
         return $this->accountStatement;
     }
 
-    /**
-     * Set accountStatement.
-     *
-     * @return Operation
-     */
-    public function setAccountStatement(AccountStatement $accountStatement = null)
+    public function setAccountStatement(AccountStatement $accountStatement = null) : static
     {
         $this->accountStatement = $accountStatement;
 
@@ -316,18 +311,13 @@ class Operation
 
     public function setUniqueId(string $uniqueId = null): self
     {
-        if ($this->getAccount() instanceof Account && $this->getAccount()->getIsBank()) {
+        if ($this->getAccount() instanceof Account && $this->account?->getIsBank() !== null) {
             $this->uniqueId = $uniqueId;
         }
 
         return $this;
     }
 
-    /**
-     * Get account.
-     *
-     * @return Account
-     */
     public function getAccount(): ?Account
     {
         return $this->account;

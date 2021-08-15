@@ -21,7 +21,7 @@ class PackageType extends AbstractType
             ->add('name')
             ->add('price')
             ->add('description')
-            ->add('status', ChoiceType::class, [
+            ->add('enable', ChoiceType::class, [
                 'required' => true,
                 'empty_data' => 0,
                 'choices' => ['form.status_desactivate' => 0, 'form.status_activate' => 1],

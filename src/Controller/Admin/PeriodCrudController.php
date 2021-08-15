@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PeriodCrudController extends AbstractCrudController
@@ -34,13 +35,13 @@ class PeriodCrudController extends AbstractCrudController
         $end = DateTimeField::new('end');
         $name = TextField::new('name');
         $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $comment = TextField::new('comment');
-        $classPeriods = AssociationField::new('classPeriods');
-        $diploma = AssociationField::new('diploma');
-        $author = AssociationField::new('author');
+        $createdAt = DateTimeField::new('createdAt')->hideOnForm();
+        $updatedAt = DateTimeField::new('updatedAt')->hideOnForm();
+        $deletedAt = DateTimeField::new('deletedAt')->hideOnForm();
+        $comment = TextareaField::new('comment');
+        $classPeriods = AssociationField::new('classPeriods')->hideOnForm();
+        $diploma = AssociationField::new('diploma')->hideOnForm();
+        $author = AssociationField::new('author')->hideOnForm();
         $id = IntegerField::new('id', 'ID');
 
         if (Crud::PAGE_INDEX === $pageName) {

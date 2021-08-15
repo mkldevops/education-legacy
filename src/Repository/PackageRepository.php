@@ -40,7 +40,7 @@ class PackageRepository extends ServiceEntityRepository
     public function getAvailable(School $school): QueryBuilder
     {
         return $this->createQueryBuilder('pck')
-            ->where('pck.status = 1')
+            ->where('pck.enable = 1')
             ->andWhere('pck.school = :school')
             ->setParameter('school', $school);
     }
@@ -52,7 +52,7 @@ class PackageRepository extends ServiceEntityRepository
             ->where('e.name LIKE :search')
             ->orWhere('e.description LIKE :search')
             ->orWhere('e.price LIKE :search')
-            ->orWhere('e.status LIKE :search')
+            ->orWhere('e.enable LIKE :search')
             ->setParameter('search', $search);
 
         if (null !== $school) {

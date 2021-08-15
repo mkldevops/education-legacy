@@ -7,22 +7,32 @@ namespace App\Manager;
 use App\Entity\Operation;
 use App\Entity\Period;
 use App\Exception\AppException;
+use App\Fetcher\AccountableFetcher;
+use App\Repository\OperationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use OfxParser\Entities\Transaction;
+use Psr\Log\LoggerInterface;
 
 
-class OperationManager extends AccountableManager
+class OperationManager
 {
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected LoggerInterface        $logger,
+        protected OperationRepository    $repository,
+    ) {
+    }
 
     public static function getData(Operation $operation) : array
     {
         return [
             'typeOperation' => [
-                'id' => $operation->getTypeOperation()->getId(),
-                'name' => $operation->getTypeOperation()->getName(),
+                'id' => $operation->getTypeOperation()?->getId(),
+                'name' => $operation->getTypeOperation()?->getName(),
             ],
-            'date' => $operation->getDate()->getTimestamp(),
-            'datePlanned' => $operation->getDatePlanned()->getTimestamp(),
+            'date' => $operation->getDate()?->getTimestamp(),
+            'datePlanned' => $operation->getDatePlanned()?->getTimestamp(),
             'amount' => $operation->getAmount(),
         ];
     }
@@ -45,13 +55,11 @@ class OperationManager extends AccountableManager
             throw new AppException('Unique id is empty');
         }
 
-        $operation = null;
         try {
-            $operation = $this->entityManager
-                ->getRepository(Operation::class)
-                ->findOneBy(['uniqueId' => $uniqueId]);
+            $operation = $this->repository->findOneBy(['uniqueId' => $uniqueId]);
         } catch (Exception $e) {
             $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
         return $operation;
@@ -98,9 +106,8 @@ class OperationManager extends AccountableManager
         return $result;
     }
 
-    public function toValidate(Period $period): void
+    public function toValidate(Period $period): array
     {
-        $this->entityManager->getRepository(Operation::class)
-            ->toValidate($period);
+        return $this->repository->toValidate($period);
     }
 }

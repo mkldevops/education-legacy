@@ -221,4 +221,18 @@ class OperationRepository extends ServiceEntityRepository
         return $qb->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Operation[]
+     */
+    public function toValidate(Period $period) : array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.date BETWEEN :begin AND :end')
+            ->andWhere('o.validate is null')
+            ->setParameter('begin', $period->getBegin())
+            ->setParameter('end', $period->getEnd())
+            ->getQuery()
+            ->getResult();
+    }
 }

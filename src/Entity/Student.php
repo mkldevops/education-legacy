@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\StudentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
 use DateTime;
@@ -13,20 +14,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @ORM\Table()
- * @ORM\Entity(repositoryClass="App\Repository\StudentRepository")
+ * @ORM\Entity(repositoryClass=StudentRepository::class)
  */
 class Student
 {
-    use IdEntity;
+    use IdEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
     use SchoolEntityTrait;
@@ -52,25 +52,19 @@ class Student
     private ?string $remarksHealth = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean", nullable=false)
      */
-    private $letAlone;
+    private bool $letAlone = false;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(type="datetime")
      */
-    private $dateRegistration;
+    private ?DateTimeInterface $dateRegistration = null;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $dateDesactivated;
+    private ?DateTimeInterface $dateDesactivated = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
@@ -78,34 +72,35 @@ class Student
     private ?Grade $grade = null;
 
     /**
+     * @var Collection|ClassPeriodStudent[]
      * @ORM\OneToMany(targetEntity=ClassPeriodStudent::class, mappedBy="student", cascade={"persist"})
      */
-    private array|Collection|ArrayCollection $classPeriods;
+    private array|Collection $classPeriods;
 
     /**
+     * @var Collection|PackageStudentPeriod[]
      * @ORM\OneToMany(targetEntity=PackageStudentPeriod::class, mappedBy="student", cascade={"persist"})
      */
-    private array|Collection|ArrayCollection $packagePeriods;
+    private array|Collection $packagePeriods;
 
     /**
+     * @var Collection|AppealCourse[]
      * @ORM\OneToMany(targetEntity=AppealCourse::class, mappedBy="student")
      */
-    private array|Collection|ArrayCollection $courses;
+    private array|Collection $courses;
 
     /**
+     * @var Collection|StudentComment[]
      * @ORM\OneToMany(targetEntity=StudentComment::class, mappedBy="student")
      */
-    private array|Collection|ArrayCollection $comments;
+    private array|Collection $comments;
 
     /**
-     * Constructor.
-     *
      * @throws Exception
      */
     public function __construct()
     {
         $this->setPerson(new Person())
-            ->setLetAlone(false)
             ->setEnable(true)
             ->setDateRegistration(new DateTime());
 
@@ -116,13 +111,9 @@ class Student
     }
 
     /**
-     * Set status.
-     *
-     * @return Student
-     *
      * @throws Exception
      */
-    public function setEnable(bool $enable)
+    public function setEnable(bool $enable) : static
     {
         $this->enable = $enable;
 
@@ -135,52 +126,29 @@ class Student
         return $this;
     }
 
-    /**
-     * toString.
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getNameComplete();
+        return (string)$this->getNameComplete();
     }
 
-    /**
-     * Get name complete.
-     *
-     * @return string
-     */
-    public function getNameComplete()
+    public function getNameComplete(): ?string
     {
-        return $this->person->getNameComplete();
+        return $this->person?->getNameComplete();
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Get name complete.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
-        return $this->person->getName();
+        return $this->person?->getName();
     }
 
-    /**
-     * Set name.
-     *
-     * @return Student
-     */
-    public function setGender(string $gender)
+
+    public function setGender(string $gender) : static
     {
         $this->person->setGender($gender);
 
@@ -219,46 +187,24 @@ class Student
         return $this;
     }
 
-    /**
-     * Get forname.
-     *
-     * @return string
-     */
-    public function getForname()
+    public function getForname() : string
     {
         return $this->person->getForname();
     }
 
-    /**
-     * Set birthday.
-     *
-     * @param DateTime|DateTimeImmutable $birthday
-     * @return Student
-     *
-     */
-    public function setBirthday(DateTimeInterface $birthday)
+    public function setBirthday(DateTimeInterface $birthday) : static
     {
         $this->person->setBirthday($birthday);
 
         return $this;
     }
 
-    /**
-     * Get birthday.
-     *
-     * @return DateTime
-     */
-    public function getBirthday()
+    public function getBirthday() : ?DateTimeInterface
     {
-        return $this->person->getBirthday();
+        return $this->person?->getBirthday();
     }
 
-    /**
-     * Set birthplace.
-     *
-     * @return Student
-     */
-    public function setBirthplace(string $birthplace)
+    public function setBirthplace(string $birthplace) : static
     {
         $this->person->setBirthplace($birthplace);
 
@@ -267,43 +213,22 @@ class Student
 
     public function getBirthplace(): ?string
     {
-        return $this->person->getBirthplace();
+        return $this->person?->getBirthplace();
     }
 
-    /**
-     * Set address.
-     *
-     * @return Student
-     */
-    public function setAddress(string $address)
+    public function setAddress(string $address) : static
     {
-        $this->person->setAddress($address);
+        $this->person?->setAddress($address);
 
         return $this;
     }
 
-    /**
-     * Get address.
-     *
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress() : ?string
     {
-        $adress = $this->person->getAddress();
-
-        if (empty($adress) && !empty($this->getPerson()->getFamily())) {
-            $adress = $this->getPerson()->getFamily()->getAddress();
-        }
-
-        return $adress;
+        return $this->person?->getAddress() ?? $this->person?->getFamily()?->getAddress();
     }
 
-    /**
-     * Get person.
-     *
-     * @return Person
-     */
-    public function getPerson()
+    public function getPerson() : ?Person
     {
         return $this->person;
     }
@@ -417,67 +342,34 @@ class Student
         return $this;
     }
 
-    /**
-     * Get phone.
-     */
     public function getListPhones(): array
     {
-        $phones = $this->person->getListPhones();
-        if (!empty($this->getFamily())) {
-            if (!empty($this->getFamily()->getMother())) {
-                $phones = array_merge($phones, $this->getFamily()->getMother()->getListPhones());
-            }
-
-            if (!empty($this->getFamily()->getFather())) {
-                $phones = array_merge($phones, $this->getFamily()->getFather()->getListPhones());
-            }
-
-            if (!empty($this->getFamily()->getLegalGuardian())) {
-                $phones = array_merge($phones, $this->getFamily()->getLegalGuardian()->getListPhones());
-            }
-        }
-
-        return array_unique(array_values($phones));
+        return array_unique(array_merge(
+            $this->person?->getListPhones() ?? [],
+            $this->getFamily()?->getMother()?->getListPhones() ?? [],
+            $this->getFamily()?->getFather()?->getListPhones() ?? [],
+            $this->getFamily()?->getLegalGuardian()?->getListPhones() ?? [],
+        ));
     }
 
-    /**
-     * Get letAlone.
-     *
-     * @return Family
-     */
     public function getFamily(): ?Family
     {
-        return $this->person->getFamily();
+        return $this->person?->getFamily();
     }
 
-    /**
-     * Set email.
-     *
-     * @return Student
-     */
-    public function setEmail(string $email)
+    public function setEmail(string $email) : static
     {
         $this->person->setEmail($email);
 
         return $this;
     }
 
-    /**
-     * Get email.
-     *
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail() : ?string
     {
         return $this->person->getEmail();
     }
 
-    /**
-     * Get lastSchool.
-     *
-     * @return string
-     */
-    public function getLastSchool()
+    public function getLastSchool() : ?string
     {
         return $this->lastSchool;
     }
@@ -538,27 +430,18 @@ class Student
         $this->classPeriods->removeElement($classPeriod);
     }
 
-    /**
-     * Get classPeriods.
-     *
-     * @return Collection
-     */
-    public function getClassPeriods()
+    public function getClassPeriods() : Collection
     {
         return $this->classPeriods;
     }
 
-    /**
-     * Get classPeriods.
-     *
-     * @return ClassPeriodStudent|null
-     */
-    public function getClassToPeriod(Period $period)
+    public function getClassToPeriod(Period $period) : ?ClassPeriodStudent
     {
         $current = null;
 
-        /* @var $classPeriod ClassPeriodStudent */
-        foreach ($this->classPeriods->toArray() as $classPeriod) {
+        /* @var $classes ClassPeriodStudent[] */
+        $classes = $this->classPeriods->toArray();
+        foreach ($classes as $classPeriod) {
             if (!$classPeriod->getClassPeriod() instanceof ClassPeriod) {
                 continue;
             }
@@ -571,114 +454,66 @@ class Student
         return $current;
     }
 
-    /**
-     * Add packagePeriods.
-     *
-     * @return Student
-     */
-    public function addPackagePeriod(PackageStudentPeriod $packagePeriods)
+    public function addPackagePeriod(PackageStudentPeriod $packagePeriods) : static
     {
         $this->packagePeriods[] = $packagePeriods;
 
         return $this;
     }
 
-    /**
-     * Remove packagePeriods.
-     */
     public function removePackagePeriod(PackageStudentPeriod $packagePeriods): void
     {
         $this->packagePeriods->removeElement($packagePeriods);
     }
 
-    /**
-     * Get packagePeriods.
-     *
-     * @return Collection|ArrayCollection
-     */
-    public function getPackagePeriods()
+    public function getPackagePeriods() : Collection
     {
         return $this->packagePeriods;
     }
 
-    /**
-     * Get dateDeactivated.
-     *
-     * @return DateTime
-     *
-     * @throws Exception
-     */
-    public function getDateDesactivated()
+    public function getDateDesactivated() : ?DateTimeInterface
     {
-        if (!$this->isEnable() && empty($this->dateDesactivated)) {
+        if (!$this->enable && empty($this->dateDesactivated)) {
             $this->dateDesactivated = new DateTime();
         }
 
         return $this->dateDesactivated;
     }
 
-    /**
-     * Set dateDesactivated.
-     *
-     * @param DateTime|DateTimeImmutable $dateDesactivated
-     * @return Student
-     *
-     */
-    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null)
+    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null) : static
     {
         $this->dateDesactivated = $dateDesactivated;
 
         return $this;
     }
 
-    /**
-     * Add courses.
-     *
-     * @return Student
-     */
-    public function addCourse(AppealCourse $courses)
+
+    public function addCourse(AppealCourse $courses) : static
     {
         $this->courses[] = $courses;
 
         return $this;
     }
 
-    /**
-     * Remove courses.
-     */
     public function removeCourse(AppealCourse $courses): void
     {
-        $this->courses->removeElement($courses);
+        $this->courses?->removeElement($courses);
     }
 
     /**
-     * Get courses.
-     *
      * @return Collection|AppealCourse[]
      */
-    public function getCourses()
+    public function getCourses() : Collection
     {
         return $this->courses;
     }
 
-    /**
-     * Get dateRegistration.
-     *
-     * @return DateTime
-     */
-    public function getDateRegistration()
+    public function getDateRegistration() : ?DateTimeInterface
     {
         return $this->dateRegistration;
     }
 
-    /**
-     * Set dateRegistration.
-     *
-     * @param DateTime|DateTimeImmutable $dateRegistration
-     * @return Student
-     *
-     */
-    public function setDateRegistration(DateTimeInterface $dateRegistration = null)
+    public function setDateRegistration(DateTimeInterface $dateRegistration = null) : static
     {
         $this->dateRegistration = $dateRegistration;
 
@@ -692,57 +527,33 @@ class Student
         return $this;
     }
 
-    /**
-     * Remove comment.
-     */
     public function removeComment(StudentComment $comment): void
     {
-        $this->comments->removeElement($comment);
+        $this->comments?->removeElement($comment);
     }
 
-    /**
-     * Get comments.
-     *
-     * @return Collection|StudentComment[]
-     */
-    public function getComments()
+    public function getComments() : Collection
     {
         return $this->comments;
     }
 
-    /**
-     * Get personAuthorized.
-     *
-     * @return string|null
-     */
-    public function getPersonAuthorized()
+    public function getPersonAuthorized() : ?string
     {
         return $this->personAuthorized;
     }
 
-    /**
-     * Set personAuthorized.
-     *
-     * @return Student
-     */
-    public function setPersonAuthorized(string $personAuthorized = null)
+    public function setPersonAuthorized(string $personAuthorized = null) : static
     {
         $this->personAuthorized = $personAuthorized;
 
         return $this;
     }
 
-    /**
-     * Get remarksHealth.
-     */
     public function getRemarksHealth(): ?string
     {
         return $this->remarksHealth;
     }
 
-    /**
-     * Set remarksHealth.
-     */
     public function setRemarksHealth(string $remarksHealth = null): self
     {
         $this->remarksHealth = $remarksHealth;
@@ -750,17 +561,11 @@ class Student
         return $this;
     }
 
-    /**
-     * Get letAlone.
-     */
     public function getLetAlone(): bool
     {
         return $this->letAlone;
     }
 
-    /**
-     * Set letAlone.
-     */
     public function setLetAlone(bool $letAlone): self
     {
         $this->letAlone = $letAlone;
@@ -771,11 +576,8 @@ class Student
     /**
      * @throws Exception
      */
-    public function since(): int
+    public function since(): ?int
     {
-        $since = null;
-        $since = $this->createdAt->diff(new DateTime())->y;
-
-        return $since;
+        return $this->createdAt?->diff(new DateTime())->y;
     }
 }

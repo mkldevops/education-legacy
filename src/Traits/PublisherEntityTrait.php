@@ -14,14 +14,14 @@ trait PublisherEntityTrait
      * @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
-    protected ?UserInterface $publisher;
+    protected null|User|UserInterface $publisher;
 
-    public function getPublisher(): ?UserInterface
+    public function getPublisher(): null|User|UserInterface
     {
         return $this->publisher;
     }
 
-    public function setPublisher(UserInterface $publisher): self
+    public function setPublisher(User|UserInterface $publisher): self
     {
         $this->publisher = $publisher;
 
