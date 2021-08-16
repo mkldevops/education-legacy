@@ -93,16 +93,13 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * paymentList.
-     *
-     * @IsGranted("ROLE_ACCOUNTANT")
-     * @IsGranted("ROLE_DIRECTOR")
-     * @Route("/payment-list", methods={"GET"}, name="app_student_payment_list")
-     * @Template()
-     *
      * @throws InvalidArgumentException
+     * @throws AppException
      */
-    public function paymentList(EntityManagerInterface $manager, StudentManager $studentManager): array
+    #[IsGranted('ROLE_ACCOUNTANT')]
+    #[IsGranted('ROLE_DIRECTOR')]
+    #[Route("/payment-list", name: "app_student_payment_list", methods: ["GET"])]
+    public function paymentList(EntityManagerInterface $manager, StudentManager $studentManager): Response
     {
         ini_set('memory_limit', '-1');
 
@@ -117,11 +114,11 @@ class StudentController extends AbstractBaseController
 
         $listPayment = $studentManager->dataPayementsStudents($students, $period);
 
-        return [
+        return $this->render('student/payment_list.html.twig', [
             'period' => $this->getPeriod(),
             'listPayment' => $listPayment,
             'studentsWithoutPackage' => $studentsWithoutPackage,
-        ];
+        ]);
     }
 
     /**
@@ -174,7 +171,9 @@ class StudentController extends AbstractBaseController
             return $this->redirect($this->generateUrl('app_student_show', [
                 'id' => $student->getId(),
             ]));
-        } else if ($form->isSubmitted() && !$form->isValid()) {
+        }
+
+        if (!$form->isValid() && $form->isSubmitted()) {
             $this->addFlash('warning', sprintf(
                 'l\'élève n\'a pas été enregistré <br /> : %s',
                 print_r($form->getErrors(), true)
@@ -220,12 +219,7 @@ class StudentController extends AbstractBaseController
         return $form;
     }
 
-    /**
-     * Creates a form to create a Student entity.
-     *
-     * @return FormInterface
-     */
-    private function createCreateFormFamily()
+    private function createCreateFormFamily() : FormInterface
     {
         $family = new Family();
         $form = $this->createForm(FamilyType::class, $family, [
@@ -239,15 +233,10 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * Creates a new Student entity.
-     *
-     * @Route("/create", methods={"POST"})
-     *
-     * @return RedirectResponse|Response
-     *
      * @throws Exception
      */
-    public function create(Request $request, FamilyApiController $apiController): Response
+    #[Route("/create", methods: ["POST"])]
+    public function create(Request $request, FamilyApiController $apiController, EntityManagerInterface $em): Response
     {
         $this->logger->info(__METHOD__);
         $student = new Student();
@@ -257,8 +246,6 @@ class StudentController extends AbstractBaseController
             ->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
             $student->setAuthor($this->getUser())
                 ->setSchool($this->getEntitySchool());
 
@@ -303,14 +290,7 @@ class StudentController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to create a Account entity.
-     *
-     * @return FormInterface
-     *
-     * @internal param \App\Controller\Account $entity The entity
-     */
-    private function createCreateCommentForm(StudentComment $comment, Student $student)
+    private function createCreateCommentForm(StudentComment $comment, Student $student) : FormInterface
     {
         return $this->createForm(StudentCommentSimpleType::class, $comment, [
             'action' => $this->generateUrl('app_student_addcomment', ['id' => $student->getId()]),
@@ -320,8 +300,6 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * Edit Action.
-     *
      * @Route("/edit/{id}", methods={"GET"}, name="app_student_edit")
      */
     public function edit(Student $student, FamilyApiController $apiController): Response
@@ -336,9 +314,6 @@ class StudentController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to edit a Teacher entity.
-     */
     private function createEditForm(Student $student): FormInterface
     {
         $form = $this->createForm(StudentType::class, $student, [
@@ -355,10 +330,8 @@ class StudentController extends AbstractBaseController
      * Edits an existing Teacher entity.
      *
      * @Route("/update/{id}", methods={"POST", "PUT"}, name="app_student_update")
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, Student $student) : Response
     {
         $editForm = $this->createEditForm($student)
             ->handleRequest($request);
