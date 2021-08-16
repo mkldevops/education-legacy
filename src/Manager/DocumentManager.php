@@ -11,7 +11,6 @@ use Imagick;
 use ImagickException;
 use stdClass;
 
-
 class DocumentManager extends AbstractFullService
 {
     public const IMAGE = 'image';
@@ -139,7 +138,8 @@ class DocumentManager extends AbstractFullService
                 $img->writeImage();
             }
 
-            $filePreview = sprintf("%s%s%s.%s",
+            $filePreview = sprintf(
+                "%s%s%s.%s",
                 self::getPathUploads(Document::DIR_PREVIEW),
                 DIRECTORY_SEPARATOR,
                 $document->getFileName(),
@@ -153,7 +153,13 @@ class DocumentManager extends AbstractFullService
                 $preview = $img->writeImage($filePreview);
             }
 
-            $fileThumb = self::getPathUploads(Document::DIR_THUMB) . DIRECTORY_SEPARATOR . $document->getFileName() . '.' . Document::EXT_PNG;
+            $fileThumb = sprintf(
+                "%s%s%s.%s",
+                self::getPathUploads(Document::DIR_THUMB),
+                DIRECTORY_SEPARATOR,
+                $document->getFileName(),
+                Document::EXT_PNG
+            );
             $this->logger->debug(__FUNCTION__, compact('fileThumb'));
 
             if (!is_file($fileThumb)) {
@@ -167,6 +173,6 @@ class DocumentManager extends AbstractFullService
             $error = $exception->getMessage();
         }
 
-        return compact('filepath', 'preview', 'thumb', 'error');
+        return ['filepath' => $filepath, 'preview' => $preview, 'thumb' => $thumb, 'error' => $error];
     }
 }

@@ -14,6 +14,7 @@ use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Student;
 use App\Entity\StudentComment;
+use App\Entity\User;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Form\FamilyType;
@@ -22,9 +23,11 @@ use App\Form\StudentCommentSimpleType;
 use App\Form\StudentType;
 use App\Manager\DocumentManager;
 use App\Manager\StudentManager;
+use App\Repository\PackageRepository;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -122,26 +125,22 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * addPackageAction.
-     *
      * @IsGranted("ROLE_DIRECTOR")
      * @Route("/{id}/add-package/{period}", methods={"GET", "POST"})
-     *
-     * @return array|RedirectResponse
-     *
      * @throws InvalidArgumentException
      * @throws NonUniqueResultException
+     * @throws AppException|NoResultException
      */
-    public function addPackage(Request $request, StudentManager $studentManager, Student $student, Period $period = null)
-    {
-        if (is_null($period)) {
-            $period = $this->getEntityPeriod();
-        }
-
-        dump($student);
+    public function addPackage(
+        Request $request,
+        StudentManager $studentManager,
+        Student $student,
+        PackageRepository $packageRepository,
+        Period $period = null,
+    ) : Response {
 
         $packageStudentPeriod = (new PackageStudentPeriod())
-            ->setPeriod($period)
+            ->setPeriod($period ?? $this->getEntityPeriod())
             ->setStudent($student);
 
         $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
@@ -149,9 +148,7 @@ class StudentController extends AbstractBaseController
             ->remove('student')
             ->handleRequest($request);
 
-        $countPackage = $this->getManager()
-            ->getRepository(Package::class)
-            ->countPackages($this->getSchool());
+        $countPackage = $packageRepository->countPackages($this->getSchool());
 
         if (empty($countPackage)) {
             $this->addFlash('danger', $this->trans('package.not_found', [
@@ -162,9 +159,12 @@ class StudentController extends AbstractBaseController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $studentManager->addPackage($student, $packageStudentPeriod);
-                $package = $packageStudentPeriod->getPackage()->getName();
 
-                $this->addFlash('success', 'Le forfait ' . $package . ' pour l\'élèves ' . $student->getName() . ' a bien été enregistré');
+                $this->addFlash('success', sprintf(
+                    "Le forfait %s pour l'élèves %s a bien été enregistré",
+                    (string) $packageStudentPeriod->getPackage()?->getName(),
+                    (string) $student->getName()
+                ));
             } catch (ORMException $e) {
                 $this->addFlash('danger', $e->getMessage());
             } catch (Exception $e) {
@@ -174,8 +174,11 @@ class StudentController extends AbstractBaseController
             return $this->redirect($this->generateUrl('app_student_show', [
                 'id' => $student->getId(),
             ]));
-        } elseif ($form->isSubmitted() && !$form->isValid()) {
-            $this->addFlash('warning', 'l\'élève n\'a pas été enregistré <br /> : ' . print_r($form->getErrors(), true));
+        } else if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('warning', sprintf(
+                'l\'élève n\'a pas été enregistré <br /> : %s',
+                print_r($form->getErrors(), true)
+            ));
         }
 
         return $this->render('student/add_package.html.twig', [
@@ -507,13 +510,9 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * Set Phone student.
-     *
      * @Route("/set-phone/{id}", methods={"POST", "PUT"})
-     *
-     * @return JsonResponse
      */
-    public function setPhone(Student $student, Request $request)
+    public function setPhone(Student $student, Request $request) : JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
@@ -543,26 +542,21 @@ class StudentController extends AbstractBaseController
         return new JsonResponse($response);
     }
 
-    /**
-     * Add comment to student.
-     *
-     * @Route("/{id}/add-comment", methods={"POST"})
-     */
-    public function addComment(Request $request, Student $student): RedirectResponse
+    #[Route("/{id}/add-comment", methods:["POST"])]
+    public function addComment(Request $request, Student $student, EntityManagerInterface $manager): RedirectResponse
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateCommentForm($studentComment, $student);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $manager = $this->getManager();
-
-            $studentComment->setAuthor($this->getUser());
+            if (($user = $this->getUser()) instanceof User) {
+                $studentComment->setAuthor($user);
+            }
             $studentComment->setStudent($student);
             $studentComment->setEnable(true);
 
             $manager->persist($studentComment);
-
             $manager->flush();
 
             $this->addFlash('success', 'The comment to student has been added.');
@@ -574,37 +568,30 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * Print Action.
-     *
-     * @Route("/print/{id}/{format}/{force}", name="app_student_print")
-     *
      * @throws AppException
      */
-    public function print(
-        PackageStudentPeriod $packageStudentPeriod,
-        DocumentManager      $documentManager,
-        string               $format = 'html',
-        bool                 $force = false
-    ): Response {
+    #[Route("/print/{id}/{format}/{force}", name : "app_student_print")]
+    public function print(PackageStudentPeriod $pkgStudent, string $format = 'html', bool $force = false): Response
+    {
         $pathFileTmp = implode(DIRECTORY_SEPARATOR, [
             $this->getParameter('kernel.project_dir'),
             'public/uploads/%format%',
-            str_replace('/', '_', $packageStudentPeriod->getPeriod()),
-            $packageStudentPeriod->getStudent()->getId() . '.%format%',
+            str_replace('/', '_', (string) $pkgStudent->getPeriod()?->getName()),
+            $pkgStudent->getStudent()?->getId() . '.%format%',
         ]);
 
         $pathFileHTML = strtr($pathFileTmp, ['%format%' => 'html']);
 
         $this->logger->debug(__FUNCTION__, ['pathFileHTML' => $pathFileHTML, 'format' => $format, 'force' => $force]);
 
-        if (!is_file($pathFileHTML) || $force) {
+        if ($force || !is_file($pathFileHTML)) {
             $dir = dirname($pathFileHTML);
-            if (!file_exists($dir) && !@mkdir($dir, 0775, true)) {
+            if (!file_exists($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
                 throw new AppException('Not create directory : ' . $dir);
             }
 
             $html = $this->renderView('student/print.html.twig', [
-                'packageStudentPeriod' => $packageStudentPeriod,
+                'packageStudentPeriod' => $pkgStudent,
             ]);
 
             $put = file_put_contents($pathFileHTML, $html);
@@ -615,13 +602,6 @@ class StudentController extends AbstractBaseController
             $html = file_get_contents($pathFileHTML);
         }
 
-        switch ($format) {
-            case 'html':
-            default:
-                $response = new Response($html);
-                break;
-        }
-
-        return $response;
+        return new Response($html);
     }
 }
