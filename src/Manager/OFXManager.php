@@ -88,7 +88,7 @@ class OFXManager extends AccountManager
         return $ofxParser->loadFromString($content);
     }
 
-    public static function uniformizeContent(string $content) : string
+    public static function uniformizeContent(string $content) : ?string
     {
         return preg_replace("#<TRNAMT>([\-]?\d+)\n<FITID>#", "<TRNAMT>$1.00\n<FITID>", $content);
     }
@@ -181,12 +181,11 @@ class OFXManager extends AccountManager
     }
 
     /**
-     * @return Operation|null
      *
      * @throws AppException
      * @throws Exception
      */
-    private function transferOperation(Transaction $transaction, ?string $reference, ?OperationGender $gender)
+    private function transferOperation(Transaction $transaction, ?string $reference, ?OperationGender $gender): ?\App\Entity\Operation
     {
         $transferModel = (new TransferModel())
             ->setAccountSlip(new AccountSlip())
@@ -219,6 +218,9 @@ class OFXManager extends AccountManager
         return $this->logs;
     }
 
+    /**
+     * @param mixed[]|null $logs
+     */
     public function setLogs(array $logs) : static
     {
         $this->logs = $logs;

@@ -18,12 +18,13 @@ class DiplomaGenerateCustomCommand extends Command
     public const OPTION_TEXT = 'text';
     public const OPTION_ID = 'id';
 
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:diploma:generate:custom';
-    private DiplomaService $service;
 
-    public function __construct(DiplomaService $service)
+    public function __construct(private DiplomaService $service)
     {
-        $this->service = $service;
         parent::__construct();
     }
 
@@ -40,7 +41,7 @@ class DiplomaGenerateCustomCommand extends Command
      *
      * @throws ImagickException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $io = new SymfonyStyle($input, $output);
 

@@ -231,10 +231,8 @@ class PackageController extends AbstractBaseController
      * Deletes a Package entity.
      *
      * @Route("/delete/{id}", name="app_package_delete", methods={"GET", "POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Package $package)
+    public function delete(Request $request, Package $package): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($package->getId())
             ->handleRequest($request);
@@ -262,10 +260,8 @@ class PackageController extends AbstractBaseController
      * Creates a form to delete a Package entity by id.
      *
      * @param mixed $id The entity id
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
     {
         return $this->createFormBuilder()
             ->set($this->generateUrl('app_package_delete', ['id' => $id]))

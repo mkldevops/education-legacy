@@ -54,9 +54,9 @@ class SchoolFixtures extends AppFixtures implements DependentFixtureInterface
     }
 
     /**
-     * @return array
+     * @return class-string<\App\DataFixtures\StructureFixtures>[]|class-string<\App\DataFixtures\UserFixtures>[]
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             StructureFixtures::class,

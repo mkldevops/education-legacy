@@ -24,7 +24,10 @@ class AccountRepository extends ServiceEntityRepository
         parent::__construct($registry, Account::class);
     }
 
-    public function getStatsAccount(School $school, $principalOnly = true, array $listAccountId = []): array
+    /**
+     * @return mixed[]
+     */
+    public function getStatsAccount(School $school, bool $principalOnly = true, array $listAccountId = []): array
     {
         $result = $this
             ->getAccounts($school, $principalOnly, $listAccountId)

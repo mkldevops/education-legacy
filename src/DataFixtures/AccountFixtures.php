@@ -42,6 +42,9 @@ class AccountFixtures extends AppFixtures implements DependentFixtureInterface
         }
     }
 
+    /**
+     * @return array<class-string<\App\DataFixtures\StructureFixtures>>
+     */
     public function getDependencies(): array
     {
         return [

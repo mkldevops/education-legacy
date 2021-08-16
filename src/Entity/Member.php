@@ -83,7 +83,7 @@ class Member
         return $this->structure;
     }
 
-    public function setStructure(Structure $structure): ?Member
+    public function setStructure(Structure $structure): static
     {
         $this->structure = $structure;
 

@@ -23,12 +23,12 @@ class StatisticsController extends AbstractBaseController
      *
      * @Route("/number-students", name="app_statistics_numberstudents", methods={"GET"})
      *
-     * @return array
      *
      * @throws ORMException
      * @Template()
+     * @return array<string, mixed>
      */
-    public function numberStudents()
+    public function numberStudents(): array
     {
         $data = $this
             ->getDoctrine()->getManager()
@@ -43,10 +43,10 @@ class StatisticsController extends AbstractBaseController
      *
      * @Route("/account", name="app_statistics_account", methods={"GET"})
      *
-     * @return array
      * @Template()
+     * @return array<string, mixed>
      */
-    public function statsAccount()
+    public function statsAccount(): array
     {
         $data = $this
             ->getDoctrine()->getManager()

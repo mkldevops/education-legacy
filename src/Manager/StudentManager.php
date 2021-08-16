@@ -28,6 +28,9 @@ class StudentManager
     ) {
     }
 
+    /**
+     * @return mixed[]
+     */
     public function dataPayementsStudents(array $students, Period $period) : array
     {
         $list = self::getDataListDefault();
@@ -67,6 +70,9 @@ class StudentManager
         return $list;
     }
 
+    /**
+     * @return array<string, mixed[]>
+     */
     private static function getDataListDefault() : array
     {
         return [
@@ -148,7 +154,7 @@ class StudentManager
         $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()?->getEnd());
         $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
 
-        if ($user = $this->security->getUser()) {
+        if (($user = $this->security->getUser()) !== null) {
             $packageStudentPeriod->setAuthor($user);
         }
 

@@ -40,10 +40,8 @@ class PersonApiController extends AbstractBaseController
 
     /**
      * @Route("/update-phones/{id}", name="app_api_person_update_phone", methods={"POST", "PUT"})
-     *
-     * @return JsonResponse
      */
-    public function updatePhone(Request $request, Person $person, PhoneManager $manager)
+    public function updatePhone(Request $request, Person $person, PhoneManager $manager): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = ResponseModel::responseDefault();
 
@@ -63,10 +61,8 @@ class PersonApiController extends AbstractBaseController
 
     /**
      * @Route("/delete-phones/{id}", name="app_api_person_delete_phone", methods={"DELETE"})
-     *
-     * @return JsonResponse
      */
-    public function deletePhone(Request $request, Person $person, PhoneManager $manager)
+    public function deletePhone(Request $request, Person $person, PhoneManager $manager): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = ResponseModel::responseDefault();
 

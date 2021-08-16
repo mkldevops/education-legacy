@@ -181,6 +181,9 @@ class Person
         return $this->setPhone(implode(';', $list));
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getListPhones(): array
     {
         return PhoneManager::stringPhonesToArray($this->getPhone());
@@ -204,6 +207,9 @@ class Person
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getAllPhones(): array
     {
         return PhoneManager::getAllPhones($this);

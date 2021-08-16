@@ -48,10 +48,8 @@ class ClassPeriodApiController extends AbstractBaseController
      *     methods={"POST"},
      *     options={"expose"=true}
      *    )
-     *
-     * @return JsonResponse
      */
-    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null)
+    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $name = $classPeriod->getClassSchool()->getName();
 

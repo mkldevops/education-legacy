@@ -109,7 +109,7 @@ class DiplomaService extends AbstractFullService
         return $this;
     }
 
-    public function setPathUploads(string $pathUploads): DiplomaService
+    public function setPathUploads(string $pathUploads): static
     {
         $this->pathUploads = $pathUploads;
 

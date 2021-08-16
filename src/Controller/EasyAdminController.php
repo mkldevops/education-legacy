@@ -8,10 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController as AdminContr
 
 class EasyAdminController extends AdminController
 {
-    /**
-     * @param object $entity
-     */
-    public function persistEntity($entity): void
+    public function persistEntity(object $entity): void
     {
         if (method_exists($entity, 'setAuthor')) {
             $entity->setAuthor($this->getUser());

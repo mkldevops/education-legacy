@@ -134,6 +134,7 @@ class AccountController extends AbstractBaseController
      *
      * @Route("/operations/{id}", name="app_account_operations")
      * @Template()
+     * @return array<string, \App\Entity\Account>
      */
     public function operations(Account $account): array
     {
@@ -200,10 +201,8 @@ class AccountController extends AbstractBaseController
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Route("/delete/{id}", name="app_account_delete")
-     *
-     * @return RedirectResponse|Response
      */
-    public function deleteAction(Request $request, Account $account)
+    public function deleteAction(Request $request, Account $account): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($account->getId());
         $deleteForm->handleRequest($request);

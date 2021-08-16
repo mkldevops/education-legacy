@@ -31,7 +31,7 @@ class ClassPeriodType extends AbstractType
             ])
             ->add('period', EntityType::class, [
                 'class' => Period::class,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er): \Doctrine\ORM\QueryBuilder {
                     return $er->createQueryBuilder('p')
                         ->orderBy('p.begin', 'DESC');
                 },
@@ -59,7 +59,7 @@ class ClassPeriodType extends AbstractType
     /**
      * Get School.
      */
-    public function getSchool(): School
+    public function getSchool(): ?\App\Entity\School
     {
         return $this->school;
     }

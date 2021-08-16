@@ -29,10 +29,8 @@ class AppealCourseRepository extends ServiceEntityRepository
 
     /**
      * Get list Students.
-     *
-     * @return object
      */
-    public function getAppealToClassPeriod(ClassPeriod $classPeriod, array $listStatus)
+    public function getAppealToClassPeriod(ClassPeriod $classPeriod, array $listStatus): \stdClass
     {
         $oQuery = $this->createQueryBuilder('apc')
             ->select('apc')

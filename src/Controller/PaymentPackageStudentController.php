@@ -212,7 +212,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(PaymentPackageStudent $paymentPackageStudent)
+    private function createEditForm(PaymentPackageStudent $paymentPackageStudent): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(new PaymentPackageStudentType(), $paymentPackageStudent, [
             'action' => $this->generateUrl('app_payment_package_student_update', ['id' => $paymentPackageStudent->getId()]),
@@ -228,10 +228,8 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Edits an existing PaymentPackageStudent entity.
      *
      * @Route("/update/{id}", name="app_payment_package_student_update", methods={"PUT", "POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent)
+    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
         $editForm->handleRequest($request);
@@ -255,10 +253,8 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Deletes a PaymentPackageStudent entity.
      *
      * @Route("/delete/{id}", name="app_payment_package_student_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent)
+    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($paymentPackageStudent->getId());
         $deleteForm->handleRequest($request);

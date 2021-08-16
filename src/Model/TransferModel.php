@@ -99,7 +99,7 @@ class TransferModel
     /**
      * Get AccountDebit.
      */
-    public function getAccountDebit(): Account
+    public function getAccountDebit(): ?\App\Entity\Account
     {
         return $this->accountDebit;
     }
@@ -117,7 +117,7 @@ class TransferModel
     /**
      * Get Structure.
      */
-    public function getStructure(): Structure
+    public function getStructure(): ?\App\Entity\Structure
     {
         return $this->structure;
     }
@@ -135,7 +135,7 @@ class TransferModel
     /**
      * Get AccountSlip.
      */
-    public function getAccountSlip(): AccountSlip
+    public function getAccountSlip(): ?\App\Entity\AccountSlip
     {
         return $this->accountSlip;
     }
@@ -153,7 +153,7 @@ class TransferModel
     /**
      * Get Date.
      */
-    public function getDate(): DateTimeInterface
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
@@ -171,7 +171,7 @@ class TransferModel
     /**
      * Get Amount.
      */
-    public function getAmount(): float
+    public function getAmount(): ?float
     {
         return $this->amount;
     }
@@ -189,7 +189,7 @@ class TransferModel
     /**
      * Get Comment.
      */
-    public function getComment(): string
+    public function getComment(): ?string
     {
         return $this->comment;
     }

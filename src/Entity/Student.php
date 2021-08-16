@@ -157,37 +157,31 @@ class Student
 
     /**
      * Get name.
-     *
-     * @return string
      */
-    public function getGender()
+    public function getGender(): ?string
     {
         return $this->person->getGender();
     }
 
     /**
      * Get name.
-     *
-     * @return string
      */
-    public function getGenderCode()
+    public function getGenderCode(): ?string
     {
         return $this->person->getGender();
     }
 
     /**
      * Set forname.
-     *
-     * @return Student
      */
-    public function setForname(string $forname)
+    public function setForname(string $forname): static
     {
         $this->person->setForname($forname);
 
         return $this;
     }
 
-    public function getForname() : string
+    public function getForname() : ?string
     {
         return $this->person->getForname();
     }
@@ -291,11 +285,9 @@ class Student
     /**
      * Set phone.
      *
-     * @param bool $add
      *
-     * @return self
      */
-    public function setPhone(string $phone, $add = false)
+    public function setPhone(string $phone, bool $add = false): static
     {
         $this->person->setPhone($phone, $add);
 
@@ -304,10 +296,8 @@ class Student
 
     /**
      * Get phone.
-     *
-     * @return string
      */
-    public function getPhone()
+    public function getPhone(): ?string
     {
         return $this->person->getPhone();
     }
@@ -317,11 +307,10 @@ class Student
      *
      * @param $phone
      *
-     * @return self
      *
      * @throws Exception
      */
-    public function addPhone($phone)
+    public function addPhone($phone): static
     {
         $this->person->addPhone($phone);
 
@@ -342,6 +331,9 @@ class Student
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getListPhones(): array
     {
         return array_unique(array_merge(
@@ -576,7 +568,7 @@ class Student
     /**
      * @throws Exception
      */
-    public function since(): ?int
+    public function since(): int
     {
         return $this->createdAt?->diff(new DateTime())->y;
     }

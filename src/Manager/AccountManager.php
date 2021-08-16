@@ -21,6 +21,9 @@ class AccountManager extends AccountableManager
     protected Account $account;
 
 
+    /**
+     * @return array<string, int>|array<string, mixed[]>|array<string, mixed>
+     */
     public function getDataAccountStatement(Account $account) : array
     {
         $data = ['accountStatements' => [], 'nbWithoutAccountStatements' => 0];

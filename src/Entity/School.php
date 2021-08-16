@@ -70,7 +70,7 @@ class School
         return $this->principal;
     }
 
-    public function setPrincipal(bool $principal)
+    public function setPrincipal(bool $principal): static
     {
         $this->principal = $principal;
 
@@ -106,7 +106,7 @@ class School
         return $this->packages;
     }
 
-    public function getStructure(): Structure
+    public function getStructure(): ?\App\Entity\Structure
     {
         return $this->structure;
     }

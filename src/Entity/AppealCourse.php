@@ -70,8 +70,9 @@ class AppealCourse
 
     /**
      * @throws AppException
+     * @return mixed[]
      */
-    public function getInfoStatus(): string
+    public function getInfoStatus(): array
     {
         return CourseManager::getListStatus($this->status);
     }

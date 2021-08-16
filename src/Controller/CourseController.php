@@ -38,14 +38,13 @@ class CourseController extends AbstractBaseController
      * @Route("", name="app_course_index", methods={"GET"})
      * @Template()
      *
-     * @param int $page
-     * @param string $search
      *
      * @throws InvalidArgumentException
      * @throws NonUniqueResultException
      * @throws NoResultException
+     * @return array<string, mixed>
      */
-    public function index(EntityManagerInterface $manager, $page = 1, $search = ''): array
+    public function index(EntityManagerInterface $manager, int $page = 1, string $search = ''): array
     {
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
@@ -104,11 +103,10 @@ class CourseController extends AbstractBaseController
      * @Route("/create", name="app_course_create", methods={"POST"})
      * @Template()
      *
-     * @return array|RedirectResponse
      *
      * @throws Exception
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|array
     {
         $course = new Course();
         $form = $this->createCreateForm($course);
@@ -171,6 +169,7 @@ class CourseController extends AbstractBaseController
      * @Template()
      *
      * @throws Exception
+     * @return array<string, \App\Entity\Course>|array<string, \Symfony\Component\Form\FormView>
      */
     public function new(): array
     {
@@ -190,6 +189,7 @@ class CourseController extends AbstractBaseController
      * @Template()
      *
      * @throws Exception
+     * @return array<string, \App\Entity\Course>|array<string, mixed[]>|null[]
      */
     public function showAction(Course $course = null): array
     {
@@ -204,6 +204,7 @@ class CourseController extends AbstractBaseController
      *
      * @Route("/edit/{id}", name="app_course_edit", methods={"GET"})
      * @Template()
+     * @return array<string, \App\Entity\Course>|array<string, \Symfony\Component\Form\FormView>
      */
     public function editAction(Course $course): array
     {
@@ -238,11 +239,10 @@ class CourseController extends AbstractBaseController
      * @Route("/save-appeal/{id}", name="app_course_save_appeal", methods={"POST"})
      * @Template()
      *
-     * @return JsonResponse
      *
      * @throws Exception
      */
-    public function saveAppealAction(Request $request, Course $course)
+    public function saveAppealAction(Request $request, Course $course): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = (object)[
             'success' => false,

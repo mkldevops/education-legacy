@@ -26,11 +26,8 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Lists all PackageStudentPeriod entities.
      *
      * @Route("/list/{page}/{search}", name="app_package_student_period_index", methods={"GET"})
-     *
-     * @param int $page
-     * @param string $search
      */
-    public function index($page = 1, $search = ''): Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -165,10 +162,8 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Finds and displays a PackageStudentPeriod entity.
      *
      * @Route("/show/{id}", name="app_package_student_period_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(PackageStudentPeriod $packageStudentPeriod)
+    public function show(PackageStudentPeriod $packageStudentPeriod): \Symfony\Component\HttpFoundation\Response
     {
         return $this->render('package_student_period/show.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
@@ -285,10 +280,8 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      *
      * @Route("/search", name="app_package_student_period_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
 

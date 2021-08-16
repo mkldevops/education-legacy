@@ -43,7 +43,7 @@ abstract class AppFixtures extends Fixture
     /**
      * @return string|string[]
      */
-    private static function getPath()
+    private static function getPath(): string
     {
         $name = (new ReflectionClass(static::class))->getShortName();
 

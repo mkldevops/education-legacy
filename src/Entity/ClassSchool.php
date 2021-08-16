@@ -72,7 +72,7 @@ class ClassSchool
         $this->classPeriods->removeElement($classPeriods);
     }
 
-    public function getClassPeriods(): Collection
+    public function getClassPeriods(): \Doctrine\Common\Collections\ArrayCollection
     {
         $classPeriods = new ArrayCollection();
 
@@ -87,7 +87,7 @@ class ClassSchool
         return $classPeriods;
     }
 
-    public function getAgeMinimum(): ?int
+    public function getAgeMinimum(): int
     {
         return $this->ageMinimum;
     }
@@ -99,7 +99,7 @@ class ClassSchool
         return $this;
     }
 
-    public function getAgeMaximum(): ?int
+    public function getAgeMaximum(): int
     {
         return $this->ageMaximum;
     }

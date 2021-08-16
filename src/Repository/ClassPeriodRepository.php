@@ -29,14 +29,9 @@ use Exception;
  */
 class ClassPeriodRepository extends ServiceEntityRepository
 {
-    private CourseRepository $courseRepository;
-    private ClassPeriodStudentRepository $classPeriodStudentRepository;
-
-    public function __construct(ManagerRegistry $registry, CourseRepository $courseRepository, ClassPeriodStudentRepository $classPeriodStudentRepository)
+    public function __construct(ManagerRegistry $registry, private CourseRepository $courseRepository, private ClassPeriodStudentRepository $classPeriodStudentRepository)
     {
         parent::__construct($registry, ClassPeriod::class);
-        $this->courseRepository = $courseRepository;
-        $this->classPeriodStudentRepository = $classPeriodStudentRepository;
     }
 
     public function remove(ClassPeriod $classPeriod): array

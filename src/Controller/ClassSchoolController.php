@@ -32,11 +32,10 @@ class ClassSchoolController extends AbstractBaseController
     /**
      * @Route("", name="app_class_school_index", methods={"GET"})
      *
-     * @return Response
      *
      * @throws InvalidArgumentException
      */
-    public function index()
+    public function index(): \Symfony\Component\HttpFoundation\Response
     {
         /** @var ClassSchool[] $classSchools */
         $classSchools = $this->getDoctrine()
@@ -84,10 +83,8 @@ class ClassSchoolController extends AbstractBaseController
      * Creates a form to create a classSchool entity.
      *
      * @param ClassSchool $classSchool The entity
-     *
-     * @return FormInterface
      */
-    private function createCreateForm(ClassSchool $classSchool)
+    private function createCreateForm(ClassSchool $classSchool): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(ClassSchoolType::class, $classSchool, [
             'action' => $this->generateUrl('app_class_school_create'),
@@ -139,10 +136,8 @@ class ClassSchoolController extends AbstractBaseController
      * Displays a form to edit an existing classSchool entity.
      *
      * @Route("/edit/{id}", name="app_class_school_edit", methods={"GET"})
-     *
-     * @return Response
      */
-    public function edit(ClassSchool $classSchool)
+    public function edit(ClassSchool $classSchool): \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($classSchool);
 
@@ -156,10 +151,8 @@ class ClassSchoolController extends AbstractBaseController
      * Creates a form to edit a classSchool entity.
      *
      * @param ClassSchool $classSchool The entity
-     *
-     * @return FormInterface
      */
-    private function createEditForm(ClassSchool $classSchool)
+    private function createEditForm(ClassSchool $classSchool): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(ClassSchoolType::class, $classSchool, [
             'action' => $this->generateUrl('app_class_school_update', ['id' => $classSchool->getId()]),
@@ -205,10 +198,8 @@ class ClassSchoolController extends AbstractBaseController
      * Deletes a classSchool entity.
      *
      * @Route("/delete/{id}", name="app_class_school_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, ClassSchool $classSchool)
+    public function delete(Request $request, ClassSchool $classSchool): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($classSchool->getId());
         $deleteForm->handleRequest($request);
@@ -234,10 +225,8 @@ class ClassSchoolController extends AbstractBaseController
      * Creates a form to delete a classSchool entity by id.
      *
      * @param mixed $id The entity id
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_class_school_delete', ['id' => $id]))
@@ -250,10 +239,8 @@ class ClassSchoolController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      *
      * @Route("/search", name="app_class_school_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
 
@@ -268,11 +255,10 @@ class ClassSchoolController extends AbstractBaseController
      *
      * @param ClassPeriod|null $classPeriod
      *
-     * @return RedirectResponse
      *
      * @throws Exception
      */
-    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager)
+    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (Request::METHOD_POST === $request->getMethod()) {
             $students = $request->request->get('students', []);
@@ -298,12 +284,11 @@ class ClassSchoolController extends AbstractBaseController
     /**
      * @Route("/without-student", name="app_class_school_without_student", methods={"POST"}, options={"expose"=true})
      *
-     * @return Response
      *
      * @throws InvalidArgumentException
      * @throws Exception
      */
-    public function withOutStudentAction()
+    public function withOutStudentAction(): \Symfony\Component\HttpFoundation\Response
     {
         $manager = $this->getDoctrine()->getManager();
 

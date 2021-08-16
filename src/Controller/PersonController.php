@@ -12,6 +12,8 @@ use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Form\PersonType;
 use App\Manager\PhoneManager;
+use App\Repository\FamilyRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,11 +35,10 @@ class PersonController extends AbstractBaseController
      *
      * @Route("/list/{page}/{search}", name="app_person_index", methods={"GET"})
      *
-     * @return Response
      *
      * @throws NonUniqueResultException
      */
-    public function index(int $page = 1, string $search = '')
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -107,11 +108,9 @@ class PersonController extends AbstractBaseController
     /**
      * Creates a form to search Person entities.
      *
-     * @param string $q
      *
-     * @return FormInterface
      */
-    private function createSearchForm($q = '')
+    private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
 
@@ -129,10 +128,8 @@ class PersonController extends AbstractBaseController
      * Creates a new Person entity.
      *
      * @Route("/create", name="app_person_create", methods={"POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse|Response
     {
         // If form have redirect
         $pathRedirect = $request->get('pathRedirect');
@@ -169,15 +166,7 @@ class PersonController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to create a Person entity.
-     *
-     * @param Person $person The entity
-     * @param null $pathRedirect
-     *
-     * @return FormInterface
-     */
-    private function createCreateForm(Person $person, $pathRedirect = null)
+    private function createCreateForm(Person $person, string $pathRedirect = null): FormInterface
     {
         $form = $this->createForm(PersonType::class, $person, [
             'action' => $this->generateUrl('app_person_create'),
@@ -191,15 +180,9 @@ class PersonController extends AbstractBaseController
     }
 
     /**
-     * Displays a form to create a new Person entity.
-     *
      * @Route("/new", name="app_person_new", methods={"GET"})
-     *
-     * @param null $pathRedirect
-     *
-     * @return Response
      */
-    public function new($pathRedirect = null)
+    public function new(string $pathRedirect = null): Response
     {
         $person = new Person();
         $form = $this->createCreateForm($person, $pathRedirect);
@@ -214,35 +197,26 @@ class PersonController extends AbstractBaseController
      * Finds and displays a Person entity.
      *
      * @Route("/show/{id}", name="app_person_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(Person $person)
+    public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $em): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $member = $em->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
         $teacher = $em->getRepository(Teacher::class)->findOneBy(['person' => $person->getId()]);
         $student = $em->getRepository(Student::class)->findOneBy(['person' => $person->getId()]);
-        $families = $em->getRepository(Family::class)->findFamilies($person);
 
         return $this->render('person/show.html.twig', [
             'person' => $person,
             'teacher' => $teacher,
             'member' => $member,
             'student' => $student,
-            'families' => $families,
+            'families' => $familyRepository->findFamilies($person),
         ]);
     }
 
     /**
-     * Displays a form to edit an existing Person entity.
-     *
      * @Route("/edit/{id}", name="app_person_edit", methods={"GET"})
-     *
-     * @return Response
      */
-    public function edit(Person $person)
+    public function edit(Person $person): Response
     {
         $editForm = $this->createEditForm($person);
 
@@ -256,10 +230,8 @@ class PersonController extends AbstractBaseController
      * Creates a form to edit a Person entity.
      *
      * @param Person $person The entity
-     *
-     * @return FormInterface
      */
-    private function createEditForm(Person $person)
+    private function createEditForm(Person $person): FormInterface
     {
         $form = $this->createForm(PersonType::class, $person, [
             'action' => $this->generateUrl('app_person_update', ['id' => $person->getId()]),
@@ -275,10 +247,8 @@ class PersonController extends AbstractBaseController
      * Edits an existing Person entity.
      *
      * @Route("/update/{id}", name="app_person_update", methods={"POST", "PUT"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, Person $person)
+    public function update(Request $request, Person $person): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($person);
         $editForm->handleRequest($request);
@@ -303,10 +273,8 @@ class PersonController extends AbstractBaseController
      * Deletes a Person entity.
      *
      * @Route("/delete/{id}", name="app_person_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Person $person)
+    public function delete(Request $request, Person $person): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($person->getId());
         $deleteForm->handleRequest($request);
@@ -346,7 +314,7 @@ class PersonController extends AbstractBaseController
      *
      * @Route("/search", name="app_person_search", methods={"POST"})
      */
-    public function search(Request $request): Response
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 
@@ -360,10 +328,8 @@ class PersonController extends AbstractBaseController
      * Finds and displays a Person entity.
      *
      * @Route("/phones/{id}", name="app_person_phones", methods={"GET"})
-     *
-     * @return Response
      */
-    public function phones(Person $person)
+    public function phones(Person $person): Response
     {
         $phones = PhoneManager::getAllPhones($person);
 

@@ -43,7 +43,7 @@ class CourseType extends AbstractType
 
     protected ?int $classPeriodId = null;
 
-    public function getSchool(): School
+    public function getSchool(): ?\App\Entity\School
     {
         return $this->school;
     }
@@ -55,7 +55,7 @@ class CourseType extends AbstractType
         return $this;
     }
 
-    public function getPeriod(): Period
+    public function getPeriod(): ?\App\Entity\Period
     {
         return $this->period;
     }
@@ -70,7 +70,7 @@ class CourseType extends AbstractType
     /**
      * Get ClassPeriodId.
      */
-    public function getClassPeriodId(): int
+    public function getClassPeriodId(): ?int
     {
         return $this->classPeriodId;
     }
@@ -78,7 +78,7 @@ class CourseType extends AbstractType
     /**
      * Set ClassPeriodId.
      */
-    public function setClassPeriodId(int $classPeriodId): CourseType
+    public function setClassPeriodId(int $classPeriodId): static
     {
         $this->classPeriodId = $classPeriodId;
 
@@ -93,7 +93,7 @@ class CourseType extends AbstractType
     /**
      * @required
      */
-    public function setSession(SessionInterface $session): CourseType
+    public function setSession(SessionInterface $session): static
     {
         $this->session = $session;
 
@@ -108,7 +108,7 @@ class CourseType extends AbstractType
         return $this->request;
     }
 
-    public function setRequest(RequestInterface $request): CourseType
+    public function setRequest(RequestInterface $request): static
     {
         $this->request = $request;
         $this->setClassPeriodId($this->request->getCurrentRequest()->get('class_period', null));

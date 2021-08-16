@@ -51,6 +51,7 @@ class DocumentManager extends AbstractFullService
 
     /**
      * @throws FileNotFoundException
+     * @return array<string, mixed>
      */
     public function upload(Document $document) : array
     {
@@ -78,13 +79,13 @@ class DocumentManager extends AbstractFullService
             ->setMime($document->getFile()->getClientMimeType())
             ->setName($name);
 
-        $this->logger->debug(__FUNCTION__, compact('document'));
+        $this->logger->debug(__FUNCTION__, ['document' => $document]);
 
         $data['move'] = $document->getFile()->move(self::getPathUploads(Document::DIR_FILE), $document->getPath());
 
         ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
-        if ($document->getFile()->getError()) {
+        if ($document->getFile()->getError() !== 0) {
             $data->errors = [
                 'error' => $document->getFile()->getError(),
                 'message' => $document->getFile()->getErrorMessage(),
@@ -107,6 +108,7 @@ class DocumentManager extends AbstractFullService
 
     /**
      * @throws FileNotFoundException
+     * @return array<string, bool>|array<string, string>|array<string, null>
      */
     private function generateImages(Document $document) : array
     {
@@ -117,7 +119,7 @@ class DocumentManager extends AbstractFullService
             throw new FileNotFoundException(sprintf('No such file %s or is not supported', $filepath));
         }
 
-        $this->logger->debug(__FUNCTION__, compact('filepath'));
+        $this->logger->debug(__FUNCTION__, ['filepath' => $filepath]);
 
         chmod($filepath, 0777);
         $error = false;
@@ -145,7 +147,7 @@ class DocumentManager extends AbstractFullService
                 $document->getFileName(),
                 Document::EXT_PNG
             );
-            $this->logger->debug(__FUNCTION__, compact('filePreview'));
+            $this->logger->debug(__FUNCTION__, ['filePreview' => $filePreview]);
 
             if (!is_file($filePreview)) {
                 $img->scaleImage(800, 0);
@@ -160,7 +162,7 @@ class DocumentManager extends AbstractFullService
                 $document->getFileName(),
                 Document::EXT_PNG
             );
-            $this->logger->debug(__FUNCTION__, compact('fileThumb'));
+            $this->logger->debug(__FUNCTION__, ['fileThumb' => $fileThumb]);
 
             if (!is_file($fileThumb)) {
                 $img->scaleImage(150, 0);

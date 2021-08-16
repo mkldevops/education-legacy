@@ -17,6 +17,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class StudentComment
 {
+    public ?\DateTime $created = null;
     use IdEntity;
     use StudentEntityTrait;
     use AuthorEntityTrait;
@@ -65,10 +66,8 @@ class StudentComment
 
     /**
      * Set text.
-     *
-     * @return StudentComment
      */
-    public function setText(string $text)
+    public function setText(string $text): static
     {
         $this->text = $text;
 
@@ -77,10 +76,8 @@ class StudentComment
 
     /**
      * Get type.
-     *
-     * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -88,11 +85,9 @@ class StudentComment
     /**
      * Set type.
      *
-     * @param string $type
      *
-     * @return StudentComment
      */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
@@ -103,10 +98,8 @@ class StudentComment
      * Set created.
      *
      * @param DateTime $created
-     *
-     * @return StudentComment
      */
-    public function setCreated($created)
+    public function setCreated(\DateTimeInterface $created): static
     {
         $this->created = $created;
 
@@ -115,10 +108,8 @@ class StudentComment
 
     /**
      * Get created.
-     *
-     * @return DateTime
      */
-    public function getCreated()
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
@@ -126,7 +117,7 @@ class StudentComment
     /**
      * Get student.
      *
-     * @return Student
+     * @return \App\Entity\Student|null
      */
     public function getStudent()
     {

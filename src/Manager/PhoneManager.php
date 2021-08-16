@@ -55,9 +55,9 @@ class PhoneManager extends AbstractFullService
     /**
      * Get Phones.
      *
-     * @return array
+     * @return array<string, mixed[]>|array<string, int>|null[]
      */
-    public static function getPhones(Person $person)
+    public static function getPhones(Person $person): array
     {
         return [
             'id' => $person->getId(),
@@ -65,6 +65,9 @@ class PhoneManager extends AbstractFullService
         ];
     }
 
+    /**
+     * @return mixed[]
+     */
     public static function stringPhonesToArray(?string $phones): array
     {
         if (empty($phones)) {
@@ -89,7 +92,7 @@ class PhoneManager extends AbstractFullService
     /**
      * @return string|string[]|null
      */
-    private static function purgePhone(string $value): ?string
+    private static function purgePhone(string $value): string
     {
         $value = preg_replace("#\D+#", '', $value);
         $value = preg_replace("#(\d{2})#", '$1 ', $value);
@@ -102,7 +105,7 @@ class PhoneManager extends AbstractFullService
      *
      * @throws Exception
      */
-    public function updatePhone(Person $person, string $value, string $key = null): bool
+    public function updatePhone(Person $person, string $value, string $key = null): string
     {
         if (!empty($key)) {
             $person->removePhone($key);

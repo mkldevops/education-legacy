@@ -61,7 +61,7 @@ class GoogleService extends AbstractService
      *
      * @throws Google_Exception
      */
-    public function setClient(Google_Client $client): GoogleService
+    public function setClient(Google_Client $client): static
     {
         $this->client = $client;
         $this->init();
@@ -118,10 +118,7 @@ class GoogleService extends AbstractService
         $this->client->setAccessType('offline');
     }
 
-    /**
-     * @return string
-     */
-    public function getPathCredentiels(): ?string
+    public function getPathCredentiels(): string
     {
         return $this->pathCredentiels;
     }
@@ -133,10 +130,7 @@ class GoogleService extends AbstractService
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPathTokens(): ?string
+    public function getPathTokens(): string
     {
         return $this->pathTokens;
     }
@@ -151,10 +145,7 @@ class GoogleService extends AbstractService
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthCode(): ?string
+    public function getAuthCode(): string
     {
         return $this->authCode;
     }
@@ -166,17 +157,14 @@ class GoogleService extends AbstractService
         return $this;
     }
 
-    public function setRedirectUri(string $redirectUri): GoogleService
+    public function setRedirectUri(string $redirectUri): static
     {
         $this->client->setRedirectUri($redirectUri);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthUrl(): ?string
+    public function getAuthUrl(): string
     {
         return $this->client->createAuthUrl();
     }

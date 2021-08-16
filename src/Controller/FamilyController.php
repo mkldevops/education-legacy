@@ -32,7 +32,7 @@ class FamilyController extends AbstractBaseController
      *
      * @Route("", methods={"GET"})
      */
-    public function index()
+    public function index(): \Symfony\Component\HttpFoundation\Response
     {
         /** @var Family[] $families */
         $families = $this->getDoctrine()->getManager()
@@ -48,10 +48,8 @@ class FamilyController extends AbstractBaseController
      * Creates a new family entity.
      *
      * @Route("/new", methods={"GET"})
-     *
-     * @return Response
      */
-    public function new(Request $request)
+    public function new(Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
@@ -63,10 +61,8 @@ class FamilyController extends AbstractBaseController
 
     /**
      * Creates a form to create a Grade entity.
-     *
-     * @return FormInterface
      */
-    private function createCreateForm(Request $request, Family $family)
+    private function createCreateForm(Request $request, Family $family): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
             'action' => $this->generateUrl('app_family_create'),
@@ -83,10 +79,8 @@ class FamilyController extends AbstractBaseController
      * Creates a new family entity.
      *
      * @Route("/create", methods={"POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function create(Request $request)
+    public function create(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
@@ -117,11 +111,10 @@ class FamilyController extends AbstractBaseController
      *
      * @Route("/show/{id}", methods={"GET"})
      *
-     * @return Response
      *
      * @throws InvalidArgumentException
      */
-    public function show(Family $family, FamilyManager $manager)
+    public function show(Family $family, FamilyManager $manager): \Symfony\Component\HttpFoundation\Response
     {
         $student = new Student();
         $student->getPerson()->setFamily($family);
@@ -151,10 +144,8 @@ class FamilyController extends AbstractBaseController
      * Displays a form to edit an existing family entity.
      *
      * @Route("/edit/{id}", methods={"GET"})
-     *
-     * @return Response
      */
-    public function edit(Request $request, Family $family)
+    public function edit(Request $request, Family $family): \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($request, $family);
 
@@ -166,10 +157,8 @@ class FamilyController extends AbstractBaseController
 
     /**
      * Creates a form to create a Grade entity.
-     *
-     * @return FormInterface
      */
-    private function createEditForm(Request $request, Family $family)
+    private function createEditForm(Request $request, Family $family): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
             'action' => $this->generateUrl('app_family_update', ['id' => $family->getId()]),
@@ -186,10 +175,8 @@ class FamilyController extends AbstractBaseController
      * Displays a form to edit an existing family entity.
      *
      * @Route("/{id}/update", methods={"POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, Family $family)
+    public function update(Request $request, Family $family): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($request, $family);
 
@@ -209,10 +196,8 @@ class FamilyController extends AbstractBaseController
      * Deletes a family entity.
      *
      * @Route("/delete/{id}", methods={"DELETE"})
-     *
-     * @return RedirectResponse
      */
-    public function delete(Request $request, Family $family)
+    public function delete(Request $request, Family $family): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $form = $this->createDeleteForm($family);
         $form->handleRequest($request);
@@ -230,10 +215,8 @@ class FamilyController extends AbstractBaseController
      * Creates a form to delete a family entity.
      *
      * @param Family $family The family entity
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(Family $family)
+    private function createDeleteForm(Family $family): \Symfony\Component\Form\FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_family_delete', ['id' => $family->getId()]))

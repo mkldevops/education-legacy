@@ -39,7 +39,7 @@ abstract class AccountableManager
     /**
      * @throws AppException
      */
-    public function findAccount(int $id): ?Account
+    public function findAccount(int $id): \App\Entity\Account
     {
         if (empty($id)) {
             throw new AppException('Id to search account is empty');
@@ -64,7 +64,7 @@ abstract class AccountableManager
             ->getRepository(TypeOperation::class)
             ->findOneBy(['code' => $code]);
 
-        if ($typeOperation === null) {
+        if (!$typeOperation instanceof \App\Entity\TypeOperation) {
             throw new AppException('Not Found Type operation with code : '.$code);
         }
 

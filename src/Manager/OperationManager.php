@@ -24,6 +24,9 @@ class OperationManager
     ) {
     }
 
+    /**
+     * @return array<string, mixed[]>
+     */
     public static function getData(Operation $operation) : array
     {
         return [
@@ -89,11 +92,9 @@ class OperationManager
     }
 
     /**
-     * @return object|null
-     *
      * @throws AppException
      */
-    private function findEntity(string $class, int $id)
+    private function findEntity(string $class, int $id): ?object
     {
         $result = $this->entityManager
             ->getRepository($class)
@@ -106,6 +107,9 @@ class OperationManager
         return $result;
     }
 
+    /**
+     * @return \App\Entity\Operation[]
+     */
     public function toValidate(Period $period): array
     {
         return $this->repository->toValidate($period);

@@ -33,6 +33,9 @@ class StatsByMonth
         return $this->column;
     }
 
+    /**
+     * @param \App\Model\DataStats[] $column
+     */
     public function setColumn(array $column): self
     {
         $this->column = $column;
@@ -48,7 +51,10 @@ class StatsByMonth
         return $this->row;
     }
 
-    public function setRow(array $row = []): StatsByMonth
+    /**
+     * @param \App\Model\DataStats[] $row
+     */
+    public function setRow(array $row = []): static
     {
         $this->row = $row;
 
@@ -58,7 +64,7 @@ class StatsByMonth
     /**
      * @throws AppException
      */
-    public function addData(DataStats $dataStats): StatsByMonth
+    public function addData(DataStats $dataStats): static
     {
         if (!isset($this->data[$dataStats->getRowId()])) {
             $this->data[$dataStats->getRowId()] = [];
@@ -89,7 +95,7 @@ class StatsByMonth
         return $this->global;
     }
 
-    public function setGlobal(DataStats $global): StatsByMonth
+    public function setGlobal(DataStats $global): static
     {
         $this->global = $global;
 
@@ -113,7 +119,7 @@ class StatsByMonth
         return $this;
     }
 
-    public function addRow(DataStats $dataStats): StatsByMonth
+    public function addRow(DataStats $dataStats): static
     {
         if (!$rowId = $dataStats->getRowId()) {
             return $this;
@@ -134,12 +140,18 @@ class StatsByMonth
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    public function setData(array $data): StatsByMonth
+    /**
+     * @param mixed[] $data
+     */
+    public function setData(array $data): static
     {
         $this->data = $data;
 

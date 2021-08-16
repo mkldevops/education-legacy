@@ -183,12 +183,13 @@ class Document
     {
         $ext = substr(strrchr($path, '.'), 1);
 
-        return (string) str_replace($ext, self::EXT_PNG, $path);
+        return str_replace($ext, self::EXT_PNG, $path);
     }
 
     /**
      * @throws ImagickException
      * @throws AppException
+     * @return array<string, bool>|array<string, null>
      */
     public function generateImages() : array
     {
@@ -242,7 +243,7 @@ class Document
     }
 
 
-    public function getFileName(): ?string
+    public function getFileName(): string
     {
         if (empty($this->fileName)) {
             $this->fileName = str_replace(strrchr((string) $this->path, '.'), '', (string) $this->path);
@@ -251,7 +252,7 @@ class Document
         return $this->fileName;
     }
 
-    public function setFileName(string $fileName): Document
+    public function setFileName(string $fileName): static
     {
         $this->fileName = $fileName;
 
@@ -260,10 +261,8 @@ class Document
 
     /**
      * Get Upload Root Dir.
-     *
-     * @param string $dir
      */
-    public static function getUploadRootDir($dir = self::DIR_FILE): string
+    public static function getUploadRootDir(string $dir = self::DIR_FILE): string
     {
         $dir = DocumentManager::getPathUploads() . DIRECTORY_SEPARATOR . self::getUploadDir($dir);
         //dd($dir);
@@ -346,17 +345,15 @@ class Document
         return is_file((string) $this->getAbsolutePath(self::DIR_THUMB));
     }
 
-    public function getAbsolutePath($dir = self::DIR_FILE): ?string
+    public function getAbsolutePath(string $dir = self::DIR_FILE): ?string
     {
         return null === $this->path ? null : DocumentManager::getPathUploads($dir) . '/' . $this->getPath($dir);
     }
 
     /**
      * Get is image.
-     *
-     * @return bool
      */
-    public function isImage()
+    public function isImage(): bool
     {
         return $this->isFormat('image');
     }
@@ -376,7 +373,7 @@ class Document
     /**
      * Get school.
      *
-     * @return School
+     * @return \App\Entity\School|null
      */
     public function getSchool()
     {
@@ -385,10 +382,8 @@ class Document
 
     /**
      * Get status.
-     *
-     * @return bool
      */
-    public function getPrefix()
+    public function getPrefix(): ?string
     {
         return $this->prefix;
     }
@@ -397,10 +392,8 @@ class Document
      * Set status.
      *
      * @param $prefix
-     *
-     * @return Document
      */
-    public function setPrefix($prefix)
+    public function setPrefix($prefix): static
     {
         $this->prefix = trim($prefix);
 
@@ -409,10 +402,8 @@ class Document
 
     /**
      * Add student.
-     *
-     * @return Document
      */
-    public function addStudent(Person $person)
+    public function addStudent(Person $person): static
     {
         $this->persons[] = $person;
 
@@ -430,7 +421,7 @@ class Document
     /**
      * Get persons.
      *
-     * @return Collection|Person[]
+     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\Person[]
      */
     public function getPersons()
     {
@@ -439,10 +430,8 @@ class Document
 
     /**
      * Add operation.
-     *
-     * @return Document
      */
-    public function addOperation(Operation $operation)
+    public function addOperation(Operation $operation): static
     {
         $this->operations[] = $operation;
 
@@ -460,7 +449,7 @@ class Document
     /**
      * Get operations.
      *
-     * @return Collection
+     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\Operation[]
      */
     public function getOperations()
     {
@@ -469,10 +458,8 @@ class Document
 
     /**
      * Get code classe Font awesome Icon File.
-     *
-     * @return string
      */
-    public function getFaIconFile()
+    public function getFaIconFile(): string
     {
         switch ($this->mime) {
             case 'image/png':
@@ -497,11 +484,11 @@ class Document
     /**
      * Get informations to document.
      *
-     * @return array
      *
      * @throws ImagickException
+     * @return array<string, int>|array<string, string>|array<string, null>
      */
-    public function getInfos()
+    public function getInfos(): array
     {
         return [
             'path' => $this->getWebPath(),
@@ -513,10 +500,7 @@ class Document
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return 'ID : ' . $this->getId() .
             "\r\nNAME: " . $this->getName() .
@@ -526,10 +510,8 @@ class Document
 
     /**
      * Add accountStatements.
-     *
-     * @return Document
      */
-    public function addAccountStatement(AccountStatement $accountStatements)
+    public function addAccountStatement(AccountStatement $accountStatements): static
     {
         $this->accountStatements[] = $accountStatements;
 
@@ -547,7 +529,7 @@ class Document
     /**
      * Get accountStatements.
      *
-     * @return Collection
+     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\AccountStatement[]
      */
     public function getAccountStatements()
     {
@@ -556,10 +538,8 @@ class Document
 
     /**
      * Add accountSlip.
-     *
-     * @return Document
      */
-    public function addAccountSlip(AccountSlip $accountSlip)
+    public function addAccountSlip(AccountSlip $accountSlip): static
     {
         $this->accountSlips[] = $accountSlip;
 
@@ -577,7 +557,7 @@ class Document
     /**
      * Get accountSlips.
      *
-     * @return Collection
+     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\AccountSlip[]
      */
     public function getAccountSlips()
     {

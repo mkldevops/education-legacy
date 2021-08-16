@@ -203,7 +203,7 @@ class Account
         return $this;
     }
 
-    public function getIntervalOperationsAccountStatement(): ?int
+    public function getIntervalOperationsAccountStatement(): int
     {
         return $this->intervalOperationsAccountStatement;
     }

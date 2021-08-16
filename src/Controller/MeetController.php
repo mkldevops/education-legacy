@@ -136,7 +136,7 @@ class MeetController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createCreateForm(Meet $meet)
+    private function createCreateForm(Meet $meet): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(MeetType::class, $meet, [
             'action' => $this->generateUrl('app_meet_create'),
@@ -257,10 +257,8 @@ class MeetController extends AbstractBaseController
      * Deletes a Meet entity.
      *
      * @Route("/delete/{id}", name="app_meet_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Meet $meet)
+    public function delete(Request $request, Meet $meet): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($meet->getId());
         $deleteForm->handleRequest($request);
@@ -299,10 +297,8 @@ class MeetController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      *
      * @Route("/search", name="app_meet_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
 

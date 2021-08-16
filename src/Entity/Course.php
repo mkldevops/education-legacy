@@ -102,7 +102,7 @@ class Course
         return $this;
     }
 
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
@@ -114,7 +114,7 @@ class Course
         return $this;
     }
 
-    public function getText(): string
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -138,7 +138,7 @@ class Course
         return $this;
     }
 
-    public function getHourEnd(): ?DateTimeInterface
+    public function getHourEnd(): \DateTimeInterface
     {
         return $this->hourEnd;
     }
@@ -177,6 +177,9 @@ class Course
         return $this->teachers;
     }
 
+    /**
+     * @param \App\Entity\Teacher[]|\Doctrine\Common\Collections\Collection $teachers
+     */
     public function setTeachers(ArrayCollection $teachers): self
     {
         $this->teachers = $teachers;
@@ -201,11 +204,14 @@ class Course
     /**
      * @return Collection|Student[]
      */
-    public function getStudents(): ?Collection
+    public function getStudents(): \Doctrine\Common\Collections\Collection
     {
         return $this->students;
     }
 
+    /**
+     * @param \Doctrine\Common\Collections\Collection|\App\Entity\Student[] $students
+     */
     public function setStudents(Collection $students): self
     {
         $this->students = $students;
@@ -213,7 +219,7 @@ class Course
         return $this;
     }
 
-    public function getIdEvent(): ?string
+    public function getIdEvent(): string
     {
         return $this->idEvent;
     }

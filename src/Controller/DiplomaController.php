@@ -85,7 +85,7 @@ class DiplomaController extends AbstractController
     /**
      * @Route("/{id}", name="app_diploma_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Diploma $diploma): Response
+    public function delete(Request $request, Diploma $diploma): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         if ($this->isCsrfTokenValid('delete' . $diploma->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();

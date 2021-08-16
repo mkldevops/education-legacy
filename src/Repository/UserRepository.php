@@ -24,10 +24,8 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * Get period available.
-     *
-     * @return QueryBuilder
      */
-    public function getAvailable()
+    public function getAvailable(): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('usr')
             ->where('usr.enable = 1');

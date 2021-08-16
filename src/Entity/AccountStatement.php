@@ -99,7 +99,7 @@ class AccountStatement
         return $this;
     }
 
-    public function getBegin(): ?DateTimeInterface
+    public function getBegin(): \DateTimeInterface
     {
         return $this->begin;
     }
@@ -111,7 +111,7 @@ class AccountStatement
         return $this;
     }
 
-    public function getEnd(): ?DateTimeInterface
+    public function getEnd(): \DateTimeInterface
     {
         return $this->end;
     }
@@ -123,7 +123,7 @@ class AccountStatement
         return $this;
     }
 
-    public function getAccount(): ?Account
+    public function getAccount(): \App\Entity\Account
     {
         return $this->account;
     }

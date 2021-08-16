@@ -63,7 +63,7 @@ class OperationType extends AbstractType
                 'label' => 'form.account',
                 'class' => Account::class,
                 'choice_label' => 'name',
-                'query_builder' => function (AccountRepository $er) {
+                'query_builder' => function (AccountRepository $er): \Doctrine\ORM\QueryBuilder {
                     /** @var SchoolList $schoolList */
                     $schoolList = $this->getSession()->get('school');
                     if($schoolList->selected === null) {
@@ -119,10 +119,7 @@ class OperationType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'app_operation';
     }

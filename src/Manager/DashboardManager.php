@@ -24,6 +24,7 @@ class DashboardManager extends AbstractFullService
 {
     /**
      * @throws Exception
+     * @return mixed[]
      */
     public static function generateItemsOfMenu(string $route = null): array
     {
@@ -141,6 +142,9 @@ class DashboardManager extends AbstractFullService
         return $chart;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function search(string $search = null): array
     {
         $result = [];

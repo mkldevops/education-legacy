@@ -127,10 +127,8 @@ class Structure
 
     /**
      * Set secretary.
-     *
-     * @return Structure
      */
-    public function setSecretary(Member $secretary)
+    public function setSecretary(Member $secretary): static
     {
         $this->secretary = $secretary;
 
@@ -163,11 +161,17 @@ class Structure
         $this->members->removeElement($member);
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getOptions(): array
     {
         return $this->options;
     }
 
+    /**
+     * @param mixed[] $options
+     */
     public function setOptions(array $options): static
     {
         $this->options = $options;
@@ -178,17 +182,15 @@ class Structure
     /**
      * @return ArrayCollection|Account[]
      */
-    public function getAccounts()
+    public function getAccounts(): \Doctrine\Common\Collections\Collection
     {
         return $this->accounts;
     }
 
     /**
      * @param ArrayCollection|Account[] $accounts
-     *
-     * @return Structure
      */
-    public function setAccounts(ArrayCollection $accounts)
+    public function setAccounts(ArrayCollection $accounts): static
     {
         $this->accounts = $accounts;
 
@@ -220,6 +222,9 @@ class Structure
         return $this->accountSlips;
     }
 
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection|\App\Entity\AccountSlip[] $accountSlips
+     */
     public function setAccountSlips(Collection $accountSlips): self
     {
         $this->accountSlips = $accountSlips;

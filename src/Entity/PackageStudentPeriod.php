@@ -103,7 +103,7 @@ class PackageStudentPeriod
         return $this;
     }
 
-    public function getDateExpire(): DateTimeInterface
+    public function getDateExpire(): ?\DateTimeInterface
     {
         return $this->dateExpire;
     }
@@ -117,20 +117,16 @@ class PackageStudentPeriod
 
     /**
      * Get amount unpaid.
-     *
-     * @return float
      */
-    public function getUnpaid()
+    public function getUnpaid(): float
     {
         return $this->amount - $this->discount - $this->getAmountPayments();
     }
 
     /**
      * Get amount.
-     *
-     * @return float
      */
-    public function getAmountPayments()
+    public function getAmountPayments(): float|int
     {
         $amount = 0;
         foreach ($this->payments as $payment) {
@@ -142,10 +138,8 @@ class PackageStudentPeriod
 
     /**
      * Get amount unpaid.
-     *
-     * @return string
      */
-    public function getStatusPayments()
+    public function getStatusPayments(): string
     {
         return self::getStatusPaymentsStatic($this->getPercentPayments(), $this->period);
     }
@@ -167,30 +161,24 @@ class PackageStudentPeriod
 
     /**
      * Get amount unpaid.
-     *
-     * @return float
      */
-    public function getPercentPayments()
+    public function getPercentPayments(): float
     {
         return ($this->getAmountPayments() + $this->discount) / ($this->amount ?: $this->package->getPrice()) * 100;
     }
 
     /**
      * Get discount.
-     *
-     * @return float
      */
-    public function getDiscount()
+    public function getDiscount(): float
     {
         return $this->discount;
     }
 
     /**
      * Set discount.
-     *
-     * @return PackageStudentPeriod
      */
-    public function setDiscount(float $discount)
+    public function setDiscount(float $discount): static
     {
         $this->discount = $discount;
 
@@ -199,20 +187,16 @@ class PackageStudentPeriod
 
     /**
      * Get paid.
-     *
-     * @return bool
      */
-    public function getPaid()
+    public function getPaid(): bool
     {
         return $this->paid;
     }
 
     /**
      * Set paid.
-     *
-     * @return PackageStudentPeriod
      */
-    public function setPaid(bool $paid)
+    public function setPaid(bool $paid): static
     {
         $this->paid = $paid;
 
@@ -221,20 +205,16 @@ class PackageStudentPeriod
 
     /**
      * Get paid.
-     *
-     * @return bool
      */
-    public function getPaidStr()
+    public function getPaidStr(): string
     {
         return $this->paid ? 'non' : 'oui';
     }
 
     /**
      * Add payments.
-     *
-     * @return PackageStudentPeriod
      */
-    public function addPayment(PaymentPackageStudent $payments)
+    public function addPayment(PaymentPackageStudent $payments): static
     {
         $this->payments[] = $payments;
 
@@ -251,10 +231,8 @@ class PackageStudentPeriod
 
     /**
      * Get payments.
-     *
-     * @return Collection
      */
-    public function getPayments()
+    public function getPayments(): \Doctrine\Common\Collections\Collection
     {
         return $this->payments;
     }

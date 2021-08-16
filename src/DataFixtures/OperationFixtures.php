@@ -38,7 +38,7 @@ class OperationFixtures extends AppFixtures implements DependentFixtureInterface
     /**
      * @return string[]
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             TypeOperationFixtures::class,

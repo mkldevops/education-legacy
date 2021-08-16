@@ -85,10 +85,8 @@ class OperationRepository extends ServiceEntityRepository
 
     /**
      * stats sumCredit & sumDebit Operations To Account Statement.
-     *
-     * @return QueryBuilder
      */
-    public function getQueryStatsAccountStatement(array $listAccountStatementId)
+    public function getQueryStatsAccountStatement(array $listAccountStatementId): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('ope')
             ->select([
@@ -156,9 +154,9 @@ class OperationRepository extends ServiceEntityRepository
     /**
      * getDataOperationsToAccount.
      *
-     * @return array
+     * @return mixed[]
      */
-    public function getDataOperationsToAccount(Account $account)
+    public function getDataOperationsToAccount(Account $account): array
     {
         $result = $this->createQueryBuilder('ope')
             ->innerJoin('ope.typeOperation', 'top')
@@ -178,10 +176,8 @@ class OperationRepository extends ServiceEntityRepository
 
     /**
      * getLastOperation.
-     *
-     * @param int $maxResult
      */
-    public function getLastOperation(School $school, $maxResult = 10): array
+    public function getLastOperation(School $school, int $maxResult = 10): array
     {
         return $this->createQueryBuilder('ope')
             ->select('ope.id')

@@ -25,10 +25,8 @@ class MeetApiController extends AbstractController
      *     methods={"POST"},
      *     options={"expose"="true"}
      * )
-     *
-     * @return Response
      */
-    public function update(Request $request, Meet $meet)
+    public function update(Request $request, Meet $meet): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $result = new ResponseModel();
 

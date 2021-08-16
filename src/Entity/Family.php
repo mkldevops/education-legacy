@@ -102,6 +102,9 @@ class Family
         return sprintf('%d - %s', $this->getId(), $this->getNameComplete());
     }
 
+    /**
+     * @return int|null
+     */
     public function getId()
     {
         return $this->id;
@@ -160,7 +163,7 @@ class Family
      *
      * @return Person[]|Collection
      */
-    public function getPersons()
+    public function getPersons(): \Doctrine\Common\Collections\Collection
     {
         return $this->persons;
     }
@@ -175,10 +178,8 @@ class Family
 
     /**
      * Get father.
-     *
-     * @return Person|null
      */
-    public function getFather()
+    public function getFather(): ?\App\Entity\Person
     {
         return $this->father;
     }
@@ -201,10 +202,8 @@ class Family
 
     /**
      * Set mother.
-     *
-     * @return Family
      */
-    public function setMother(Person $mother = null)
+    public function setMother(Person $mother = null): static
     {
         $this->mother = $mother;
 
@@ -217,10 +216,8 @@ class Family
 
     /**
      * Get language.
-     *
-     * @return string|null
      */
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this->language;
     }
@@ -228,11 +225,8 @@ class Family
     /**
      * Set language.
      *
-     * @param string|null $language
-     *
-     * @return Family
      */
-    public function setLanguage($language = null)
+    public function setLanguage(?string $language = null): static
     {
         $this->language = $language;
 
@@ -241,10 +235,8 @@ class Family
 
     /**
      * Get numberChildren.
-     *
-     * @return int
      */
-    public function getNumberChildren()
+    public function getNumberChildren(): int
     {
         return $this->numberChildren;
     }
@@ -252,11 +244,9 @@ class Family
     /**
      * Set numberChildren.
      *
-     * @param int $numberChildren
      *
-     * @return Family
      */
-    public function setNumberChildren($numberChildren)
+    public function setNumberChildren(int $numberChildren): static
     {
         $this->numberChildren = $numberChildren;
 
@@ -313,10 +303,8 @@ class Family
 
     /**
      * Get personAuthorized.
-     *
-     * @return string|null
      */
-    public function getPersonAuthorized()
+    public function getPersonAuthorized(): ?string
     {
         return $this->personAuthorized;
     }
@@ -324,11 +312,8 @@ class Family
     /**
      * Set personAuthorized.
      *
-     * @param string|null $personAuthorized
-     *
-     * @return Family
      */
-    public function setPersonAuthorized($personAuthorized = null)
+    public function setPersonAuthorized(?string $personAuthorized = null): static
     {
         $this->personAuthorized = $personAuthorized;
 
@@ -337,10 +322,8 @@ class Family
 
     /**
      * Get personEmergency.
-     *
-     * @return string|null
      */
-    public function getPersonEmergency()
+    public function getPersonEmergency(): ?string
     {
         return $this->personEmergency;
     }
@@ -348,11 +331,8 @@ class Family
     /**
      * Set personEmergency.
      *
-     * @param string|null $personEmergency
-     *
-     * @return Family
      */
-    public function setPersonEmergency($personEmergency = null)
+    public function setPersonEmergency(?string $personEmergency = null): static
     {
         $this->personEmergency = $personEmergency;
 
@@ -361,10 +341,8 @@ class Family
 
     /**
      * Add person.
-     *
-     * @return Family
      */
-    public function addPerson(Person $person)
+    public function addPerson(Person $person): static
     {
         $this->persons[] = $person;
 
@@ -376,7 +354,7 @@ class Family
      *
      * @return bool TRUE if this collection contained the specified element, FALSE otherwise
      */
-    public function removePerson(Person $person)
+    public function removePerson(Person $person): bool
     {
         return $this->persons->removeElement($person);
     }

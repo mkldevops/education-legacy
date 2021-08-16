@@ -41,7 +41,7 @@ abstract class AbstractBaseController extends AbstractController
         return $this->getDoctrine()->getManager();
     }
 
-    protected function getSchool(): School
+    protected function getSchool(): ?\App\Entity\School
     {
         return $this->schoolManager->getSchool();
     }

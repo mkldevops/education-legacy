@@ -21,16 +21,16 @@ class StudentCommand extends Command
     public const OPT_LIMIT = 'limit';
     public const ACTION_SYNCHRONIZE = 'synchronize';
 
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:education:student';
-
-    private StudentManager $studentManager;
 
     /**
      * StudentCommand constructor.
      */
-    public function __construct(StudentManager $studentManager)
+    public function __construct(private StudentManager $studentManager)
     {
-        $this->studentManager = $studentManager;
         parent::__construct();
     }
 
@@ -50,7 +50,7 @@ class StudentCommand extends Command
      *
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $action = $input->getArgument(self::ARG_ACTION);
         $limit = $input->getOption(self::OPT_LIMIT);

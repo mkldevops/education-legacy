@@ -48,7 +48,7 @@ class ClassPeriodManager extends AbstractFullService
      *
      * @throws NonUniqueResultException
      */
-    public function getPackageStudent(ClassPeriod $classPeriod)
+    public function getPackageStudent(ClassPeriod $classPeriod): array
     {
         $studentPeriods = $classPeriod->getStudents();
         $packageStudents = [];
@@ -128,13 +128,11 @@ class ClassPeriodManager extends AbstractFullService
     /**
      * Treatment to add List Student.
      *
-     * @return bool
      *
      * @throws ORMException
-     *
      * @internal param array $students
      */
-    public function treatListStudent(array $studentsId, Period $period, ClassPeriod $classPeriod = null)
+    public function treatListStudent(array $studentsId, Period $period, ClassPeriod $classPeriod = null): bool
     {
         if ($classPeriod instanceof ClassPeriod && $period->getId() !== $classPeriod->getPeriod()->getId()) {
             throw new Exception('The current period is not availbale for update classPeriod');
@@ -184,12 +182,11 @@ class ClassPeriodManager extends AbstractFullService
     /**
      * persist Class Period Student.
      *
-     * @return bool
      *
      * @throws ORMException
      * @throws Exception
      */
-    private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student)
+    private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student): bool
     {
         $classPeriodStudent = new ClassPeriodStudent();
 
@@ -216,11 +213,11 @@ class ClassPeriodManager extends AbstractFullService
     /**
      * Get List Student Without.
      *
-     * @return array
      *
      * @throws Exception
+     * @return array<int, array<string, mixed>>
      */
-    public function getListStudentWithout(Period $period, School $school)
+    public function getListStudentWithout(Period $period, School $school): array
     {
         $result = $this->getEntityManager()
             ->getRepository(Student::class)
@@ -266,13 +263,11 @@ class ClassPeriodManager extends AbstractFullService
     /**
      * Get Query Builder List.
      *
-     * @param string $search
      *
-     * @return QueryBuilder
      *
      * @internal param School|null $school
      */
-    private function getQueryBuilderList(School $school, $search = '')
+    private function getQueryBuilderList(School $school, string $search = ''): \Doctrine\ORM\QueryBuilder
     {
         return $this->getEntityManager()
             ->getRepository(ClassPeriod::class)
@@ -286,11 +281,9 @@ class ClassPeriodManager extends AbstractFullService
     }
 
     /**
-     * @return int
-     *
      * @throws NonUniqueResultException
      */
-    public function count(School $school, string $search)
+    public function count(School $school, string $search): int
     {
         return (int)$this->getQueryBuilderList($school, $search)
             ->select('count(cp.id)')

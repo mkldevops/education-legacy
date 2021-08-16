@@ -29,9 +29,7 @@ class PeriodManager extends AbstractFullService
      */
     public function findCurrentPeriod(): Period
     {
-        $period = $this->repository->getCurrentPeriod();
-
-        return $period;
+        return $this->repository->getCurrentPeriod();
     }
 
     /**

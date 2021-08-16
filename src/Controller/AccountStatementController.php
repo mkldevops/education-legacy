@@ -38,14 +38,11 @@ class AccountStatementController extends AbstractBaseController
      *
      * @Route("/list/{page}/{search}", name="app_account_statement_index", methods={"GET"})
      *
-     * @param int $page
-     * @param string $search
      *
-     * @return Response
      *
      * @throws NonUniqueResultException
      */
-    public function indexAction($page = 1, $search = '')
+    public function indexAction(int $page = 1, string $search = ''): \Symfony\Component\HttpFoundation\Response
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -98,10 +95,8 @@ class AccountStatementController extends AbstractBaseController
 
     /**
      * Creates a form to search AccountStatement entities.
-     *
-     * @return FormInterface
      */
-    private function createSearchForm(string $q = '')
+    private function createSearchForm(string $q = ''): \Symfony\Component\Form\FormInterface
     {
         $data = ['q' => $q];
 
@@ -120,11 +115,10 @@ class AccountStatementController extends AbstractBaseController
      *
      * @Route("/create/{account}", name="app_account_statement_create", methods={"POST"})
      *
-     * @return RedirectResponse|Response
      *
      * @throws Exception
      */
-    public function create(Account $account, Request $request)
+    public function create(Account $account, Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $accountstatement = new AccountStatement();
         $accountstatement->setAccount($account);
@@ -178,11 +172,10 @@ class AccountStatementController extends AbstractBaseController
      *
      * @Route("/new/{account}", name="app_account_statement_new", methods={"GET"})
      *
-     * @return Response
      *
      * @throws Exception
      */
-    public function new(Account $account)
+    public function new(Account $account): \Symfony\Component\HttpFoundation\Response
     {
         $accountstatement = new AccountStatement();
         $accountstatement->setAccount($account);
@@ -198,10 +191,8 @@ class AccountStatementController extends AbstractBaseController
      * Finds and displays a AccountStatement entity.
      *
      * @Route("/show/{id}", name="app_account_statement_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(AccountStatement $accountstatement)
+    public function show(AccountStatement $accountstatement): \Symfony\Component\HttpFoundation\Response
     {
         $stats = $this->getManager()
             ->getRepository(Operation::class)
@@ -233,10 +224,8 @@ class AccountStatementController extends AbstractBaseController
      * Displays a form to edit an existing AccountStatement entity.
      *
      * @Route("/edit/{id}", name="app_account_statement_edit", methods={"GET"})
-     *
-     * @return Response
      */
-    public function edit(AccountStatement $accountStatement)
+    public function edit(AccountStatement $accountStatement): \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($accountStatement);
 
@@ -297,10 +286,8 @@ class AccountStatementController extends AbstractBaseController
      * Deletes a AccountStatement entity.
      *
      * @Route("/delete/{id}", name="app_account_statement_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, AccountStatement $accountStatement)
+    public function delete(Request $request, AccountStatement $accountStatement): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($accountStatement->getId());
         $deleteForm->handleRequest($request);
@@ -341,10 +328,8 @@ class AccountStatementController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      *
      * @Route("/search", name="app_account_statement_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
 
@@ -359,11 +344,10 @@ class AccountStatementController extends AbstractBaseController
      *
      * @Route("/add-document/{id}", name="app_account_statement_add_document", methods={"POST"}, options={"expose"="true"})
      *
-     * @return JsonResponse
      *
      * @throws InvalidArgumentException
      */
-    public function addDocument(Request $request, AccountStatement $accountStatement)
+    public function addDocument(Request $request, AccountStatement $accountStatement): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();
@@ -384,10 +368,8 @@ class AccountStatementController extends AbstractBaseController
      * list Choice Operations available for Account Statement.
      *
      * @Route("/operations-available/{id}", name="app_account_statement_operation_available", methods={"GET", "POST"}, options={"expose"=true})
-     *
-     * @return JsonResponse
      */
-    public function operationsAvailable(AccountStatement $accountStatement)
+    public function operationsAvailable(AccountStatement $accountStatement): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = ResponseRequest::responseDefault();
 
@@ -415,20 +397,16 @@ class AccountStatementController extends AbstractBaseController
      * Add Operations available to Account Statement.
      *
      * @Route("/add-operation/{id}", name="app_account_statement_add_operation", methods={"GET", "POST"}, options={"expose"="true"})
-     *
-     * @return JsonResponse
      */
-    public function addOperations(Request $request, AccountStatement $accountStatement)
+    public function addOperations(Request $request, AccountStatement $accountStatement): \Symfony\Component\HttpFoundation\JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'), $accountStatement);
     }
 
     /**
      * treatment Operations.
-     *
-     * @return JsonResponse
      */
-    public function treatmentOperations(array $operationsId, AccountStatement $accountStatement = null)
+    public function treatmentOperations(array $operationsId, AccountStatement $accountStatement = null): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = new Response();
         try {
@@ -464,10 +442,8 @@ class AccountStatementController extends AbstractBaseController
      * Remove Operations available to Account Statement.
      *
      * @Route("/delete-operation/{id}", name="app_account_statement_delete_operation", methods={"GET", "POST", "DELETE"})
-     *
-     * @return JsonResponse
      */
-    public function deleteOperationsAction(Request $request)
+    public function deleteOperationsAction(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'));
     }

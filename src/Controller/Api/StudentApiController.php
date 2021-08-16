@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class StudentApiController extends AbstractBaseController
 {
     #[Route('/create', name: 'app_api_student_create', methods: ['POST'])]
-    public function create(Request $request): Response
+    public function create(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $response = $this->json([]);
@@ -64,7 +64,7 @@ class StudentApiController extends AbstractBaseController
     }
 
     #[Route('/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Student $student): Response
+    public function update(Request $request, Student $student): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $response = $this->json([]);

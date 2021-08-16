@@ -7,6 +7,8 @@ use Rector\Core\Configuration\Option;
 use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Set\ValueObject\SetList;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Symfony\Rector\ClassMethod\ActionSuffixRemoverRector;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     // get parameters
@@ -16,11 +18,14 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // Define what rule sets will be applied
     $containerConfigurator->import(SetList::DEAD_CODE);
     $containerConfigurator->import(SetList::CODE_QUALITY);
-    $containerConfigurator->import(SetList::CODE_QUALITY_STRICT);
+    $containerConfigurator->import(SetList::TYPE_DECLARATION);
 
     // get services (needed for register a single rule)
     $services = $containerConfigurator->services();
 
     // register a single rule
     $services->set(TypedPropertyRector::class);
+    $services->set(TypedPropertyRector::class);
+    $services->set(ClassPropertyAssignToConstructorPromotionRector::class);
+    $services->set(ActionSuffixRemoverRector::class);
 };

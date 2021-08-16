@@ -116,7 +116,7 @@ class TeacherController extends AbstractBaseController
     /**
      * @Route("/new", name="app_teacher_new", methods={"GET"})
      */
-    public function new()
+    public function new(): \Symfony\Component\HttpFoundation\Response
     {
         $teacher = new Teacher();
         $form = $this->createCreateForm($teacher);
@@ -131,10 +131,8 @@ class TeacherController extends AbstractBaseController
      * Finds and displays a Teacher entity.
      *
      * @Route("/show/{id}", name="app_teacher_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(Teacher $teacher)
+    public function show(Teacher $teacher): \Symfony\Component\HttpFoundation\Response
     {
         $person = $teacher->getPerson();
 
@@ -148,10 +146,8 @@ class TeacherController extends AbstractBaseController
      * Displays a form to edit an existing Teacher entity.
      *
      * @Route("/edit/{id}", name="app_teacher_edit", methods={"GET"})
-     *
-     * @return Response
      */
-    public function editAction(Teacher $teacher)
+    public function editAction(Teacher $teacher): \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($teacher);
 
@@ -168,7 +164,7 @@ class TeacherController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(Teacher $teacher)
+    private function createEditForm(Teacher $teacher): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(TeacherType::class, $teacher, [
             'action' => $this->generateUrl('app_teacher_update', ['id' => $teacher->getId()]),
@@ -184,10 +180,8 @@ class TeacherController extends AbstractBaseController
      * Edits an existing Teacher entity.
      *
      * @Route("/update/{id}", name="app_teacher_update", methods={"PUT", "POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, Teacher $teacher)
+    public function update(Request $request, Teacher $teacher): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (empty($teacher)) {
             throw $this->createNotFoundException('Unable to find Teacher entity.');
@@ -216,10 +210,8 @@ class TeacherController extends AbstractBaseController
      * Deletes a Teacher entity.
      *
      * @Route("/delete/{id}", name="app_teacher_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Teacher $teacher)
+    public function delete(Request $request, Teacher $teacher): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($teacher->getId());
         $deleteForm->handleRequest($request);
@@ -257,7 +249,7 @@ class TeacherController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_teacher_delete', ['id' => $id]))

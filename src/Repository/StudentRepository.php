@@ -52,12 +52,10 @@ class StudentRepository extends ServiceEntityRepository
     /**
      * Get list Students.
      *
-     * @param int $iPage
-     * @param int $iCountPerPage
      *
      * @return Paginator<Student>
      */
-    public function getStudents($iPage = 1, $iCountPerPage = 20): Paginator
+    public function getStudents(int $iPage = 1, int $iCountPerPage = 20): Paginator
     {
         $oQuery = $this->createQueryBuilder('s')
             ->orderBy('s.name', 'DESC')
@@ -197,11 +195,10 @@ class StudentRepository extends ServiceEntityRepository
     /**
      * Get stats student registered.
      *
-     * @param string $fieldDate
      *
      * @return int[]
      */
-    private function getStatsMove(School $school, Period $period, $fieldDate = 'createdAt'): array
+    private function getStatsMove(School $school, Period $period, string $fieldDate = 'createdAt'): array
     {
         $qb = $this->createQueryBuilder('std')
             ->select('COUNT(std.id) + 0 AS nb')

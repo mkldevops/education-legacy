@@ -14,11 +14,9 @@ class PeriodsList
 
     public ?Period $current = null;
     public ?Period $selected = null;
-    public ?array $list = [];
 
-    public function __construct(array $list, Period $selected, Period $current = null)
+    public function __construct(public ?array $list, Period $selected, Period $current = null)
     {
-        $this->list = $list;
         $this->selected = $selected;
         $this->current = $current ?? $selected;
     }

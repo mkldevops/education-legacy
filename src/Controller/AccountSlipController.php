@@ -69,10 +69,7 @@ class AccountSlipController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    private function getQuery(string $search)
+    private function getQuery(string $search): \Doctrine\ORM\QueryBuilder
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -99,11 +96,10 @@ class AccountSlipController extends AbstractBaseController
     /**
      * Creates a form to search AccountSlip entities.
      *
-     * @param string $q
      *
      * @return FormInterface The form
      */
-    private function createSearchForm($q = ''): FormInterface
+    private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
 
@@ -338,10 +334,8 @@ class AccountSlipController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      *
      * @Route("/search", name="app_account_slip_search", methods={"POST"})
-     *
-     * @return RedirectResponse
      */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
 
@@ -353,10 +347,8 @@ class AccountSlipController extends AbstractBaseController
 
     /**
      * @Route("/set-document/{id}/{action}", name="app_account_slip_set_document", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function setDocument(Request $request, AccountSlip $accountSlip, string $action)
+    public function setDocument(Request $request, AccountSlip $accountSlip, string $action): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $result = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();

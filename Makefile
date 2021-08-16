@@ -100,22 +100,17 @@ unserve: symfony ## Stop the web server
 
 ## —— Tests ✅ —————————————————————————————————————————————————————————————————
 test: phpunit.xml* ## Launch main functionnal and unit tests
-	./bin/phpunit --testsuite=main --stop-on-failure
-
-test-external: phpunit.xml* ## Launch tests implying external resources (api, services...)
-	./bin/phpunit --testsuite=external --stop-on-failure
-
-test-all: phpunit.xml* ## Launch all tests
 	./bin/phpunit --stop-on-failure
 
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
-cs: codesniffer stan ## Launch check style and static analysis
+cs: codesniffer stan psalm ## Launch check style and static analysis
+code: rector cs-fix stan ## Fix code analyzed
 
 codesniffer: ## Run php_codesniffer only
 	./vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml -n -p src/ vendor/fardus
 
 stan: ## Run PHPStan only
-	./vendor/bin/phpstan analyse --memory-limit 1G -c phpstan.neon
+	./vendor/bin/phpstan analyse -l 1 src
 
 psalm: ## Run psalm only
 	./vendor/bin/psalm --show-info=false
@@ -127,8 +122,11 @@ init-psalm: ## Init a new psalm config file for a given level, it must be decrem
 cs-fix: ## Run php-cs-fixer and fix the code.
 	./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes
 
-sonar: sonar-project.properties ## sonar scan src directory
-	sonar-scanner -Dsonar.projectVersion=$(VERSION)
+rector: ## Run php-cs-fixer and fix the code.
+	./vendor/bin/rector process src
+
+cs-dry: ## Run php-cs-fixer and fix the code.
+	./vendor/bin/php-cs-fixer fix --dry-run --allow-risky=yes
 
 ## —— Stats 📜 —————————————————————————————————————————————————————————————————
 stats: ## Commits by hour for the main author of this project
@@ -174,6 +172,9 @@ ps: docker-compose.yaml ## ps containers
 
 app: docker-compose.yaml ## exec bash command for containers app
 	$(DOCKER-COMPOSE) exec app zsh $(c)
+
+nice: docker-compose.yaml ## exec bash command for containers app
+	$(DOCKER-COMPOSE) exec nice zsh $(c)
 
 prune: ## clean all containers unused
 	$(DOCKER-COMPOSE) system prune -a

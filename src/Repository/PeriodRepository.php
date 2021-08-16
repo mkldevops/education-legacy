@@ -38,10 +38,8 @@ class PeriodRepository extends ServiceEntityRepository
 
     /**
      * Get current period.
-     *
-     * @return Period
      */
-    public function getCurrentPeriod()
+    public function getCurrentPeriod(): \App\Entity\Period
     {
         $aPeriod = $this->createQueryBuilder('per')
             ->where('CURRENT_TIMESTAMP() BETWEEN per.begin AND per.end')
@@ -53,10 +51,8 @@ class PeriodRepository extends ServiceEntityRepository
 
     /**
      * Get period available.
-     *
-     * @return QueryBuilder
      */
-    public function getAvailable()
+    public function getAvailable(): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('per')
             ->where('per.enable = 1')

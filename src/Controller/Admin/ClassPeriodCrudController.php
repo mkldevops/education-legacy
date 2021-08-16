@@ -27,6 +27,9 @@ class ClassPeriodCrudController extends AbstractCrudController
             ->setSearchFields(['id', 'comment']);
     }
 
+    /**
+     * @return mixed[]|void
+     */
     public function configureFields(string $pageName): iterable
     {
         $record = DateTimeField::new('record');

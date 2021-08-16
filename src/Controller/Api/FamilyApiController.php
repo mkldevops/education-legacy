@@ -24,7 +24,7 @@ class FamilyApiController extends AbstractBaseController
     /**
      * @Route("/create", name="app_api_family_create", methods={"POST"})
      */
-    public function create(Request $request): Response
+    public function create(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
@@ -87,7 +87,7 @@ class FamilyApiController extends AbstractBaseController
     /**
      * @Route("/update/{id}", name="app_api_family_update", methods={"POST", "PUT"})
      */
-    public function update(Request $request, Family $family, Serializer $serializer): Response
+    public function update(Request $request, Family $family, Serializer $serializer): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();

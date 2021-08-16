@@ -21,7 +21,7 @@ class SchoolController extends AbstractBaseController
     /**
      * @Route("/switch/{id}", name="app_school_switch", methods={"GET"})
      */
-    public function switch(Request $request, School $school)
+    public function switch(Request $request, School $school): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         try {
             $this->schoolManager->switch($school);

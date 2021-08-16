@@ -56,7 +56,7 @@ class ClassPeriodStudent
         return $this->getEnd()->getTimestamp() < time() && $this->getEnable();
     }
 
-    public function getEnd()
+    public function getEnd(): \DateTimeInterface
     {
         return $this->end;
     }
@@ -70,10 +70,8 @@ class ClassPeriodStudent
 
     /**
      * Get begin.
-     *
-     * @return Datetime
      */
-    public function getBegin()
+    public function getBegin(): \DateTimeInterface
     {
         return $this->begin;
     }
@@ -82,10 +80,9 @@ class ClassPeriodStudent
      * Set begin.
      *
      * @param DateTime|DateTimeImmutable $begin
-     * @return static
      *
      */
-    public function setBegin(DateTimeInterface $begin)
+    public function setBegin(DateTimeInterface $begin): static
     {
         $this->begin = $begin;
 
@@ -94,20 +91,16 @@ class ClassPeriodStudent
 
     /**
      * Get classPeriod.
-     *
-     * @return ClassPeriod
      */
-    public function getClassPeriod()
+    public function getClassPeriod(): ?\App\Entity\ClassPeriod
     {
         return $this->classPeriod;
     }
 
     /**
      * Set classPeriod.
-     *
-     * @return static
      */
-    public function setClassPeriod(ClassPeriod $classPeriod)
+    public function setClassPeriod(ClassPeriod $classPeriod): static
     {
         $this->classPeriod = $classPeriod;
 
@@ -116,20 +109,16 @@ class ClassPeriodStudent
 
     /**
      * Get student.
-     *
-     * @return Student
      */
-    public function getStudent()
+    public function getStudent(): \App\Entity\Student
     {
         return $this->student;
     }
 
     /**
      * Set student.
-     *
-     * @return static
      */
-    public function setStudent(Student $student)
+    public function setStudent(Student $student): static
     {
         $this->student = $student;
 

@@ -255,7 +255,7 @@ class AccountSlip
         return $this;
     }
 
-    public function getGender(): ?string
+    public function getGender(): string
     {
         return $this->gender;
     }
@@ -284,7 +284,7 @@ class AccountSlip
         return $this->documents;
     }
 
-    public function getReference(): ?string
+    public function getReference(): string
     {
         return $this->reference;
     }

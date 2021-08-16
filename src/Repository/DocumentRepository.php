@@ -25,14 +25,12 @@ class DocumentRepository extends ServiceEntityRepository
     /**
      * Get list Students.
      *
-     * @param int $firstResult
-     * @param int $maxResult
      *
-     * @return array
      *
      * @throws ImagickException
+     * @return array<int, array<string, mixed[]>>
      */
-    public function last(array $exists, $firstResult = 0, $maxResult = 5)
+    public function last(array $exists, int $firstResult = 0, int $maxResult = 5): array
     {
         $query = $this->createQueryBuilder('doc')
             ->select('doc')

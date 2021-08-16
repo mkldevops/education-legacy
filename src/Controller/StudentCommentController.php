@@ -71,11 +71,9 @@ class StudentCommentController extends AbstractBaseController
     /**
      * Creates a form to search StudentComment entities.
      *
-     * @param string $q
      *
-     * @return FormInterface
      */
-    private function createSearchForm($q = '')
+    private function createSearchForm(string $q = ''): \Symfony\Component\Form\FormInterface
     {
         $data = ['q' => $q];
 
@@ -93,10 +91,8 @@ class StudentCommentController extends AbstractBaseController
      * Creates a new StudentComment entity.
      *
      * @Route("/create", name="app_student_comment_create", methods={"POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function create(Request $request)
+    public function create(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateForm($studentComment);
@@ -125,7 +121,7 @@ class StudentCommentController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createCreateForm(StudentComment $studentComment)
+    private function createCreateForm(StudentComment $studentComment): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(StudentCommentType::class, $studentComment, [
             'action' => $this->generateUrl('app_student_comment_create'),
@@ -141,10 +137,8 @@ class StudentCommentController extends AbstractBaseController
      * Displays a form to create a new StudentComment entity.
      *
      * @Route("/new", name="app_student_comment_new", methods={"GET"})
-     *
-     * @return Response
      */
-    public function new()
+    public function new(): \Symfony\Component\HttpFoundation\Response
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateForm($studentComment);
@@ -159,10 +153,8 @@ class StudentCommentController extends AbstractBaseController
      * Finds and displays a StudentComment entity.
      *
      * @Route("/show/{id}", name="app_student_comment_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(StudentComment $studentComment)
+    public function show(StudentComment $studentComment): \Symfony\Component\HttpFoundation\Response
     {
         return $this->render('student_comment/show.html.twig', [
             'studentcomment' => $studentComment,
@@ -173,10 +165,8 @@ class StudentCommentController extends AbstractBaseController
      * Displays a form to edit an existing StudentComment entity.
      *
      * @Route("/edit/{id}", name="app_student_comment_edit", methods={"GET"})
-     *
-     * @return Response
      */
-    public function editAction(StudentComment $studentComment)
+    public function editAction(StudentComment $studentComment): \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($studentComment);
 
@@ -193,7 +183,7 @@ class StudentCommentController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(StudentComment $studentComment)
+    private function createEditForm(StudentComment $studentComment): \Symfony\Component\Form\FormInterface
     {
         $form = $this->createForm(StudentCommentType::class, $studentComment, [
             'action' => $this->generateUrl('app_student_comment_update', ['id' => $studentComment->getId()]),
@@ -209,10 +199,8 @@ class StudentCommentController extends AbstractBaseController
      * Edits an existing StudentComment entity.
      *
      * @Route("/update/{id}", name="app_student_comment_update", methods={"POST", "PUT"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, StudentComment $studentComment)
+    public function update(Request $request, StudentComment $studentComment): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($studentComment);
         $editForm->handleRequest($request);
@@ -235,10 +223,8 @@ class StudentCommentController extends AbstractBaseController
      * Deletes a StudentComment entity.
      *
      * @Route("/delete/{id}", name="app_student_comment_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function deleteAction(Request $request, StudentComment $studentComment)
+    public function deleteAction(Request $request, StudentComment $studentComment): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($studentComment->getId());
         $deleteForm->handleRequest($request);
@@ -264,10 +250,8 @@ class StudentCommentController extends AbstractBaseController
      * Creates a form to delete a StudentComment entity by id.
      *
      * @param mixed $id The entity id
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_student_comment_delete', ['id' => $id]))
@@ -280,10 +264,8 @@ class StudentCommentController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      *
      * @Route("/search", name="app_student_comment_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
 

@@ -52,11 +52,10 @@ class StudentController extends AbstractBaseController
      * @IsGranted("ROLE_TEACHER")
      * @Route("", name="app_student_index", methods={"GET"})
      *
-     * @return Response
      *
      * @throws InvalidArgumentException
      */
-    public function index()
+    public function index(): \Symfony\Component\HttpFoundation\Response
     {
         $period = $this->getPeriod();
         $school = $this->getSchool();
@@ -362,10 +361,8 @@ class StudentController extends AbstractBaseController
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Route("/delete/{id}")
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Student $student = null)
+    public function delete(Request $request, Student $student = null): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
@@ -400,10 +397,8 @@ class StudentController extends AbstractBaseController
      * Creates a form to delete a Account entity by id.
      *
      * @param mixed $id The entity id
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_student_delete', ['id' => $id]))
@@ -418,11 +413,10 @@ class StudentController extends AbstractBaseController
     /**
      * @Route("/edit-status/{id}", methods={"POST", "GET"}, name="app_student_edit_status", options={"expose"=true})
      *
-     * @return RedirectResponse|JsonResponse
      *
      * @throws Exception
      */
-    public function editStatus(Request $request, Student $student)
+    public function editStatus(Request $request, Student $student): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -450,10 +444,8 @@ class StudentController extends AbstractBaseController
      * Set image student.
      *
      * @Route("/set-image/{id}s", methods={"PUT", "POST"})
-     *
-     * @return JsonResponse
      */
-    public function setImage(Request $request, Student $student)
+    public function setImage(Request $request, Student $student): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault(['document' => null]);

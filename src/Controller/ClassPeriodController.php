@@ -117,12 +117,11 @@ class ClassPeriodController extends AbstractBaseController
      * @Route("/create", name="app_class_period_create", methods={"POST"})
      * @Template()
      *
-     * @return RedirectResponse|array
      *
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    public function create(Request $request)
+    public function create(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|array
     {
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
@@ -169,6 +168,7 @@ class ClassPeriodController extends AbstractBaseController
      *
      * @Route("/new", name="app_class_period_new", methods={"GET"})
      * @Template()
+     * @return array<string, \App\Entity\ClassPeriod>|array<string, \Symfony\Component\Form\FormView>
      */
     public function new(): array
     {
@@ -249,7 +249,7 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * @Route("/delete/{id}", name="app_class_period_delete", methods={"GET", "DELETE"})
      */
-    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod)
+    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
             ->handleRequest($request);

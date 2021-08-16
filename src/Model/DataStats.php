@@ -41,7 +41,7 @@ class DataStats
         return $this->columnLabel;
     }
 
-    public function setColumnLabel(string $columnLabel = null): DataStats
+    public function setColumnLabel(string $columnLabel = null): static
     {
         $this->columnLabel = $columnLabel;
 
@@ -53,17 +53,17 @@ class DataStats
         return $this->rowId;
     }
 
-    public function setRowId(int|string $rowId): DataStats
+    /**
+     * @param int|string|null $rowId
+     */
+    public function setRowId(int|string $rowId): static
     {
         $this->rowId = $rowId;
 
         return $this;
     }
 
-    /**
-     * @return DataStats
-     */
-    public function merge(DataStats $data)
+    public function merge(DataStats $data): static
     {
         $this->setCount($this->getCount() + $data->getCount());
         $this->setSum($this->getSum() + $data->getSum());
@@ -71,24 +71,24 @@ class DataStats
         return $this;
     }
 
-    public function getCount(): int
+    public function getCount(): ?int
     {
         return $this->count;
     }
 
-    public function setCount(int $count): DataStats
+    public function setCount(int $count): static
     {
         $this->count = $count;
 
         return $this;
     }
 
-    public function getSum(): float
+    public function getSum(): ?float
     {
         return $this->sum;
     }
 
-    public function setSum(float $sum): DataStats
+    public function setSum(float $sum): static
     {
         $this->sum = $sum;
 
@@ -103,7 +103,7 @@ class DataStats
         return $this->columnId;
     }
 
-    public function setColumnId(string $columnId = null): DataStats
+    public function setColumnId(string $columnId = null): static
     {
         $this->columnId = $columnId;
 
@@ -118,7 +118,7 @@ class DataStats
         return $this->rowLabel;
     }
 
-    public function setRowLabel(string $rowLabel = null): DataStats
+    public function setRowLabel(string $rowLabel = null): static
     {
         $this->rowLabel = $rowLabel;
 

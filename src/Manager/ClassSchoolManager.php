@@ -25,11 +25,9 @@ use Exception;
 class ClassSchoolManager extends AbstractFullService
 {
     /**
-     * @return bool
-     *
      * @throws Exception
      */
-    public function addStudentToClass(array $student, ClassPeriod $classPeriod)
+    public function addStudentToClass(array $student, ClassPeriod $classPeriod): bool
     {
         if (!empty($students) && is_array($students)) {
             $manager = $this->getEntityManager();

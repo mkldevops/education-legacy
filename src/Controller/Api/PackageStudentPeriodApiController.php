@@ -22,7 +22,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
     /**
      * @Route("/create", name="app_api_package_student_period_create", methods={"POST"})
      */
-    public function create(Request $request): Response
+    public function create(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $response = $this->json([]);
@@ -74,10 +74,8 @@ class PackageStudentPeriodApiController extends AbstractBaseController
 
     /**
      * @Route("/update/{id}", name="app_api_package_student_period_update", methods={"POST", "PUT"})
-     *
-     * @return Response
      */
-    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod)
+    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);
         $response = $this->json([]);

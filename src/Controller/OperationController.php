@@ -135,7 +135,7 @@ class OperationController extends AbstractBaseController
                     $operation->setAccount($account);
                 }
 
-                if ($user = $security->getUser()) {
+                if (($user = $security->getUser()) !== null) {
                     $operation->setPublisher($user);
                 }
 
@@ -174,10 +174,8 @@ class OperationController extends AbstractBaseController
 
     /**
      * hasSchool.
-     *
-     * @return bool
      */
-    private function hasStructure(Operation $operation)
+    private function hasStructure(Operation $operation): bool
     {
         $result = true;
 
@@ -196,7 +194,7 @@ class OperationController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(Operation $operation)
+    private function createEditForm(Operation $operation): \Symfony\Component\Form\FormInterface
     {
         $operationType = new OperationType();
         $operationType->setSession($this->get('session'));
@@ -215,10 +213,8 @@ class OperationController extends AbstractBaseController
      *
      * @Route("/update/{id}", name="app_operation_update", methods={"POST", "PUT"})
      * @Template()
-     *
-     * @return RedirectResponse|array
      */
-    public function update(Request $request, Operation $operation)
+    public function update(Request $request, Operation $operation): \Symfony\Component\HttpFoundation\RedirectResponse|array
     {
         $editForm = $this->createEditForm($operation);
         $editForm->handleRequest($request);
@@ -244,10 +240,8 @@ class OperationController extends AbstractBaseController
      *
      * @Route("/show/{id}", name="app_operation_show", methods={"GET"})
      * @Template()
-     *
-     * @return array|RedirectResponse
      */
-    public function show(Operation $operation)
+    public function show(Operation $operation): \Symfony\Component\HttpFoundation\RedirectResponse|array
     {
         // Check if the school is good
         if (!$this->hasStructure($operation)) {
@@ -283,7 +277,7 @@ class OperationController extends AbstractBaseController
      *
      * @return Response|array
      */
-    public function delete(Request $request, Operation $operation)
+    public function delete(Request $request, Operation $operation): \Symfony\Component\HttpFoundation\RedirectResponse|array
     {
         $deleteForm = $this->createDeleteForm($operation->getId());
         $deleteForm->handleRequest($request);
@@ -336,10 +330,8 @@ class OperationController extends AbstractBaseController
      * Add document to operation.
      *
      * @Route("/set-document/{id}/{action}", name="app_operation_set_document", methods={"POST"})
-     *
-     * @return JsonResponse
      */
-    public function setDocument(Request $request, Operation $operation, string $action)
+    public function setDocument(Request $request, Operation $operation, string $action): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
@@ -381,10 +373,8 @@ class OperationController extends AbstractBaseController
      *
      * @IsGranted("ROLE_ACCOUNTANT")
      * @Route("/validate/{id}", name="app_operation_validate", methods={"POST"}, options={"expose"=true})
-     *
-     * @return JsonResponse
      */
-    public function validate(Operation $operation, Request $request, Security $security)
+    public function validate(Operation $operation, Request $request, Security $security): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
@@ -410,7 +400,7 @@ class OperationController extends AbstractBaseController
                 'operation'
             ));
 
-            if($user = $security->getUser()) {
+            if(($user = $security->getUser()) !== null) {
                 $validate->setAuthor($user);
             }
 

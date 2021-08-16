@@ -24,10 +24,8 @@ class OperationGenderRepository extends ServiceEntityRepository
 
     /**
      * Get period available.
-     *
-     * @return QueryBuilder
      */
-    public function getAvailable()
+    public function getAvailable(): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('opg')
             ->where('opg.enable = 1');

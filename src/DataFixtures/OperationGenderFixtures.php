@@ -37,9 +37,9 @@ class OperationGenderFixtures extends AppFixtures implements DependentFixtureInt
     }
 
     /**
-     * @return array
+     * @return class-string<\App\DataFixtures\SchoolFixtures>[]|class-string<\App\DataFixtures\StructureFixtures>[]
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             SchoolFixtures::class,
