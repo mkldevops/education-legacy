@@ -35,8 +35,8 @@ class DocumentManager extends AbstractFullService
             $document->removeStudent($person);
             $person->setImage(null);
             $this->entityManager->persist($person);
-            $this->entityManager->flush();
         }
+        $this->entityManager->flush();
 
         // Remove all documents account statement linked
         $accountStatements = $document->getAccountStatements();
@@ -83,7 +83,7 @@ class DocumentManager extends AbstractFullService
 
         $data['move'] = $document->getFile()->move(self::getPathUploads(Document::DIR_FILE), $document->getPath());
 
-        list('preview' => $data['preview'], 'thumb' => $data['thumb']) = $this->generateImages($document);
+        ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
         if ($document->getFile()->getError()) {
             $data->errors = [

@@ -30,7 +30,7 @@
                 <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ classperiod.courses|length }}</a></td>
                 <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ classperiod.getTeachersToString() }}</a></td>
                 <td><a href="{{ path('app_class_period_show', { 'id': classperiod.id }) }}">{{ 'data.status'|trans({ count : classperiod.enable }) }}</a></td>
-                <td>{% if classperiod.record %}{{ classperiod.record|date('d/m/Y') }}{% endif %}</td>
+                <td>{% if classperiod.createdAt %}{{ classperiod.createdAt|date('d/m/Y') }}{% endif %}</td>
                 <td>
                     <div class="dropdown pull-left">
                         <a href=""

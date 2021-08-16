@@ -12,7 +12,7 @@
 
     <div>
         <small class="text-right">
-            <em>{% trans %}Record by{% endtrans %} <strong>{{ classperiod.author.nameComplete }}</strong> {% trans %}to{% endtrans %} <strong>{{ classperiod.record.format('d/m/Y à H:i') }}</strong></em>
+            <em>{% trans %}Record by{% endtrans %} <strong>{{ classperiod.author.nameComplete }}</strong> {% trans %}to{% endtrans %} <strong>{{ classperiod.createdAt.format('d/m/Y à H:i') }}</strong></em>
         </small>
     </div>
 
