@@ -25,32 +25,28 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * AccountSlip controller.
- *
- * @Route("/account-slip")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/account-slip')]
 class AccountSlipController extends AbstractBaseController
 {
     /**
      * Lists all AccountSlip entities.
      *
-     * @Route("/list/{page}/{search}", name="app_account_slip_index", methods={"GET"})
      *
      * @throws NonUniqueResultException
      */
-    public function index(int $page = 1, string $search = ''): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = '') : Response
     {
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-
         // Get the total entries.
         $count = $this->getQuery($search)
             ->select('COUNT(e)')
             ->getQuery()
             ->getSingleScalarResult();
-
         // Define the number of pages.
         $pages = ceil($count / 20);
-
         // Get the entries of current page.
         /** @var AccountSlip[] $accountSlipList */
         $accountSlipList = $this->getQuery($search)
@@ -58,7 +54,6 @@ class AccountSlipController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('account_slip/index.html.twig', [
             'accountslipList' => $accountSlipList,
             'count' => $count,
@@ -68,7 +63,6 @@ class AccountSlipController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
-
     private function getQuery(string $search): \Doctrine\ORM\QueryBuilder
     {
         $manager = $this->getDoctrine()->getManager();
@@ -92,7 +86,6 @@ class AccountSlipController extends AbstractBaseController
             ->setParameter(':debit', $search)
             ->orderBy('e.date', 'DESC');
     }
-
     /**
      * Creates a form to search AccountSlip entities.
      *
@@ -112,22 +105,19 @@ class AccountSlipController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
      * Creates a new AccountSlip entity.
      *
-     * @Route("/create", name="app_account_slip_create", methods={"POST"})
      *
      * @return RedirectResponse|Response
-     *
      * @throws Exception
      */
-    public function create(Request $request, TransferManager $transferManager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_account_slip_create', methods: ['POST'])]
+    public function create(Request $request, TransferManager $transferManager) : Response
     {
         $accountSlip = new AccountSlip();
         $form = $this->createCreateForm($accountSlip);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $accountCredit = $form->get('accountCredit')->getData();
@@ -149,13 +139,11 @@ class AccountSlipController extends AbstractBaseController
                 $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip') . $e->getMessage());
             }
         }
-
         return $this->render('account_slip/new.html.twig', [
             'accountslip' => $accountSlip,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Creates a form to create a AccountSlip entity.
      *
@@ -174,56 +162,47 @@ class AccountSlipController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to create a new AccountSlip entity.
      *
-     * @Route("/new", name="app_account_slip_new", methods={"GET"})
      *
      * @throws Exception
      */
-    public function new(): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_account_slip_new', methods: ['GET'])]
+    public function new() : Response
     {
         $accountSlip = new AccountSlip();
         $form = $this->createCreateForm($accountSlip);
-
         return $this->render('account_slip/new.html.twig', [
             'accountslip' => $accountSlip,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a AccountSlip entity.
-     *
-     * @Route("/show/{id}", name="app_account_slip_show", methods={"GET"})
      */
-    public function show(AccountSlip $accountSlip): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
+    public function show(AccountSlip $accountSlip) : Response
     {
         if (!$accountSlip) {
             throw $this->createNotFoundException('Unable to find AccountSlip entity.');
         }
-
         return $this->render('account_slip/show.html.twig', [
             'accountslip' => $accountSlip,
         ]);
     }
-
     /**
      * Displays a form to edit an existing AccountSlip entity.
-     *
-     * @Route("/edit/{id}", name="app_account_slip_edit", methods={"GET"})
      */
-    public function edit(AccountSlip $accountSlip): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
+    public function edit(AccountSlip $accountSlip) : Response
     {
         $editForm = $this->createEditForm($accountSlip);
-
         return $this->render('account_slip/edit.html.twig', [
             'accountslip' => $accountSlip,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a AccountSlip entity.
      *
@@ -240,19 +219,17 @@ class AccountSlipController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing AccountSlip entity.
      *
-     * @Route("/update/{id}", name="app_account_slip_update", methods={"PUT", "POST"})
      *
      * @return RedirectResponse|Response
      */
-    public function update(Request $request, AccountSlip $accountSlip, TransferManager $transferManager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
+    public function update(Request $request, AccountSlip $accountSlip, TransferManager $transferManager) : Response
     {
         $editForm = $this->createEditForm($accountSlip);
         $editForm->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             try {
                 if ($editForm->has('accountCredit')) {
@@ -278,27 +255,23 @@ class AccountSlipController extends AbstractBaseController
                 $this->addFlash('danger', 'The AccountSlip has not updated : ' . $e->getMessage());
             }
         }
-
         return $this->render('account_slip/edit.html.twig', [
             'accountslip' => $accountSlip,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a AccountSlip entity.
      *
-     * @Route("/delete/{id}", name="app_account_slip_delete", methods={"GET", "DELETE"})
      *
      * @return RedirectResponse|Response
      */
-    public function delete(Request $request, AccountSlip $accountSlip): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, AccountSlip $accountSlip) : Response
     {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
         $deleteForm->handleRequest($request);
-
         $manager = $this->getDoctrine()->getManager();
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $manager->remove($accountSlip);
             $manager->flush();
@@ -307,13 +280,11 @@ class AccountSlipController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_slip_index'));
         }
-
         return $this->render('account_slip/delete.html.twig', [
             'accountslip' => $accountSlip,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a AccountSlip entity by id.
      *
@@ -329,30 +300,23 @@ class AccountSlipController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => $this->trans('Delete', [], 'account_slip')])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_account_slip_search", methods={"POST"})
      */
-    public function searchAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_account_slip_search', methods: ['POST'])]
+    public function search(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_account_slip_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
         ]));
     }
-
-    /**
-     * @Route("/set-document/{id}/{action}", name="app_account_slip_set_document", methods={"POST"})
-     */
-    public function setDocument(Request $request, AccountSlip $accountSlip, string $action): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
+    public function setDocument(Request $request, AccountSlip $accountSlip, string $action) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $result = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();
-
         try {
             $document = $this->getDocument($request->get('document'));
 
@@ -376,7 +340,6 @@ class AccountSlipController extends AbstractBaseController
         } catch (Exception $e) {
             $result->errors[] = $e->getMessage();
         }
-
         return new JsonResponse($result);
     }
 }

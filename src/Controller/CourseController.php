@@ -29,26 +29,23 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Course controller.
  *
- * @Route("/course")
  * @IsGranted("ROLE_TEACHER")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/course')]
 class CourseController extends AbstractBaseController
 {
     /**
-     * @Route("", name="app_course_index", methods={"GET"})
-     * @Template()
      *
      *
      * @throws InvalidArgumentException
      * @throws NonUniqueResultException
      * @throws NoResultException
-     * @return array<string, mixed>
      */
-    public function index(EntityManagerInterface $manager, int $page = 1, string $search = ''): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_course_index', methods: ['GET'])]
+    public function index(EntityManagerInterface $manager, int $page = 1, string $search = '') : \Symfony\Component\HttpFoundation\Response
     {
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-
         // Get the total entries.
         $count = $manager
             ->getRepository(Course::class)
@@ -56,10 +53,8 @@ class CourseController extends AbstractBaseController
             ->select('COUNT(e)')
             ->getQuery()
             ->getSingleScalarResult();
-
         // Define the number of pages.
         $pages = ceil($count / 20);
-
         // Get the entries of current page.
         /* @var $courseList Course[] */
         $courseList = $manager
@@ -69,17 +64,15 @@ class CourseController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
-        return [
+        return $this->render('Course/index.html.twig', [
             'courseList' => $courseList,
             'pages' => $pages,
             'page' => $page,
             'count' => $count,
             'search' => stripslashes($search),
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
-        ];
+        ]);
     }
-
     /**
      * Creates a form to search Course entities.
      */
@@ -96,22 +89,19 @@ class CourseController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
      * Creates a new Course entity.
      *
-     * @Route("/create", name="app_course_create", methods={"POST"})
-     * @Template()
      *
      *
      * @throws Exception
      */
-    public function createAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_course_create', methods: ['POST'])]
+    public function create(Request $request) : \Symfony\Component\HttpFoundation\Response
     {
         $course = new Course();
         $form = $this->createCreateForm($course);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
@@ -138,13 +128,11 @@ class CourseController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_course_show', ['id' => $course->getId()]));
         }
-
-        return [
+        return $this->render('Course/create.html.twig', [
             'course' => $course,
             'form' => $form->createView(),
-        ];
+        ]);
     }
-
     /**
      * Creates a form to create a Course entity.
      *
@@ -161,61 +149,48 @@ class CourseController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to create a new Course entity.
      *
-     * @Route("/new", name="app_course_new", methods={"GET"})
-     * @Template()
      *
      * @throws Exception
-     * @return array<string, \App\Entity\Course>|array<string, \Symfony\Component\Form\FormView>
      */
-    public function new(): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_course_new', methods: ['GET'])]
+    public function new() : \Symfony\Component\HttpFoundation\Response
     {
         $course = new Course();
         $form = $this->createCreateForm($course);
-
-        return [
+        return $this->render('Course/new.html.twig', [
             'course' => $course,
             'form' => $form->createView(),
-        ];
+        ]);
     }
-
     /**
      * Finds and displays a Course entity.
      *
-     * @Route("/show/{id}", name="app_course_show", methods={"GET"})
-     * @Template()
      *
      * @throws Exception
-     * @return array<string, \App\Entity\Course>|array<string, mixed[]>|null[]
      */
-    public function showAction(Course $course = null): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_course_show', methods: ['GET'])]
+    public function show(Course $course = null) : \Symfony\Component\HttpFoundation\Response
     {
-        return [
+        return $this->render('Course/show.html.twig', [
             'course' => $course,
             'listStatus' => CourseManager::getListStatus(),
-        ];
+        ]);
     }
-
     /**
      * Displays a form to edit an existing Course entity.
-     *
-     * @Route("/edit/{id}", name="app_course_edit", methods={"GET"})
-     * @Template()
-     * @return array<string, \App\Entity\Course>|array<string, \Symfony\Component\Form\FormView>
      */
-    public function editAction(Course $course): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_course_edit', methods: ['GET'])]
+    public function edit(Course $course) : \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($course);
-
-        return [
+        return $this->render('Course/edit.html.twig', [
             'course' => $course,
             'edit_form' => $editForm->createView(),
-        ];
+        ]);
     }
-
     /**
      * Creates a form to edit a Course entity.
      *
@@ -232,29 +207,24 @@ class CourseController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to edit an existing Course entity.
      *
-     * @Route("/save-appeal/{id}", name="app_course_save_appeal", methods={"POST"})
-     * @Template()
      *
      *
      * @throws Exception
      */
-    public function saveAppealAction(Request $request, Course $course): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/save-appeal/{id}', name: 'app_course_save_appeal', methods: ['POST'])]
+    public function saveAppeal(Request $request, Course $course) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = (object)[
             'success' => false,
             'error' => [],
             'students' => [],
         ];
-
         $manager = $this->getDoctrine()->getManager();
-
         $listStudents = $course->getStudents();
         $listStudentStatus = $request->get('listStudent');
-
         foreach ($listStudents as $appealCourse) {
             $status = null;
             $studentId = $appealCourse->getStudent()->getId();
@@ -273,19 +243,13 @@ class CourseController extends AbstractBaseController
                 $manager->persist($appealCourse);
             }
         }
-
         $manager->flush();
-
         return new JsonResponse($response);
     }
-
-    /**
-     * @Route("/generate", name="app_course_generate", methods={"GET", "POST"})
-     */
-    public function generate(Request $request, CourseManager $courseManager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/generate', name: 'app_course_generate', methods: ['GET', 'POST'])]
+    public function generate(Request $request, CourseManager $courseManager) : Response
     {
         set_time_limit(0);
-
         try {
             $courseManager->getGoogleCalendar()
                 ->getClient();
@@ -294,13 +258,11 @@ class CourseController extends AbstractBaseController
 
             return $this->redirectToRoute('app_google_auth');
         }
-
         $form = $this->createFormBuilder()
             ->add('generate', SubmitType::class)
             ->setMethod(Request::METHOD_POST)
             ->getForm()
             ->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $courseManager->generate($this->getPeriod(), $this->getSchool());
 
@@ -313,7 +275,6 @@ class CourseController extends AbstractBaseController
 
             return $this->redirectToRoute('app_course_index');
         }
-
         return $this->render('course/generate.html.twig', [
             'form' => $form->createView(),
             'manager' => $courseManager,

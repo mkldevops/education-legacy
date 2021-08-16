@@ -20,27 +20,22 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Member controller.
  *
- * @Route("/member")
  * @IsGranted("ROLE_MEMBER")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/member')]
 class MemberController extends AbstractBaseController
 {
-    /**
-     * @Route("", name="app_member_index", methods={"GET"})
-     */
-    public function index(MemberRepository $repository, int $page = 1, string $search = ''): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_member_index', methods: ['GET'])]
+    public function index(MemberRepository $repository, int $page = 1, string $search = '') : Response
     {
         $search = addcslashes(urldecode($search), '%_');
-
         $count = $repository->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.positionName LIKE :function')
             ->setParameter('function', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
-
         $pages = ceil($count / 20);
-
         $memberList = $repository->createQueryBuilder('e')
             ->where('e.positionName LIKE :function')
             ->setParameter('function', '%' . $search . '%')
@@ -48,7 +43,6 @@ class MemberController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('member/index.html.twig', [
             'memberList' => $memberList,
             'pages' => $pages,
@@ -57,7 +51,6 @@ class MemberController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
-
     private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
@@ -71,22 +64,19 @@ class MemberController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
-     * @Route("/new", name="app_member_new", methods={"GET"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function new(): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_member_new', methods: ['GET'])]
+    public function new() : Response
     {
         $member = new Member();
         $form = $this->createCreateForm($member);
-
         return $this->render('member/new.html.twig', [
             'member' => $member,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Creates a form to create a Member entity.
      *
@@ -105,16 +95,12 @@ class MemberController extends AbstractBaseController
 
         return $form;
     }
-
-    /**
-     * @Route("/create", name="app_member_create", methods={"POST"})
-     */
-    public function create(Request $request): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_member_create', methods: ['POST'])]
+    public function create(Request $request) : Response
     {
         $member = new Member();
         $form = $this->createCreateForm($member)
             ->handleRequest($request);
-
         if ($form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $member->setStructure($this->getEntitySchool()->getStructure())
@@ -127,34 +113,25 @@ class MemberController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_member_show', ['id' => $member->getId()]));
         }
-
         return $this->render('member/new.html.twig', [
             'member' => $member,
             'form' => $form->createView(),
         ]);
     }
-
-    /**
-     * @Route("/show/{id}", name="app_member_show", methods={"GET"})
-     */
-    public function show(Member $member): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_member_show', methods: ['GET'])]
+    public function show(Member $member) : Response
     {
         return $this->render('member/show.html.twig', ['member' => $member]);
     }
-
-    /**
-     * @Route("/edit/{id}", name="app_member_edit", methods={"GET"})
-     */
-    public function edit(Member $member): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_member_edit', methods: ['GET'])]
+    public function edit(Member $member) : Response
     {
         $editForm = $this->createEditForm($member);
-
         return $this->render('member/edit.html.twig', [
             'member' => $member,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     private function createEditForm(Member $member): FormInterface
     {
         $form = $this->createForm(MemberType::class, $member, [
@@ -166,15 +143,11 @@ class MemberController extends AbstractBaseController
 
         return $form;
     }
-
-    /**
-     * @Route("/update/{id}", name="app_member_update", methods={"POST", "PUT"})
-     */
-    public function update(Request $request, Member $member): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_member_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Member $member) : Response
     {
         $editForm = $this->createEditForm($member);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $this->getDoctrine()
                 ->getManager()
@@ -184,21 +157,16 @@ class MemberController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_member_show', ['id' => $member->getId()]));
         }
-
         return $this->render('member/edit.html.twig', [
             'member' => $member,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
-    /**
-     * @Route("/delete/{id}", name="app_member_delete", methods={"GET", "DELETE"})
-     */
-    public function delete(Request $request, Member $member): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_member_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Member $member) : Response
     {
         $deleteForm = $this->createDeleteForm($member->getId());
         $deleteForm->handleRequest($request);
-
         if ($deleteForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $manager->remove($member);
@@ -208,13 +176,11 @@ class MemberController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_member_index'));
         }
-
         return $this->render('member/delete.html.twig', [
             'member' => $member,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
@@ -223,14 +189,10 @@ class MemberController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
-    /**
-     * @Route("/search", name="app_member_search", methods={"GET"})
-     */
-    public function search(Request $request): RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_member_search', methods: ['GET'])]
+    public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_member_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

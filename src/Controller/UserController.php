@@ -11,20 +11,17 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class UserController.
- *
- * @Route("/user")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/user')]
 class UserController extends EasyAdminController
 {
     public function __construct(private UserPasswordEncoderInterface $passwordEncoder)
     {
     }
-
     public function persistEntity(\App\Entity\User $entity): void
     {
         $this->encodePassword($entity);
     }
-
     /**
      * @param $user
      */
@@ -36,16 +33,12 @@ class UserController extends EasyAdminController
 
         $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPlainPassword()));
     }
-
     public function updateEntity(object $entity): void
     {
         $this->encodePassword($entity);
     }
-
-    /**
-     * @Route("/profile", name="app_user_profile")
-     */
-    public function profile(): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/profile', name: 'app_user_profile')]
+    public function profile() : \Symfony\Component\HttpFoundation\Response
     {
         return $this->render('user/profile.html.twig', [
             'controller_name' => 'UserController',

@@ -18,9 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * ClassPeriod controller.
- *
- * @Route("/api/class-period")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/api/class-period')]
 class ClassPeriodApiController extends AbstractBaseController
 {
     /**
@@ -38,26 +37,17 @@ class ClassPeriodApiController extends AbstractBaseController
 
         return ResponseModel::jsonResponse($response);
     }
-
     /**
      * addStudentAction.
-     *
-     * @Route(
-     *     "/update-student/{id}",
-     *     name="app_api_class_period_update_student",
-     *     methods={"POST"},
-     *     options={"expose"=true}
-     *    )
      */
-    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update-student/{id}', name: 'app_api_class_period_update_student', methods: ['POST'], options: ['expose' => true])]
+    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $name = $classPeriod->getClassSchool()->getName();
-
         $response = ResponseRequest::responseDefault([
             'name' => $name,
             'count' => null,
         ]);
-
         try {
             $students = $request->get('students');
             $response->success = $manager->treatListStudent($students, $this->getPeriod(), $classPeriod);
@@ -69,14 +59,12 @@ class ClassPeriodApiController extends AbstractBaseController
             $response->errors[] = $e->getMessage();
             $this->getLogger()->error(__METHOD__ . ' ' . $e->getMessage(), $e->getTrace());
         }
-
         return new JsonResponse($response, empty($response->errors) ? 200 : 500);
     }
-
     /**
      * changeStudentAction.
      */
-    public function changeStudentAction(Student $student): JsonResponse
+    public function changeStudent(Student $student): JsonResponse
     {
         $response = ResponseModel::responseDefault();
 

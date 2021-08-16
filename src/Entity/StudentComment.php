@@ -109,7 +109,7 @@ class StudentComment
     /**
      * Get created.
      */
-    public function getCreated(): \DateTime
+    public function getCreated(): ?\DateTime
     {
         return $this->created;
     }

@@ -13,46 +13,37 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
- *
- * @Route("/statistics")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/statistics')]
 class StatisticsController extends AbstractBaseController
 {
     /**
      * Number Students.
      *
-     * @Route("/number-students", name="app_statistics_numberstudents", methods={"GET"})
-     *
      *
      * @throws ORMException
-     * @Template()
-     * @return array<string, mixed>
      */
-    public function numberStudents(): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/number-students', name: 'app_statistics_numberstudents', methods: ['GET'])]
+    public function numberStudents() : \Symfony\Component\HttpFoundation\Response
     {
         $data = $this
             ->getDoctrine()->getManager()
             ->getRepository(Student::class)
             ->getStatsNumberStudent($this->getSchool());
-
-        return ['data' => $data];
+        return $this->render('Statistics/numberStudents.html.twig', ['data' => $data]);
     }
-
     /**
      * statsAccountAction.
      *
-     * @Route("/account", name="app_statistics_account", methods={"GET"})
      *
-     * @Template()
-     * @return array<string, mixed>
      */
-    public function statsAccount(): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/account', name: 'app_statistics_account', methods: ['GET'])]
+    public function statsAccount() : \Symfony\Component\HttpFoundation\Response
     {
         $data = $this
             ->getDoctrine()->getManager()
             ->getRepository(Account::class)
             ->getStatsAccount($this->getSchool(), true);
-
-        return ['data' => $data];
+        return $this->render('Statistics/statsAccount.html.twig', ['data' => $data]);
     }
 }

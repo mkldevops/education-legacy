@@ -14,22 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class OperationApiController.
- *
- * @Route("api/meet")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: 'api/meet')]
 class MeetApiController extends AbstractController
 {
-    /**
-     * @Route(
-     *     "/update/{id}",
-     *     methods={"POST"},
-     *     options={"expose"="true"}
-     * )
-     */
-    public function update(Request $request, Meet $meet): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', methods: ['POST'], options: ['expose' => 'true'])]
+    public function update(Request $request, Meet $meet) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $result = new ResponseModel();
-
         try {
             $em = $this->getDoctrine()->getManager();
             $meet->setText($request->get('text'))
@@ -45,7 +37,6 @@ class MeetApiController extends AbstractController
             $result->setMessage($e->getMessage())
                 ->setSuccess(false);
         }
-
         return ResponseModel::jsonResponse($result);
     }
 }

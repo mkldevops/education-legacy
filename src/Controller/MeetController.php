@@ -23,17 +23,15 @@ class MeetController extends AbstractBaseController
     /**
      * Lists all Meet entities.
      *
-     * @Route("", name="app_meet_index", methods={"GET"})
      *
      * @throws NonUniqueResultException
      */
-    public function index(int $page = 1, string $search = ''): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_meet_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = '') : Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-
         // Get the total entries.
         $count = $manager
             ->getRepository(Meet::class)
@@ -47,10 +45,8 @@ class MeetController extends AbstractBaseController
             ->setParameter(':text', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
-
         // Define the number of pages.
         $pages = ceil($count / 20);
-
         // Get the entries of current page.
         /** @var Meet[] $meetList */
         $meetList = $manager
@@ -66,7 +62,6 @@ class MeetController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('meet/index.html.twig', [
             'meetList' => $meetList,
             'pages' => $pages,
@@ -97,15 +92,13 @@ class MeetController extends AbstractBaseController
 
     /**
      * Creates a new Meet entity.
-     *
-     * @Route("/create", name="app_meet_create", methods={"POST"})
      */
-    public function create(Request $request): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_meet_create', methods: ['POST'])]
+    public function create(Request $request) : Response
     {
         $meet = new Meet();
         $form = $this->createCreateForm($meet);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
@@ -122,7 +115,6 @@ class MeetController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_meet_show', ['id' => $meet->getId()]));
         }
-
         return $this->render('meet/new.html.twig', [
             'meet' => $meet,
             'form' => $form->createView(),
@@ -165,14 +157,12 @@ class MeetController extends AbstractBaseController
 
     /**
      * Displays a form to create a new Meet entity.
-     *
-     * @Route("/new", name="app_meet_new", methods={"GET"})
      */
-    public function new(): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_meet_new', methods: ['GET'])]
+    public function new() : Response
     {
         $meet = new Meet();
         $form = $this->createCreateForm($meet);
-
         return $this->render('meet/new.html.twig', [
             'meet' => $meet,
             'form' => $form->createView(),
@@ -181,10 +171,9 @@ class MeetController extends AbstractBaseController
 
     /**
      * Finds and displays a Meet entity.
-     *
-     * @Route("/show/{id}", name="app_meet_show", methods={"GET"})
      */
-    public function show(Meet $meet): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_meet_show', methods: ['GET'])]
+    public function show(Meet $meet) : Response
     {
         return $this->render('meet/show.html.twig', [
             'meet' => $meet,
@@ -193,13 +182,11 @@ class MeetController extends AbstractBaseController
 
     /**
      * Displays a form to edit an existing Meet entity.
-     *
-     * @Route("/edit/{id}", name="app_meet_edit", methods={"GET"})
      */
-    public function edit(Meet $meet): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_meet_edit', methods: ['GET'])]
+    public function edit(Meet $meet) : Response
     {
         $editForm = $this->createEditForm($meet);
-
         return $this->render('meet/edit.html.twig', [
             'meet' => $meet,
             'edit_form' => $editForm->createView(),
@@ -228,15 +215,14 @@ class MeetController extends AbstractBaseController
     /**
      * Edits an existing Meet entity.
      *
-     * @Route("/update/{id}", name="app_meet_update", methods={"PUT", "POST"})
      *
      * @return RedirectResponse|Response
      */
-    public function update(Request $request, Meet $meet): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_meet_update', methods: ['PUT', 'POST'])]
+    public function update(Request $request, Meet $meet) : Response
     {
         $editForm = $this->createEditForm($meet);
         $editForm->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()
                 ->getManager()
@@ -246,7 +232,6 @@ class MeetController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_meet_show', ['id' => $meet->getId()]));
         }
-
         return $this->render('meet/edit.html.twig', [
             'meet' => $meet,
             'edit_form' => $editForm->createView(),
@@ -255,14 +240,12 @@ class MeetController extends AbstractBaseController
 
     /**
      * Deletes a Meet entity.
-     *
-     * @Route("/delete/{id}", name="app_meet_delete", methods={"GET", "DELETE"})
      */
-    public function delete(Request $request, Meet $meet): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_meet_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Meet $meet) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($meet->getId());
         $deleteForm->handleRequest($request);
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $manager = $this->getManager();
             $manager->remove($meet);
@@ -272,7 +255,6 @@ class MeetController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_meet_index'));
         }
-
         return $this->render('meet/delete.html.twig', [
             'meet' => $meet,
             'delete_form' => $deleteForm->createView(),
@@ -295,13 +277,11 @@ class MeetController extends AbstractBaseController
 
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_meet_search", methods={"GET"})
      */
-    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_meet_search', methods: ['GET'])]
+    public function search(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_meet_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

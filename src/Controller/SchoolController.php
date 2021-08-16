@@ -13,15 +13,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/school")
  * @IsGranted("ROLE_TEACHER")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/school')]
 class SchoolController extends AbstractBaseController
 {
-    /**
-     * @Route("/switch/{id}", name="app_school_switch", methods={"GET"})
-     */
-    public function switch(Request $request, School $school): \Symfony\Component\HttpFoundation\RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/switch/{id}', name: 'app_school_switch', methods: ['GET'])]
+    public function switch(Request $request, School $school) : \Symfony\Component\HttpFoundation\RedirectResponse
     {
         try {
             $this->schoolManager->switch($school);
@@ -29,7 +27,6 @@ class SchoolController extends AbstractBaseController
         } catch (Exception $e) {
             $this->addFlash('danger', $this->trans('flash.switch_school.failed', ['%name' => $school], 'school'));
         }
-
         return new RedirectResponse($request->headers->get('referer'));
     }
 }

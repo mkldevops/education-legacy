@@ -40,15 +40,14 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * Lists all ClassPeriod entities.
      *
-     * @Route("/current", name="app_class_period_current", methods={"GET"})
      *
      * @throws \App\Exception\InvalidArgumentException
      */
-    public function current(ClassPeriodManager $manager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
+    public function current(ClassPeriodManager $manager) : Response
     {
         $this->checkClasses();
         $classperiodList = $manager->getListOfCurrentPeriod($this->getPeriod(), $this->getSchool());
-
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
         ]);
@@ -72,22 +71,19 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * Lists all ClassPeriod entities.
      *
-     * @Route("", name="app_class_period_index", methods={"GET"})
      *
      * @throws NonUniqueResultException
      */
-    public function index(ClassPeriodManager $manager, int $page = 1, string $search = ''): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_class_period_index', methods: ['GET'])]
+    public function index(ClassPeriodManager $manager, int $page = 1, string $search = '') : Response
     {
         $this->checkClasses();
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-
         $count = $manager->count($this->getSchool(), $search);
         $pages = ceil($count / 20);
-
         // Get the entries of current page.
         $classperiodList = $manager->getList($this->getSchool(), $page, $search);
-
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
             'pages' => $pages,
@@ -114,19 +110,16 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * Creates a new ClassPeriod entity.
      *
-     * @Route("/create", name="app_class_period_create", methods={"POST"})
-     * @Template()
-     *
      *
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    public function create(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_class_period_create', methods: ['POST'])]
+    public function create(Request $request) : \Symfony\Component\HttpFoundation\Response
     {
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $classperiod->setAuthor($this->getUser());
@@ -137,11 +130,10 @@ class ClassPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classperiod->getId()]));
         }
-
-        return [
+        return $this->render('Clas1_Period/create.html.twig', [
             'classperiod' => $classperiod,
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     /**
@@ -165,38 +157,32 @@ class ClassPeriodController extends AbstractBaseController
 
     /**
      * Displays a form to create a new ClassPeriod entity.
-     *
-     * @Route("/new", name="app_class_period_new", methods={"GET"})
-     * @Template()
-     * @return array<string, \App\Entity\ClassPeriod>|array<string, \Symfony\Component\Form\FormView>
      */
-    public function new(): array
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_class_period_new', methods: ['GET'])]
+    public function new() : \Symfony\Component\HttpFoundation\Response
     {
         $this->checkClasses();
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
-
-        return [
+        return $this->render('Clas1_Period/new.html.twig', [
             'classperiod' => $classperiod,
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     /**
-     * @Route("/show/{id}", name="app_class_period_show", methods={"GET"}, options={"expose"=true})
      *
      * @throws InvalidArgumentException
      * @throws LogicException
      * @throws Exception
      */
-    public function show(ClassPeriod $classperiod): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_class_period_show', methods: ['GET'], options: ['expose' => true])]
+    public function show(ClassPeriod $classperiod) : Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         $listStatus = CourseManager::getListStatus();
         $appeals = $manager->getRepository(AppealCourse::class)
             ->getAppealToClassPeriod($classperiod, $listStatus);
-
         return $this->render('class_period/show.html.twig', [
             'classperiod' => $classperiod,
             'appeals' => $appeals,
@@ -204,13 +190,10 @@ class ClassPeriodController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * @Route("/edit/{id}", name="app_class_period_edit", methods={"GET"})
-     */
-    public function edit(ClassPeriod $classPeriod): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_class_period_edit', methods: ['GET'])]
+    public function edit(ClassPeriod $classPeriod) : Response
     {
         $editForm = $this->createEditForm($classPeriod);
-
         return $this->render('class_period/edit.html.twig', [
             'classperiod' => $classPeriod,
             'edit_form' => $editForm->createView(),
@@ -225,42 +208,34 @@ class ClassPeriodController extends AbstractBaseController
         ])->add('submit', SubmitType::class, ['label' => 'Update']);
     }
 
-    /**
-     * @Route("/update/{id}", name="app_class_period_update", methods={"POST", "PUT"})
-     */
-    public function update(Request $request, ClassPeriod $classPeriod): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_class_period_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, ClassPeriod $classPeriod) : Response
     {
         $editForm = $this->createEditForm($classPeriod);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'The ClassPeriod has been updated.');
 
             return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
         }
-
         return $this->render('class_period/edit.html.twig', [
             'classperiod' => $classPeriod,
             'edit_form' => $editForm->createView(),
         ]);
     }
 
-    /**
-     * @Route("/delete/{id}", name="app_class_period_delete", methods={"GET", "DELETE"})
-     */
-    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_class_period_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
             ->handleRequest($request);
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $repository->remove($classPeriod);
             $this->addFlash('success', 'The ClassPeriod has been deleted.');
 
             return $this->redirect($this->generateUrl('app_class_period_current'));
         }
-
         return $this->render('class_period/delete.html.twig', [
             'classperiod' => $classPeriod,
             'delete_form' => $deleteForm->createView(),
@@ -288,16 +263,14 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     /**
-     * @Route("/add/{period}/{classSchool}", name="app_class_period_add", methods={"GET", "POST"})
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    public function add(ClassSchool $classSchool, Period $period): RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
+    public function add(ClassSchool $classSchool, Period $period) : RedirectResponse
     {
         $em = $this->getDoctrine()->getManager();
-
         $classPeriod = $em->getRepository(ClassPeriod::class)
             ->findBy(['classSchool' => $classSchool, 'period' => $period]);
-
         if (empty($classPeriod)) {
             $classPeriod = new ClassPeriod();
             $classPeriod->setAuthor($this->getUser())
@@ -311,14 +284,11 @@ class ClassPeriodController extends AbstractBaseController
         } else {
             $this->addFlash('error', 'La Classe ' . $classSchool->getName() . ' n\'a pas été ajouté à la periode ' . $period->getName() . ', celle-ci esxiste ');
         }
-
         return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
     }
 
-    /**
-     * @Route("/show-student/{id}", name="app_class_period_show_student", methods={"GET"})
-     */
-    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show-student/{id}', name: 'app_class_period_show_student', methods: ['GET'])]
+    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
     {
         return $this->render('class_period/showStudent.html.twig', [
             'classperiod' => $classPeriod,
@@ -327,20 +297,17 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     /**
-     * @Route("/print-list-student/{id}", name="app_class_period_print_list_student", methods={"GET"})
-     *
      * @throws NonUniqueResultException
      */
-    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/print-list-student/{id}', name: 'app_class_period_print_list_student', methods: ['GET'])]
+    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
     {
         $packageStudents = $manager->getPackageStudent($classPeriod);
         $students = $manager->getStudentsInClassPeriod($classPeriod);
-
         $lines = count($students);
         if ($lines < self::NB_LINES_MIN) {
             $lines = self::NB_LINES_MIN;
         }
-
         return $this->render('class_period/print_list_student.html.twig', [
             'classperiod' => $classPeriod,
             'students' => $students,

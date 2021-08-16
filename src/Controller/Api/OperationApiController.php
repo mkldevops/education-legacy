@@ -14,22 +14,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/operation", options={"expose"="true"})
- */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/api/operation', options: ['expose' => 'true'])]
 class OperationApiController extends AbstractBaseController
 {
-    /**
-     * @Route(
-     *     "/update/{id}",
-     *     name="app_api_operation_update",
-     *     methods={"POST", "PUT"}
-     * )
-     */
-    public function updateAction(Request $request, Operation $operation, OperationManager $operationManager): JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Operation $operation, OperationManager $operationManager) : JsonResponse
     {
         $result = new ResponseModel();
-
         try {
             $data = json_decode($request->getContent(), true);
 
@@ -45,7 +36,6 @@ class OperationApiController extends AbstractBaseController
         } catch (Exception $e) {
             $result->setMessage($e->getMessage());
         }
-
         return ResponseModel::jsonResponse($result);
     }
 }

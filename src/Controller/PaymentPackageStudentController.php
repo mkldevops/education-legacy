@@ -17,25 +17,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("payment-package-student")
- */
+#[\Symfony\Component\Routing\Annotation\Route(path: 'payment-package-student')]
 class PaymentPackageStudentController extends AbstractBaseController
 {
     /**
      * Lists all PaymentPackageStudent entities.
      *
-     * @Route("", name="app_payment_package_student_index", methods={"GET"})
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(int $page = 1, string $search = ''): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_payment_package_student_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = '') : Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-
         // Get the total entries.
         $count = $manager
             ->getRepository(PaymentPackageStudent::class)
@@ -47,10 +43,8 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->setParameter(':status', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
-
         // Define the number of pages.
         $pages = ceil($count / 20);
-
         // Get the entries of current page.
         $paymentPackageStudentList = $manager
             ->getRepository(PaymentPackageStudent::class)
@@ -63,7 +57,6 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('payment_package_student/index.html.twig', [
             'paymentpackagestudentList' => $paymentPackageStudentList,
             'pages' => $pages,
@@ -72,7 +65,6 @@ class PaymentPackageStudentController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
-
     private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
@@ -86,7 +78,6 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     #[Route('/create/{id}', name: 'app_payment_package_student_create', methods: ['GET', 'POST'])]
     public function create(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
     {
@@ -132,7 +123,6 @@ class PaymentPackageStudentController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-
     private function createCreateForm(
         PaymentPackageStudent $paymentPackageStudent,
         PackageStudentPeriod  $packageStudentPeriod
@@ -148,23 +138,19 @@ class PaymentPackageStudentController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to create a new PaymentPackageStudent entity.
-     *
-     * @Route("/new/{id}", name="app_payment_package_student_new", methods={"GET"})
      */
-    public function new(PackageStudentPeriod $packageStudentPeriod): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new/{id}', name: 'app_payment_package_student_new', methods: ['GET'])]
+    public function new(PackageStudentPeriod $packageStudentPeriod) : Response
     {
         $paymentPackageStudent = new PaymentPackageStudent();
         $form = $this->createCreateForm($paymentPackageStudent, $packageStudentPeriod);
-
         return $this->render('payment_package_student/new.html.twig', [
             'paymentPackageStudent' => $paymentPackageStudent,
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/new-student/{id}', name: 'app_payment_package_student_new', methods: ['GET', 'POST'])]
     public function newStudent(PackageStudentPeriod $packageStudentPeriod): Response
     {
@@ -177,34 +163,28 @@ class PaymentPackageStudentController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a PaymentPackageStudent entity.
-     *
-     * @Route("/show/{id}", name="app_payment_package_student_show", methods={"GET"})
      */
-    public function showAction(PaymentPackageStudent $paymentPackageStudent): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
+    public function show(PaymentPackageStudent $paymentPackageStudent) : Response
     {
         return $this->render('payment_package_student/show.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
         ]);
     }
-
     /**
      * Displays a form to edit an existing PaymentPackageStudent entity.
-     *
-     * @Route("/show/{id}", name="app_payment_package_student_show", methods={"GET"})
      */
-    public function edit(PaymentPackageStudent $paymentPackageStudent): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
+    public function edit(PaymentPackageStudent $paymentPackageStudent) : Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
-
         return $this->render('payment_package_student/edit.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a PaymentPackageStudent entity.
      *
@@ -223,17 +203,14 @@ class PaymentPackageStudentController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing PaymentPackageStudent entity.
-     *
-     * @Route("/update/{id}", name="app_payment_package_student_update", methods={"PUT", "POST"})
      */
-    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_payment_package_student_update', methods: ['PUT', 'POST'])]
+    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $manager->flush();
@@ -242,23 +219,19 @@ class PaymentPackageStudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_payment_package_student_show', ['id' => $paymentPackageStudent->getId()]));
         }
-
         return $this->render('payment_package_student/edit.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a PaymentPackageStudent entity.
-     *
-     * @Route("/delete/{id}", name="app_payment_package_student_delete", methods={"GET", "DELETE"})
      */
-    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_payment_package_student_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($paymentPackageStudent->getId());
         $deleteForm->handleRequest($request);
-
         if ($deleteForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $manager->remove($paymentPackageStudent);
@@ -271,13 +244,11 @@ class PaymentPackageStudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_payment_package_student_index'));
         }
-
         return $this->render('payment_package_student/delete.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a PaymentPackageStudent entity by id.
      *
@@ -293,16 +264,13 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_payment_package_student_search", methods={"GET"})
      */
-    public function search(Request $request): RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_payment_package_student_search', methods: ['GET'])]
+    public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_payment_package_student_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

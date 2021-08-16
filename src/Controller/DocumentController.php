@@ -24,27 +24,23 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Document controller.
- *
- * @Route("/document")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/document')]
 class DocumentController extends AbstractBaseController
 {
     /**
      * Lists all Document entities.
      *
-     * @Route("/list/{page}/{search}", name="app_document_index", methods={"GET"})
-     *
      *
      *
      * @throws NonUniqueResultException
      */
-    public function indexAction(int $page = 1, string $search = ''): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_document_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = '') : \Symfony\Component\HttpFoundation\Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-
         // Get the total entries.
         $count = $manager
             ->getRepository(Document::class)
@@ -56,10 +52,8 @@ class DocumentController extends AbstractBaseController
             ->setParameter(':path', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
-
         // Define the number of pages.
         $pages = ceil($count / 20);
-
         // Get the entries of current page.
         $documentList = $manager
             ->getRepository(Document::class)
@@ -72,7 +66,6 @@ class DocumentController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('document/index.html.twig', [
             'documentList' => $documentList,
             'pages' => $pages,
@@ -81,7 +74,6 @@ class DocumentController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
-
     /**
      * Creates a form to search Document entities.
      *
@@ -100,21 +92,18 @@ class DocumentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
      * Creates a new Document entity.
-     *
-     * @Route("/create", name="app_document_create", methods={"POST"})
      *
      *
      * @throws ImagickException
      */
-    public function create(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_document_create', methods: ['POST'])]
+    public function create(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $document = new Document();
         $form = $this->createCreateForm($document);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
@@ -130,13 +119,11 @@ class DocumentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_document_show', ['id' => $document->getId()]));
         }
-
         return $this->render('document/new.html.twig', [
             'document' => $document,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Creates a form to create a Document entity.
      *
@@ -155,50 +142,41 @@ class DocumentController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to create a new Document entity.
-     *
-     * @Route("/new", name="app_document_new", methods={"GET"})
      */
-    public function new(): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_document_new', methods: ['GET'])]
+    public function new() : \Symfony\Component\HttpFoundation\Response
     {
         $document = new Document();
         $form = $this->createCreateForm($document);
-
         return $this->render('document/new.html.twig', [
             'document' => $document,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a Document entity.
-     *
-     * @Route("/show/{id}", name="app_document_show", methods={"GET"})
      */
-    public function show(Document $document): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_document_show', methods: ['GET'])]
+    public function show(Document $document) : \Symfony\Component\HttpFoundation\Response
     {
         return $this->render('document/show.html.twig', [
             'document' => $document,
         ]);
     }
-
     /**
      * Displays a form to edit an existing Document entity.
-     *
-     * @Route("/edit/{id}", name="app_document_edit", methods={"GET"})
      */
-    public function edit(Document $document): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_document_edit', methods: ['GET'])]
+    public function edit(Document $document) : \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($document);
-
         return $this->render('document/edit.html.twig', [
             'document' => $document,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a Document entity.
      *
@@ -217,19 +195,15 @@ class DocumentController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing Document entity.
-     *
-     * @Route("/update/{id}", name="app_document_update", methods={"POST", "PUT"})
      */
-    public function update(Request $request, Document $document): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_document_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Document $document) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         $editForm = $this->createEditForm($document);
         $editForm->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $manager->flush();
 
@@ -237,23 +211,19 @@ class DocumentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_document_show', ['id' => $document->getId()]));
         }
-
         return $this->render('document/edit.html.twig', [
             'document' => $document,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a Document entity.
-     *
-     * @Route("/delete/{id}", name="app_document_delete", methods={"DELETE", "GET"})
      */
-    public function delete(Request $request, Document $document, DocumentManager $documentManager): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_document_delete', methods: ['DELETE', 'GET'])]
+    public function delete(Request $request, Document $document, DocumentManager $documentManager) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($document->getId());
         $deleteForm->handleRequest($request);
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $remove = $documentManager->removesWithLinks($document);
 
@@ -265,13 +235,11 @@ class DocumentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_document_index'));
         }
-
         return $this->render('document/delete.html.twig', [
             'document' => $document,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a Document entity by id.
      *
@@ -285,35 +253,27 @@ class DocumentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_document_search", methods={"GET"})
      */
-    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_document_search', methods: ['GET'])]
+    public function search(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_document_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
         ]));
     }
-
     public function getBaseUrl(Request $request): string
     {
         return $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
     }
-
-    /**
-     * @Route("/last", name="app_document_last", methods={"POST", "GET"}, options={"expose"=true})
-     */
-    public function last(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/last', name: 'app_document_last', methods: ['POST', 'GET'], options: ['expose' => true])]
+    public function last(Request $request) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
-
         try {
             $response->data = $em->getRepository(Document::class)
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0));
@@ -321,22 +281,19 @@ class DocumentController extends AbstractBaseController
             $response->success = false;
             $response->errors[] = $e->getMessage();
         }
-
         return new JsonResponse($response);
     }
-
     /**
      * uploadAction.
      *
-     * @Route("/upload", name="app_document_upload", methods={"POST"})
      *
      * @return Response|JsonResponse
      */
-    public function upload(Request $request, DocumentManager $documentManager): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/upload', name: 'app_document_upload', methods: ['POST'])]
+    public function upload(Request $request, DocumentManager $documentManager) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $document = new Document();
         $response = ResponseModel::responseDefault(['upload' => null, 'document' => null]);
-
         try {
             $manager = $this->getManager();
             $school = $this->getEntitySchool();
@@ -364,7 +321,6 @@ class DocumentController extends AbstractBaseController
             ]);
             $response->setMessage($e->getMessage());
         }
-
         return ResponseRequest::jsonResponse($response);
     }
 }

@@ -44,53 +44,45 @@ use Symfony\Component\Routing\Annotation\Route;
  * @since  0.2
  *
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
- * @Route("/student")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/student')]
 class StudentController extends AbstractBaseController
 {
     /**
      * @IsGranted("ROLE_TEACHER")
-     * @Route("", name="app_student_index", methods={"GET"})
-     *
      *
      * @throws InvalidArgumentException
      */
-    public function index(): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_student_index', methods: ['GET'])]
+    public function index() : \Symfony\Component\HttpFoundation\Response
     {
         $period = $this->getPeriod();
         $school = $this->getSchool();
-
         $manager = $this->getDoctrine()->getManager();
-
         $students = $manager->getRepository(Student::class)
             ->getListStudents($period, $school);
-
         $classPeriods = $manager->getRepository(ClassPeriod::class)
             ->getClassPeriods($period, $school);
-
         return $this->render('student/index.html.twig', [
             'students' => $students,
             'classPeriods' => $classPeriods,
         ]);
     }
-
     /**
      * @IsGranted("ROLE_DIRECTOR")
-     * @Route("/desactivated", methods={"GET"}, name="app_student_desactivated")
      *
      * @throws InvalidArgumentException
      */
-    public function desactivated(): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/desactivated', methods: ['GET'], name: 'app_student_desactivated')]
+    public function desactivated() : Response
     {
         $students = $this->getManager()
             ->getRepository(Student::class)
             ->getListStudents($this->getPeriod(), $this->getSchool(), false);
-
         return $this->render('student/index.html.twig', [
             'students' => $students,
         ]);
     }
-
     /**
      * @throws InvalidArgumentException
      * @throws AppException
@@ -119,39 +111,28 @@ class StudentController extends AbstractBaseController
             'studentsWithoutPackage' => $studentsWithoutPackage,
         ]);
     }
-
     /**
      * @IsGranted("ROLE_DIRECTOR")
-     * @Route("/{id}/add-package/{period}", methods={"GET", "POST"})
      * @throws InvalidArgumentException
      * @throws NonUniqueResultException
      * @throws AppException|NoResultException
      */
-    public function addPackage(
-        Request $request,
-        StudentManager $studentManager,
-        Student $student,
-        PackageRepository $packageRepository,
-        Period $period = null,
-    ) : Response {
-
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/{id}/add-package/{period}', methods: ['GET', 'POST'])]
+    public function addPackage(Request $request, StudentManager $studentManager, Student $student, PackageRepository $packageRepository, Period $period = null) : Response
+    {
         $packageStudentPeriod = (new PackageStudentPeriod())
             ->setPeriod($period ?? $this->getEntityPeriod())
             ->setStudent($student);
-
         $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
             ->add('submit', SubmitType::class, ['label' => 'Create'])
             ->remove('student')
             ->handleRequest($request);
-
         $countPackage = $packageRepository->countPackages($this->getSchool());
-
         if (empty($countPackage)) {
             $this->addFlash('danger', $this->trans('package.not_found', [
                 '%url%' => $this->generateUrl('app_package_new'),
             ], 'school'));
         }
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $studentManager->addPackage($student, $packageStudentPeriod);
@@ -171,37 +152,32 @@ class StudentController extends AbstractBaseController
                 'id' => $student->getId(),
             ]));
         }
-
         if (!$form->isValid() && $form->isSubmitted()) {
             $this->addFlash('warning', sprintf(
                 'l\'élève n\'a pas été enregistré <br /> : %s',
                 print_r($form->getErrors(), true)
             ));
         }
-
         return $this->render('student/add_package.html.twig', [
             'packageStudentPeriod' => $packageStudentPeriod,
             'form' => $form->createView(),
         ]);
     }
-
     /**
-     * @Route("/new", name="app_student_new", methods={"GET"})
      * @IsGranted("ROLE_TEACHER")
      */
-    public function new(): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_student_new', methods: ['GET'])]
+    public function new() : Response
     {
         $student = new Student();
         $form = $this->createCreateForm($student);
         $formFamily = $this->createCreateFormFamily();
-
         return $this->render('student/new.html.twig', [
             'student' => $student,
             'form' => $form->createView(),
             'formFamily' => $formFamily->createView(),
         ]);
     }
-
     private function createCreateForm(Student $student): FormInterface
     {
         $this->logger->info(__METHOD__);
@@ -217,7 +193,6 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
-
     private function createCreateFormFamily() : FormInterface
     {
         $family = new Family();
@@ -230,7 +205,6 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * @throws Exception
      */
@@ -262,24 +236,20 @@ class StudentController extends AbstractBaseController
             'formFamily' => $formFamily->createView(),
         ]);
     }
-
     /**
-     * @Route("/show/{id}", methods={"GET"}, name="app_student_show")
      *
      * @throws InvalidArgumentException
      * @throws AppException
      */
-    public function show(Student $student, DocumentManager $documentManager): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', methods: ['GET'], name: 'app_student_show')]
+    public function show(Student $student, DocumentManager $documentManager) : Response
     {
         $formComment = $this->createCreateCommentForm(new studentComment(), $student);
-
         $packagePeriods = $this->getManager()
             ->getRepository(PackageStudentPeriod::class)
             ->getListToStudent($student);
-
         $comments = $this->getRepository(StudentComment::class)
             ->findBy(['student' => $student->getId()], ['createdAt' => 'desc']);
-
         return $this->render('student/show.html.twig', [
             'student' => $student,
             'comments' => $comments,
@@ -288,7 +258,6 @@ class StudentController extends AbstractBaseController
             'formComment' => $formComment->createView(),
         ]);
     }
-
     private function createCreateCommentForm(StudentComment $comment, Student $student) : FormInterface
     {
         return $this->createForm(StudentCommentSimpleType::class, $comment, [
@@ -297,22 +266,17 @@ class StudentController extends AbstractBaseController
             'attr' => ['id' => 'student_addcomment'],
         ]);
     }
-
-    /**
-     * @Route("/edit/{id}", methods={"GET"}, name="app_student_edit")
-     */
-    public function edit(Student $student, FamilyApiController $apiController): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', methods: ['GET'], name: 'app_student_edit')]
+    public function edit(Student $student, FamilyApiController $apiController) : Response
     {
         $form = $this->createEditForm($student);
         $formFamily = $apiController->createEditForm($student->getFamily());
-
         return $this->render('student/edit.html.twig', [
             'formFamily' => $formFamily->createView(),
             'form' => $form->createView(),
             'student' => $student,
         ]);
     }
-
     private function createEditForm(Student $student): FormInterface
     {
         $form = $this->createForm(StudentType::class, $student, [
@@ -324,20 +288,16 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing Teacher entity.
-     *
-     * @Route("/update/{id}", methods={"POST", "PUT"}, name="app_student_update")
      */
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', methods: ['POST', 'PUT'], name: 'app_student_update')]
     public function update(Request $request, Student $student) : Response
     {
         $editForm = $this->createEditForm($student)
             ->handleRequest($request);
-
         $formFamily = $this->createCreateFormFamily()
             ->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
@@ -348,29 +308,25 @@ class StudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_student_show', ['id' => $student->getId()]));
         }
-
         return $this->render('student/edit.html.twig', [
             'formFamily' => $formFamily->createView(),
             'student' => $student,
             'form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a Student entity.
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
-     * @Route("/delete/{id}")
      */
-    public function delete(Request $request, Student $student = null): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}')]
+    public function delete(Request $request, Student $student = null) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
-
         if (empty($student)) {
             throw $this->createNotFoundException('Unable to find Account entity.');
         }
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
@@ -386,13 +342,11 @@ class StudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_student_index'));
         }
-
         return $this->render('student/delete.html.twig', [
             'student' => $student,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a Account entity by id.
      *
@@ -409,47 +363,37 @@ class StudentController extends AbstractBaseController
             ])
             ->getForm();
     }
-
     /**
-     * @Route("/edit-status/{id}", methods={"POST", "GET"}, name="app_student_edit_status", options={"expose"=true})
-     *
      *
      * @throws Exception
      */
-    public function editStatus(Request $request, Student $student): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit-status/{id}', methods: ['POST', 'GET'], name: 'app_student_edit_status', options: ['expose' => true])]
+    public function editStatus(Request $request, Student $student) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
-
         $student->setEnable((bool)$request->get('enable'));
-
         $em->persist($student);
-
         $em->flush();
         $redirectRequest = $request->get('redirect', false);
-
         if ((bool)$redirectRequest) {
             $this->addFlash('success', 'The status student is updated');
 
             return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
         }
-
         return new JsonResponse([
             'success' => true,
             'enable' => $student->getEnable(),
             'form' => $request->get('enable'),
         ]);
     }
-
     /**
      * Set image student.
-     *
-     * @Route("/set-image/{id}s", methods={"PUT", "POST"})
      */
-    public function setImage(Request $request, Student $student): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-image/{id}s', methods: ['PUT', 'POST'])]
+    public function setImage(Request $request, Student $student) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault(['document' => null]);
-
         try {
             /* @var $image Document */
             $image = $em->getRepository(Document::class)
@@ -470,18 +414,13 @@ class StudentController extends AbstractBaseController
             $response->success = false;
             $response->errors[] = $e->getMessage();
         }
-
         return new JsonResponse($response);
     }
-
-    /**
-     * @Route("/set-phone/{id}", methods={"POST", "PUT"})
-     */
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-phone/{id}', methods: ['POST', 'PUT'])]
     public function setPhone(Student $student, Request $request) : JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
-
         try {
             switch ($request->get('action')) {
                 case 'delete':
@@ -503,10 +442,8 @@ class StudentController extends AbstractBaseController
             $response->success = false;
             $response->errors[] = $e->getMessage();
         }
-
         return new JsonResponse($response);
     }
-
     #[Route("/{id}/add-comment", methods:["POST"])]
     public function addComment(Request $request, Student $student, EntityManagerInterface $manager): RedirectResponse
     {
@@ -531,7 +468,6 @@ class StudentController extends AbstractBaseController
 
         return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
     }
-
     /**
      * @throws AppException
      */

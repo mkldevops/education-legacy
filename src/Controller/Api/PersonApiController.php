@@ -13,18 +13,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/person", options={"expose"=true})
- */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/api/person', options: ['expose' => true])]
 class PersonApiController extends AbstractBaseController
 {
-    /**
-     * @Route("/get-phones/{id}", name="app_api_person_get_phones", methods={"GET"})
-     */
-    public function getPhones(Person $person): JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/get-phones/{id}', name: 'app_api_person_get_phones', methods: ['GET'])]
+    public function getPhones(Person $person) : JsonResponse
     {
         $response = ResponseModel::responseDefault();
-
         try {
             $response->setData([
                 'phones' => PhoneManager::getAllPhones($person),
@@ -34,17 +29,12 @@ class PersonApiController extends AbstractBaseController
             $response->setSuccess(false)
                 ->setMessage($e->getMessage());
         }
-
         return ResponseModel::jsonResponse($response);
     }
-
-    /**
-     * @Route("/update-phones/{id}", name="app_api_person_update_phone", methods={"POST", "PUT"})
-     */
-    public function updatePhone(Request $request, Person $person, PhoneManager $manager): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update-phones/{id}', name: 'app_api_person_update_phone', methods: ['POST', 'PUT'])]
+    public function updatePhone(Request $request, Person $person, PhoneManager $manager) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = ResponseModel::responseDefault();
-
         try {
             $key = $request->request->get('key', null);
             $value = $request->request->get('value', null);
@@ -55,17 +45,12 @@ class PersonApiController extends AbstractBaseController
             $response->setSuccess(false)
                 ->setMessage($e->getMessage());
         }
-
         return ResponseModel::jsonResponse($response);
     }
-
-    /**
-     * @Route("/delete-phones/{id}", name="app_api_person_delete_phone", methods={"DELETE"})
-     */
-    public function deletePhone(Request $request, Person $person, PhoneManager $manager): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete-phones/{id}', name: 'app_api_person_delete_phone', methods: ['DELETE'])]
+    public function deletePhone(Request $request, Person $person, PhoneManager $manager) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $response = ResponseModel::responseDefault();
-
         try {
             list('key' => $key) = $request->request->all();
             $result = $manager->deletePhone($person, $key);
@@ -75,7 +60,6 @@ class PersonApiController extends AbstractBaseController
             $response->setSuccess(false)
                 ->setMessage($e->getMessage());
         }
-
         return ResponseModel::jsonResponse($response);
     }
 }

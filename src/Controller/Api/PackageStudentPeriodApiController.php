@@ -14,19 +14,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/pachage-student-period", options={"expose"=true})
- */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/api/pachage-student-period', options: ['expose' => true])]
 class PackageStudentPeriodApiController extends AbstractBaseController
 {
-    /**
-     * @Route("/create", name="app_api_package_student_period_create", methods={"POST"})
-     */
-    public function create(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
+    public function create(Request $request) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $response = $this->json([]);
-
         try {
             $packageStudentPeriod = (new PackageStudentPeriod())
                 ->setPeriod($this->getEntityPeriod())
@@ -44,10 +39,8 @@ class PackageStudentPeriodApiController extends AbstractBaseController
             $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
         return $response;
     }
-
     /**
      * @throws AppException
      */
@@ -71,15 +64,11 @@ class PackageStudentPeriodApiController extends AbstractBaseController
         $em->persist($packageStudentPeriod);
         $em->flush();
     }
-
-    /**
-     * @Route("/update/{id}", name="app_api_package_student_period_update", methods={"POST", "PUT"})
-     */
-    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);
         $response = $this->json([]);
-
         try {
             $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
                 ->handleRequest($request);
@@ -93,7 +82,6 @@ class PackageStudentPeriodApiController extends AbstractBaseController
             $response->setData(['message' => $e->getMessage()])
                 ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
         return $response;
     }
 }

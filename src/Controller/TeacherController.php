@@ -18,29 +18,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/teacher")
  * @IsGranted("ROLE_DIRECTOR")
  */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/teacher')]
 class TeacherController extends AbstractBaseController
 {
-    /**
-     * @Route("", name="app_teacher_index", methods={"GET"})
-     */
-    public function index(int $page = 1, string $search = ''): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_teacher_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = '') : Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         $search = addcslashes(urldecode($search), '%_');
-
         $count = $manager
             ->getRepository(Teacher::class)
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->getQuery()
             ->getSingleScalarResult();
-
         $pages = ceil($count / 20);
-
         /** @var Teacher[] $teacherList */
         $teacherList = $manager
             ->getRepository(Teacher::class)
@@ -49,7 +43,6 @@ class TeacherController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('teacher/index.html.twig', [
             'teacherList' => $teacherList,
             'pages' => $pages,
@@ -58,7 +51,6 @@ class TeacherController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
-
     private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
@@ -72,17 +64,12 @@ class TeacherController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
-    /**
-     * @Route("create", name="app_teacher_create", methods={"POST"})
-     */
-    public function create(Request $request): Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: 'create', name: 'app_teacher_create', methods: ['POST'])]
+    public function create(Request $request) : Response
     {
         $teacher = new Teacher();
-
         $form = $this->createCreateForm($teacher)
             ->handleRequest($request);
-
         if ($form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $teacher->setName($teacher->getPerson()->getNameComplete())
@@ -94,13 +81,11 @@ class TeacherController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_teacher_show', ['id' => $teacher->getId()]));
         }
-
         return $this->render('teacher/new.html.twig', [
             'teacher' => $teacher,
             'form' => $form->createView(),
         ]);
     }
-
     private function createCreateForm(Teacher $teacher): FormInterface
     {
         $form = $this->createForm(TeacherType::class, $teacher, [
@@ -112,51 +97,40 @@ class TeacherController extends AbstractBaseController
 
         return $form;
     }
-
-    /**
-     * @Route("/new", name="app_teacher_new", methods={"GET"})
-     */
-    public function new(): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_teacher_new', methods: ['GET'])]
+    public function new() : \Symfony\Component\HttpFoundation\Response
     {
         $teacher = new Teacher();
         $form = $this->createCreateForm($teacher);
-
         return $this->render('teacher/new.html.twig', [
             'teacher' => $teacher,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a Teacher entity.
-     *
-     * @Route("/show/{id}", name="app_teacher_show", methods={"GET"})
      */
-    public function show(Teacher $teacher): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_teacher_show', methods: ['GET'])]
+    public function show(Teacher $teacher) : \Symfony\Component\HttpFoundation\Response
     {
         $person = $teacher->getPerson();
-
         return $this->render('teacher/show.html.twig', [
             'teacher' => $teacher,
             'person' => $person,
         ]);
     }
-
     /**
      * Displays a form to edit an existing Teacher entity.
-     *
-     * @Route("/edit/{id}", name="app_teacher_edit", methods={"GET"})
      */
-    public function editAction(Teacher $teacher): \Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_teacher_edit', methods: ['GET'])]
+    public function edit(Teacher $teacher) : \Symfony\Component\HttpFoundation\Response
     {
         $editForm = $this->createEditForm($teacher);
-
         return $this->render('teacher/edit.html.twig', [
             'teacher' => $teacher,
             'form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a Teacher entity.
      *
@@ -175,21 +149,17 @@ class TeacherController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing Teacher entity.
-     *
-     * @Route("/update/{id}", name="app_teacher_update", methods={"PUT", "POST"})
      */
-    public function update(Request $request, Teacher $teacher): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_teacher_update', methods: ['PUT', 'POST'])]
+    public function update(Request $request, Teacher $teacher) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (empty($teacher)) {
             throw $this->createNotFoundException('Unable to find Teacher entity.');
         }
-
         $editForm = $this->createEditForm($teacher);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
@@ -199,23 +169,19 @@ class TeacherController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_teacher_show', ['id' => $teacher->getId()]));
         }
-
         return $this->render('teacher/edit.html.twig', [
             'teacher' => $teacher,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a Teacher entity.
-     *
-     * @Route("/delete/{id}", name="app_teacher_delete", methods={"GET", "DELETE"})
      */
-    public function delete(Request $request, Teacher $teacher): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_teacher_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Teacher $teacher) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $deleteForm = $this->createDeleteForm($teacher->getId());
         $deleteForm->handleRequest($request);
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             if (empty($teacher)) {
                 throw $this->createNotFoundException('Unable to find Teacher entity.');
@@ -235,13 +201,11 @@ class TeacherController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_teacher_index'));
         }
-
         return $this->render('teacher/delete.html.twig', [
             'teacher' => $teacher,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a Teacher entity by id.
      *
@@ -261,16 +225,13 @@ class TeacherController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_teacher_search", methods={"GET"})
      */
-    public function searchAction(Request $request): RedirectResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_teacher_search', methods: ['GET'])]
+    public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_teacher_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

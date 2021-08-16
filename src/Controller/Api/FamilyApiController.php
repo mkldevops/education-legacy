@@ -16,19 +16,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 
-/**
- * @Route("/api/family", options={"expose"=true})
- */
+#[\Symfony\Component\Routing\Annotation\Route(path: '/api/family', options: ['expose' => true])]
 class FamilyApiController extends AbstractBaseController
 {
-    /**
-     * @Route("/create", name="app_api_family_create", methods={"POST"})
-     */
-    public function create(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_api_family_create', methods: ['POST'])]
+    public function create(Request $request) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
-
         try {
             $family = new Family();
             $form = $this->createCreateForm($family)
@@ -44,10 +39,8 @@ class FamilyApiController extends AbstractBaseController
             $result->setMessage($e->getMessage())
                 ->setSuccess(false);
         }
-
         return ResponseModel::jsonResponse($result);
     }
-
     public function createCreateForm(Family $family): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
@@ -59,7 +52,6 @@ class FamilyApiController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * @throws Exception
      */
@@ -83,15 +75,11 @@ class FamilyApiController extends AbstractBaseController
         $em->persist($family);
         $em->flush();
     }
-
-    /**
-     * @Route("/update/{id}", name="app_api_family_update", methods={"POST", "PUT"})
-     */
-    public function update(Request $request, Family $family, Serializer $serializer): \Symfony\Component\HttpFoundation\JsonResponse
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Family $family, Serializer $serializer) : \Symfony\Component\HttpFoundation\JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
-
         try {
             $form = $this->createCreateForm($family)
                 ->handleRequest($request);
@@ -106,10 +94,8 @@ class FamilyApiController extends AbstractBaseController
             $result->setMessage($e->getMessage())
                 ->setSuccess(false);
         }
-
         return ResponseModel::jsonResponse($result);
     }
-
     public function createEditForm(Family $family = null): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [

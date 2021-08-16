@@ -224,7 +224,6 @@ class Family
 
     /**
      * Set language.
-     *
      */
     public function setLanguage(?string $language = null): static
     {
@@ -311,7 +310,6 @@ class Family
 
     /**
      * Set personAuthorized.
-     *
      */
     public function setPersonAuthorized(?string $personAuthorized = null): static
     {
@@ -330,7 +328,6 @@ class Family
 
     /**
      * Set personEmergency.
-     *
      */
     public function setPersonEmergency(?string $personEmergency = null): static
     {
