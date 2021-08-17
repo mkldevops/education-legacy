@@ -18,7 +18,7 @@ abstract class AccountableManager
 {
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected LoggerInterface        $logger
+        protected LoggerInterface $logger
     ) {
     }
 
@@ -65,7 +65,7 @@ abstract class AccountableManager
             ->findOneBy(['code' => $code]);
 
         if (!$typeOperation instanceof TypeOperation) {
-            throw new AppException('Not Found Type operation with code : '.$code);
+            throw new AppException('Not Found Type operation with code : ' . $code);
         }
 
         return $typeOperation;

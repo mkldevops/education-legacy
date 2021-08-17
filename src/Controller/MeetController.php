@@ -27,7 +27,7 @@ class MeetController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '', name: 'app_meet_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $manager = $this->getDoctrine()->getManager();
         // Escape special characters and decode the search value.
@@ -94,7 +94,7 @@ class MeetController extends AbstractBaseController
      * Creates a new Meet entity.
      */
     #[Route(path: '/create', name: 'app_meet_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $meet = new Meet();
         $form = $this->createCreateForm($meet);
@@ -159,7 +159,7 @@ class MeetController extends AbstractBaseController
      * Displays a form to create a new Meet entity.
      */
     #[Route(path: '/new', name: 'app_meet_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $meet = new Meet();
         $form = $this->createCreateForm($meet);
@@ -173,7 +173,7 @@ class MeetController extends AbstractBaseController
      * Finds and displays a Meet entity.
      */
     #[Route(path: '/show/{id}', name: 'app_meet_show', methods: ['GET'])]
-    public function show(Meet $meet) : Response
+    public function show(Meet $meet): Response
     {
         return $this->render('meet/show.html.twig', [
             'meet' => $meet,
@@ -184,7 +184,7 @@ class MeetController extends AbstractBaseController
      * Displays a form to edit an existing Meet entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_meet_edit', methods: ['GET'])]
-    public function edit(Meet $meet) : Response
+    public function edit(Meet $meet): Response
     {
         $editForm = $this->createEditForm($meet);
         return $this->render('meet/edit.html.twig', [
@@ -219,7 +219,7 @@ class MeetController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_meet_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, Meet $meet) : Response
+    public function update(Request $request, Meet $meet): Response
     {
         $editForm = $this->createEditForm($meet);
         $editForm->handleRequest($request);
@@ -242,7 +242,7 @@ class MeetController extends AbstractBaseController
      * Deletes a Meet entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_meet_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Meet $meet) : RedirectResponse|Response
+    public function delete(Request $request, Meet $meet): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($meet->getId());
         $deleteForm->handleRequest($request);
@@ -279,7 +279,7 @@ class MeetController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_meet_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_meet_index', [

@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TeacherController extends AbstractBaseController
 {
     #[Route(path: '', name: 'app_teacher_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $manager = $this->getDoctrine()->getManager();
         $search = addcslashes(urldecode($search), '%_');
@@ -65,7 +65,7 @@ class TeacherController extends AbstractBaseController
             ->getForm();
     }
     #[Route(path: 'create', name: 'app_teacher_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $teacher = new Teacher();
         $form = $this->createCreateForm($teacher)
@@ -98,7 +98,7 @@ class TeacherController extends AbstractBaseController
         return $form;
     }
     #[Route(path: '/new', name: 'app_teacher_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $teacher = new Teacher();
         $form = $this->createCreateForm($teacher);
@@ -111,7 +111,7 @@ class TeacherController extends AbstractBaseController
      * Finds and displays a Teacher entity.
      */
     #[Route(path: '/show/{id}', name: 'app_teacher_show', methods: ['GET'])]
-    public function show(Teacher $teacher) : Response
+    public function show(Teacher $teacher): Response
     {
         $person = $teacher->getPerson();
         return $this->render('teacher/show.html.twig', [
@@ -123,7 +123,7 @@ class TeacherController extends AbstractBaseController
      * Displays a form to edit an existing Teacher entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_teacher_edit', methods: ['GET'])]
-    public function edit(Teacher $teacher) : Response
+    public function edit(Teacher $teacher): Response
     {
         $editForm = $this->createEditForm($teacher);
         return $this->render('teacher/edit.html.twig', [
@@ -153,7 +153,7 @@ class TeacherController extends AbstractBaseController
      * Edits an existing Teacher entity.
      */
     #[Route(path: '/update/{id}', name: 'app_teacher_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, Teacher $teacher) : RedirectResponse|Response
+    public function update(Request $request, Teacher $teacher): RedirectResponse|Response
     {
         if (empty($teacher)) {
             throw $this->createNotFoundException('Unable to find Teacher entity.');
@@ -178,7 +178,7 @@ class TeacherController extends AbstractBaseController
      * Deletes a Teacher entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_teacher_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Teacher $teacher) : RedirectResponse|Response
+    public function delete(Request $request, Teacher $teacher): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($teacher->getId());
         $deleteForm->handleRequest($request);
@@ -229,7 +229,7 @@ class TeacherController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_teacher_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_teacher_index', [

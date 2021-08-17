@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccountController extends AbstractBaseController
 {
     #[Route(path: '/{page}', name: 'app_account_index', methods: ['GET'])]
-    public function index(AccountRepository $repository, int $page = 1) : Response
+    public function index(AccountRepository $repository, int $page = 1): Response
     {
         $count = 20;
         $entities = $repository
@@ -48,7 +48,7 @@ class AccountController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/create', name: 'app_account_create')]
-    public function create(Request $request) : RedirectResponse|Response
+    public function create(Request $request): RedirectResponse|Response
     {
         $account = new Account();
         $form = $this->createCreateForm($account);
@@ -85,7 +85,7 @@ class AccountController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/new', name: 'app_account_new')]
-    public function new() : Response
+    public function new(): Response
     {
         $account = new Account();
         $form = $this->createCreateForm($account);
@@ -101,7 +101,7 @@ class AccountController extends AbstractBaseController
      * @throws ORMException
      */
     #[Route(path: '/show/{id}', name: 'app_account_show')]
-    public function show(AccountManager $accountManager, Account $account) : Response
+    public function show(AccountManager $accountManager, Account $account): Response
     {
         if ($account->getStructure()->getId() !== $this->getSchool()->getStructure()->getId()) {
             throw $this->createNotFoundException('Unable to find Account entity.');
@@ -119,7 +119,7 @@ class AccountController extends AbstractBaseController
      * Finds and displays a Operations to Account entity.
      */
     #[Route(path: '/operations/{id}', name: 'app_account_operations')]
-    public function operations(Account $account) : Response
+    public function operations(Account $account): Response
     {
         return $this->render('Account/operations.html.twig', [
             'account' => $account,
@@ -131,7 +131,7 @@ class AccountController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/edit/{id}', name: 'app_account_edit')]
-    public function edit(Account $account) : Response
+    public function edit(Account $account): Response
     {
         $editForm = $this->createEditForm($account);
         return $this->render('account/edit.html.twig', [
@@ -156,7 +156,7 @@ class AccountController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_account_update')]
-    public function update(Request $request, Account $account) : Response
+    public function update(Request $request, Account $account): Response
     {
         $editForm = $this->createEditForm($account);
         $editForm->handleRequest($request);
@@ -178,7 +178,7 @@ class AccountController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/delete/{id}', name: 'app_account_delete')]
-    public function delete(Request $request, Account $account) : RedirectResponse|Response
+    public function delete(Request $request, Account $account): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($account->getId());
         $deleteForm->handleRequest($request);
@@ -213,7 +213,7 @@ class AccountController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/ofx/{id}', name: 'app_account_ofx')]
-    public function ofx(Request            $request, Account            $account, OFXManager         $manager, GoogleDriveService $googleDriveService) : Response
+    public function ofx(Request $request, Account $account, OFXManager $manager, GoogleDriveService $googleDriveService): Response
     {
         $files = $googleDriveService
             ->getListFiles([

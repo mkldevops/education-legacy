@@ -54,7 +54,7 @@ class StudentController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '', name: 'app_student_index', methods: ['GET'])]
-    public function index() : Response
+    public function index(): Response
     {
         $period = $this->getPeriod();
         $school = $this->getSchool();
@@ -74,7 +74,7 @@ class StudentController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/desactivated', methods: ['GET'], name: 'app_student_desactivated')]
-    public function desactivated() : Response
+    public function desactivated(): Response
     {
         $students = $this->getManager()
             ->getRepository(Student::class)
@@ -118,7 +118,7 @@ class StudentController extends AbstractBaseController
      * @throws AppException|NoResultException
      */
     #[Route(path: '/{id}/add-package/{period}', methods: ['GET', 'POST'])]
-    public function addPackage(Request $request, StudentManager $studentManager, Student $student, PackageRepository $packageRepository, Period $period = null) : Response
+    public function addPackage(Request $request, StudentManager $studentManager, Student $student, PackageRepository $packageRepository, Period $period = null): Response
     {
         $packageStudentPeriod = (new PackageStudentPeriod())
             ->setPeriod($period ?? $this->getEntityPeriod())
@@ -167,7 +167,7 @@ class StudentController extends AbstractBaseController
      * @IsGranted("ROLE_TEACHER")
      */
     #[Route(path: '/new', name: 'app_student_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $student = new Student();
         $form = $this->createCreateForm($student);
@@ -193,7 +193,7 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
-    private function createCreateFormFamily() : FormInterface
+    private function createCreateFormFamily(): FormInterface
     {
         $family = new Family();
         $form = $this->createForm(FamilyType::class, $family, [
@@ -242,7 +242,7 @@ class StudentController extends AbstractBaseController
      * @throws AppException
      */
     #[Route(path: '/show/{id}', methods: ['GET'], name: 'app_student_show')]
-    public function show(Student $student, DocumentManager $documentManager) : Response
+    public function show(Student $student, DocumentManager $documentManager): Response
     {
         $formComment = $this->createCreateCommentForm(new studentComment(), $student);
         $packagePeriods = $this->getManager()
@@ -258,7 +258,7 @@ class StudentController extends AbstractBaseController
             'formComment' => $formComment->createView(),
         ]);
     }
-    private function createCreateCommentForm(StudentComment $comment, Student $student) : FormInterface
+    private function createCreateCommentForm(StudentComment $comment, Student $student): FormInterface
     {
         return $this->createForm(StudentCommentSimpleType::class, $comment, [
             'action' => $this->generateUrl('app_student_addcomment', ['id' => $student->getId()]),
@@ -267,7 +267,7 @@ class StudentController extends AbstractBaseController
         ]);
     }
     #[Route(path: '/edit/{id}', methods: ['GET'], name: 'app_student_edit')]
-    public function edit(Student $student, FamilyApiController $apiController) : Response
+    public function edit(Student $student, FamilyApiController $apiController): Response
     {
         $form = $this->createEditForm($student);
         $formFamily = $apiController->createEditForm($student->getFamily());
@@ -292,7 +292,7 @@ class StudentController extends AbstractBaseController
      * Edits an existing Teacher entity.
      */
     #[Route(path: '/update/{id}', methods: ['POST', 'PUT'], name: 'app_student_update')]
-    public function update(Request $request, Student $student) : Response
+    public function update(Request $request, Student $student): Response
     {
         $editForm = $this->createEditForm($student)
             ->handleRequest($request);
@@ -320,7 +320,7 @@ class StudentController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/delete/{id}')]
-    public function delete(Request $request, Student $student = null) : RedirectResponse|Response
+    public function delete(Request $request, Student $student = null): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
@@ -368,7 +368,7 @@ class StudentController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/edit-status/{id}', methods: ['POST', 'GET'], name: 'app_student_edit_status', options: ['expose' => true])]
-    public function editStatus(Request $request, Student $student) : RedirectResponse|JsonResponse
+    public function editStatus(Request $request, Student $student): RedirectResponse|JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $student->setEnable((bool)$request->get('enable'));
@@ -390,7 +390,7 @@ class StudentController extends AbstractBaseController
      * Set image student.
      */
     #[Route(path: '/set-image/{id}s', methods: ['PUT', 'POST'])]
-    public function setImage(Request $request, Student $student) : JsonResponse
+    public function setImage(Request $request, Student $student): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault(['document' => null]);
@@ -417,7 +417,7 @@ class StudentController extends AbstractBaseController
         return new JsonResponse($response);
     }
     #[Route(path: '/set-phone/{id}', methods: ['POST', 'PUT'])]
-    public function setPhone(Student $student, Request $request) : JsonResponse
+    public function setPhone(Student $student, Request $request): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();

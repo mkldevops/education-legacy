@@ -33,8 +33,10 @@ class SchoolManager extends AbstractFullService
      */
     public function getSchool(): ?School
     {
-        if (!$this->session->has('school')
-            || !$this->session->get('school') instanceof SchoolList) {
+        if (
+            !$this->session->has('school')
+            || !$this->session->get('school') instanceof SchoolList
+        ) {
             dump('ici');
             $this->setSchoolsOnSession();
         }

@@ -14,20 +14,19 @@ use Exception;
 use OfxParser\Entities\Transaction;
 use Psr\Log\LoggerInterface;
 
-
 class OperationManager
 {
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected LoggerInterface        $logger,
-        protected OperationRepository    $repository,
+        protected LoggerInterface $logger,
+        protected OperationRepository $repository,
     ) {
     }
 
     /**
      * @return array<string, mixed[]>
      */
-    public static function getData(Operation $operation) : array
+    public static function getData(Operation $operation): array
     {
         return [
             'typeOperation' => [
@@ -40,7 +39,7 @@ class OperationManager
         ];
     }
 
-    public static function createOperationOfx(Transaction $transaction) : Operation
+    public static function createOperationOfx(Transaction $transaction): Operation
     {
         return (new Operation())
             ->setName($transaction->name)
@@ -52,7 +51,7 @@ class OperationManager
     /**
      * @throws AppException
      */
-    public function findOperationByUniqueId(int $uniqueId) : ?Operation
+    public function findOperationByUniqueId(int $uniqueId): ?Operation
     {
         if (empty($uniqueId)) {
             throw new AppException('Unique id is empty');
@@ -71,7 +70,7 @@ class OperationManager
     /**
      * @throws AppException
      */
-    public function update(Operation $operation, array $data) : bool
+    public function update(Operation $operation, array $data): bool
     {
         foreach ($data as $property => $value) {
             $method = 'set' . ucfirst($property);

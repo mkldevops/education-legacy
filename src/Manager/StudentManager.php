@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace App\Manager;
 
 use App\Entity\PackageStudentPeriod;
@@ -31,7 +30,7 @@ class StudentManager
     /**
      * @return mixed[]
      */
-    public function dataPayementsStudents(array $students, Period $period) : array
+    public function dataPayementsStudents(array $students, Period $period): array
     {
         $list = self::getDataListDefault();
 
@@ -73,7 +72,7 @@ class StudentManager
     /**
      * @return array<string, mixed[]>
      */
-    private static function getDataListDefault() : array
+    private static function getDataListDefault(): array
     {
         return [
             'students' => [],

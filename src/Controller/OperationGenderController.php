@@ -32,7 +32,7 @@ class OperationGenderController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_operation_gender_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
         $count = $em

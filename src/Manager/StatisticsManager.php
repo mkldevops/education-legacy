@@ -16,11 +16,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
-
 class StatisticsManager
 {
     public function __construct(
-        private LoggerInterface        $logger,
+        private LoggerInterface $logger,
         private OperationRepository $repository,
     ) {
     }
@@ -28,7 +27,7 @@ class StatisticsManager
     /**
      * @throws AppException
      */
-    public function getStatsByMonth(Period $period, School $school) : StatsByMonth
+    public function getStatsByMonth(Period $period, School $school): StatsByMonth
     {
         $this->logger->debug(__FUNCTION__, ['period' => $period, 'school' => $school]);
 

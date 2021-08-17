@@ -25,7 +25,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Lists all PackageStudentPeriod entities.
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_package_student_period_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
         $count = $em
@@ -89,7 +89,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/create', name: 'app_package_student_period_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
         $form = $this->createCreateForm($packageStudentPeriod);
@@ -134,7 +134,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Displays a form to create a new PackageStudentPeriod entity.
      */
     #[Route(path: '/new', name: 'app_package_student_period_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
         $form = $this->createCreateForm($packageStudentPeriod);
@@ -147,7 +147,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Finds and displays a PackageStudentPeriod entity.
      */
     #[Route(path: '/show/{id}', name: 'app_package_student_period_show', methods: ['GET'])]
-    public function show(PackageStudentPeriod $packageStudentPeriod) : Response
+    public function show(PackageStudentPeriod $packageStudentPeriod): Response
     {
         return $this->render('package_student_period/show.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
@@ -157,7 +157,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Displays a form to edit an existing PackageStudentPeriod entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_package_student_period_edit', methods: ['GET'])]
-    public function edit(PackageStudentPeriod $packageStudentPeriod) : Response
+    public function edit(PackageStudentPeriod $packageStudentPeriod): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
         return $this->render('package_student_period/edit.html.twig', [
@@ -191,7 +191,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_package_student_period_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod) : Response
+    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
         $editForm->handleRequest($request);
@@ -213,7 +213,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/delete/{id}', name: 'app_package_student_period_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, PackageStudentPeriod $packageStudentPeriod) : Response
+    public function delete(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
     {
         $deleteForm = $this->createDeleteForm($packageStudentPeriod->getId());
         $deleteForm->handleRequest($request);
@@ -251,7 +251,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_package_student_period_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_package_student_period_index', [

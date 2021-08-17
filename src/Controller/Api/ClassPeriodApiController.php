@@ -41,7 +41,7 @@ class ClassPeriodApiController extends AbstractBaseController
      * addStudentAction.
      */
     #[Route(path: '/update-student/{id}', name: 'app_api_class_period_update_student', methods: ['POST'], options: ['expose' => true])]
-    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null) : JsonResponse
+    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null): JsonResponse
     {
         $name = $classPeriod->getClassSchool()->getName();
         $response = ResponseRequest::responseDefault([

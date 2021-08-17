@@ -35,10 +35,10 @@ class TransferManager
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private LoggerInterface        $logger,
-        private AccountableFetcher     $fetcher,
-        private TranslatorInterface    $translator,
-        Security                       $security,
+        private LoggerInterface $logger,
+        private AccountableFetcher $fetcher,
+        private TranslatorInterface $translator,
+        Security $security,
     ) {
         if (($user = $security->getUser()) instanceof User) {
             $this->user = $user;
@@ -253,16 +253,20 @@ class TransferManager
      */
     public function update(): AccountSlip
     {
-        if (!($operation = $this->accountSlip?->getOperationCredit()) instanceof Operation
-            || !($account = $operation->getAccount()) instanceof Account) {
+        if (
+            !($operation = $this->accountSlip?->getOperationCredit()) instanceof Operation
+            || !($account = $operation->getAccount()) instanceof Account
+        ) {
             throw new AppException('Not found account of accountslip credit');
         }
         $this->setAccountCredit($account);
         $this->setOperation(AccountSlip::TYPE_DEBIT, $account);
 
 
-        if (!($operation = $this->accountSlip?->getOperationDebit()) instanceof Operation
-            || !($account = $operation->getAccount()) instanceof Account) {
+        if (
+            !($operation = $this->accountSlip?->getOperationDebit()) instanceof Operation
+            || !($account = $operation->getAccount()) instanceof Account
+        ) {
             throw new AppException('Not found account of accountslip credit');
         }
         $this->setAccountDebit($account);

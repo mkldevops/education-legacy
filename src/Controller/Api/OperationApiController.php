@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class OperationApiController extends AbstractBaseController
 {
     #[Route(path: '/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Operation $operation, OperationManager $operationManager) : JsonResponse
+    public function update(Request $request, Operation $operation, OperationManager $operationManager): JsonResponse
     {
         $result = new ResponseModel();
         try {

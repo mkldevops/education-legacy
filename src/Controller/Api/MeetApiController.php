@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MeetApiController extends AbstractController
 {
     #[Route(path: '/update/{id}', methods: ['POST'], options: ['expose' => 'true'])]
-    public function update(Request $request, Meet $meet) : JsonResponse
+    public function update(Request $request, Meet $meet): JsonResponse
     {
         $result = new ResponseModel();
         try {

@@ -19,7 +19,6 @@ use Exception;
 use Ghunti\HighchartsPHP\Highchart;
 use Symfony\Component\Yaml\Yaml;
 
-
 class DashboardManager extends AbstractFullService
 {
     /**

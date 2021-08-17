@@ -148,7 +148,8 @@ class Document
         if ($url !== null && !is_file($url)) {
             $result = $this->generateImages();
 
-            if ((self::DIR_THUMB === $dir && empty($result['thumb']))
+            if (
+                (self::DIR_THUMB === $dir && empty($result['thumb']))
                 || (self::DIR_PREVIEW === $dir && empty($result['preview']))
             ) {
                 $url = $this->getWebPath();
@@ -159,7 +160,7 @@ class Document
     }
 
 
-    public function getPath(string $dir = self::DIR_FILE) : ?string
+    public function getPath(string $dir = self::DIR_FILE): ?string
     {
         $path = $this->path;
 
@@ -171,7 +172,7 @@ class Document
     }
 
 
-    public function setPath(string $path = null) : static
+    public function setPath(string $path = null): static
     {
         $this->path = null === $path && empty($this->path) ? $this->getFileName() . '.' . $this->getExtension() : $path;
 
@@ -179,7 +180,7 @@ class Document
     }
 
 
-    public static function getPathPNG(string $path) : string
+    public static function getPathPNG(string $path): string
     {
         $ext = substr(strrchr($path, '.'), 1);
 
@@ -191,7 +192,7 @@ class Document
      * @throws AppException
      * @return array<string, bool>|array<string, null>
      */
-    public function generateImages() : array
+    public function generateImages(): array
     {
         if (empty($this->fileName)) {
             $this->fileName = $this->getFileName();
@@ -202,7 +203,7 @@ class Document
 
         // If file is not supported
         if (!is_file($filepath) || !$this->isFormat(['pdf', 'image'])) {
-            throw new AppException('File '.$filepath.' not supported');
+            throw new AppException('File ' . $filepath . ' not supported');
         }
 
         $img = new Imagick($filepath);
@@ -285,7 +286,7 @@ class Document
     }
 
 
-    public function isFormat(array|string $formats) : bool
+    public function isFormat(array|string $formats): bool
     {
         $result = false;
 
@@ -306,7 +307,7 @@ class Document
     }
 
 
-    public function getMime() : ?string
+    public function getMime(): ?string
     {
         return $this->mime;
     }
@@ -319,12 +320,12 @@ class Document
     }
 
 
-    public function getExtension() : ?string
+    public function getExtension(): ?string
     {
         return $this->extension;
     }
 
-    public function setExtension(string $extension) : static
+    public function setExtension(string $extension): static
     {
         $this->extension = $extension;
 
@@ -335,7 +336,7 @@ class Document
      * @throws ImagickException
      * @throws AppException
      */
-    public function getWebPathPreview() : ?string
+    public function getWebPathPreview(): ?string
     {
         return $this->getWebPath(self::DIR_PREVIEW);
     }

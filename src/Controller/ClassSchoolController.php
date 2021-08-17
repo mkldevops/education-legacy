@@ -33,7 +33,7 @@ class ClassSchoolController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '', name: 'app_class_school_index', methods: ['GET'])]
-    public function index() : Response
+    public function index(): Response
     {
         /** @var ClassSchool[] $classSchools */
         $classSchools = $this->getDoctrine()
@@ -49,7 +49,7 @@ class ClassSchoolController extends AbstractBaseController
      * @throws AppException
      */
     #[Route(path: '/create', name: 'app_class_school_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $classSchool = new ClassSchool();
         $form = $this->createCreateForm($classSchool);
@@ -91,7 +91,7 @@ class ClassSchoolController extends AbstractBaseController
      * Displays a form to create a new classSchool entity.
      */
     #[Route(path: '/new', name: 'app_class_school_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $classSchool = new ClassSchool();
         $form = $this->createCreateForm($classSchool);
@@ -107,7 +107,7 @@ class ClassSchoolController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/show/{id}', name: 'app_class_school_show', methods: ['GET'])]
-    public function show(ClassSchool $classSchool) : Response
+    public function show(ClassSchool $classSchool): Response
     {
         $periods = $this->getDoctrine()
             ->getManager()
@@ -122,7 +122,7 @@ class ClassSchoolController extends AbstractBaseController
      * Displays a form to edit an existing classSchool entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_class_school_edit', methods: ['GET'])]
-    public function edit(ClassSchool $classSchool) : Response
+    public function edit(ClassSchool $classSchool): Response
     {
         $editForm = $this->createEditForm($classSchool);
         return $this->render('class_school/edit.html.twig', [
@@ -154,7 +154,7 @@ class ClassSchoolController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_class_school_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, ClassSchool $classSchool) : Response
+    public function update(Request $request, ClassSchool $classSchool): Response
     {
         $editForm = $this->createEditForm($classSchool);
         $editForm->handleRequest($request);
@@ -176,7 +176,7 @@ class ClassSchoolController extends AbstractBaseController
      * Deletes a classSchool entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_class_school_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, ClassSchool $classSchool) : RedirectResponse|Response
+    public function delete(Request $request, ClassSchool $classSchool): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classSchool->getId());
         $deleteForm->handleRequest($request);
@@ -211,7 +211,7 @@ class ClassSchoolController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_class_school_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_class_school_index', [
@@ -226,7 +226,7 @@ class ClassSchoolController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/view-class-period/{id}', name: 'app_class_school_view_class_period', methods: ['POST', 'GET'])]
-    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager) : RedirectResponse
+    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager): RedirectResponse
     {
         if (Request::METHOD_POST === $request->getMethod()) {
             $students = $request->request->get('students', []);
@@ -254,7 +254,7 @@ class ClassSchoolController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/without-student', name: 'app_class_school_without_student', methods: ['POST'], options: ['expose' => true])]
-    public function withOutStudent() : Response
+    public function withOutStudent(): Response
     {
         $manager = $this->getDoctrine()->getManager();
         $periodSelected = $this->getPeriod();

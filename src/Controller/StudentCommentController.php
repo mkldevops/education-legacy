@@ -91,7 +91,7 @@ class StudentCommentController extends AbstractBaseController
      * Creates a new StudentComment entity.
      */
     #[Route(path: '/create', name: 'app_student_comment_create', methods: ['POST'])]
-    public function create(Request $request) : RedirectResponse|Response
+    public function create(Request $request): RedirectResponse|Response
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateForm($studentComment);
@@ -134,7 +134,7 @@ class StudentCommentController extends AbstractBaseController
      * Displays a form to create a new StudentComment entity.
      */
     #[Route(path: '/new', name: 'app_student_comment_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateForm($studentComment);
@@ -148,7 +148,7 @@ class StudentCommentController extends AbstractBaseController
      * Finds and displays a StudentComment entity.
      */
     #[Route(path: '/show/{id}', name: 'app_student_comment_show', methods: ['GET'])]
-    public function show(StudentComment $studentComment) : Response
+    public function show(StudentComment $studentComment): Response
     {
         return $this->render('student_comment/show.html.twig', [
             'studentcomment' => $studentComment,
@@ -159,7 +159,7 @@ class StudentCommentController extends AbstractBaseController
      * Displays a form to edit an existing StudentComment entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_student_comment_edit', methods: ['GET'])]
-    public function edit(StudentComment $studentComment) : Response
+    public function edit(StudentComment $studentComment): Response
     {
         $editForm = $this->createEditForm($studentComment);
         return $this->render('student_comment/edit.html.twig', [
@@ -191,7 +191,7 @@ class StudentCommentController extends AbstractBaseController
      * Edits an existing StudentComment entity.
      */
     #[Route(path: '/update/{id}', name: 'app_student_comment_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, StudentComment $studentComment) : RedirectResponse|Response
+    public function update(Request $request, StudentComment $studentComment): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($studentComment);
         $editForm->handleRequest($request);
@@ -212,7 +212,7 @@ class StudentCommentController extends AbstractBaseController
      * Deletes a StudentComment entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_student_comment_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, StudentComment $studentComment) : RedirectResponse|Response
+    public function delete(Request $request, StudentComment $studentComment): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($studentComment->getId());
         $deleteForm->handleRequest($request);
@@ -249,7 +249,7 @@ class StudentCommentController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_student_comment_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_student_comment_index', [

@@ -25,7 +25,7 @@ class StatisticsController extends AbstractBaseController
      * @throws ORMException
      */
     #[Route(path: '/number-students', name: 'app_statistics_numberstudents', methods: ['GET'])]
-    public function numberStudents() : Response
+    public function numberStudents(): Response
     {
         $data = $this
             ->getDoctrine()->getManager()
@@ -39,7 +39,7 @@ class StatisticsController extends AbstractBaseController
      *
      */
     #[Route(path: '/account', name: 'app_statistics_account', methods: ['GET'])]
-    public function statsAccount() : Response
+    public function statsAccount(): Response
     {
         $data = $this
             ->getDoctrine()->getManager()

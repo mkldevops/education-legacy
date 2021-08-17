@@ -36,7 +36,7 @@ class AccountSlipController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
@@ -113,7 +113,7 @@ class AccountSlipController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/create', name: 'app_account_slip_create', methods: ['POST'])]
-    public function create(Request $request, TransferManager $transferManager) : Response
+    public function create(Request $request, TransferManager $transferManager): Response
     {
         $accountSlip = new AccountSlip();
         $form = $this->createCreateForm($accountSlip);
@@ -169,7 +169,7 @@ class AccountSlipController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/new', name: 'app_account_slip_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $accountSlip = new AccountSlip();
         $form = $this->createCreateForm($accountSlip);
@@ -182,7 +182,7 @@ class AccountSlipController extends AbstractBaseController
      * Finds and displays a AccountSlip entity.
      */
     #[Route(path: '/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
-    public function show(AccountSlip $accountSlip) : Response
+    public function show(AccountSlip $accountSlip): Response
     {
         if (!$accountSlip) {
             throw $this->createNotFoundException('Unable to find AccountSlip entity.');
@@ -195,7 +195,7 @@ class AccountSlipController extends AbstractBaseController
      * Displays a form to edit an existing AccountSlip entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
-    public function edit(AccountSlip $accountSlip) : Response
+    public function edit(AccountSlip $accountSlip): Response
     {
         $editForm = $this->createEditForm($accountSlip);
         return $this->render('account_slip/edit.html.twig', [
@@ -226,7 +226,7 @@ class AccountSlipController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, AccountSlip $accountSlip, TransferManager $transferManager) : Response
+    public function update(Request $request, AccountSlip $accountSlip, TransferManager $transferManager): Response
     {
         $editForm = $this->createEditForm($accountSlip);
         $editForm->handleRequest($request);
@@ -267,7 +267,7 @@ class AccountSlipController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, AccountSlip $accountSlip) : Response
+    public function delete(Request $request, AccountSlip $accountSlip): Response
     {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
         $deleteForm->handleRequest($request);
@@ -304,7 +304,7 @@ class AccountSlipController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_account_slip_search', methods: ['POST'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_account_slip_index', [
@@ -313,7 +313,7 @@ class AccountSlipController extends AbstractBaseController
         ]));
     }
     #[Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
-    public function setDocument(Request $request, AccountSlip $accountSlip, string $action) : JsonResponse
+    public function setDocument(Request $request, AccountSlip $accountSlip, string $action): JsonResponse
     {
         $result = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();

@@ -24,10 +24,10 @@ class CheckDataListener
     public bool $checked = false;
 
     public function __construct(
-        public SessionInterface      $session,
+        public SessionInterface $session,
         public UrlGeneratorInterface $urlGenerator,
-        public TranslatorInterface   $translator,
-        public Security              $security
+        public TranslatorInterface $translator,
+        public Security $security
     ) {
     }
 

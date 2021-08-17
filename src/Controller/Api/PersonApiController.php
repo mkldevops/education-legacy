@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PersonApiController extends AbstractBaseController
 {
     #[Route(path: '/get-phones/{id}', name: 'app_api_person_get_phones', methods: ['GET'])]
-    public function getPhones(Person $person) : JsonResponse
+    public function getPhones(Person $person): JsonResponse
     {
         $response = ResponseModel::responseDefault();
         try {
@@ -32,7 +32,7 @@ class PersonApiController extends AbstractBaseController
         return ResponseModel::jsonResponse($response);
     }
     #[Route(path: '/update-phones/{id}', name: 'app_api_person_update_phone', methods: ['POST', 'PUT'])]
-    public function updatePhone(Request $request, Person $person, PhoneManager $manager) : JsonResponse
+    public function updatePhone(Request $request, Person $person, PhoneManager $manager): JsonResponse
     {
         $response = ResponseModel::responseDefault();
         try {
@@ -48,7 +48,7 @@ class PersonApiController extends AbstractBaseController
         return ResponseModel::jsonResponse($response);
     }
     #[Route(path: '/delete-phones/{id}', name: 'app_api_person_delete_phone', methods: ['DELETE'])]
-    public function deletePhone(Request $request, Person $person, PhoneManager $manager) : JsonResponse
+    public function deletePhone(Request $request, Person $person, PhoneManager $manager): JsonResponse
     {
         $response = ResponseModel::responseDefault();
         try {

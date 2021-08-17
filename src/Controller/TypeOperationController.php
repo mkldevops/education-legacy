@@ -24,7 +24,7 @@ class TypeOperationController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
-    public function operations(TypeOperation $typeOperation) : Response
+    public function operations(TypeOperation $typeOperation): Response
     {
         $operations = $this->getManager()
             ->getRepository(Operation::class)

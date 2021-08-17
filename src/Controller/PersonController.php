@@ -36,7 +36,7 @@ class PersonController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
         $count = $em
@@ -120,7 +120,7 @@ class PersonController extends AbstractBaseController
      * Creates a new Person entity.
      */
     #[Route(path: '/create', name: 'app_person_create', methods: ['POST'])]
-    public function create(Request $request) : RedirectResponse|Response
+    public function create(Request $request): RedirectResponse|Response
     {
         // If form have redirect
         $pathRedirect = $request->get('pathRedirect');
@@ -166,7 +166,7 @@ class PersonController extends AbstractBaseController
         return $form;
     }
     #[Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
-    public function new(string $pathRedirect = null) : Response
+    public function new(string $pathRedirect = null): Response
     {
         $person = new Person();
         $form = $this->createCreateForm($person, $pathRedirect);
@@ -179,7 +179,7 @@ class PersonController extends AbstractBaseController
      * Finds and displays a Person entity.
      */
     #[Route(path: '/show/{id}', name: 'app_person_show', methods: ['GET'])]
-    public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $em) : Response
+    public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $em): Response
     {
         $member = $em->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
         $teacher = $em->getRepository(Teacher::class)->findOneBy(['person' => $person->getId()]);
@@ -193,7 +193,7 @@ class PersonController extends AbstractBaseController
         ]);
     }
     #[Route(path: '/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
-    public function edit(Person $person) : Response
+    public function edit(Person $person): Response
     {
         $editForm = $this->createEditForm($person);
         return $this->render('person/edit.html.twig', [
@@ -221,7 +221,7 @@ class PersonController extends AbstractBaseController
      * Edits an existing Person entity.
      */
     #[Route(path: '/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Person $person) : RedirectResponse|Response
+    public function update(Request $request, Person $person): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($person);
         $editForm->handleRequest($request);
@@ -243,7 +243,7 @@ class PersonController extends AbstractBaseController
      * Deletes a Person entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Person $person) : RedirectResponse|Response
+    public function delete(Request $request, Person $person): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($person->getId());
         $deleteForm->handleRequest($request);
@@ -278,7 +278,7 @@ class PersonController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_person_search', methods: ['POST'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_person_index', [
@@ -290,7 +290,7 @@ class PersonController extends AbstractBaseController
      * Finds and displays a Person entity.
      */
     #[Route(path: '/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
-    public function phones(Person $person) : Response
+    public function phones(Person $person): Response
     {
         $phones = PhoneManager::getAllPhones($person);
         return $this->render('person/phones.html.twig', [

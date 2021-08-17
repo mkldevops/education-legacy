@@ -34,7 +34,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '', name: 'app_payment_package_student_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $manager = $this->getDoctrine()->getManager();
         // Escape special characters and decode the search value.
@@ -132,7 +132,7 @@ class PaymentPackageStudentController extends AbstractBaseController
     }
     private function createCreateForm(
         PaymentPackageStudent $paymentPackageStudent,
-        PackageStudentPeriod  $packageStudentPeriod
+        PackageStudentPeriod $packageStudentPeriod
     ): FormInterface {
         $form = $this->createForm(PaymentPackageStudentType::class, $paymentPackageStudent, [
             'action' => $this->generateUrl('app_payment_package_student_create', [
@@ -149,7 +149,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Displays a form to create a new PaymentPackageStudent entity.
      */
     #[Route(path: '/new/{id}', name: 'app_payment_package_student_new', methods: ['GET'])]
-    public function new(PackageStudentPeriod $packageStudentPeriod) : Response
+    public function new(PackageStudentPeriod $packageStudentPeriod): Response
     {
         $paymentPackageStudent = new PaymentPackageStudent();
         $form = $this->createCreateForm($paymentPackageStudent, $packageStudentPeriod);
@@ -174,7 +174,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Finds and displays a PaymentPackageStudent entity.
      */
     #[Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
-    public function show(PaymentPackageStudent $paymentPackageStudent) : Response
+    public function show(PaymentPackageStudent $paymentPackageStudent): Response
     {
         return $this->render('payment_package_student/show.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
@@ -184,7 +184,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Displays a form to edit an existing PaymentPackageStudent entity.
      */
     #[Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
-    public function edit(PaymentPackageStudent $paymentPackageStudent) : Response
+    public function edit(PaymentPackageStudent $paymentPackageStudent): Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
         return $this->render('payment_package_student/edit.html.twig', [
@@ -214,7 +214,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Edits an existing PaymentPackageStudent entity.
      */
     #[Route(path: '/update/{id}', name: 'app_payment_package_student_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent) : RedirectResponse|Response
+    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
         $editForm->handleRequest($request);
@@ -235,7 +235,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Deletes a PaymentPackageStudent entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_payment_package_student_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent) : RedirectResponse|Response
+    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($paymentPackageStudent->getId());
         $deleteForm->handleRequest($request);
@@ -275,7 +275,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_payment_package_student_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_payment_package_student_index', [

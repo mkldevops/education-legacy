@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * PHP version: 7.1.
  *
@@ -37,7 +38,7 @@ class OFXManager extends AccountManager
     /**
      * @throws AppException
      */
-    public function ofx(File $fileUpload) : bool
+    public function ofx(File $fileUpload): bool
     {
         set_time_limit(300);
         $ofx = $this->extractOfxToFile($fileUpload);
@@ -76,7 +77,7 @@ class OFXManager extends AccountManager
      * @throws AppException
      * @throws Exception
      */
-    public function extractOfxToFile(File $fileUpload) : Ofx
+    public function extractOfxToFile(File $fileUpload): Ofx
     {
         if (empty($fileUpload->getRealPath())) {
             throw new AppException('The file was not path');
@@ -88,12 +89,12 @@ class OFXManager extends AccountManager
         return $ofxParser->loadFromString($content);
     }
 
-    public static function uniformizeContent(string $content) : ?string
+    public static function uniformizeContent(string $content): ?string
     {
         return preg_replace("#<TRNAMT>([\-]?\d+)\n<FITID>#", "<TRNAMT>$1.00\n<FITID>", $content);
     }
 
-    public static function isTransfer(string $txt) : bool
+    public static function isTransfer(string $txt): bool
     {
         return (bool) preg_match('#REMISE CHEQUE|VERSEMENT|VRST|RETRAIT#i', $txt);
     }
@@ -101,7 +102,7 @@ class OFXManager extends AccountManager
     /**
      * @throws AppException
      */
-    private function transactionToOperation(Transaction $transaction) : void
+    private function transactionToOperation(Transaction $transaction): void
     {
         $transaction->memo = trim($transaction->memo);
         $gender = $this->getGenderByOFX($transaction);
@@ -213,7 +214,7 @@ class OFXManager extends AccountManager
         return $operation;
     }
 
-    public function getLogs() : ?array
+    public function getLogs(): ?array
     {
         return $this->logs;
     }
@@ -221,19 +222,19 @@ class OFXManager extends AccountManager
     /**
      * @param mixed[]|null $logs
      */
-    public function setLogs(array $logs) : static
+    public function setLogs(array $logs): static
     {
         $this->logs = $logs;
 
         return $this;
     }
 
-    public function getAccountTransfer() : ?Account
+    public function getAccountTransfer(): ?Account
     {
         return $this->accountTransfer;
     }
 
-    public function setAccountTransfer(Account $accountTransfer) : static
+    public function setAccountTransfer(Account $accountTransfer): static
     {
         $this->accountTransfer = $accountTransfer;
 

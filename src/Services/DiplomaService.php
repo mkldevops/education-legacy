@@ -27,7 +27,7 @@ class DiplomaService extends AbstractFullService
     private string $pathUploads;
 
     public function __construct(
-        private PeriodRepository  $periodRepository,
+        private PeriodRepository $periodRepository,
         private StudentRepository $studentRepository
     ) {
     }

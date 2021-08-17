@@ -67,7 +67,7 @@ class OperationType extends AbstractType
                 'query_builder' => function (AccountRepository $er): QueryBuilder {
                     /** @var SchoolList $schoolList */
                     $schoolList = $this->getSession()->get('school');
-                    if($schoolList->selected === null) {
+                    if ($schoolList->selected === null) {
                         throw new AppException('School selected not set');
                     }
 

@@ -40,7 +40,7 @@ class AccountStatementController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_account_statement_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $manager = $this->getDoctrine()->getManager();
         // Escape special characters and decode the search value.
@@ -107,7 +107,7 @@ class AccountStatementController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/create/{account}', name: 'app_account_statement_create', methods: ['POST'])]
-    public function create(Account $account, Request $request) : RedirectResponse|Response
+    public function create(Account $account, Request $request): RedirectResponse|Response
     {
         $accountstatement = new AccountStatement();
         $accountstatement->setAccount($account);
@@ -158,7 +158,7 @@ class AccountStatementController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
-    public function new(Account $account) : Response
+    public function new(Account $account): Response
     {
         $accountstatement = new AccountStatement();
         $accountstatement->setAccount($account);
@@ -172,7 +172,7 @@ class AccountStatementController extends AbstractBaseController
      * Finds and displays a AccountStatement entity.
      */
     #[Route(path: '/show/{id}', name: 'app_account_statement_show', methods: ['GET'])]
-    public function show(AccountStatement $accountstatement) : Response
+    public function show(AccountStatement $accountstatement): Response
     {
         $stats = $this->getManager()
             ->getRepository(Operation::class)
@@ -200,7 +200,7 @@ class AccountStatementController extends AbstractBaseController
      * Displays a form to edit an existing AccountStatement entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_account_statement_edit', methods: ['GET'])]
-    public function edit(AccountStatement $accountStatement) : Response
+    public function edit(AccountStatement $accountStatement): Response
     {
         $editForm = $this->createEditForm($accountStatement);
         return $this->render('account_statement/edit.html.twig', [
@@ -235,7 +235,7 @@ class AccountStatementController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_account_statement_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, AccountStatement $accountStatement) : Response
+    public function update(Request $request, AccountStatement $accountStatement): Response
     {
         $editForm = $this->createEditForm($accountStatement);
         $editForm->handleRequest($request);
@@ -255,7 +255,7 @@ class AccountStatementController extends AbstractBaseController
      * Deletes a AccountStatement entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_account_statement_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, AccountStatement $accountStatement) : RedirectResponse|Response
+    public function delete(Request $request, AccountStatement $accountStatement): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($accountStatement->getId());
         $deleteForm->handleRequest($request);
@@ -292,7 +292,7 @@ class AccountStatementController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_account_statement_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_account_statement_index', [
@@ -307,7 +307,7 @@ class AccountStatementController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/add-document/{id}', name: 'app_account_statement_add_document', methods: ['POST'], options: ['expose' => 'true'])]
-    public function addDocument(Request $request, AccountStatement $accountStatement) : JsonResponse
+    public function addDocument(Request $request, AccountStatement $accountStatement): JsonResponse
     {
         $response = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();
@@ -322,7 +322,7 @@ class AccountStatementController extends AbstractBaseController
      * list Choice Operations available for Account Statement.
      */
     #[Route(path: '/operations-available/{id}', name: 'app_account_statement_operation_available', methods: ['GET', 'POST'], options: ['expose' => true])]
-    public function operationsAvailable(AccountStatement $accountStatement) : JsonResponse
+    public function operationsAvailable(AccountStatement $accountStatement): JsonResponse
     {
         $response = ResponseRequest::responseDefault();
         $operations = $this->getManager()
@@ -346,7 +346,7 @@ class AccountStatementController extends AbstractBaseController
      * Add Operations available to Account Statement.
      */
     #[Route(path: '/add-operation/{id}', name: 'app_account_statement_add_operation', methods: ['GET', 'POST'], options: ['expose' => 'true'])]
-    public function addOperations(Request $request, AccountStatement $accountStatement) : JsonResponse
+    public function addOperations(Request $request, AccountStatement $accountStatement): JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'), $accountStatement);
     }
@@ -388,7 +388,7 @@ class AccountStatementController extends AbstractBaseController
      * Remove Operations available to Account Statement.
      */
     #[Route(path: '/delete-operation/{id}', name: 'app_account_statement_delete_operation', methods: ['GET', 'POST', 'DELETE'])]
-    public function deleteOperations(Request $request) : JsonResponse
+    public function deleteOperations(Request $request): JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'));
     }

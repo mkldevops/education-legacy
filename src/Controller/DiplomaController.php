@@ -17,14 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class DiplomaController extends AbstractController
 {
     #[Route(path: '/', name: 'app_diploma_index', methods: ['GET'])]
-    public function index(DiplomaRepository $diplomaRepository) : Response
+    public function index(DiplomaRepository $diplomaRepository): Response
     {
         return $this->render('diploma/index.html.twig', [
             'diplomas' => $diplomaRepository->findAll(),
         ]);
     }
     #[Route(path: '/new', name: 'app_diploma_new', methods: ['GET', 'POST'])]
-    public function new(Request $request) : Response
+    public function new(Request $request): Response
     {
         $diploma = new Diploma();
         $form = $this->createForm(DiplomaType::class, $diploma);
@@ -42,14 +42,14 @@ class DiplomaController extends AbstractController
         ]);
     }
     #[Route(path: '/{id}', name: 'app_diploma_show', methods: ['GET'])]
-    public function show(Diploma $diploma) : Response
+    public function show(Diploma $diploma): Response
     {
         return $this->render('diploma/show.html.twig', [
             'diploma' => $diploma,
         ]);
     }
     #[Route(path: '/{id}/edit', name: 'app_diploma_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Diploma $diploma) : Response
+    public function edit(Request $request, Diploma $diploma): Response
     {
         $form = $this->createForm(DiplomaType::class, $diploma);
         $form->handleRequest($request);
@@ -66,7 +66,7 @@ class DiplomaController extends AbstractController
         ]);
     }
     #[Route(path: '/{id}', name: 'app_diploma_delete', methods: ['DELETE'])]
-    public function delete(Request $request, Diploma $diploma) : RedirectResponse
+    public function delete(Request $request, Diploma $diploma): RedirectResponse
     {
         if ($this->isCsrfTokenValid('delete' . $diploma->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();

@@ -20,7 +20,7 @@ class DocumentManager extends AbstractFullService
     private static string $pathUploads = 'uploads/documents';
 
 
-    public function removesWithLinks(Document $document) : bool
+    public function removesWithLinks(Document $document): bool
     {
         $operations = $document->getOperations();
 
@@ -53,7 +53,7 @@ class DocumentManager extends AbstractFullService
      * @throws FileNotFoundException
      * @return array<string, mixed>
      */
-    public function upload(Document $document) : array
+    public function upload(Document $document): array
     {
         $data = [
             'move' => false,
@@ -110,7 +110,7 @@ class DocumentManager extends AbstractFullService
      * @throws FileNotFoundException
      * @return array<string, bool>|array<string, string>|array<string, null>
      */
-    private function generateImages(Document $document) : array
+    private function generateImages(Document $document): array
     {
         $filepath = self::getPathUploads(Document::DIR_FILE) . DIRECTORY_SEPARATOR . $document->getPath();
 

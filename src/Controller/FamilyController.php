@@ -30,7 +30,7 @@ class FamilyController extends AbstractBaseController
      * Lists all family entities.
      */
     #[Route(path: '', methods: ['GET'])]
-    public function index() : Response
+    public function index(): Response
     {
         /** @var Family[] $families */
         $families = $this->getDoctrine()->getManager()
@@ -44,7 +44,7 @@ class FamilyController extends AbstractBaseController
      * Creates a new family entity.
      */
     #[Route(path: '/new', methods: ['GET'])]
-    public function new(Request $request) : Response
+    public function new(Request $request): Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
@@ -71,7 +71,7 @@ class FamilyController extends AbstractBaseController
      * Creates a new family entity.
      */
     #[Route(path: '/create', methods: ['POST'])]
-    public function create(Request $request) : RedirectResponse|Response
+    public function create(Request $request): RedirectResponse|Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
@@ -101,7 +101,7 @@ class FamilyController extends AbstractBaseController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/show/{id}', methods: ['GET'])]
-    public function show(Family $family, FamilyManager $manager) : Response
+    public function show(Family $family, FamilyManager $manager): Response
     {
         $student = new Student();
         $student->getPerson()->setFamily($family);
@@ -127,7 +127,7 @@ class FamilyController extends AbstractBaseController
      * Displays a form to edit an existing family entity.
      */
     #[Route(path: '/edit/{id}', methods: ['GET'])]
-    public function edit(Request $request, Family $family) : Response
+    public function edit(Request $request, Family $family): Response
     {
         $editForm = $this->createEditForm($request, $family);
         return $this->render('family/edit.html.twig', [
@@ -154,7 +154,7 @@ class FamilyController extends AbstractBaseController
      * Displays a form to edit an existing family entity.
      */
     #[Route(path: '/{id}/update', methods: ['POST'])]
-    public function update(Request $request, Family $family) : RedirectResponse|Response
+    public function update(Request $request, Family $family): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($request, $family);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -171,7 +171,7 @@ class FamilyController extends AbstractBaseController
      * Deletes a family entity.
      */
     #[Route(path: '/delete/{id}', methods: ['DELETE'])]
-    public function delete(Request $request, Family $family) : RedirectResponse
+    public function delete(Request $request, Family $family): RedirectResponse
     {
         $form = $this->createDeleteForm($family);
         $form->handleRequest($request);

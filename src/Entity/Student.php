@@ -113,7 +113,7 @@ class Student
     /**
      * @throws Exception
      */
-    public function setEnable(bool $enable) : static
+    public function setEnable(bool $enable): static
     {
         $this->enable = $enable;
 
@@ -148,7 +148,7 @@ class Student
     }
 
 
-    public function setGender(string $gender) : static
+    public function setGender(string $gender): static
     {
         $this->person->setGender($gender);
 
@@ -181,24 +181,24 @@ class Student
         return $this;
     }
 
-    public function getForname() : ?string
+    public function getForname(): ?string
     {
         return $this->person->getForname();
     }
 
-    public function setBirthday(DateTimeInterface $birthday) : static
+    public function setBirthday(DateTimeInterface $birthday): static
     {
         $this->person->setBirthday($birthday);
 
         return $this;
     }
 
-    public function getBirthday() : ?DateTimeInterface
+    public function getBirthday(): ?DateTimeInterface
     {
         return $this->person?->getBirthday();
     }
 
-    public function setBirthplace(string $birthplace) : static
+    public function setBirthplace(string $birthplace): static
     {
         $this->person->setBirthplace($birthplace);
 
@@ -210,19 +210,19 @@ class Student
         return $this->person?->getBirthplace();
     }
 
-    public function setAddress(string $address) : static
+    public function setAddress(string $address): static
     {
         $this->person?->setAddress($address);
 
         return $this;
     }
 
-    public function getAddress() : ?string
+    public function getAddress(): ?string
     {
         return $this->person?->getAddress() ?? $this->person?->getFamily()?->getAddress();
     }
 
-    public function getPerson() : ?Person
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
@@ -349,19 +349,19 @@ class Student
         return $this->person?->getFamily();
     }
 
-    public function setEmail(string $email) : static
+    public function setEmail(string $email): static
     {
         $this->person->setEmail($email);
 
         return $this;
     }
 
-    public function getEmail() : ?string
+    public function getEmail(): ?string
     {
         return $this->person->getEmail();
     }
 
-    public function getLastSchool() : ?string
+    public function getLastSchool(): ?string
     {
         return $this->lastSchool;
     }
@@ -422,12 +422,12 @@ class Student
         $this->classPeriods->removeElement($classPeriod);
     }
 
-    public function getClassPeriods() : Collection
+    public function getClassPeriods(): Collection
     {
         return $this->classPeriods;
     }
 
-    public function getClassToPeriod(Period $period) : ?ClassPeriodStudent
+    public function getClassToPeriod(Period $period): ?ClassPeriodStudent
     {
         $current = null;
 
@@ -446,7 +446,7 @@ class Student
         return $current;
     }
 
-    public function addPackagePeriod(PackageStudentPeriod $packagePeriods) : static
+    public function addPackagePeriod(PackageStudentPeriod $packagePeriods): static
     {
         $this->packagePeriods[] = $packagePeriods;
 
@@ -458,12 +458,12 @@ class Student
         $this->packagePeriods->removeElement($packagePeriods);
     }
 
-    public function getPackagePeriods() : Collection
+    public function getPackagePeriods(): Collection
     {
         return $this->packagePeriods;
     }
 
-    public function getDateDesactivated() : ?DateTimeInterface
+    public function getDateDesactivated(): ?DateTimeInterface
     {
         if (!$this->enable && empty($this->dateDesactivated)) {
             $this->dateDesactivated = new DateTime();
@@ -472,7 +472,7 @@ class Student
         return $this->dateDesactivated;
     }
 
-    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null) : static
+    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null): static
     {
         $this->dateDesactivated = $dateDesactivated;
 
@@ -480,7 +480,7 @@ class Student
     }
 
 
-    public function addCourse(AppealCourse $courses) : static
+    public function addCourse(AppealCourse $courses): static
     {
         $this->courses[] = $courses;
 
@@ -495,17 +495,17 @@ class Student
     /**
      * @return Collection|AppealCourse[]
      */
-    public function getCourses() : Collection
+    public function getCourses(): Collection
     {
         return $this->courses;
     }
 
-    public function getDateRegistration() : ?DateTimeInterface
+    public function getDateRegistration(): ?DateTimeInterface
     {
         return $this->dateRegistration;
     }
 
-    public function setDateRegistration(DateTimeInterface $dateRegistration = null) : static
+    public function setDateRegistration(DateTimeInterface $dateRegistration = null): static
     {
         $this->dateRegistration = $dateRegistration;
 
@@ -524,17 +524,17 @@ class Student
         $this->comments?->removeElement($comment);
     }
 
-    public function getComments() : Collection
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function getPersonAuthorized() : ?string
+    public function getPersonAuthorized(): ?string
     {
         return $this->personAuthorized;
     }
 
-    public function setPersonAuthorized(string $personAuthorized = null) : static
+    public function setPersonAuthorized(string $personAuthorized = null): static
     {
         $this->personAuthorized = $personAuthorized;
 

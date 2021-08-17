@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MemberController extends AbstractBaseController
 {
     #[Route(path: '', name: 'app_member_index', methods: ['GET'])]
-    public function index(MemberRepository $repository, int $page = 1, string $search = '') : Response
+    public function index(MemberRepository $repository, int $page = 1, string $search = ''): Response
     {
         $search = addcslashes(urldecode($search), '%_');
         $count = $repository->createQueryBuilder('e')
@@ -68,7 +68,7 @@ class MemberController extends AbstractBaseController
      * @IsGranted("ROLE_ADMIN")
      */
     #[Route(path: '/new', name: 'app_member_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $member = new Member();
         $form = $this->createCreateForm($member);
@@ -96,7 +96,7 @@ class MemberController extends AbstractBaseController
         return $form;
     }
     #[Route(path: '/create', name: 'app_member_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $member = new Member();
         $form = $this->createCreateForm($member)
@@ -119,12 +119,12 @@ class MemberController extends AbstractBaseController
         ]);
     }
     #[Route(path: '/show/{id}', name: 'app_member_show', methods: ['GET'])]
-    public function show(Member $member) : Response
+    public function show(Member $member): Response
     {
         return $this->render('member/show.html.twig', ['member' => $member]);
     }
     #[Route(path: '/edit/{id}', name: 'app_member_edit', methods: ['GET'])]
-    public function edit(Member $member) : Response
+    public function edit(Member $member): Response
     {
         $editForm = $this->createEditForm($member);
         return $this->render('member/edit.html.twig', [
@@ -144,7 +144,7 @@ class MemberController extends AbstractBaseController
         return $form;
     }
     #[Route(path: '/update/{id}', name: 'app_member_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Member $member) : Response
+    public function update(Request $request, Member $member): Response
     {
         $editForm = $this->createEditForm($member);
         $editForm->handleRequest($request);
@@ -163,7 +163,7 @@ class MemberController extends AbstractBaseController
         ]);
     }
     #[Route(path: '/delete/{id}', name: 'app_member_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Member $member) : Response
+    public function delete(Request $request, Member $member): Response
     {
         $deleteForm = $this->createDeleteForm($member->getId());
         $deleteForm->handleRequest($request);
@@ -190,7 +190,7 @@ class MemberController extends AbstractBaseController
             ->getForm();
     }
     #[Route(path: '/search', name: 'app_member_search', methods: ['GET'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_member_index', [

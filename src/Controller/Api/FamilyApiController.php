@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Serializer;
 class FamilyApiController extends AbstractBaseController
 {
     #[Route(path: '/create', name: 'app_api_family_create', methods: ['POST'])]
-    public function create(Request $request) : JsonResponse
+    public function create(Request $request): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
@@ -77,7 +77,7 @@ class FamilyApiController extends AbstractBaseController
         $em->flush();
     }
     #[Route(path: '/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Family $family, Serializer $serializer) : JsonResponse
+    public function update(Request $request, Family $family, Serializer $serializer): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();

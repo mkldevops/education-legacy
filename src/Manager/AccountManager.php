@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * PHP version: 7.1.
  *
@@ -24,7 +25,7 @@ class AccountManager extends AccountableManager
     /**
      * @return array<string, int>|array<string, mixed[]>|array<string, mixed>
      */
-    public function getDataAccountStatement(Account $account) : array
+    public function getDataAccountStatement(Account $account): array
     {
         $data = ['accountStatements' => [], 'nbWithoutAccountStatements' => 0];
 
@@ -66,9 +67,11 @@ class AccountManager extends AccountableManager
 
                 $accountStatement = $accountStatements[$id];
 
-                if ($accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
+                if (
+                    $accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
                     && $accountStatement->getAmountDebit() === round((float) $stats['sumDebit'], 2)
-                    && $accountStatement->getNumberOperations() === (int) $stats['numberOperations']) {
+                    && $accountStatement->getNumberOperations() === (int) $stats['numberOperations']
+                ) {
                     $stats['isValid'] = true;
                 }
 
@@ -87,7 +90,7 @@ class AccountManager extends AccountableManager
     }
 
     #[Required]
-    public function setTransferManager(TransferManager $transferManager) : static
+    public function setTransferManager(TransferManager $transferManager): static
     {
         $this->transferManager = $transferManager;
 
@@ -95,14 +98,14 @@ class AccountManager extends AccountableManager
     }
 
     #[Required]
-    public function setOperationManager(OperationManager $operationManager) : static
+    public function setOperationManager(OperationManager $operationManager): static
     {
         $this->operationManager = $operationManager;
 
         return $this;
     }
 
-    public function setAccount(Account $account) : static
+    public function setAccount(Account $account): static
     {
         $this->account = $account;
 

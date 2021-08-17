@@ -24,7 +24,7 @@ class LoginListener extends AbstractService
 
     public function __construct(
         private AuthorizationChecker $authorizationChecker,
-        private SessionInterface     $session
+        private SessionInterface $session
     ) {
     }
 

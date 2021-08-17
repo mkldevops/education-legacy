@@ -29,7 +29,7 @@ class PackageController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_package_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : Response
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
         $count = $em
@@ -75,7 +75,7 @@ class PackageController extends AbstractBaseController
      * Displays a form to create a new Package entity.
      */
     #[Route(path: '/new', name: 'app_package_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $package = new Package();
         $form = $this->createCreateForm($package);
@@ -111,7 +111,7 @@ class PackageController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/create', name: 'app_package_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $package = new Package();
         $form = $this->createCreateForm($package);
@@ -142,7 +142,7 @@ class PackageController extends AbstractBaseController
      * Finds and displays a Package entity.
      */
     #[Route(path: '/show/{id}', name: 'app_package_show', methods: ['GET'])]
-    public function show(Package $package) : Response
+    public function show(Package $package): Response
     {
         return $this->render('package/show.html.twig', [
             'package' => $package,
@@ -152,7 +152,7 @@ class PackageController extends AbstractBaseController
      * Displays a form to edit an existing Package entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_package_edit', methods: ['GET'])]
-    public function edit(Package $package) : Response
+    public function edit(Package $package): Response
     {
         $editForm = $this->createEditForm($package);
         return $this->render('package/edit.html.twig', [
@@ -187,7 +187,7 @@ class PackageController extends AbstractBaseController
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{}id', name: 'app_package_update', methods: ['POST'])]
-    public function update(Request $request, Package $package) : Response
+    public function update(Request $request, Package $package): Response
     {
         $editForm = $this->createEditForm($package);
         $editForm->handleRequest($request);
@@ -208,7 +208,7 @@ class PackageController extends AbstractBaseController
      * Deletes a Package entity.
      */
     #[Route(path: '/delete/{id}', name: 'app_package_delete', methods: ['GET', 'POST'])]
-    public function delete(Request $request, Package $package) : RedirectResponse|Response
+    public function delete(Request $request, Package $package): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($package->getId())
             ->handleRequest($request);
@@ -246,7 +246,7 @@ class PackageController extends AbstractBaseController
      * Redirect the the list URL with the search parameter.
      */
     #[Route(path: '/search', name: 'app_package_search', methods: ['POST'])]
-    public function search(Request $request) : RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_package', [

@@ -221,7 +221,7 @@ class OperationRepository extends ServiceEntityRepository
     /**
      * @return Operation[]
      */
-    public function toValidate(Period $period) : array
+    public function toValidate(Period $period): array
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.date BETWEEN :begin AND :end')

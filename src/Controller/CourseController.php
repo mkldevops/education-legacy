@@ -42,7 +42,7 @@ class CourseController extends AbstractBaseController
      * @throws NoResultException
      */
     #[Route(path: '', name: 'app_course_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $manager, int $page = 1, string $search = '') : Response
+    public function index(EntityManagerInterface $manager, int $page = 1, string $search = ''): Response
     {
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
@@ -97,7 +97,7 @@ class CourseController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/create', name: 'app_course_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $course = new Course();
         $form = $this->createCreateForm($course);
@@ -156,7 +156,7 @@ class CourseController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/new', name: 'app_course_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $course = new Course();
         $form = $this->createCreateForm($course);
@@ -172,7 +172,7 @@ class CourseController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/show/{id}', name: 'app_course_show', methods: ['GET'])]
-    public function show(Course $course = null) : Response
+    public function show(Course $course = null): Response
     {
         return $this->render('Course/show.html.twig', [
             'course' => $course,
@@ -183,7 +183,7 @@ class CourseController extends AbstractBaseController
      * Displays a form to edit an existing Course entity.
      */
     #[Route(path: '/edit/{id}', name: 'app_course_edit', methods: ['GET'])]
-    public function edit(Course $course) : Response
+    public function edit(Course $course): Response
     {
         $editForm = $this->createEditForm($course);
         return $this->render('Course/edit.html.twig', [
@@ -215,7 +215,7 @@ class CourseController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/save-appeal/{id}', name: 'app_course_save_appeal', methods: ['POST'])]
-    public function saveAppeal(Request $request, Course $course) : JsonResponse
+    public function saveAppeal(Request $request, Course $course): JsonResponse
     {
         $response = (object)[
             'success' => false,
@@ -247,7 +247,7 @@ class CourseController extends AbstractBaseController
         return new JsonResponse($response);
     }
     #[Route(path: '/generate', name: 'app_course_generate', methods: ['GET', 'POST'])]
-    public function generate(Request $request, CourseManager $courseManager) : Response
+    public function generate(Request $request, CourseManager $courseManager): Response
     {
         set_time_limit(0);
         try {

@@ -46,7 +46,7 @@ class ClassPeriodController extends AbstractBaseController
      * @throws \App\Exception\InvalidArgumentException
      */
     #[Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
-    public function current(ClassPeriodManager $manager) : Response
+    public function current(ClassPeriodManager $manager): Response
     {
         $this->checkClasses();
         $classperiodList = $manager->getListOfCurrentPeriod($this->getPeriod(), $this->getSchool());
@@ -77,7 +77,7 @@ class ClassPeriodController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '', name: 'app_class_period_index', methods: ['GET'])]
-    public function index(ClassPeriodManager $manager, int $page = 1, string $search = '') : Response
+    public function index(ClassPeriodManager $manager, int $page = 1, string $search = ''): Response
     {
         $this->checkClasses();
         // Escape special characters and decode the search value.
@@ -117,7 +117,7 @@ class ClassPeriodController extends AbstractBaseController
      * @throws LogicException
      */
     #[Route(path: '/create', name: 'app_class_period_create', methods: ['POST'])]
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
@@ -161,7 +161,7 @@ class ClassPeriodController extends AbstractBaseController
      * Displays a form to create a new ClassPeriod entity.
      */
     #[Route(path: '/new', name: 'app_class_period_new', methods: ['GET'])]
-    public function new() : Response
+    public function new(): Response
     {
         $this->checkClasses();
         $classperiod = new ClassPeriod();
@@ -179,7 +179,7 @@ class ClassPeriodController extends AbstractBaseController
      * @throws Exception
      */
     #[Route(path: '/show/{id}', name: 'app_class_period_show', methods: ['GET'], options: ['expose' => true])]
-    public function show(ClassPeriod $classperiod) : Response
+    public function show(ClassPeriod $classperiod): Response
     {
         $manager = $this->getDoctrine()->getManager();
         $listStatus = CourseManager::getListStatus();
@@ -193,7 +193,7 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     #[Route(path: '/edit/{id}', name: 'app_class_period_edit', methods: ['GET'])]
-    public function edit(ClassPeriod $classPeriod) : Response
+    public function edit(ClassPeriod $classPeriod): Response
     {
         $editForm = $this->createEditForm($classPeriod);
         return $this->render('class_period/edit.html.twig', [
@@ -211,7 +211,7 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     #[Route(path: '/update/{id}', name: 'app_class_period_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, ClassPeriod $classPeriod) : Response
+    public function update(Request $request, ClassPeriod $classPeriod): Response
     {
         $editForm = $this->createEditForm($classPeriod);
         $editForm->handleRequest($request);
@@ -228,7 +228,7 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     #[Route(path: '/delete/{id}', name: 'app_class_period_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod) : RedirectResponse|Response
+    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
             ->handleRequest($request);
@@ -268,7 +268,7 @@ class ClassPeriodController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
-    public function add(ClassSchool $classSchool, Period $period) : RedirectResponse
+    public function add(ClassSchool $classSchool, Period $period): RedirectResponse
     {
         $em = $this->getDoctrine()->getManager();
         $classPeriod = $em->getRepository(ClassPeriod::class)
@@ -290,7 +290,7 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     #[Route(path: '/show-student/{id}', name: 'app_class_period_show_student', methods: ['GET'])]
-    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
+    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
     {
         return $this->render('class_period/showStudent.html.twig', [
             'classperiod' => $classPeriod,
@@ -302,7 +302,7 @@ class ClassPeriodController extends AbstractBaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/print-list-student/{id}', name: 'app_class_period_print_list_student', methods: ['GET'])]
-    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
+    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
     {
         $packageStudents = $manager->getPackageStudent($classPeriod);
         $students = $manager->getStudentsInClassPeriod($classPeriod);
@@ -336,10 +336,10 @@ class ClassPeriodController extends AbstractBaseController
         methods: ['GET']
     )]
     public function printAppealStudent(
-        Request            $request,
-        ClassPeriod        $classPeriod,
+        Request $request,
+        ClassPeriod $classPeriod,
         ClassPeriodManager $manager,
-        int                $page = 1,
+        int $page = 1,
         DateTimeInterface $from = null
     ): Response {
         $from = $from ?? new DateTime();

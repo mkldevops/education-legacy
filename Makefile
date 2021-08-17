@@ -103,11 +103,14 @@ test: phpunit.xml* ## Launch main functionnal and unit tests
 	./bin/phpunit --stop-on-failure
 
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
-cs: codesniffer stan psalm ## Launch check style and static analysis
+cs: codesniffer phpcs stan psalm ## Launch check style and static analysis
 code: rector cs-fix stan ## Fix code analyzed
 
 codesniffer: ## Run php_codesniffer only
-	./vendor/squizlabs/php_codesniffer/bin/phpcs --standard=phpcs.xml -n -p src/ vendor/fardus
+	./vendor/bin/phpcs --standard=phpcs.xml -n -p src/ vendor/fardus
+
+phpcs: ## Run phpcs only
+	./vendor/bin/phpcs -v -n --standard=PSR12 --ignore=./src/Kernel.php ./src
 
 stan: ## Run PHPStan only
 	./vendor/bin/phpstan analyse -l 1 src
@@ -117,7 +120,7 @@ psalm: ## Run psalm only
 
 init-psalm: ## Init a new psalm config file for a given level, it must be decremented to have stricter rules
 	[ -f ./psalm.xml ] && rm ./psalm.xml || echo 'no ./psalm.xml'
-	./vendor/bin/psalm --init src/ 3
+	./vendor/bin/psalm --init src/ 1
 
 cs-fix: ## Run php-cs-fixer and fix the code.
 	./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes

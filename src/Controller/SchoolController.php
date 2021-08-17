@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SchoolController extends AbstractBaseController
 {
     #[Route(path: '/switch/{id}', name: 'app_school_switch', methods: ['GET'])]
-    public function switch(Request $request, School $school) : RedirectResponse
+    public function switch(Request $request, School $school): RedirectResponse
     {
         try {
             $this->schoolManager->switch($school);

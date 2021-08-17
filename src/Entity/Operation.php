@@ -180,7 +180,7 @@ class Operation
         return $this;
     }
 
-    public function getReference() : ?string
+    public function getReference(): ?string
     {
         return $this->reference;
     }
@@ -268,7 +268,7 @@ class Operation
         return $this->accountStatement;
     }
 
-    public function setAccountStatement(AccountStatement $accountStatement = null) : static
+    public function setAccountStatement(AccountStatement $accountStatement = null): static
     {
         $this->accountStatement = $accountStatement;
 
@@ -285,7 +285,7 @@ class Operation
         return $this->slipsDebit;
     }
 
-    public function setSlipsDebit(AccountSlip $slipsDebit = null) : static
+    public function setSlipsDebit(AccountSlip $slipsDebit = null): static
     {
         $this->slipsDebit = $slipsDebit;
 

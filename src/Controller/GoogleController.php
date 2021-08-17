@@ -24,7 +24,7 @@ class GoogleController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/auth', name: 'app_google_auth')]
-    public function index(Request $request, GoogleService $googleService) : RedirectResponse|Response
+    public function index(Request $request, GoogleService $googleService): RedirectResponse|Response
     {
         $form = $this->createFormBuilder()
             ->add('code')
