@@ -373,7 +373,7 @@ class Document
     /**
      * Get school.
      *
-     * @return \App\Entity\School|null
+     * @return School|null
      */
     public function getSchool()
     {

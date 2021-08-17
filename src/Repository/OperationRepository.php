@@ -86,7 +86,7 @@ class OperationRepository extends ServiceEntityRepository
     /**
      * stats sumCredit & sumDebit Operations To Account Statement.
      */
-    public function getQueryStatsAccountStatement(array $listAccountStatementId): \Doctrine\ORM\QueryBuilder
+    public function getQueryStatsAccountStatement(array $listAccountStatementId): QueryBuilder
     {
         return $this->createQueryBuilder('ope')
             ->select([

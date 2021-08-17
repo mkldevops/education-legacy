@@ -34,7 +34,7 @@ use Symfony\Component\Security\Core\Security;
 #[IsGranted("ROLE_ACCOUNTANT")]
 class OperationController extends AbstractBaseController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{page}', name: 'app_operation_index', methods: ['GET'], requirements: ['page' => '\d+'])]
+    #[Route(path: '/{page}', name: 'app_operation_index', methods: ['GET'], requirements: ['page' => '\d+'])]
     public function index(OperationRepository $repository, int $page = 1) : Response
     {
         if ($page < 1) {
@@ -61,7 +61,7 @@ class OperationController extends AbstractBaseController
      *
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_operation_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_operation_new', methods: ['GET'])]
     public function new(Request $request) : Response
     {
         $operation = new Operation();
@@ -148,7 +148,7 @@ class OperationController extends AbstractBaseController
         ]);
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_operation_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_operation_edit', methods: ['GET'])]
     public function edit(Operation $operation) : Response
     {
         if (!$this->hasStructure($operation)) {
@@ -182,7 +182,7 @@ class OperationController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(Operation $operation): \Symfony\Component\Form\FormInterface
+    private function createEditForm(Operation $operation): FormInterface
     {
         $operationType = new OperationType();
         $operationType->setSession($this->get('session'));
@@ -199,8 +199,8 @@ class OperationController extends AbstractBaseController
     /**
      * Edits an existing Operation entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_operation_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Operation $operation) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/update/{id}', name: 'app_operation_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Operation $operation) : Response
     {
         $editForm = $this->createEditForm($operation);
         $editForm->handleRequest($request);
@@ -222,8 +222,8 @@ class OperationController extends AbstractBaseController
     /**
      * Page view student.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_operation_show', methods: ['GET'])]
-    public function show(Operation $operation) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/show/{id}', name: 'app_operation_show', methods: ['GET'])]
+    public function show(Operation $operation) : Response
     {
         // Check if the school is good
         if (!$this->hasStructure($operation)) {
@@ -240,7 +240,7 @@ class OperationController extends AbstractBaseController
      *
      * @throws InvalidArgumentException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/stats-by-month', name: 'app_operation_statsbymonth', methods: ['GET'])]
+    #[Route(path: '/stats-by-month', name: 'app_operation_statsbymonth', methods: ['GET'])]
     public function statsByMonthly(StatisticsManager $manager) : Response
     {
         $stats = $manager->getStatsByMonth($this->getPeriod(), $this->getSchool());
@@ -254,8 +254,8 @@ class OperationController extends AbstractBaseController
      *
      *
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_operation_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Operation $operation) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}', name: 'app_operation_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Operation $operation) : Response
     {
         $deleteForm = $this->createDeleteForm($operation->getId());
         $deleteForm->handleRequest($request);
@@ -304,8 +304,8 @@ class OperationController extends AbstractBaseController
     /**
      * Add document to operation.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-document/{id}/{action}', name: 'app_operation_set_document', methods: ['POST'])]
-    public function setDocument(Request $request, Operation $operation, string $action) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/set-document/{id}/{action}', name: 'app_operation_set_document', methods: ['POST'])]
+    public function setDocument(Request $request, Operation $operation, string $action) : JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
@@ -345,8 +345,8 @@ class OperationController extends AbstractBaseController
      *
      * @IsGranted("ROLE_ACCOUNTANT")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/validate/{id}', name: 'app_operation_validate', methods: ['POST'], options: ['expose' => true])]
-    public function validate(Operation $operation, Request $request, Security $security) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/validate/{id}', name: 'app_operation_validate', methods: ['POST'], options: ['expose' => true])]
+    public function validate(Operation $operation, Request $request, Security $security) : JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();

@@ -185,7 +185,7 @@ class OFXManager extends AccountManager
      * @throws AppException
      * @throws Exception
      */
-    private function transferOperation(Transaction $transaction, ?string $reference, ?OperationGender $gender): ?\App\Entity\Operation
+    private function transferOperation(Transaction $transaction, ?string $reference, ?OperationGender $gender): ?Operation
     {
         $transferModel = (new TransferModel())
             ->setAccountSlip(new AccountSlip())

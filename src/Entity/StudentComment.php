@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
 use DateTime;
@@ -99,7 +100,7 @@ class StudentComment
      *
      * @param DateTime $created
      */
-    public function setCreated(\DateTimeInterface $created): static
+    public function setCreated(DateTimeInterface $created): static
     {
         $this->created = $created;
 
@@ -117,7 +118,7 @@ class StudentComment
     /**
      * Get student.
      *
-     * @return \App\Entity\Student|null
+     * @return Student|null
      */
     public function getStudent()
     {

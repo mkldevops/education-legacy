@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\Family;
 use App\Entity\Person;
 use App\Form\Type\DatePickerType;
@@ -52,7 +53,7 @@ class PersonStudentType extends PersonSimpleType
                 'class' => Family::class,
                 'required' => false,
                 'label' => 'form.family.label',
-                'query_builder' => function (FamilyRepository $er): \Doctrine\ORM\QueryBuilder {
+                'query_builder' => function (FamilyRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('f')
                         ->where('f.enable = 1');
                 },

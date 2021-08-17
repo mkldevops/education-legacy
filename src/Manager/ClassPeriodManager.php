@@ -267,7 +267,7 @@ class ClassPeriodManager extends AbstractFullService
      *
      * @internal param School|null $school
      */
-    private function getQueryBuilderList(School $school, string $search = ''): \Doctrine\ORM\QueryBuilder
+    private function getQueryBuilderList(School $school, string $search = ''): QueryBuilder
     {
         return $this->getEntityManager()
             ->getRepository(ClassPeriod::class)

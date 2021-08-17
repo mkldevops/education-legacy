@@ -14,10 +14,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[\Symfony\Component\Routing\Annotation\Route(path: '/api/operation', options: ['expose' => 'true'])]
+#[Route(path: '/api/operation', options: ['expose' => 'true'])]
 class OperationApiController extends AbstractBaseController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Operation $operation, OperationManager $operationManager) : JsonResponse
     {
         $result = new ResponseModel();

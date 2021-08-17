@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Entity\Diploma;
 use App\Form\DiplomaType;
 use App\Repository\DiplomaRepository;
@@ -12,17 +13,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[\Symfony\Component\Routing\Annotation\Route(path: '/diploma')]
+#[Route(path: '/diploma')]
 class DiplomaController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/', name: 'app_diploma_index', methods: ['GET'])]
+    #[Route(path: '/', name: 'app_diploma_index', methods: ['GET'])]
     public function index(DiplomaRepository $diplomaRepository) : Response
     {
         return $this->render('diploma/index.html.twig', [
             'diplomas' => $diplomaRepository->findAll(),
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_diploma_new', methods: ['GET', 'POST'])]
+    #[Route(path: '/new', name: 'app_diploma_new', methods: ['GET', 'POST'])]
     public function new(Request $request) : Response
     {
         $diploma = new Diploma();
@@ -40,14 +41,14 @@ class DiplomaController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{id}', name: 'app_diploma_show', methods: ['GET'])]
+    #[Route(path: '/{id}', name: 'app_diploma_show', methods: ['GET'])]
     public function show(Diploma $diploma) : Response
     {
         return $this->render('diploma/show.html.twig', [
             'diploma' => $diploma,
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{id}/edit', name: 'app_diploma_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}/edit', name: 'app_diploma_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Diploma $diploma) : Response
     {
         $form = $this->createForm(DiplomaType::class, $diploma);
@@ -64,8 +65,8 @@ class DiplomaController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{id}', name: 'app_diploma_delete', methods: ['DELETE'])]
-    public function delete(Request $request, Diploma $diploma) : \Symfony\Component\HttpFoundation\RedirectResponse
+    #[Route(path: '/{id}', name: 'app_diploma_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Diploma $diploma) : RedirectResponse
     {
         if ($this->isCsrfTokenValid('delete' . $diploma->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();

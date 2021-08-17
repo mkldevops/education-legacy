@@ -22,10 +22,10 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @IsGranted("ROLE_MEMBER")
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/member')]
+#[Route(path: '/member')]
 class MemberController extends AbstractBaseController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_member_index', methods: ['GET'])]
+    #[Route(path: '', name: 'app_member_index', methods: ['GET'])]
     public function index(MemberRepository $repository, int $page = 1, string $search = '') : Response
     {
         $search = addcslashes(urldecode($search), '%_');
@@ -67,7 +67,7 @@ class MemberController extends AbstractBaseController
     /**
      * @IsGranted("ROLE_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_member_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_member_new', methods: ['GET'])]
     public function new() : Response
     {
         $member = new Member();
@@ -95,7 +95,7 @@ class MemberController extends AbstractBaseController
 
         return $form;
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_member_create', methods: ['POST'])]
+    #[Route(path: '/create', name: 'app_member_create', methods: ['POST'])]
     public function create(Request $request) : Response
     {
         $member = new Member();
@@ -118,12 +118,12 @@ class MemberController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_member_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_member_show', methods: ['GET'])]
     public function show(Member $member) : Response
     {
         return $this->render('member/show.html.twig', ['member' => $member]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_member_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_member_edit', methods: ['GET'])]
     public function edit(Member $member) : Response
     {
         $editForm = $this->createEditForm($member);
@@ -143,7 +143,7 @@ class MemberController extends AbstractBaseController
 
         return $form;
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_member_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/update/{id}', name: 'app_member_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Member $member) : Response
     {
         $editForm = $this->createEditForm($member);
@@ -162,7 +162,7 @@ class MemberController extends AbstractBaseController
             'edit_form' => $editForm->createView(),
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_member_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/delete/{id}', name: 'app_member_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Member $member) : Response
     {
         $deleteForm = $this->createDeleteForm($member->getId());
@@ -189,7 +189,7 @@ class MemberController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_member_search', methods: ['GET'])]
+    #[Route(path: '/search', name: 'app_member_search', methods: ['GET'])]
     public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();

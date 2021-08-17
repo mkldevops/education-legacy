@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * ClassPeriod controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/api/class-period')]
+#[Route(path: '/api/class-period')]
 class ClassPeriodApiController extends AbstractBaseController
 {
     /**
@@ -40,8 +40,8 @@ class ClassPeriodApiController extends AbstractBaseController
     /**
      * addStudentAction.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update-student/{id}', name: 'app_api_class_period_update_student', methods: ['POST'], options: ['expose' => true])]
-    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/update-student/{id}', name: 'app_api_class_period_update_student', methods: ['POST'], options: ['expose' => true])]
+    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null) : JsonResponse
     {
         $name = $classPeriod->getClassSchool()->getName();
         $response = ResponseRequest::responseDefault([

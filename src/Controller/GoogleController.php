@@ -16,15 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class GoogleController.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/google')]
+#[Route(path: '/google')]
 class GoogleController extends AbstractController
 {
     /**
      *
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/auth', name: 'app_google_auth')]
-    public function index(Request $request, GoogleService $googleService) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/auth', name: 'app_google_auth')]
+    public function index(Request $request, GoogleService $googleService) : RedirectResponse|Response
     {
         $form = $this->createFormBuilder()
             ->add('code')

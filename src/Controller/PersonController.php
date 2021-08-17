@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Person controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/person')]
+#[Route(path: '/person')]
 class PersonController extends AbstractBaseController
 {
     /**
@@ -35,7 +35,7 @@ class PersonController extends AbstractBaseController
      *
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
+    #[Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = '') : Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -119,7 +119,7 @@ class PersonController extends AbstractBaseController
     /**
      * Creates a new Person entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_person_create', methods: ['POST'])]
+    #[Route(path: '/create', name: 'app_person_create', methods: ['POST'])]
     public function create(Request $request) : RedirectResponse|Response
     {
         // If form have redirect
@@ -165,7 +165,7 @@ class PersonController extends AbstractBaseController
 
         return $form;
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
     public function new(string $pathRedirect = null) : Response
     {
         $person = new Person();
@@ -178,7 +178,7 @@ class PersonController extends AbstractBaseController
     /**
      * Finds and displays a Person entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_person_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_person_show', methods: ['GET'])]
     public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $em) : Response
     {
         $member = $em->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
@@ -192,7 +192,7 @@ class PersonController extends AbstractBaseController
             'families' => $familyRepository->findFamilies($person),
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
     public function edit(Person $person) : Response
     {
         $editForm = $this->createEditForm($person);
@@ -220,7 +220,7 @@ class PersonController extends AbstractBaseController
     /**
      * Edits an existing Person entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Person $person) : RedirectResponse|Response
     {
         $editForm = $this->createEditForm($person);
@@ -242,7 +242,7 @@ class PersonController extends AbstractBaseController
     /**
      * Deletes a Person entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Person $person) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($person->getId());
@@ -277,7 +277,7 @@ class PersonController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_person_search', methods: ['POST'])]
+    #[Route(path: '/search', name: 'app_person_search', methods: ['POST'])]
     public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
@@ -289,7 +289,7 @@ class PersonController extends AbstractBaseController
     /**
      * Finds and displays a Person entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
+    #[Route(path: '/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
     public function phones(Person $person) : Response
     {
         $phones = PhoneManager::getAllPhones($person);

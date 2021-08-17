@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Exception\AppException;
@@ -14,11 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[\Symfony\Component\Routing\Annotation\Route(path: '/api/pachage-student-period', options: ['expose' => true])]
+#[Route(path: '/api/pachage-student-period', options: ['expose' => true])]
 class PackageStudentPeriodApiController extends AbstractBaseController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
-    public function create(Request $request) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
+    public function create(Request $request) : JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $response = $this->json([]);
@@ -64,8 +65,8 @@ class PackageStudentPeriodApiController extends AbstractBaseController
         $em->persist($packageStudentPeriod);
         $em->flush();
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod) : JsonResponse
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);
         $response = $this->json([]);

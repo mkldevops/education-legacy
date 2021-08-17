@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\Student;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/statistics')]
+#[Route(path: '/statistics')]
 class StatisticsController extends AbstractBaseController
 {
     /**
@@ -23,8 +24,8 @@ class StatisticsController extends AbstractBaseController
      *
      * @throws ORMException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/number-students', name: 'app_statistics_numberstudents', methods: ['GET'])]
-    public function numberStudents() : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/number-students', name: 'app_statistics_numberstudents', methods: ['GET'])]
+    public function numberStudents() : Response
     {
         $data = $this
             ->getDoctrine()->getManager()
@@ -37,8 +38,8 @@ class StatisticsController extends AbstractBaseController
      *
      *
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/account', name: 'app_statistics_account', methods: ['GET'])]
-    public function statsAccount() : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/account', name: 'app_statistics_account', methods: ['GET'])]
+    public function statsAccount() : Response
     {
         $data = $this
             ->getDoctrine()->getManager()

@@ -99,7 +99,7 @@ class TransferModel
     /**
      * Get AccountDebit.
      */
-    public function getAccountDebit(): ?\App\Entity\Account
+    public function getAccountDebit(): ?Account
     {
         return $this->accountDebit;
     }
@@ -117,7 +117,7 @@ class TransferModel
     /**
      * Get Structure.
      */
-    public function getStructure(): ?\App\Entity\Structure
+    public function getStructure(): ?Structure
     {
         return $this->structure;
     }
@@ -135,7 +135,7 @@ class TransferModel
     /**
      * Get AccountSlip.
      */
-    public function getAccountSlip(): ?\App\Entity\AccountSlip
+    public function getAccountSlip(): ?AccountSlip
     {
         return $this->accountSlip;
     }

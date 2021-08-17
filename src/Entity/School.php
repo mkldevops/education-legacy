@@ -106,7 +106,7 @@ class School
         return $this->packages;
     }
 
-    public function getStructure(): ?\App\Entity\Structure
+    public function getStructure(): ?Structure
     {
         return $this->structure;
     }

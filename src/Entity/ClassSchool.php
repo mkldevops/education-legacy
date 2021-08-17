@@ -72,7 +72,7 @@ class ClassSchool
         $this->classPeriods->removeElement($classPeriods);
     }
 
-    public function getClassPeriods(): \Doctrine\Common\Collections\ArrayCollection
+    public function getClassPeriods(): ArrayCollection
     {
         $classPeriods = new ArrayCollection();
 

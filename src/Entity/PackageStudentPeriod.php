@@ -232,7 +232,7 @@ class PackageStudentPeriod
     /**
      * Get payments.
      */
-    public function getPayments(): \Doctrine\Common\Collections\Collection
+    public function getPayments(): Collection
     {
         return $this->payments;
     }

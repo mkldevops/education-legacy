@@ -28,10 +28,10 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @IsGranted("ROLE_ACCOUNTANT")
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/account')]
+#[Route(path: '/account')]
 class AccountController extends AbstractBaseController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{page}', name: 'app_account_index', methods: ['GET'])]
+    #[Route(path: '/{page}', name: 'app_account_index', methods: ['GET'])]
     public function index(AccountRepository $repository, int $page = 1) : Response
     {
         $count = 20;
@@ -47,7 +47,7 @@ class AccountController extends AbstractBaseController
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_account_create')]
+    #[Route(path: '/create', name: 'app_account_create')]
     public function create(Request $request) : RedirectResponse|Response
     {
         $account = new Account();
@@ -84,7 +84,7 @@ class AccountController extends AbstractBaseController
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_account_new')]
+    #[Route(path: '/new', name: 'app_account_new')]
     public function new() : Response
     {
         $account = new Account();
@@ -100,7 +100,7 @@ class AccountController extends AbstractBaseController
      *
      * @throws ORMException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_account_show')]
+    #[Route(path: '/show/{id}', name: 'app_account_show')]
     public function show(AccountManager $accountManager, Account $account) : Response
     {
         if ($account->getStructure()->getId() !== $this->getSchool()->getStructure()->getId()) {
@@ -118,8 +118,8 @@ class AccountController extends AbstractBaseController
     /**
      * Finds and displays a Operations to Account entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/operations/{id}', name: 'app_account_operations')]
-    public function operations(Account $account) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/operations/{id}', name: 'app_account_operations')]
+    public function operations(Account $account) : Response
     {
         return $this->render('Account/operations.html.twig', [
             'account' => $account,
@@ -130,7 +130,7 @@ class AccountController extends AbstractBaseController
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_account_edit')]
+    #[Route(path: '/edit/{id}', name: 'app_account_edit')]
     public function edit(Account $account) : Response
     {
         $editForm = $this->createEditForm($account);
@@ -155,7 +155,7 @@ class AccountController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_account_update')]
+    #[Route(path: '/update/{id}', name: 'app_account_update')]
     public function update(Request $request, Account $account) : Response
     {
         $editForm = $this->createEditForm($account);
@@ -177,8 +177,8 @@ class AccountController extends AbstractBaseController
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_account_delete')]
-    public function delete(Request $request, Account $account) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}', name: 'app_account_delete')]
+    public function delete(Request $request, Account $account) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($account->getId());
         $deleteForm->handleRequest($request);
@@ -212,7 +212,7 @@ class AccountController extends AbstractBaseController
      * @throws AppException
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/ofx/{id}', name: 'app_account_ofx')]
+    #[Route(path: '/ofx/{id}', name: 'app_account_ofx')]
     public function ofx(Request            $request, Account            $account, OFXManager         $manager, GoogleDriveService $googleDriveService) : Response
     {
         $files = $googleDriveService

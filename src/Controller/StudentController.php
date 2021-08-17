@@ -45,7 +45,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/student')]
+#[Route(path: '/student')]
 class StudentController extends AbstractBaseController
 {
     /**
@@ -53,8 +53,8 @@ class StudentController extends AbstractBaseController
      *
      * @throws InvalidArgumentException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_student_index', methods: ['GET'])]
-    public function index() : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '', name: 'app_student_index', methods: ['GET'])]
+    public function index() : Response
     {
         $period = $this->getPeriod();
         $school = $this->getSchool();
@@ -73,7 +73,7 @@ class StudentController extends AbstractBaseController
      *
      * @throws InvalidArgumentException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/desactivated', methods: ['GET'], name: 'app_student_desactivated')]
+    #[Route(path: '/desactivated', methods: ['GET'], name: 'app_student_desactivated')]
     public function desactivated() : Response
     {
         $students = $this->getManager()
@@ -117,7 +117,7 @@ class StudentController extends AbstractBaseController
      * @throws NonUniqueResultException
      * @throws AppException|NoResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{id}/add-package/{period}', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}/add-package/{period}', methods: ['GET', 'POST'])]
     public function addPackage(Request $request, StudentManager $studentManager, Student $student, PackageRepository $packageRepository, Period $period = null) : Response
     {
         $packageStudentPeriod = (new PackageStudentPeriod())
@@ -166,7 +166,7 @@ class StudentController extends AbstractBaseController
     /**
      * @IsGranted("ROLE_TEACHER")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_student_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_student_new', methods: ['GET'])]
     public function new() : Response
     {
         $student = new Student();
@@ -241,7 +241,7 @@ class StudentController extends AbstractBaseController
      * @throws InvalidArgumentException
      * @throws AppException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', methods: ['GET'], name: 'app_student_show')]
+    #[Route(path: '/show/{id}', methods: ['GET'], name: 'app_student_show')]
     public function show(Student $student, DocumentManager $documentManager) : Response
     {
         $formComment = $this->createCreateCommentForm(new studentComment(), $student);
@@ -266,7 +266,7 @@ class StudentController extends AbstractBaseController
             'attr' => ['id' => 'student_addcomment'],
         ]);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', methods: ['GET'], name: 'app_student_edit')]
+    #[Route(path: '/edit/{id}', methods: ['GET'], name: 'app_student_edit')]
     public function edit(Student $student, FamilyApiController $apiController) : Response
     {
         $form = $this->createEditForm($student);
@@ -291,7 +291,7 @@ class StudentController extends AbstractBaseController
     /**
      * Edits an existing Teacher entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', methods: ['POST', 'PUT'], name: 'app_student_update')]
+    #[Route(path: '/update/{id}', methods: ['POST', 'PUT'], name: 'app_student_update')]
     public function update(Request $request, Student $student) : Response
     {
         $editForm = $this->createEditForm($student)
@@ -319,8 +319,8 @@ class StudentController extends AbstractBaseController
      *
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}')]
-    public function delete(Request $request, Student $student = null) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}')]
+    public function delete(Request $request, Student $student = null) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
@@ -352,7 +352,7 @@ class StudentController extends AbstractBaseController
      *
      * @param mixed $id The entity id
      */
-    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
+    private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_student_delete', ['id' => $id]))
@@ -367,8 +367,8 @@ class StudentController extends AbstractBaseController
      *
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit-status/{id}', methods: ['POST', 'GET'], name: 'app_student_edit_status', options: ['expose' => true])]
-    public function editStatus(Request $request, Student $student) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/edit-status/{id}', methods: ['POST', 'GET'], name: 'app_student_edit_status', options: ['expose' => true])]
+    public function editStatus(Request $request, Student $student) : RedirectResponse|JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $student->setEnable((bool)$request->get('enable'));
@@ -389,8 +389,8 @@ class StudentController extends AbstractBaseController
     /**
      * Set image student.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-image/{id}s', methods: ['PUT', 'POST'])]
-    public function setImage(Request $request, Student $student) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/set-image/{id}s', methods: ['PUT', 'POST'])]
+    public function setImage(Request $request, Student $student) : JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault(['document' => null]);
@@ -416,7 +416,7 @@ class StudentController extends AbstractBaseController
         }
         return new JsonResponse($response);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-phone/{id}', methods: ['POST', 'PUT'])]
+    #[Route(path: '/set-phone/{id}', methods: ['POST', 'PUT'])]
     public function setPhone(Student $student, Request $request) : JsonResponse
     {
         $em = $this->getDoctrine()->getManager();

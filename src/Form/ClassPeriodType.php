@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Period;
@@ -31,7 +32,7 @@ class ClassPeriodType extends AbstractType
             ])
             ->add('period', EntityType::class, [
                 'class' => Period::class,
-                'query_builder' => function (EntityRepository $er): \Doctrine\ORM\QueryBuilder {
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('p')
                         ->orderBy('p.begin', 'DESC');
                 },
@@ -59,7 +60,7 @@ class ClassPeriodType extends AbstractType
     /**
      * Get School.
      */
-    public function getSchool(): ?\App\Entity\School
+    public function getSchool(): ?School
     {
         return $this->school;
     }

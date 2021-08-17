@@ -151,7 +151,7 @@ class TransferManager
      * @throws AppException
      * @throws Exception
      */
-    private function findOperation(string $type, Account $account, string $uniqueId = null): ?\App\Entity\Operation
+    private function findOperation(string $type, Account $account, string $uniqueId = null): ?Operation
     {
         $operation = new Operation();
 

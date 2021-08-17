@@ -23,14 +23,14 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Family controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/family')]
+#[Route(path: '/family')]
 class FamilyController extends AbstractBaseController
 {
     /**
      * Lists all family entities.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '', methods: ['GET'])]
-    public function index() : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '', methods: ['GET'])]
+    public function index() : Response
     {
         /** @var Family[] $families */
         $families = $this->getDoctrine()->getManager()
@@ -43,8 +43,8 @@ class FamilyController extends AbstractBaseController
     /**
      * Creates a new family entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', methods: ['GET'])]
-    public function new(Request $request) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/new', methods: ['GET'])]
+    public function new(Request $request) : Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
@@ -55,7 +55,7 @@ class FamilyController extends AbstractBaseController
     /**
      * Creates a form to create a Grade entity.
      */
-    private function createCreateForm(Request $request, Family $family): \Symfony\Component\Form\FormInterface
+    private function createCreateForm(Request $request, Family $family): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
             'action' => $this->generateUrl('app_family_create'),
@@ -70,8 +70,8 @@ class FamilyController extends AbstractBaseController
     /**
      * Creates a new family entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', methods: ['POST'])]
-    public function create(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/create', methods: ['POST'])]
+    public function create(Request $request) : RedirectResponse|Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
@@ -100,8 +100,8 @@ class FamilyController extends AbstractBaseController
      *
      * @throws InvalidArgumentException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', methods: ['GET'])]
-    public function show(Family $family, FamilyManager $manager) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/show/{id}', methods: ['GET'])]
+    public function show(Family $family, FamilyManager $manager) : Response
     {
         $student = new Student();
         $student->getPerson()->setFamily($family);
@@ -126,8 +126,8 @@ class FamilyController extends AbstractBaseController
     /**
      * Displays a form to edit an existing family entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', methods: ['GET'])]
-    public function edit(Request $request, Family $family) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/edit/{id}', methods: ['GET'])]
+    public function edit(Request $request, Family $family) : Response
     {
         $editForm = $this->createEditForm($request, $family);
         return $this->render('family/edit.html.twig', [
@@ -138,7 +138,7 @@ class FamilyController extends AbstractBaseController
     /**
      * Creates a form to create a Grade entity.
      */
-    private function createEditForm(Request $request, Family $family): \Symfony\Component\Form\FormInterface
+    private function createEditForm(Request $request, Family $family): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
             'action' => $this->generateUrl('app_family_update', ['id' => $family->getId()]),
@@ -153,8 +153,8 @@ class FamilyController extends AbstractBaseController
     /**
      * Displays a form to edit an existing family entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/{id}/update', methods: ['POST'])]
-    public function update(Request $request, Family $family) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/{id}/update', methods: ['POST'])]
+    public function update(Request $request, Family $family) : RedirectResponse|Response
     {
         $editForm = $this->createEditForm($request, $family);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -170,8 +170,8 @@ class FamilyController extends AbstractBaseController
     /**
      * Deletes a family entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', methods: ['DELETE'])]
-    public function delete(Request $request, Family $family) : \Symfony\Component\HttpFoundation\RedirectResponse
+    #[Route(path: '/delete/{id}', methods: ['DELETE'])]
+    public function delete(Request $request, Family $family) : RedirectResponse
     {
         $form = $this->createDeleteForm($family);
         $form->handleRequest($request);
@@ -187,7 +187,7 @@ class FamilyController extends AbstractBaseController
      *
      * @param Family $family The family entity
      */
-    private function createDeleteForm(Family $family): \Symfony\Component\Form\FormInterface
+    private function createDeleteForm(Family $family): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_family_delete', ['id' => $family->getId()]))

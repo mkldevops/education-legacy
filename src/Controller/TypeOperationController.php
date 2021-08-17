@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * TypeOperation controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/type-operation')]
+#[Route(path: '/type-operation')]
 class TypeOperationController extends AbstractBaseController
 {
     /**
@@ -23,7 +23,7 @@ class TypeOperationController extends AbstractBaseController
      *
      * @throws InvalidArgumentException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
+    #[Route(path: '/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
     public function operations(TypeOperation $typeOperation) : Response
     {
         $operations = $this->getManager()

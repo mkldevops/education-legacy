@@ -108,7 +108,7 @@ class OperationManager
     }
 
     /**
-     * @return \App\Entity\Operation[]
+     * @return Operation[]
      */
     public function toValidate(Period $period): array
     {

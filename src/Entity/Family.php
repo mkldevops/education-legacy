@@ -163,7 +163,7 @@ class Family
      *
      * @return Person[]|Collection
      */
-    public function getPersons(): \Doctrine\Common\Collections\Collection
+    public function getPersons(): Collection
     {
         return $this->persons;
     }
@@ -179,7 +179,7 @@ class Family
     /**
      * Get father.
      */
-    public function getFather(): ?\App\Entity\Person
+    public function getFather(): ?Person
     {
         return $this->father;
     }

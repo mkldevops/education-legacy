@@ -34,7 +34,7 @@ class StatsByMonth
     }
 
     /**
-     * @param \App\Model\DataStats[] $column
+     * @param DataStats[] $column
      */
     public function setColumn(array $column): self
     {
@@ -52,7 +52,7 @@ class StatsByMonth
     }
 
     /**
-     * @param \App\Model\DataStats[] $row
+     * @param DataStats[] $row
      */
     public function setRow(array $row = []): static
     {

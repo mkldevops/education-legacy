@@ -26,7 +26,7 @@ class MeetController extends AbstractBaseController
      *
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_meet_index', methods: ['GET'])]
+    #[Route(path: '', name: 'app_meet_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = '') : Response
     {
         $manager = $this->getDoctrine()->getManager();
@@ -93,7 +93,7 @@ class MeetController extends AbstractBaseController
     /**
      * Creates a new Meet entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_meet_create', methods: ['POST'])]
+    #[Route(path: '/create', name: 'app_meet_create', methods: ['POST'])]
     public function create(Request $request) : Response
     {
         $meet = new Meet();
@@ -128,7 +128,7 @@ class MeetController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createCreateForm(Meet $meet): \Symfony\Component\Form\FormInterface
+    private function createCreateForm(Meet $meet): FormInterface
     {
         $form = $this->createForm(MeetType::class, $meet, [
             'action' => $this->generateUrl('app_meet_create'),
@@ -158,7 +158,7 @@ class MeetController extends AbstractBaseController
     /**
      * Displays a form to create a new Meet entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_meet_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_meet_new', methods: ['GET'])]
     public function new() : Response
     {
         $meet = new Meet();
@@ -172,7 +172,7 @@ class MeetController extends AbstractBaseController
     /**
      * Finds and displays a Meet entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_meet_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_meet_show', methods: ['GET'])]
     public function show(Meet $meet) : Response
     {
         return $this->render('meet/show.html.twig', [
@@ -183,7 +183,7 @@ class MeetController extends AbstractBaseController
     /**
      * Displays a form to edit an existing Meet entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_meet_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_meet_edit', methods: ['GET'])]
     public function edit(Meet $meet) : Response
     {
         $editForm = $this->createEditForm($meet);
@@ -218,7 +218,7 @@ class MeetController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_meet_update', methods: ['PUT', 'POST'])]
+    #[Route(path: '/update/{id}', name: 'app_meet_update', methods: ['PUT', 'POST'])]
     public function update(Request $request, Meet $meet) : Response
     {
         $editForm = $this->createEditForm($meet);
@@ -241,8 +241,8 @@ class MeetController extends AbstractBaseController
     /**
      * Deletes a Meet entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_meet_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Meet $meet) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}', name: 'app_meet_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Meet $meet) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($meet->getId());
         $deleteForm->handleRequest($request);
@@ -278,8 +278,8 @@ class MeetController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_meet_search', methods: ['GET'])]
-    public function search(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse
+    #[Route(path: '/search', name: 'app_meet_search', methods: ['GET'])]
+    public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_meet_index', [

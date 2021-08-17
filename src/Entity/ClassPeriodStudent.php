@@ -92,7 +92,7 @@ class ClassPeriodStudent
     /**
      * Get classPeriod.
      */
-    public function getClassPeriod(): ?\App\Entity\ClassPeriod
+    public function getClassPeriod(): ?ClassPeriod
     {
         return $this->classPeriod;
     }
@@ -110,7 +110,7 @@ class ClassPeriodStudent
     /**
      * Get student.
      */
-    public function getStudent(): \App\Entity\Student
+    public function getStudent(): Student
     {
         return $this->student;
     }

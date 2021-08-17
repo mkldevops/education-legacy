@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Doctrine\ORM\NonUniqueResultException;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\PaymentPackageStudent;
@@ -17,16 +18,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[\Symfony\Component\Routing\Annotation\Route(path: 'payment-package-student')]
+#[Route(path: 'payment-package-student')]
 class PaymentPackageStudentController extends AbstractBaseController
 {
     /**
      * Lists all PaymentPackageStudent entities.
      *
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_payment_package_student_index', methods: ['GET'])]
+    /**
+     * Lists all PaymentPackageStudent entities.
+     *
+     *
+     * @throws NonUniqueResultException
+     */
+    #[Route(path: '', name: 'app_payment_package_student_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = '') : Response
     {
         $manager = $this->getDoctrine()->getManager();
@@ -141,7 +148,7 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Displays a form to create a new PaymentPackageStudent entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new/{id}', name: 'app_payment_package_student_new', methods: ['GET'])]
+    #[Route(path: '/new/{id}', name: 'app_payment_package_student_new', methods: ['GET'])]
     public function new(PackageStudentPeriod $packageStudentPeriod) : Response
     {
         $paymentPackageStudent = new PaymentPackageStudent();
@@ -166,7 +173,7 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Finds and displays a PaymentPackageStudent entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
     public function show(PaymentPackageStudent $paymentPackageStudent) : Response
     {
         return $this->render('payment_package_student/show.html.twig', [
@@ -176,7 +183,7 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Displays a form to edit an existing PaymentPackageStudent entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_payment_package_student_show', methods: ['GET'])]
     public function edit(PaymentPackageStudent $paymentPackageStudent) : Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
@@ -192,7 +199,7 @@ class PaymentPackageStudentController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(PaymentPackageStudent $paymentPackageStudent): \Symfony\Component\Form\FormInterface
+    private function createEditForm(PaymentPackageStudent $paymentPackageStudent): FormInterface
     {
         $form = $this->createForm(new PaymentPackageStudentType(), $paymentPackageStudent, [
             'action' => $this->generateUrl('app_payment_package_student_update', ['id' => $paymentPackageStudent->getId()]),
@@ -206,8 +213,8 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Edits an existing PaymentPackageStudent entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_payment_package_student_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/update/{id}', name: 'app_payment_package_student_update', methods: ['PUT', 'POST'])]
+    public function update(Request $request, PaymentPackageStudent $paymentPackageStudent) : RedirectResponse|Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
         $editForm->handleRequest($request);
@@ -227,8 +234,8 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Deletes a PaymentPackageStudent entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_payment_package_student_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}', name: 'app_payment_package_student_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, PaymentPackageStudent $paymentPackageStudent) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($paymentPackageStudent->getId());
         $deleteForm->handleRequest($request);
@@ -267,7 +274,7 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_payment_package_student_search', methods: ['GET'])]
+    #[Route(path: '/search', name: 'app_payment_package_student_search', methods: ['GET'])]
     public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();

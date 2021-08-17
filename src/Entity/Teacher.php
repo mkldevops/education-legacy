@@ -74,7 +74,7 @@ class Teacher
         return $this;
     }
 
-    public function getClassPeriods(): \Doctrine\Common\Collections\Collection
+    public function getClassPeriods(): Collection
     {
         return $this->classPeriods;
     }

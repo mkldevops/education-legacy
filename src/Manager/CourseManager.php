@@ -140,7 +140,7 @@ class CourseManager extends AbstractFullService
         return count($courseEvents);
     }
 
-    public function getGoogleCalendar(): \App\Services\GoogleCalendarService
+    public function getGoogleCalendar(): GoogleCalendarService
     {
         return $this->googleCalendar;
     }

@@ -11,7 +11,7 @@ class SchoolList
     public const SCHOOL_SELECTED = 'selected';
     public const SCHOOL_LIST = 'list';
 
-    public function __construct(public ?array $list, public ?\App\Entity\School $selected)
+    public function __construct(public ?array $list, public ?School $selected)
     {
     }
 }

@@ -178,7 +178,7 @@ class Course
     }
 
     /**
-     * @param \App\Entity\Teacher[]|\Doctrine\Common\Collections\Collection $teachers
+     * @param Teacher[]|Collection $teachers
      */
     public function setTeachers(ArrayCollection $teachers): self
     {
@@ -204,13 +204,13 @@ class Course
     /**
      * @return Collection|Student[]
      */
-    public function getStudents(): \Doctrine\Common\Collections\Collection
+    public function getStudents(): Collection
     {
         return $this->students;
     }
 
     /**
-     * @param \Doctrine\Common\Collections\Collection|\App\Entity\Student[] $students
+     * @param Collection|Student[] $students
      */
     public function setStudents(Collection $students): self
     {

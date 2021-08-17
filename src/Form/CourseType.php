@@ -43,7 +43,7 @@ class CourseType extends AbstractType
 
     protected ?int $classPeriodId = null;
 
-    public function getSchool(): ?\App\Entity\School
+    public function getSchool(): ?School
     {
         return $this->school;
     }
@@ -55,7 +55,7 @@ class CourseType extends AbstractType
         return $this;
     }
 
-    public function getPeriod(): ?\App\Entity\Period
+    public function getPeriod(): ?Period
     {
         return $this->period;
     }

@@ -318,7 +318,7 @@ class Operation
         return $this;
     }
 
-    public function getAccount(): \App\Entity\Account
+    public function getAccount(): Account
     {
         return $this->account;
     }

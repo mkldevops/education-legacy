@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\AppealCourse;
 use App\Entity\ClassPeriod;
@@ -43,7 +45,7 @@ class ClassPeriodController extends AbstractBaseController
      *
      * @throws \App\Exception\InvalidArgumentException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
+    #[Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
     public function current(ClassPeriodManager $manager) : Response
     {
         $this->checkClasses();
@@ -74,7 +76,7 @@ class ClassPeriodController extends AbstractBaseController
      *
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '', name: 'app_class_period_index', methods: ['GET'])]
+    #[Route(path: '', name: 'app_class_period_index', methods: ['GET'])]
     public function index(ClassPeriodManager $manager, int $page = 1, string $search = '') : Response
     {
         $this->checkClasses();
@@ -114,8 +116,8 @@ class ClassPeriodController extends AbstractBaseController
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_class_period_create', methods: ['POST'])]
-    public function create(Request $request) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/create', name: 'app_class_period_create', methods: ['POST'])]
+    public function create(Request $request) : Response
     {
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
@@ -158,8 +160,8 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * Displays a form to create a new ClassPeriod entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_class_period_new', methods: ['GET'])]
-    public function new() : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/new', name: 'app_class_period_new', methods: ['GET'])]
+    public function new() : Response
     {
         $this->checkClasses();
         $classperiod = new ClassPeriod();
@@ -176,7 +178,7 @@ class ClassPeriodController extends AbstractBaseController
      * @throws LogicException
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_class_period_show', methods: ['GET'], options: ['expose' => true])]
+    #[Route(path: '/show/{id}', name: 'app_class_period_show', methods: ['GET'], options: ['expose' => true])]
     public function show(ClassPeriod $classperiod) : Response
     {
         $manager = $this->getDoctrine()->getManager();
@@ -190,7 +192,7 @@ class ClassPeriodController extends AbstractBaseController
         ]);
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_class_period_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_class_period_edit', methods: ['GET'])]
     public function edit(ClassPeriod $classPeriod) : Response
     {
         $editForm = $this->createEditForm($classPeriod);
@@ -208,7 +210,7 @@ class ClassPeriodController extends AbstractBaseController
         ])->add('submit', SubmitType::class, ['label' => 'Update']);
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_class_period_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/update/{id}', name: 'app_class_period_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, ClassPeriod $classPeriod) : Response
     {
         $editForm = $this->createEditForm($classPeriod);
@@ -225,8 +227,8 @@ class ClassPeriodController extends AbstractBaseController
         ]);
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_class_period_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}', name: 'app_class_period_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
             ->handleRequest($request);
@@ -265,7 +267,7 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
+    #[Route(path: '/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
     public function add(ClassSchool $classSchool, Period $period) : RedirectResponse
     {
         $em = $this->getDoctrine()->getManager();
@@ -287,7 +289,7 @@ class ClassPeriodController extends AbstractBaseController
         return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show-student/{id}', name: 'app_class_period_show_student', methods: ['GET'])]
+    #[Route(path: '/show-student/{id}', name: 'app_class_period_show_student', methods: ['GET'])]
     public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
     {
         return $this->render('class_period/showStudent.html.twig', [
@@ -299,7 +301,7 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/print-list-student/{id}', name: 'app_class_period_print_list_student', methods: ['GET'])]
+    #[Route(path: '/print-list-student/{id}', name: 'app_class_period_print_list_student', methods: ['GET'])]
     public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager) : Response
     {
         $packageStudents = $manager->getPackageStudent($classPeriod);
@@ -319,9 +321,14 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * @ParamConverter("from", options={"format": "Y-m-d"})
      *
-     * @param \DateTime|\DateTimeImmutable $from
+     * @param DateTime|DateTimeImmutable $from
      * @throws Exception
+     */
+    /**
+     * @ParamConverter("from", options={"format": "Y-m-d"})
      *
+     * @param DateTime|DateTimeImmutable $from
+     * @throws Exception
      */
     #[Route(
         '/print-appeal-student/{id}/{page}/{from}',
@@ -333,7 +340,7 @@ class ClassPeriodController extends AbstractBaseController
         ClassPeriod        $classPeriod,
         ClassPeriodManager $manager,
         int                $page = 1,
-        \DateTimeInterface $from = null
+        DateTimeInterface $from = null
     ): Response {
         $from = $from ?? new DateTime();
         $students = $manager->getStudentsInClassPeriod($classPeriod);

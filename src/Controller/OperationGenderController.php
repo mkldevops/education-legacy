@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @IsGranted("ROLE_ACCOUNTANT")
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/operation-gender')]
+#[Route(path: '/operation-gender')]
 class OperationGenderController extends AbstractBaseController
 {
     /**
@@ -31,8 +31,8 @@ class OperationGenderController extends AbstractBaseController
      *
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_operation_gender_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = '') : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/list/{page}/{search}', name: 'app_operation_gender_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = '') : Response
     {
         $em = $this->getDoctrine()->getManager();
         $count = $em
@@ -71,7 +71,7 @@ class OperationGenderController extends AbstractBaseController
      *
      * @return Form|FormInterface
      */
-    private function createSearchForm(string $q = ''): \Symfony\Component\Form\FormInterface
+    private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
 
@@ -87,7 +87,7 @@ class OperationGenderController extends AbstractBaseController
     /**
      * Creates a new OperationGender entity.
      */
-    public function create(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function create(Request $request): RedirectResponse|Response
     {
         $operationGender = new OperationGender();
         $form = $this->createCreateForm($operationGender);
@@ -113,7 +113,7 @@ class OperationGenderController extends AbstractBaseController
      *
      * @param OperationGender $operationGender The entity
      */
-    private function createCreateForm(OperationGender $operationGender): \Symfony\Component\Form\FormInterface
+    private function createCreateForm(OperationGender $operationGender): FormInterface
     {
         $form = $this->createForm(new OperationGenderType(), $operationGender, [
             'action' => $this->generateUrl('app_operation_gender_create'),
@@ -127,7 +127,7 @@ class OperationGenderController extends AbstractBaseController
     /**
      * Displays a form to create a new OperationGender entity.
      */
-    public function new(): \Symfony\Component\HttpFoundation\Response
+    public function new(): Response
     {
         $operationGender = new OperationGender();
         $form = $this->createCreateForm($operationGender);
@@ -140,7 +140,7 @@ class OperationGenderController extends AbstractBaseController
     /**
      * Finds and displays a OperationGender entity.
      */
-    public function show(OperationGender $operationGender): \Symfony\Component\HttpFoundation\Response
+    public function show(OperationGender $operationGender): Response
     {
         return $this->render('OperationGender:show.html.twig', [
             'operationgender' => $operationGender,
@@ -149,7 +149,7 @@ class OperationGenderController extends AbstractBaseController
     /**
      * Displays a form to edit an existing OperationGender entity.
      */
-    public function edit(Request $request, OperationGender $operationGender): \Symfony\Component\HttpFoundation\Response
+    public function edit(Request $request, OperationGender $operationGender): Response
     {
         $editForm = $this->createEditForm($operationGender);
         $editForm->handleRequest($request);
@@ -172,7 +172,7 @@ class OperationGenderController extends AbstractBaseController
      *
      * @param OperationGender $operationGender The entity
      */
-    private function createEditForm(OperationGender $operationGender): \Symfony\Component\Form\FormInterface
+    private function createEditForm(OperationGender $operationGender): FormInterface
     {
         $form = $this->createForm(new OperationGenderType(), $operationGender, [
             'action' => $this->generateUrl('app_operation_gender_update', ['id' => $operationGender->getId()]),
@@ -188,7 +188,7 @@ class OperationGenderController extends AbstractBaseController
      *
      * @param $id
      */
-    public function update(Request $request, $id): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function update(Request $request, $id): RedirectResponse|Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -219,7 +219,7 @@ class OperationGenderController extends AbstractBaseController
      *
      * @param $id
      */
-    public function delete(Request $request, OperationGender $operationGender): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function delete(Request $request, OperationGender $operationGender): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($operationGender);
         $deleteForm->handleRequest($request);
@@ -244,7 +244,7 @@ class OperationGenderController extends AbstractBaseController
      *
      * @param mixed $id The entity id
      */
-    private function createDeleteForm(OperationGender $operationGender): \Symfony\Component\Form\FormInterface
+    private function createDeleteForm(OperationGender $operationGender): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_operation_gender_delete', ['id' => $operationGender->getId()]))
@@ -255,7 +255,7 @@ class OperationGenderController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    public function search(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 

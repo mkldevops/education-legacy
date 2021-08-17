@@ -182,7 +182,7 @@ class Structure
     /**
      * @return ArrayCollection|Account[]
      */
-    public function getAccounts(): \Doctrine\Common\Collections\Collection
+    public function getAccounts(): Collection
     {
         return $this->accounts;
     }
@@ -223,7 +223,7 @@ class Structure
     }
 
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection|\App\Entity\AccountSlip[] $accountSlips
+     * @param ArrayCollection|AccountSlip[] $accountSlips
      */
     public function setAccountSlips(Collection $accountSlips): self
     {

@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * AccountSlip controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/account-slip')]
+#[Route(path: '/account-slip')]
 class AccountSlipController extends AbstractBaseController
 {
     /**
@@ -35,7 +35,7 @@ class AccountSlipController extends AbstractBaseController
      *
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
+    #[Route(path: '/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = '') : Response
     {
         // Escape special characters and decode the search value.
@@ -63,7 +63,7 @@ class AccountSlipController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
-    private function getQuery(string $search): \Doctrine\ORM\QueryBuilder
+    private function getQuery(string $search): QueryBuilder
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -112,7 +112,7 @@ class AccountSlipController extends AbstractBaseController
      * @return RedirectResponse|Response
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_account_slip_create', methods: ['POST'])]
+    #[Route(path: '/create', name: 'app_account_slip_create', methods: ['POST'])]
     public function create(Request $request, TransferManager $transferManager) : Response
     {
         $accountSlip = new AccountSlip();
@@ -168,7 +168,7 @@ class AccountSlipController extends AbstractBaseController
      *
      * @throws Exception
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_account_slip_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_account_slip_new', methods: ['GET'])]
     public function new() : Response
     {
         $accountSlip = new AccountSlip();
@@ -181,7 +181,7 @@ class AccountSlipController extends AbstractBaseController
     /**
      * Finds and displays a AccountSlip entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
     public function show(AccountSlip $accountSlip) : Response
     {
         if (!$accountSlip) {
@@ -194,7 +194,7 @@ class AccountSlipController extends AbstractBaseController
     /**
      * Displays a form to edit an existing AccountSlip entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
     public function edit(AccountSlip $accountSlip) : Response
     {
         $editForm = $this->createEditForm($accountSlip);
@@ -225,7 +225,7 @@ class AccountSlipController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
+    #[Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
     public function update(Request $request, AccountSlip $accountSlip, TransferManager $transferManager) : Response
     {
         $editForm = $this->createEditForm($accountSlip);
@@ -266,7 +266,7 @@ class AccountSlipController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, AccountSlip $accountSlip) : Response
     {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
@@ -303,8 +303,8 @@ class AccountSlipController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_account_slip_search', methods: ['POST'])]
-    public function search(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse
+    #[Route(path: '/search', name: 'app_account_slip_search', methods: ['POST'])]
+    public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_account_slip_index', [
@@ -312,8 +312,8 @@ class AccountSlipController extends AbstractBaseController
             'search' => urlencode($all['form']['q']),
         ]));
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
-    public function setDocument(Request $request, AccountSlip $accountSlip, string $action) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
+    public function setDocument(Request $request, AccountSlip $accountSlip, string $action) : JsonResponse
     {
         $result = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();

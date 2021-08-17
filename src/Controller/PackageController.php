@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Package controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/package')]
+#[Route(path: '/package')]
 class PackageController extends AbstractBaseController
 {
     /**
@@ -28,7 +28,7 @@ class PackageController extends AbstractBaseController
      *
      * @throws NonUniqueResultException
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_package_index', methods: ['GET'])]
+    #[Route(path: '/list/{page}/{search}', name: 'app_package_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = '') : Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -74,7 +74,7 @@ class PackageController extends AbstractBaseController
     /**
      * Displays a form to create a new Package entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_package_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_package_new', methods: ['GET'])]
     public function new() : Response
     {
         $package = new Package();
@@ -110,7 +110,7 @@ class PackageController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_package_create', methods: ['POST'])]
+    #[Route(path: '/create', name: 'app_package_create', methods: ['POST'])]
     public function create(Request $request) : Response
     {
         $package = new Package();
@@ -141,7 +141,7 @@ class PackageController extends AbstractBaseController
     /**
      * Finds and displays a Package entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_package_show', methods: ['GET'])]
+    #[Route(path: '/show/{id}', name: 'app_package_show', methods: ['GET'])]
     public function show(Package $package) : Response
     {
         return $this->render('package/show.html.twig', [
@@ -151,7 +151,7 @@ class PackageController extends AbstractBaseController
     /**
      * Displays a form to edit an existing Package entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_package_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_package_edit', methods: ['GET'])]
     public function edit(Package $package) : Response
     {
         $editForm = $this->createEditForm($package);
@@ -186,7 +186,7 @@ class PackageController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{}id', name: 'app_package_update', methods: ['POST'])]
+    #[Route(path: '/update/{}id', name: 'app_package_update', methods: ['POST'])]
     public function update(Request $request, Package $package) : Response
     {
         $editForm = $this->createEditForm($package);
@@ -207,8 +207,8 @@ class PackageController extends AbstractBaseController
     /**
      * Deletes a Package entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_package_delete', methods: ['GET', 'POST'])]
-    public function delete(Request $request, Package $package) : \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/delete/{id}', name: 'app_package_delete', methods: ['GET', 'POST'])]
+    public function delete(Request $request, Package $package) : RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($package->getId())
             ->handleRequest($request);
@@ -234,7 +234,7 @@ class PackageController extends AbstractBaseController
      *
      * @param mixed $id The entity id
      */
-    private function createDeleteForm(int $id): \Symfony\Component\Form\FormInterface
+    private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->set($this->generateUrl('app_package_delete', ['id' => $id]))
@@ -245,7 +245,7 @@ class PackageController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_package_search', methods: ['POST'])]
+    #[Route(path: '/search', name: 'app_package_search', methods: ['POST'])]
     public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();

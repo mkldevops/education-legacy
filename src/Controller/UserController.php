@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,13 +13,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 /**
  * Class UserController.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/user')]
+#[Route(path: '/user')]
 class UserController extends EasyAdminController
 {
     public function __construct(private UserPasswordEncoderInterface $passwordEncoder)
     {
     }
-    public function persistEntity(\App\Entity\User $entity): void
+    public function persistEntity(User $entity): void
     {
         $this->encodePassword($entity);
     }
@@ -37,8 +38,8 @@ class UserController extends EasyAdminController
     {
         $this->encodePassword($entity);
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/profile', name: 'app_user_profile')]
-    public function profile() : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/profile', name: 'app_user_profile')]
+    public function profile() : Response
     {
         return $this->render('user/profile.html.twig', [
             'controller_name' => 'UserController',

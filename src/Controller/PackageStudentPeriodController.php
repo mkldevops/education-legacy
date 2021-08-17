@@ -18,13 +18,13 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * PackageStudentPeriod controller.
  */
-#[\Symfony\Component\Routing\Annotation\Route(path: '/package-student-period')]
+#[Route(path: '/package-student-period')]
 class PackageStudentPeriodController extends AbstractBaseController
 {
     /**
      * Lists all PackageStudentPeriod entities.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/list/{page}/{search}', name: 'app_package_student_period_index', methods: ['GET'])]
+    #[Route(path: '/list/{page}/{search}', name: 'app_package_student_period_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = '') : Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -88,7 +88,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_package_student_period_create', methods: ['POST'])]
+    #[Route(path: '/create', name: 'app_package_student_period_create', methods: ['POST'])]
     public function create(Request $request) : Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -133,7 +133,7 @@ class PackageStudentPeriodController extends AbstractBaseController
     /**
      * Displays a form to create a new PackageStudentPeriod entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/new', name: 'app_package_student_period_new', methods: ['GET'])]
+    #[Route(path: '/new', name: 'app_package_student_period_new', methods: ['GET'])]
     public function new() : Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -146,8 +146,8 @@ class PackageStudentPeriodController extends AbstractBaseController
     /**
      * Finds and displays a PackageStudentPeriod entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/show/{id}', name: 'app_package_student_period_show', methods: ['GET'])]
-    public function show(PackageStudentPeriod $packageStudentPeriod) : \Symfony\Component\HttpFoundation\Response
+    #[Route(path: '/show/{id}', name: 'app_package_student_period_show', methods: ['GET'])]
+    public function show(PackageStudentPeriod $packageStudentPeriod) : Response
     {
         return $this->render('package_student_period/show.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
@@ -156,7 +156,7 @@ class PackageStudentPeriodController extends AbstractBaseController
     /**
      * Displays a form to edit an existing PackageStudentPeriod entity.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/edit/{id}', name: 'app_package_student_period_edit', methods: ['GET'])]
+    #[Route(path: '/edit/{id}', name: 'app_package_student_period_edit', methods: ['GET'])]
     public function edit(PackageStudentPeriod $packageStudentPeriod) : Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
@@ -190,7 +190,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_package_student_period_update', methods: ['PUT', 'POST'])]
+    #[Route(path: '/update/{id}', name: 'app_package_student_period_update', methods: ['PUT', 'POST'])]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod) : Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
@@ -212,7 +212,7 @@ class PackageStudentPeriodController extends AbstractBaseController
      *
      * @return RedirectResponse|Response
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/delete/{id}', name: 'app_package_student_period_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/delete/{id}', name: 'app_package_student_period_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, PackageStudentPeriod $packageStudentPeriod) : Response
     {
         $deleteForm = $this->createDeleteForm($packageStudentPeriod->getId());
@@ -250,8 +250,8 @@ class PackageStudentPeriodController extends AbstractBaseController
     /**
      * Redirect the the list URL with the search parameter.
      */
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/search', name: 'app_package_student_period_search', methods: ['GET'])]
-    public function search(Request $request) : \Symfony\Component\HttpFoundation\RedirectResponse
+    #[Route(path: '/search', name: 'app_package_student_period_search', methods: ['GET'])]
+    public function search(Request $request) : RedirectResponse
     {
         $all = $request->request->all();
         return $this->redirect($this->generateUrl('app_package_student_period_index', [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Form\FamilyType;
@@ -16,11 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 
-#[\Symfony\Component\Routing\Annotation\Route(path: '/api/family', options: ['expose' => true])]
+#[Route(path: '/api/family', options: ['expose' => true])]
 class FamilyApiController extends AbstractBaseController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/create', name: 'app_api_family_create', methods: ['POST'])]
-    public function create(Request $request) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/create', name: 'app_api_family_create', methods: ['POST'])]
+    public function create(Request $request) : JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
@@ -75,8 +76,8 @@ class FamilyApiController extends AbstractBaseController
         $em->persist($family);
         $em->flush();
     }
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Family $family, Serializer $serializer) : \Symfony\Component\HttpFoundation\JsonResponse
+    #[Route(path: '/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Family $family, Serializer $serializer) : JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();

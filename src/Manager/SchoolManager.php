@@ -23,7 +23,7 @@ class SchoolManager extends AbstractFullService
     /**
      * @throws AppException
      */
-    public function getEntitySchool(): ?\App\Entity\School
+    public function getEntitySchool(): ?School
     {
         return $this->repository->find($this->getSchool()->getId());
     }
