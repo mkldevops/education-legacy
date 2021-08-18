@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Exception\AppException;
 use App\Repository\StudentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
@@ -95,9 +96,6 @@ class Student
      */
     private array|Collection $comments;
 
-    /**
-     * @throws Exception
-     */
     public function __construct()
     {
         $this->setPerson(new Person())
@@ -110,9 +108,6 @@ class Student
         $this->comments = new ArrayCollection();
     }
 
-    /**
-     * @throws Exception
-     */
     public function setEnable(bool $enable): static
     {
         $this->enable = $enable;
@@ -150,45 +145,36 @@ class Student
 
     public function setGender(string $gender): static
     {
-        $this->person->setGender($gender);
+        $this->person?->setGender($gender);
 
         return $this;
     }
 
-    /**
-     * Get name.
-     */
     public function getGender(): ?string
     {
-        return $this->person->getGender();
+        return $this->person?->getGender();
     }
 
-    /**
-     * Get name.
-     */
     public function getGenderCode(): ?string
     {
-        return $this->person->getGender();
+        return $this->person?->getGender();
     }
 
-    /**
-     * Set forname.
-     */
     public function setForname(string $forname): static
     {
-        $this->person->setForname($forname);
+        $this->person?->setForname($forname);
 
         return $this;
     }
 
     public function getForname(): ?string
     {
-        return $this->person->getForname();
+        return $this->person?->getForname();
     }
 
     public function setBirthday(DateTimeInterface $birthday): static
     {
-        $this->person->setBirthday($birthday);
+        $this->person?->setBirthday($birthday);
 
         return $this;
     }
@@ -200,7 +186,7 @@ class Student
 
     public function setBirthplace(string $birthplace): static
     {
-        $this->person->setBirthplace($birthplace);
+        $this->person?->setBirthplace($birthplace);
 
         return $this;
     }
@@ -236,7 +222,7 @@ class Student
 
     public function setPostcode(string $postcode): self
     {
-        $this->person->setZip($postcode);
+        $this->person?->setZip($postcode);
 
         return $this;
     }
@@ -246,22 +232,14 @@ class Student
         return $this->getZip();
     }
 
-    /**
-     * Get zip.
-     */
     public function getZip(): ?string
     {
-        $zip = $this->person->getZip();
-        if (empty($zip) && !empty($this->person->getFamily())) {
-            $zip = $this->person->getFamily()->getZip();
-        }
-
-        return $zip;
+        return $this->person?->getZip() ?? $this->person?->getFamily()?->getZip();
     }
 
     public function setTown(string $town): self
     {
-        $this->person->setCity($town);
+        $this->person?->setCity($town);
 
         return $this;
     }
@@ -273,67 +251,41 @@ class Student
 
     public function getCity(): ?string
     {
-        $city = $this->person->getCity();
-
-        if (empty($city) && !empty($this->person->getFamily())) {
-            $city = $this->person->getFamily()->getCity();
-        }
-
-        return $city;
+        return $this->person?->getCity() ?? $this->person?->getFamily()?->getCity();
     }
 
-    /**
-     * Set phone.
-     *
-     *
-     */
     public function setPhone(string $phone, bool $add = false): static
     {
-        $this->person->setPhone($phone, $add);
+        $this->person?->setPhone($phone, $add);
 
         return $this;
     }
 
-    /**
-     * Get phone.
-     */
     public function getPhone(): ?string
     {
-        return $this->person->getPhone();
+        return $this->person?->getPhone();
     }
 
     /**
-     * Add number phone.
-     *
-     * @param $phone
-     *
-     *
-     * @throws Exception
+     * @throws AppException
      */
-    public function addPhone($phone): static
+    public function addPhone(string $phone): static
     {
-        $this->person->addPhone($phone);
+        $this->person?->addPhone($phone);
 
         return $this;
     }
 
     /**
-     * Add number phone.
-     *
-     * @param $key
-     *
-     * @throws Exception
+     * @throws AppException
      */
     public function removePhone(string $key): self
     {
-        $this->person->removePhone($key);
+        $this->person?->removePhone($key);
 
         return $this;
     }
-
-    /**
-     * @return mixed[]
-     */
+    
     public function getListPhones(): array
     {
         return array_unique(array_merge(
@@ -351,14 +303,14 @@ class Student
 
     public function setEmail(string $email): static
     {
-        $this->person->setEmail($email);
+        $this->person?->setEmail($email);
 
         return $this;
     }
 
     public function getEmail(): ?string
     {
-        return $this->person->getEmail();
+        return $this->person?->getEmail();
     }
 
     public function getLastSchool(): ?string
@@ -387,14 +339,14 @@ class Student
 
     public function setImage(Document $image): self
     {
-        $this->person->setImage($image);
+        $this->person?->setImage($image);
 
         return $this;
     }
 
     public function getImage(): ?Document
     {
-        return $this->person->getImage();
+        return $this->person?->getImage();
     }
 
     public function getStatusLabel(): string
@@ -404,7 +356,7 @@ class Student
 
     public function getAge(): ?int
     {
-        return $this->person->getAge();
+        return $this->person?->getAge();
     }
 
     public function addClassPeriod(ClassPeriodStudent $classPeriod): self
@@ -414,9 +366,6 @@ class Student
         return $this;
     }
 
-    /**
-     * Remove classPeriods.
-     */
     public function removeClassPeriod(ClassPeriodStudent $classPeriod): void
     {
         $this->classPeriods->removeElement($classPeriod);

@@ -14,7 +14,7 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @author  fardus
  */
-class OperationGenderFixtures extends AppFixtures implements DependentFixtureInterface
+class OperationGenderFixtures extends AbstractAppFixtures implements DependentFixtureInterface
 {
     /**
      * @throws AppException

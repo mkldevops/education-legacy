@@ -12,8 +12,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntity;
+use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -21,10 +24,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Course
 {
-    use IdEntity;
-    use CommentEntity;
+    use IdEntityTrait;
+    use CommentEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     /**

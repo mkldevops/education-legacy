@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * PHP version: 7.1.
- *
- * @author fardus
- */
-
 namespace App\Manager;
 
 use App\Entity\Account;
@@ -16,24 +10,39 @@ use App\Entity\Operation;
 use App\Entity\OperationGender;
 use App\Entity\TypeOperation;
 use App\Exception\AppException;
+use App\Fetcher\AccountableFetcher;
 use App\Model\TransferModel;
 use App\Services\GoogleDriveService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use OfxParser\Entities\BankAccount;
 use OfxParser\Entities\Transaction;
 use OfxParser\Ofx;
 use OfxParser\Parser;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Security\Core\Security;
 
-class OFXManager extends AccountManager
+class OFXManager
 {
     public const STATUS_ALREADY = 'already';
     public const STATUS_ADD_OPERATION = 'add_operation';
     public const STATUS_ADD_TRANSFER = 'add_transfer';
 
-    private ?Account $accountTransfer = null;
 
-    private ?array $logs = null;
+    private Account $account;
+    private ?Account $accountTransfer = null;
+    private array $logs = [];
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
+        private OperationManager $operationManager,
+        private TransferManager $transferManager,
+        private AccountableFetcher $accountableFetcher,
+        private Security $security,
+    ) {
+    }
 
     /**
      * @throws AppException
@@ -70,7 +79,7 @@ class OFXManager extends AccountManager
             $count += count($bank->statement->transactions);
         }
 
-        return count($this->getLogs()) === $count;
+        return count($this->logs) === $count;
     }
 
     /**
@@ -109,18 +118,21 @@ class OFXManager extends AccountManager
         $reference = self::getReference($transaction);
 
         if (self::isTransfer($transaction->name)) {
-            $operation = $this->transferOperation($transaction, $reference, $gender);
+            $this->transferOperation($transaction, $reference, $gender);
         } else {
-            $type = $this->findTypeOperationByCode(TypeOperation::TYPE_CODE_TO_DEFINE);
+            $type = $this->accountableFetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_TO_DEFINE);
 
             $operation = OperationManager::createOperationOfx($transaction)
                 ->setReference($reference)
                 ->setAccount($this->account)
                 ->setUniqueId($transaction->uniqueId)
                 ->setTypeOperation($type)
-                ->setAuthor($this->getUser())
-                ->setPublisher($this->getUser())
                 ->setOperationGender($gender);
+
+            if ($user = $this->security->getUser()) {
+                $operation->setAuthor($user)
+                    ->setPublisher($user);
+            }
 
             try {
                 $this->entityManager->persist($operation);
@@ -168,26 +180,28 @@ class OFXManager extends AccountManager
         return $gender;
     }
 
-    protected static function getReference(Transaction $transaction): ?string
+    protected static function getReference(Transaction $transaction): string
     {
         $text = trim($transaction->name) . ' ' . trim($transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
 
         $reference = '';
-        if (preg_match('#(?<reference>\d+)#', $text, $mathes)) {
-            $reference = $mathes['reference'];
+        if (preg_match('#(?<reference>\d+)#', $text, $matches)) {
+            $reference = $matches['reference'];
         }
 
         return $reference;
     }
 
+
     /**
-     *
      * @throws AppException
-     * @throws Exception
      */
-    private function transferOperation(Transaction $transaction, ?string $reference, ?OperationGender $gender): ?Operation
-    {
+    private function transferOperation(
+        Transaction $transaction,
+        string $reference,
+        ?OperationGender $gender
+    ): ?Operation {
         $transferModel = (new TransferModel())
             ->setAccountSlip(new AccountSlip())
             ->setAccountCredit($this->account)
@@ -200,8 +214,7 @@ class OFXManager extends AccountManager
             ->setAmount($transaction->amount)
             ->setGender($gender);
 
-        $accountSlip = $this->transferManager
-            ->createByTransferModel($transferModel);
+        $accountSlip = $this->transferManager->createByTransferModel($transferModel);
 
         if ($accountSlip->getOperationCredit()?->getAccount() === $this->account) {
             $operation = $accountSlip->getOperationCredit();
@@ -219,16 +232,6 @@ class OFXManager extends AccountManager
         return $this->logs;
     }
 
-    /**
-     * @param mixed[]|null $logs
-     */
-    public function setLogs(array $logs): static
-    {
-        $this->logs = $logs;
-
-        return $this;
-    }
-
     public function getAccountTransfer(): ?Account
     {
         return $this->accountTransfer;
@@ -237,6 +240,13 @@ class OFXManager extends AccountManager
     public function setAccountTransfer(Account $accountTransfer): static
     {
         $this->accountTransfer = $accountTransfer;
+
+        return $this;
+    }
+
+    public function setAccount(Account $account): static
+    {
+        $this->account = $account;
 
         return $this;
     }

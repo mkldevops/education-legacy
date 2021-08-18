@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 04/06/2016
- * Time: 20:37.
- */
 
 namespace App\Manager;
 
@@ -19,15 +13,16 @@ use App\Repository\PeriodRepository;
 use App\Services\AbstractFullService;
 use Fardus\Traits\Symfony\Manager\SessionTrait;
 
-class PeriodManager extends AbstractFullService
+class PeriodManager
 {
     use SessionTrait;
 
-    public ?PeriodRepository $repository = null;
+    public function __construct(private PeriodRepository $repository)
+    {
+    }
 
-    /**
-     * @throws PeriodException
-     */
+
+
     public function findCurrentPeriod(): Period
     {
         return $this->repository->getCurrentPeriod();
@@ -36,8 +31,12 @@ class PeriodManager extends AbstractFullService
     /**
      * @throws PeriodException
      */
-    public function findPeriod(int $id): Period
+    public function findPeriod(?int $id): Period
     {
+        if ($id === null) {
+            throw new PeriodException('Period id cannot be null');
+        }
+
         $period = $this->repository->find($id);
         if (!$period instanceof Period) {
             throw new PeriodException(sprintf('Not found Period %d', $id));
@@ -59,14 +58,6 @@ class PeriodManager extends AbstractFullService
 
         $current = $this->repository->getCurrentPeriod();
         $this->session->set('period', new PeriodsList($list, $current, $current));
-    }
-
-    /**
-     * @required
-     */
-    public function setRepository(?PeriodRepository $repository): void
-    {
-        $this->repository = $repository;
     }
 
     /**

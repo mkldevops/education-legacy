@@ -20,8 +20,6 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -93,11 +91,6 @@ class AccountSlip
             ->documents = new ArrayCollection();
     }
 
-    #[ArrayShape([
-        self::GENDER_BANK_TRANSFER => 'string',
-        self::GENDER_PAYMENT_SPECIES => 'string',
-        self::GENDER_REBATE_CHECK => 'string',
-        self::GENDER_CASH_WITHDRAWAL => 'string',])]
     public static function getGenders(): array
     {
         return [
@@ -130,7 +123,6 @@ class AccountSlip
         return $this->id;
     }
 
-    #[Pure]
     public function getErrors(): array
     {
         $errors = [];

@@ -9,7 +9,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use ReflectionClass;
 use Symfony\Component\Yaml\Parser;
 
-abstract class AppFixtures extends Fixture
+abstract class AbstractAppFixtures extends Fixture
 {
     public const TODEFINE = 'todefine';
 
@@ -28,7 +28,7 @@ abstract class AppFixtures extends Fixture
     /**
      * @throws AppException
      */
-    public static function getData(): ?array
+    public static function getData(): array
     {
         $pathFile = self::getPath();
         if (!file_exists($pathFile)) {
@@ -37,12 +37,9 @@ abstract class AppFixtures extends Fixture
 
         $yaml = new Parser();
 
-        return $yaml->parseFile($pathFile);
+        return $yaml->parseFile($pathFile) ?? [];
     }
 
-    /**
-     * @return string|string[]
-     */
     private static function getPath(): string
     {
         $name = (new ReflectionClass(static::class))->getShortName();

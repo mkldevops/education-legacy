@@ -9,20 +9,21 @@ use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use App\Repository\StudentCommentRepository;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\StudentCommentRepository")
+ * @ORM\Entity(repositoryClass=StudentCommentRepository::class)
  */
 class StudentComment
 {
     public ?\DateTime $created = null;
-    use IdEntity;
+    use IdEntityTrait;
     use StudentEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     public const COMMENT_APPRECIATION = 'success';
@@ -65,9 +66,6 @@ class StudentComment
         return $this->text;
     }
 
-    /**
-     * Set text.
-     */
     public function setText(string $text): static
     {
         $this->text = $text;
@@ -75,19 +73,11 @@ class StudentComment
         return $this;
     }
 
-    /**
-     * Get type.
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Set type.
-     *
-     *
-     */
     public function setType(string $type): static
     {
         $this->type = $type;
@@ -95,42 +85,12 @@ class StudentComment
         return $this;
     }
 
-    /**
-     * Set created.
-     *
-     * @param DateTime $created
-     */
-    public function setCreated(DateTimeInterface $created): static
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     */
-    public function getCreated(): ?\DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * Get student.
-     *
-     * @return Student|null
-     */
-    public function getStudent()
+    public function getStudent() : ?Student
     {
         return $this->student;
     }
 
-    /**
-     * Set student.
-     *
-     * @return StudentComment
-     */
-    public function setStudent(Student $student)
+    public function setStudent(Student $student) : static
     {
         $this->student = $student;
 

@@ -25,10 +25,12 @@ abstract class AbstractBaseController extends AbstractController
     use PeriodManagerTrait;
     use SchoolManagerTrait;
 
+    /**
+     * @throws AppException
+     */
     protected function getEntitySchool(): School
     {
-        return $this->getRepository(School::class)
-            ->find($this->getSchool()->getId());
+        return $this->schoolManager->getEntitySchool();
     }
 
     protected function getRepository(string $repository): ObjectRepository
@@ -41,7 +43,10 @@ abstract class AbstractBaseController extends AbstractController
         return $this->getDoctrine()->getManager();
     }
 
-    protected function getSchool(): ?School
+    /**
+     * @throws AppException
+     */
+    protected function getSchool(): School
     {
         return $this->schoolManager->getSchool();
     }

@@ -236,12 +236,13 @@ class StudentController extends AbstractBaseController
             'formFamily' => $formFamily->createView(),
         ]);
     }
+
     /**
      *
      * @throws InvalidArgumentException
      * @throws AppException
      */
-    #[Route(path: '/show/{id}', methods: ['GET'], name: 'app_student_show')]
+    #[Route(path: '/show/{id}', name: 'app_student_show', methods: ['GET'])]
     public function show(Student $student, DocumentManager $documentManager): Response
     {
         $formComment = $this->createCreateCommentForm(new studentComment(), $student);
@@ -258,6 +259,7 @@ class StudentController extends AbstractBaseController
             'formComment' => $formComment->createView(),
         ]);
     }
+
     private function createCreateCommentForm(StudentComment $comment, Student $student): FormInterface
     {
         return $this->createForm(StudentCommentSimpleType::class, $comment, [
@@ -266,7 +268,8 @@ class StudentController extends AbstractBaseController
             'attr' => ['id' => 'student_addcomment'],
         ]);
     }
-    #[Route(path: '/edit/{id}', methods: ['GET'], name: 'app_student_edit')]
+
+    #[Route(path: '/edit/{id}', name: 'app_student_edit', methods: ['GET'])]
     public function edit(Student $student, FamilyApiController $apiController): Response
     {
         $form = $this->createEditForm($student);
@@ -277,6 +280,7 @@ class StudentController extends AbstractBaseController
             'student' => $student,
         ]);
     }
+
     private function createEditForm(Student $student): FormInterface
     {
         $form = $this->createForm(StudentType::class, $student, [
@@ -288,10 +292,8 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
-    /**
-     * Edits an existing Teacher entity.
-     */
-    #[Route(path: '/update/{id}', methods: ['POST', 'PUT'], name: 'app_student_update')]
+
+    #[Route(path: '/update/{id}', name: 'app_student_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Student $student): Response
     {
         $editForm = $this->createEditForm($student)
@@ -314,6 +316,7 @@ class StudentController extends AbstractBaseController
             'form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a Student entity.
      *
@@ -322,11 +325,11 @@ class StudentController extends AbstractBaseController
     #[Route(path: '/delete/{id}')]
     public function delete(Request $request, Student $student = null): RedirectResponse|Response
     {
-        $deleteForm = $this->createDeleteForm($student->getId());
-        $deleteForm->handleRequest($request);
-        if (empty($student)) {
+        if ($student === null) {
             throw $this->createNotFoundException('Unable to find Account entity.');
         }
+        $deleteForm = $this->createDeleteForm($student->getId());
+        $deleteForm->handleRequest($request);
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
@@ -347,11 +350,7 @@ class StudentController extends AbstractBaseController
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-    /**
-     * Creates a form to delete a Account entity by id.
-     *
-     * @param mixed $id The entity id
-     */
+
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
@@ -363,24 +362,27 @@ class StudentController extends AbstractBaseController
             ])
             ->getForm();
     }
-    /**
-     *
-     * @throws Exception
-     */
-    #[Route(path: '/edit-status/{id}', methods: ['POST', 'GET'], name: 'app_student_edit_status', options: ['expose' => true])]
-    public function editStatus(Request $request, Student $student): RedirectResponse|JsonResponse
+
+
+    #[Route(
+        path: '/edit-status/{id}',
+        name: 'app_student_edit_status',
+        options: ['expose' => true],
+        methods: ['POST', 'GET']
+    )]
+    public function editStatus(Request $request, Student $student, EntityManagerInterface $em): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $student->setEnable((bool)$request->get('enable'));
+        $student->setEnable((bool) $request->get('enable'));
         $em->persist($student);
         $em->flush();
-        $redirectRequest = $request->get('redirect', false);
-        if ((bool)$redirectRequest) {
-            $this->addFlash('success', 'The status student is updated');
 
+        $redirectRequest = (bool) $request->get('redirect', false);
+        if ($redirectRequest) {
+            $this->addFlash('success', 'The status student is updated');
             return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
         }
-        return new JsonResponse([
+
+        return $this->json([
             'success' => true,
             'enable' => $student->getEnable(),
             'form' => $request->get('enable'),

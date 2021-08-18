@@ -161,7 +161,7 @@ class Operation
         return $this->typeOperation;
     }
 
-    public function setTypeOperation(TypeOperation $typeOperation): self
+    public function setTypeOperation(?TypeOperation $typeOperation): self
     {
         $this->typeOperation = $typeOperation;
 

@@ -34,7 +34,7 @@ class OperationApiController extends AbstractBaseController
                 ->setMessage('Operation updated successfully')
                 ->setData(OperationManager::getData($operation));
         } catch (Exception $e) {
-            $result->setMessage($e->getMessage());
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
         return ResponseModel::jsonResponse($result);
     }

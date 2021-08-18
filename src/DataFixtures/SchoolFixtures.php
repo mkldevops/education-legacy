@@ -16,7 +16,7 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @author  fardus
  */
-class SchoolFixtures extends AppFixtures implements DependentFixtureInterface
+class SchoolFixtures extends AbstractAppFixtures implements DependentFixtureInterface
 {
     /**
      * @throws AppException

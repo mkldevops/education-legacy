@@ -11,39 +11,58 @@ use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Entity\Student;
+use App\Exception\AppException;
+use App\Manager\Interfaces\ClassPeriodManagerInterface;
+use App\Repository\ClassPeriodRepository;
+use App\Repository\ClassPeriodStudentRepository;
+use App\Repository\CourseRepository;
+use App\Repository\PackageStudentPeriodRepository;
+use App\Repository\StudentRepository;
 use App\Services\AbstractFullService;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Security;
 
-class ClassPeriodManager extends AbstractFullService
+class ClassPeriodManager implements ClassPeriodManagerInterface
 {
-    public function findClassPeriod($name, Period $period, School $school): ?ClassPeriod
-    {
-        $classPeriod = null;
-
-        try {
-            $classPeriod = $this->getEntityManager()
-                ->getRepository(ClassPeriod::class)
-                ->getClassPeriodByName($name, $period, $school);
-
-            $this->logger->debug(__FUNCTION__, ['classPeriod' => $classPeriod]);
-        } catch (NonUniqueResultException $e) {
-            $this->logger->error('Not found class period with name : ' . $name, ['name' => $name, 'period' => $period, 'school' => $school]);
-        }
-
-        return $classPeriod;
+    public function __construct(
+        private LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
+        private ClassPeriodRepository $classPeriodRepository,
+        private ClassPeriodStudentRepository $classPeriodStudentRepository,
+        private CourseRepository $courseRepository,
+        private StudentRepository $studentRepository,
+        private PackageStudentPeriodRepository $packageStudentPeriodRepository,
+        private Security $security,
+    ) {
     }
 
     /**
-     * Get Package Student.
-     *
+     * @throws AppException
+     */
+    public function findClassPeriod(string $name, Period $period, School $school): ?ClassPeriod
+    {
+        try {
+            $classPeriod = $this->classPeriodRepository->getClassPeriodByName($name, $period, $school);
+            $this->logger->debug(__FUNCTION__, ['classPeriod' => $classPeriod]);
+            return $classPeriod;
+        } catch (NonUniqueResultException $e) {
+            $msg = 'Not found class period with name : ' . $name;
+            $this->logger->error($msg, compact('name', 'period', 'school'));
+            throw new AppException($msg, (int) $e->getCode(), $e);
+        }
+    }
+
+    /**
      * @return PackageStudentPeriod[]
      *
      * @throws NonUniqueResultException
@@ -55,11 +74,9 @@ class ClassPeriodManager extends AbstractFullService
 
         foreach ($studentPeriods as $studentPeriod) {
             $id = $studentPeriod->getStudent()->getId();
-            $package = $this->getEntityManager()
-                ->getRepository(PackageStudentPeriod::class)
-                ->getCurrentPackageStudent($id, $classPeriod->getPeriod());
+            $package = $this->packageStudentPeriodRepository->getCurrentPackageStudent($id, $classPeriod->getPeriod());
 
-            if (!empty($package)) {
+            if ($package !== null) {
                 $packageStudents[$id] = $package;
             }
         }
@@ -68,28 +85,21 @@ class ClassPeriodManager extends AbstractFullService
     }
 
     /**
-     * Get Students In ClassPeriod.
-     *
-     * @return array|ClassPeriodStudent[]
+     * @return ClassPeriodStudent[]
+     * @throws Exception
      */
     public function getStudentsInClassPeriod(ClassPeriod $classPeriod): array
     {
-        return $this->getEntityManager()
-            ->getRepository(ClassPeriod::class)
-            ->getStudentToClassPeriod($classPeriod);
+        return $this->classPeriodRepository->getStudentToClassPeriod($classPeriod);
     }
 
     /**
-     * @param DateTime|DateTimeImmutable $from
-     * @return array|Course[]
-     *
+     * @return Course[]
      */
     public function getCourses(ClassPeriod $classPeriod, int $page, int $maxResult, DateTimeInterface $from): array
     {
         $offset = ($page - 1) * $maxResult;
-        $courses = $this->getEntityManager()
-            ->getRepository(Course::class)
-            ->getCourseOfClass($classPeriod, $from, $maxResult, $offset);
+        $courses = $this->courseRepository->getCourseOfClass($classPeriod, $from, $maxResult, $offset);
 
         if (empty($courses)) {
             $courses = array_fill(0, 17, []);
@@ -100,15 +110,11 @@ class ClassPeriodManager extends AbstractFullService
         return $courses;
     }
 
-    /**
-     * @param DateTime|DateTimeImmutable $from
-     */
     public function getNbCourses(ClassPeriod $classPeriod, DateTimeInterface $from): ?int
     {
         $courses = null;
         try {
-            $courses = (int)$this->getEntityManager()
-                ->getRepository(Course::class)
+            $courses = (int)$this->courseRepository
                 ->createQueryBuilder('c')
                 ->select('count(c.id)')
                 ->where('c.classPeriod = :classPeriod')
@@ -126,49 +132,42 @@ class ClassPeriodManager extends AbstractFullService
     }
 
     /**
-     * Treatment to add List Student.
-     *
-     *
      * @throws ORMException
+     * @throws AppException
      * @internal param array $students
      */
-    public function treatListStudent(array $studentsId, Period $period, ClassPeriod $classPeriod = null): bool
+    public function treatListStudent(array $studentsId, Period $period, ClassPeriod $classPeriod): bool
     {
-        if ($classPeriod instanceof ClassPeriod && $period->getId() !== $classPeriod->getPeriod()->getId()) {
-            throw new Exception('The current period is not availbale for update classPeriod');
+        if ($period->getId() !== $classPeriod->getPeriod()->getId()) {
+            throw new AppException('The current period is not available for update classPeriod');
         }
 
         if (!empty($studentsId)) {
-            $students = $this->entityManager
-                ->getRepository(Student::class)
-                ->findBy(['id' => $studentsId]);
+            $students = $this->studentRepository->findBy(['id' => $studentsId]);
 
             if (empty($students)) {
-                throw new Exception('Not found student id : ' . implode(',', $studentsId));
+                throw new AppException('Not found student id : ' . implode(',', $studentsId));
             }
 
             foreach ($students as $student) {
-                $currentClassPeriodStudent = $this->entityManager
-                    ->getRepository(ClassPeriodStudent::class)
+                $classPeriodStudent = $this->classPeriodStudentRepository
                     ->getCurrentClassPeriodStudent($student, $period);
 
-                if ($currentClassPeriodStudent instanceof ClassPeriodStudent) {
-                    $end = $currentClassPeriodStudent->getClassPeriod()->getPeriod()->getEnd();
-                    if ($end->getTimestamp() > time()) {
+                if ($classPeriodStudent instanceof ClassPeriodStudent) {
+                    $end = $classPeriodStudent->getClassPeriod()?->getPeriod()?->getEnd();
+                    if ($end === null || $end->getTimestamp() > time()) {
                         $end = new DateTime();
                     }
 
-                    $currentClassPeriodStudent->setEnd($end)
+                    $classPeriodStudent->setEnd($end)
                         ->setEnable(false)
-                        ->setAuthor($this->getUser())
+                        ->setAuthor($this->security->getUser())
                         ->setComment('Change for new class ' . $classPeriod->getClassSchool()->getName());
                 } else {
-                    $this->logger->debug("don't have a current ClassPeriodStudent", compact($student));
+                    $this->logger->debug("don't have a current ClassPeriodStudent", compact('student'));
                 }
 
-                if ($classPeriod instanceof ClassPeriod) {
-                    $this->persistClassPeriodStudent($classPeriod, $student);
-                }
+                $this->persistClassPeriodStudent($classPeriod, $student);
             }
 
             $this->entityManager->flush();
@@ -180,20 +179,18 @@ class ClassPeriodManager extends AbstractFullService
     }
 
     /**
-     * persist Class Period Student.
-     *
-     *
      * @throws ORMException
      * @throws Exception
      */
-    private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student): bool
+    private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student): void
     {
         $classPeriodStudent = new ClassPeriodStudent();
 
         $begin = new DateTime();
 
         // On vérifie si la date debut de la periode n'est pas encore passé
-        if ($classPeriod->getPeriod()->getBegin()->getTimestamp() > time()) {
+        $timestamp = $classPeriod->getPeriod()->getBegin()?->getTimestamp();
+        if ($timestamp !== null && $timestamp > time()) {
             $begin = $classPeriod->getPeriod()->getBegin();
         }
 
@@ -202,26 +199,18 @@ class ClassPeriodManager extends AbstractFullService
             ->setEnable(true)
             ->setEnd($classPeriod->getPeriod()->getEnd())
             ->setStudent($student)
-            ->setAuthor($this->getUser());
+            ->setAuthor($this->security->getUser());
 
-        $this->getEntityManager()
-            ->persist($classPeriodStudent);
-
-        return true;
+        $this->entityManager->persist($classPeriodStudent);
     }
 
     /**
-     * Get List Student Without.
-     *
-     *
      * @throws Exception
      * @return array<int, array<string, mixed>>
      */
     public function getListStudentWithout(Period $period, School $school): array
     {
-        $result = $this->getEntityManager()
-            ->getRepository(Student::class)
-            ->getListStudentsWithoutClassPeriod($period, $school);
+        $result = $this->studentRepository->getListStudentsWithoutClassPeriod($period, $school);
 
         $students = [];
         foreach ($result as $student) {
@@ -244,64 +233,5 @@ class ClassPeriodManager extends AbstractFullService
         }
 
         return $students;
-    }
-
-    /**
-     * getListOfCurrentPeriod.
-     *
-     * @return ClassPeriod[]
-     */
-    public function getListOfCurrentPeriod(Period $period, School $school)
-    {
-        return $this->getQueryBuilderList($school)
-            ->andWhere('cp.period = :period')
-            ->setParameter(':period', $period)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get Query Builder List.
-     *
-     *
-     *
-     * @internal param School|null $school
-     */
-    private function getQueryBuilderList(School $school, string $search = ''): QueryBuilder
-    {
-        return $this->getEntityManager()
-            ->getRepository(ClassPeriod::class)
-            ->createQueryBuilder('cp')
-            ->innerJoin('cp.classSchool', 'cs', Join::WITH, 'cs.school = :school')
-            ->setParameter(':school', $school)
-            ->where('cp.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
-            ->orWhere('cp.enable LIKE :status')
-            ->setParameter(':status', '%' . $search . '%');
-    }
-
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function count(School $school, string $search): int
-    {
-        return (int)$this->getQueryBuilderList($school, $search)
-            ->select('count(cp.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * @param $page
-     *
-     * @return mixed
-     */
-    public function getList(School $school, int $page, string $search)
-    {
-        return $this->getQueryBuilderList($school, $search)
-            ->setFirstResult(($page - 1) * 20)
-            ->setMaxResults(20)
-            ->getQuery()
-            ->getResult();
     }
 }

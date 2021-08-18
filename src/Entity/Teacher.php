@@ -9,9 +9,9 @@ use App\Traits\AuthorEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
-use Fardus\Traits\Symfony\Entity\NameEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -20,10 +20,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Teacher
 {
-    use IdEntity;
-    use NameEntity;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
 

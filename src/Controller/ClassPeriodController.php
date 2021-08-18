@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Manager\Interfaces\ClassPeriodManagerInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 use App\Controller\Base\AbstractBaseController;
@@ -40,16 +41,14 @@ class ClassPeriodController extends AbstractBaseController
     private const NB_DATES = 17;
 
     /**
-     * Lists all ClassPeriod entities.
-     *
-     *
      * @throws \App\Exception\InvalidArgumentException
+     * @throws \App\Exception\AppException
      */
     #[Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
-    public function current(ClassPeriodManager $manager): Response
+    public function current(ClassPeriodRepository $repository): Response
     {
         $this->checkClasses();
-        $classperiodList = $manager->getListOfCurrentPeriod($this->getPeriod(), $this->getSchool());
+        $classperiodList = $repository->getListOfCurrentPeriod($this->getPeriod(), $this->getSchool());
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
         ]);
@@ -71,21 +70,18 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     /**
-     * Lists all ClassPeriod entities.
-     *
-     *
      * @throws NonUniqueResultException
      */
     #[Route(path: '', name: 'app_class_period_index', methods: ['GET'])]
-    public function index(ClassPeriodManager $manager, int $page = 1, string $search = ''): Response
+    public function index(ClassPeriodRepository $repository, int $page = 1, string $search = ''): Response
     {
         $this->checkClasses();
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-        $count = $manager->count($this->getSchool(), $search);
+        $count = $repository->countClassesPeriod($this->getSchool(), $search);
         $pages = ceil($count / 20);
         // Get the entries of current page.
-        $classperiodList = $manager->getList($this->getSchool(), $page, $search);
+        $classperiodList = $repository->getList($this->getSchool(), $page, $search);
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
             'pages' => $pages,
@@ -290,7 +286,7 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     #[Route(path: '/show-student/{id}', name: 'app_class_period_show_student', methods: ['GET'])]
-    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManager $manager): Response
+    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManagerInterface $manager): Response
     {
         return $this->render('class_period/showStudent.html.twig', [
             'classperiod' => $classPeriod,
@@ -320,14 +316,6 @@ class ClassPeriodController extends AbstractBaseController
 
     /**
      * @ParamConverter("from", options={"format": "Y-m-d"})
-     *
-     * @param DateTime|DateTimeImmutable $from
-     * @throws Exception
-     */
-    /**
-     * @ParamConverter("from", options={"format": "Y-m-d"})
-     *
-     * @param DateTime|DateTimeImmutable $from
      * @throws Exception
      */
     #[Route(
@@ -336,7 +324,6 @@ class ClassPeriodController extends AbstractBaseController
         methods: ['GET']
     )]
     public function printAppealStudent(
-        Request $request,
         ClassPeriod $classPeriod,
         ClassPeriodManager $manager,
         int $page = 1,
@@ -372,8 +359,11 @@ class ClassPeriodController extends AbstractBaseController
      */
     #[Route('/delete-student/{id}/{student}', name: 'app_class_period_delete_student', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function deleteStudent(ClassPeriodRepository $repository, ClassPeriod $classPeriod, Student $student): RedirectResponse
-    {
+    public function deleteStudent(
+        ClassPeriodRepository $repository,
+        ClassPeriod $classPeriod,
+        Student $student
+    ): RedirectResponse {
         $list = $repository->getStudentToClassPeriod($classPeriod, $student);
 
         $classPeriodStudent = current($list);
@@ -385,7 +375,7 @@ class ClassPeriodController extends AbstractBaseController
 
             $this->addFlash('info', sprintf(
                 'L\'élève %s à été supprimé de la classe %s',
-                $student->getNameComplete(),
+                (string) $student->getNameComplete(),
                 $classPeriod->getName()
             ));
         } else {

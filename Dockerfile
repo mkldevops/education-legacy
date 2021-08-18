@@ -3,8 +3,19 @@ FROM php:8.0-apache
 RUN usermod -u 48 www-data && groupmod -g 48 www-data
 RUN mkdir -p -m 777 /opt/apache/sessiontmp5/
 
-RUN apt update && apt install -y zip curl vim mycli --no-install-recommends
-RUN apt install -y libmagickwand-dev libzip-dev git  --no-install-recommends
+RUN apt update && apt install -y zip curl vim mycli git --no-install-recommends
+RUN apt install -y zlib1g-dev libmagickwand-dev libzip-dev --no-install-recommends
+
+RUN apt-get update && apt-get install -y libpng-dev
+RUN apt-get install -y \
+    libwebp-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev libxpm-dev \
+    libfreetype6-dev
+
+RUN docker-php-ext-configure gd      --with-jpeg      --with-freetype
+
+RUN docker-php-ext-install gd
 
 # Install ZSH
 RUN apt install -y zsh

@@ -36,17 +36,15 @@ class PeriodRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
-    /**
-     * Get current period.
-     */
     public function getCurrentPeriod(): Period
     {
-        $aPeriod = $this->createQueryBuilder('per')
+        /** @var Period[] $periods */
+        $periods = $this->createQueryBuilder('per')
             ->where('CURRENT_TIMESTAMP() BETWEEN per.begin AND per.end')
             ->getQuery()
             ->getResult();
 
-        return current($aPeriod);
+        return current($periods);
     }
 
     /**

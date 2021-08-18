@@ -61,7 +61,7 @@ class TransferModel
         return $this->gender;
     }
 
-    public function setGender(OperationGender $gender): self
+    public function setGender(?OperationGender $gender): self
     {
         $this->gender = $gender;
 

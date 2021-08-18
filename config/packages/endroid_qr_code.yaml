@@ -1,10 +1,5 @@
 endroid_qr_code:
     default:
-        size: 300
-        margin: 10
-        encoding: 'UTF-8'
-        errorCorrectionLevel: 'low'
-        validateResult: false
         writer: Endroid\QrCode\Writer\PngWriter
         data: 'This is customized QR code'
         # Label is not implemented for SvgWriter

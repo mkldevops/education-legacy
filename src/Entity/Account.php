@@ -12,7 +12,6 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
@@ -81,7 +80,6 @@ class Account
      */
     private int $intervalOperationsAccountStatement = self::DEFAULT_INTERVAL_STATEMENT;
 
-    #[Pure]
     public function __construct()
     {
         $this->accountStatements = new ArrayCollection();

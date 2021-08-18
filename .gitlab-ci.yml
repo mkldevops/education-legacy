@@ -19,23 +19,17 @@ stages:
   - CodingStandards
   - UniTests
 
-phpcs:
-  stage: CodingStandards
-  script:
-    - phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src
-  allow_failure: false
-
 phpstan:
   stage: CodingStandards
   script:
-    - phpstan analyse ./src
-  allow_failure: false
+    - make stan
+  allow_failure: true
 
 psalm:
   stage: CodingStandards
   script:
-    - psalm
-  allow_failure: false
+    - make psalm
+  allow_failure: true
 
 phpunit:
   stage: UniTests
