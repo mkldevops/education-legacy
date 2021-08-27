@@ -11,7 +11,6 @@ madrasse:
     sub:
         student: { label: "Student", path: "app_student_index" }
         class: { label: "Class", path: "app_class_period_current" }
-        course: { label: "Course", path: "app_course_index" }
         family: { label: "List family", path: "app_family_index" }
         setting:
             label: Setting

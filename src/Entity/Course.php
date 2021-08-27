@@ -205,7 +205,7 @@ class Course
     }
 
     /**
-     * @return Collection|Student[]
+     * @return Collection|AppealCourse[]
      */
     public function getStudents(): Collection
     {
@@ -213,7 +213,7 @@ class Course
     }
 
     /**
-     * @param Collection|Student[] $students
+     * @param Collection|AppealCourse[] $students
      */
     public function setStudents(Collection $students): self
     {

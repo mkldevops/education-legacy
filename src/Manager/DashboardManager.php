@@ -23,7 +23,6 @@ class DashboardManager extends AbstractFullService
 {
     /**
      * @throws Exception
-     * @return mixed[]
      */
     public static function generateItemsOfMenu(string $route = null): array
     {
@@ -142,7 +141,7 @@ class DashboardManager extends AbstractFullService
     }
 
     /**
-     * @return mixed[]
+     * @throws AppException
      */
     public function search(string $search = null): array
     {
@@ -168,8 +167,9 @@ class DashboardManager extends AbstractFullService
             $result['document'] = $this->entityManager
                 ->getRepository(Document::class)
                 ->search($search);
-        } catch (Exception $exception) {
-            $this->logger->error(__METHOD__ . ' ' . $exception->getMessage());
+        } catch (Exception $e) {
+            $this->logger->error(__METHOD__ . ' ' . $e->getMessage());
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
         return $result;

@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 
 class ClassPeriodCrudController extends AbstractCrudController
 {
@@ -27,30 +28,18 @@ class ClassPeriodCrudController extends AbstractCrudController
             ->setSearchFields(['id', 'comment']);
     }
 
-    /**
-     * @return mixed[]|void
-     */
     public function configureFields(string $pageName): iterable
     {
-        $record = DateTimeField::new('record');
-        $comment = TextareaField::new('comment');
-        $enable = Field::new('enable');
-        $classSchool = AssociationField::new('classSchool');
-        $period = AssociationField::new('period');
-        $students = AssociationField::new('students');
-        $teachers = AssociationField::new('teachers');
-        $courses = AssociationField::new('courses');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $record, $comment, $enable, $classSchool, $period, $students];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $record, $comment, $enable, $classSchool, $period, $students, $teachers, $courses, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$record, $comment, $enable, $classSchool, $period, $students, $teachers, $courses, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$record, $comment, $enable, $classSchool, $period, $students, $teachers, $courses, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield AssociationField::new('classSchool');
+        yield AssociationField::new('period');
+        yield AssociationField::new('students');
+        yield AssociationField::new('teachers');
+        yield AssociationField::new('courses');
+        yield TextareaField::new('comment')->hideOnIndex();
+        yield Field::new('enable');
+        yield AssociationField::new('author');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
     }
 }

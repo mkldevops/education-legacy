@@ -24,6 +24,8 @@ use App\Form\StudentType;
 use App\Manager\DocumentManager;
 use App\Manager\StudentManager;
 use App\Repository\PackageRepository;
+use App\Repository\PackageStudentPeriodRepository;
+use App\Repository\StudentCommentRepository;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -118,8 +120,13 @@ class StudentController extends AbstractBaseController
      * @throws AppException|NoResultException
      */
     #[Route(path: '/{id}/add-package/{period}', methods: ['GET', 'POST'])]
-    public function addPackage(Request $request, StudentManager $studentManager, Student $student, PackageRepository $packageRepository, Period $period = null): Response
-    {
+    public function addPackage(
+        Request $request,
+        StudentManager $studentManager,
+        Student $student,
+        PackageRepository $packageRepository,
+        Period $period = null
+    ): Response {
         $packageStudentPeriod = (new PackageStudentPeriod())
             ->setPeriod($period ?? $this->getEntityPeriod())
             ->setStudent($student);
@@ -128,31 +135,25 @@ class StudentController extends AbstractBaseController
             ->remove('student')
             ->handleRequest($request);
         $countPackage = $packageRepository->countPackages($this->getSchool());
+
         if (empty($countPackage)) {
             $this->addFlash('danger', $this->trans('package.not_found', [
                 '%url%' => $this->generateUrl('app_package_new'),
             ], 'school'));
         }
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $studentManager->addPackage($student, $packageStudentPeriod);
-
-                $this->addFlash('success', sprintf(
-                    "Le forfait %s pour l'élèves %s a bien été enregistré",
-                    (string) $packageStudentPeriod->getPackage()?->getName(),
-                    (string) $student->getName()
-                ));
-            } catch (ORMException $e) {
-                $this->addFlash('danger', $e->getMessage());
-            } catch (Exception $e) {
-                $this->addFlash('warning', $e->getMessage());
-            }
+            $studentManager->addPackage($student, $packageStudentPeriod);
+            $this->addFlash('success', sprintf(
+                "Le forfait %s pour l'élèves %s a bien été enregistré",
+                (string) $packageStudentPeriod->getPackage()?->getName(),
+                (string) $student->getName()
+            ));
 
             return $this->redirect($this->generateUrl('app_student_show', [
                 'id' => $student->getId(),
             ]));
         }
-        if (!$form->isValid() && $form->isSubmitted()) {
+        if ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash('warning', sprintf(
                 'l\'élève n\'a pas été enregistré <br /> : %s',
                 print_r($form->getErrors(), true)
@@ -238,19 +239,19 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     *
      * @throws InvalidArgumentException
      * @throws AppException
      */
     #[Route(path: '/show/{id}', name: 'app_student_show', methods: ['GET'])]
-    public function show(Student $student, DocumentManager $documentManager): Response
-    {
+    public function show(
+        Student $student,
+        PackageStudentPeriodRepository $packageStudentPeriodRepository,
+        StudentCommentRepository $studentCommentRepository,
+    ): Response {
         $formComment = $this->createCreateCommentForm(new studentComment(), $student);
-        $packagePeriods = $this->getManager()
-            ->getRepository(PackageStudentPeriod::class)
-            ->getListToStudent($student);
-        $comments = $this->getRepository(StudentComment::class)
-            ->findBy(['student' => $student->getId()], ['createdAt' => 'desc']);
+        $packagePeriods = $packageStudentPeriodRepository->getListToStudent($student);
+        $comments = $studentCommentRepository->findBy(['student' => $student->getId()], ['createdAt' => 'desc']);
+
         return $this->render('student/show.html.twig', [
             'student' => $student,
             'comments' => $comments,
@@ -306,7 +307,10 @@ class StudentController extends AbstractBaseController
             $manager->flush();
 
             // Reste de la méthode qu'on avait déjà écrit
-            $this->addFlash('info', 'les information de l\'élève ' . $student->getName() . '  ont été modifié correctement');
+            $this->addFlash('info', sprintf(
+                "les information de l'élève %s  ont été modifié correctement",
+                (string) $student->getName()
+            ));
 
             return $this->redirect($this->generateUrl('app_student_show', ['id' => $student->getId()]));
         }
@@ -317,23 +321,13 @@ class StudentController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Deletes a Student entity.
-     *
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
     #[Route(path: '/delete/{id}')]
-    public function delete(Request $request, Student $student = null): RedirectResponse|Response
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    public function delete(Request $request, Student $student, EntityManagerInterface $em): RedirectResponse|Response
     {
-        if ($student === null) {
-            throw $this->createNotFoundException('Unable to find Account entity.');
-        }
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
-            // foreach package
             foreach ($student->getPackagePeriods() as $packagePeriod) {
                 $em->remove($packagePeriod);
             }
@@ -351,7 +345,7 @@ class StudentController extends AbstractBaseController
         ]);
     }
 
-    private function createDeleteForm(int $id): FormInterface
+    private function createDeleteForm(?int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_student_delete', ['id' => $id]))
@@ -388,64 +382,55 @@ class StudentController extends AbstractBaseController
             'form' => $request->get('enable'),
         ]);
     }
+
     /**
-     * Set image student.
+     * @throws AppException
+     * @throws \ImagickException
      */
-    #[Route(path: '/set-image/{id}s', methods: ['PUT', 'POST'])]
-    public function setImage(Request $request, Student $student): JsonResponse
+    #[Route(path: '/set-image/{id}', methods: ['PUT', 'POST'])]
+    public function setImage(Request $request, Student $student, EntityManagerInterface $em): JsonResponse
     {
-        $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault(['document' => null]);
-        try {
-            /* @var $image Document */
-            $image = $em->getRepository(Document::class)
-                ->find($request->get('document'));
+        /* @var $image Document */
+        $image = $em->getRepository(Document::class)->find($request->get('document'));
 
-            if (empty($image)) {
-                throw new AppException('Not found document');
-            }
-
-            $student->setImage($image);
-
-            $em->persist($student);
-
-            $em->flush();
-
-            $response->document = $image->getInfos();
-        } catch (Exception $e) {
-            $response->success = false;
-            $response->errors[] = $e->getMessage();
+        if ($image === null) {
+            throw new AppException('Not found document');
         }
-        return new JsonResponse($response);
+
+        $student->setImage($image);
+        $em->persist($student);
+        $em->flush();
+
+        $response->document = $image->getInfos();
+        return $this->json($response);
     }
+
+    /**
+     * @throws AppException
+     */
     #[Route(path: '/set-phone/{id}', methods: ['POST', 'PUT'])]
-    public function setPhone(Student $student, Request $request): JsonResponse
+    public function setPhone(Student $student, Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
-        try {
-            switch ($request->get('action')) {
-                case 'delete':
-                    $student->removePhone($request->get('key'));
-                    break;
+        switch ($request->get('action')) {
+            case 'delete':
+                $student->removePhone($request->get('key'));
+                break;
 
-                case 'add':
-                default:
-                    $student->addPhone($request->get('student_phone'));
-                    break;
-            }
-
-            $response->data['listPhones'] = $student->getListPhones();
-
-            $em->persist($student);
-
-            $em->flush();
-        } catch (Exception $e) {
-            $response->success = false;
-            $response->errors[] = $e->getMessage();
+            case 'add':
+            default:
+                $student->addPhone($request->get('student_phone'));
+                break;
         }
+
+        $response->data['listPhones'] = $student->getListPhones();
+
+        $em->persist($student);
+        $em->flush();
         return new JsonResponse($response);
     }
+
     #[Route("/{id}/add-comment", methods:["POST"])]
     public function addComment(Request $request, Student $student, EntityManagerInterface $manager): RedirectResponse
     {
@@ -470,6 +455,7 @@ class StudentController extends AbstractBaseController
 
         return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
     }
+
     /**
      * @throws AppException
      */
