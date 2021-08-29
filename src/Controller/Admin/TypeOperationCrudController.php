@@ -31,30 +31,19 @@ class TypeOperationCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $shortName = TextField::new('shortName');
-        $code = TextField::new('code');
-        $typeAmount = TextField::new('typeAmount');
-        $description = TextareaField::new('description');
-        $isInternalTransfert = Field::new('isInternalTransfert');
-        $status = Field::new('status');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $parent = AssociationField::new('parent');
-        $typeOperations = AssociationField::new('typeOperations');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $shortName, $code, $typeAmount, $isInternalTransfert, $status, $name];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $shortName, $code, $typeAmount, $description, $isInternalTransfert, $status, $name, $enable, $createdAt, $updatedAt, $deletedAt, $parent, $typeOperations, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$shortName, $code, $typeAmount, $description, $isInternalTransfert, $status, $name, $enable, $createdAt, $updatedAt, $deletedAt, $parent, $typeOperations, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$shortName, $code, $typeAmount, $description, $isInternalTransfert, $status, $name, $enable, $createdAt, $updatedAt, $deletedAt, $parent, $typeOperations, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('shortName');
+        yield TextField::new('code');
+        yield TextField::new('typeAmount');
+        yield TextareaField::new('description');
+        yield Field::new('isInternalTransfert');
+        yield TextField::new('name');
+        yield Field::new('enable');
+        yield AssociationField::new('parent');
+        yield AssociationField::new('typeOperations');
+        yield AssociationField::new('author');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
     }
 }

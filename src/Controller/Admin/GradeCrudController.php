@@ -30,21 +30,11 @@ class GradeCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $description = TextareaField::new('description');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $name, $enable, $description, $createdAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $name, $enable, $description, $createdAt, $updatedAt];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $enable, $description, $createdAt, $updatedAt];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$name, $enable, $description, $createdAt, $updatedAt];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('name');
+        yield Field::new('enable');
+        yield TextareaField::new('description');
+        yield DateTimeField::new('createdAt');
+        yield DateTimeField::new('updatedAt');
     }
 }

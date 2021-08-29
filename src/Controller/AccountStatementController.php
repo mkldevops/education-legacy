@@ -8,8 +8,10 @@ use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Form\AccountStatementType;
+use App\Repository\OperationRepository;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -22,23 +24,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * AccountStatement controller.
- *
- *
- * @since  0.4
- * @author Hamada Sidi Fahari <h.fahari@gmail.com>
- */
 #[Route(path: '/account-statement')]
 class AccountStatementController extends AbstractBaseController
 {
-    /**
-     * Lists all AccountStatement entities.
-     *
-     *
-     *
-     * @throws NonUniqueResultException
-     */
+
     #[Route(path: '/list/{page}/{search}', name: 'app_account_statement_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = ''): Response
     {
@@ -84,9 +73,7 @@ class AccountStatementController extends AbstractBaseController
             ]
         );
     }
-    /**
-     * Creates a form to search AccountStatement entities.
-     */
+
     private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
@@ -100,12 +87,7 @@ class AccountStatementController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-    /**
-     * Creates a new AccountStatement entity.
-     *
-     *
-     * @throws Exception
-     */
+
     #[Route(path: '/create/{account}', name: 'app_account_statement_create', methods: ['POST'])]
     public function create(Account $account, Request $request): RedirectResponse|Response
     {
@@ -133,11 +115,7 @@ class AccountStatementController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * Creates a form to create a AccountStatement entity.
-     *
-     * @param AccountStatement $accountstatement The entity
-     */
+
     private function createCreateForm(AccountStatement $accountstatement): FormInterface
     {
         $form = $this->createForm(AccountStatementType::class, $accountstatement, [
@@ -151,12 +129,7 @@ class AccountStatementController extends AbstractBaseController
 
         return $form;
     }
-    /**
-     * Displays a form to create a new AccountStatement entity.
-     *
-     *
-     * @throws Exception
-     */
+
     #[Route(path: '/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
     public function new(Account $account): Response
     {
@@ -168,17 +141,14 @@ class AccountStatementController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * Finds and displays a AccountStatement entity.
-     */
+
     #[Route(path: '/show/{id}', name: 'app_account_statement_show', methods: ['GET'])]
-    public function show(AccountStatement $accountstatement): Response
+    public function show(AccountStatement $accountstatement, OperationRepository $operationRepository): Response
     {
-        $stats = $this->getManager()
-            ->getRepository(Operation::class)
-            ->getQueryStatsAccountStatement([$accountstatement->getId()])
+        $stats = $operationRepository->getQueryStatsAccountStatement([$accountstatement->getId()])
             ->getQuery()
             ->getArrayResult();
+
         $stats = empty($stats) ? [
             'numberOperations' => 0,
             'sumCredit' => 0,
@@ -196,9 +166,7 @@ class AccountStatementController extends AbstractBaseController
             'statsOperations' => $stats,
         ]);
     }
-    /**
-     * Displays a form to edit an existing AccountStatement entity.
-     */
+
     #[Route(path: '/edit/{id}', name: 'app_account_statement_edit', methods: ['GET'])]
     public function edit(AccountStatement $accountStatement): Response
     {
@@ -300,10 +268,8 @@ class AccountStatementController extends AbstractBaseController
             'search' => urlencode($all['form']['q']),
         ]));
     }
+
     /**
-     * Add document to operation.
-     *
-     *
      * @throws InvalidArgumentException
      */
     #[Route(path: '/add-document/{id}', name: 'app_account_statement_add_document', methods: ['POST'], options: ['expose' => 'true'])]
@@ -318,10 +284,13 @@ class AccountStatementController extends AbstractBaseController
         $response->success = true;
         return new JsonResponse($response);
     }
-    /**
-     * list Choice Operations available for Account Statement.
-     */
-    #[Route(path: '/operations-available/{id}', name: 'app_account_statement_operation_available', methods: ['GET', 'POST'], options: ['expose' => true])]
+
+    #[Route(
+        path: '/operations-available/{id}',
+        name: 'app_account_statement_operation_available',
+        methods: ['GET', 'POST'],
+        options: ['expose' => true]
+    )]
     public function operationsAvailable(AccountStatement $accountStatement): JsonResponse
     {
         $response = ResponseRequest::responseDefault();
@@ -342,17 +311,18 @@ class AccountStatementController extends AbstractBaseController
         }
         return new JsonResponse($response);
     }
-    /**
-     * Add Operations available to Account Statement.
-     */
-    #[Route(path: '/add-operation/{id}', name: 'app_account_statement_add_operation', methods: ['GET', 'POST'], options: ['expose' => 'true'])]
+
+    #[Route(
+        path: '/add-operation/{id}',
+        name: 'app_account_statement_add_operation',
+        options: ['expose' => 'true'],
+        methods: ['GET', 'POST']
+    )]
     public function addOperations(Request $request, AccountStatement $accountStatement): JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'), $accountStatement);
     }
-    /**
-     * treatment Operations.
-     */
+
     public function treatmentOperations(array $operationsId, AccountStatement $accountStatement = null): JsonResponse
     {
         $response = new Response();
@@ -378,16 +348,18 @@ class AccountStatementController extends AbstractBaseController
             $manager->flush();
 
             $response->success = true;
-        } catch (Exception $e) {
+        } catch (AppException $e) {
             $response->errors[] = $e->getMessage();
         }
 
         return new JsonResponse($response);
     }
-    /**
-     * Remove Operations available to Account Statement.
-     */
-    #[Route(path: '/delete-operation/{id}', name: 'app_account_statement_delete_operation', methods: ['GET', 'POST', 'DELETE'])]
+
+    #[Route(
+        path: '/delete-operation/{id}',
+        name: 'app_account_statement_delete_operation',
+        methods: ['GET', 'POST', 'DELETE']
+    )]
     public function deleteOperations(Request $request): JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'));

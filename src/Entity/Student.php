@@ -123,12 +123,12 @@ class Student
 
     public function __toString(): string
     {
-        return (string)$this->getNameComplete();
+        return $this->getNameComplete();
     }
 
-    public function getNameComplete(): ?string
+    public function getNameComplete(): string
     {
-        return $this->person?->getNameComplete();
+        return $this->person?->getNameComplete() ?? '';
     }
 
 

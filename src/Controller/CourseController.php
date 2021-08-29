@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\AppealCourse;
 use App\Entity\Course;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Form\CourseType;
 use App\Manager\CourseManager;
@@ -71,13 +72,12 @@ class CourseController extends AbstractBaseController
     {
         set_time_limit(0);
         try {
-            $courseManager->getGoogleCalendar()
-                ->getClient();
-        } catch (Exception $e) {
+            $courseManager->getGoogleCalendar()->getClient();
+        } catch (AppException $e) {
             $this->addFlash('warning', 'Your Token is not defined');
-
             return $this->redirectToRoute('app_google_auth');
         }
+
         $form = $this->createFormBuilder()
             ->add('generate', SubmitType::class)
             ->setMethod(Request::METHOD_POST)

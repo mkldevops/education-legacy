@@ -205,9 +205,9 @@ class Operation
     }
 
 
-    public function hasStructure(Structure $structure): bool
+    public function hasStructure(?Structure $structure): bool
     {
-        return $this->account->getStructure()?->getId() === $structure->getId();
+        return $this->account->getStructure()?->getId() === $structure?->getId();
     }
 
     public function getValidate(): ?Validate

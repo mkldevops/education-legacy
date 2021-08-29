@@ -10,13 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseModel
 {
-    protected bool $success = false;
-    protected string $message = '';
-    protected array $data = [];
+    public function __construct(
+        protected bool $success = false,
+        protected string $message = '',
+        protected array $data = [],
+    ) {
+    }
 
     public static function responseDefault(array $data = []): object
     {
-        $response = new static();
+        $response = new self();
         $response->setData($data);
 
         return $response;

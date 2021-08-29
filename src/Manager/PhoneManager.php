@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Entity\Person;
+use App\Exception\AppException;
 use App\Services\AbstractFullService;
 use Exception;
 
@@ -54,8 +55,6 @@ class PhoneManager extends AbstractFullService
     }
 
     /**
-     * Get Phones.
-     *
      * @return array<string, mixed[]>|array<string, int>|null[]
      */
     public static function getPhones(Person $person): array
@@ -66,9 +65,6 @@ class PhoneManager extends AbstractFullService
         ];
     }
 
-    /**
-     * @return mixed[]
-     */
     public static function stringPhonesToArray(?string $phones): array
     {
         if (empty($phones)) {
@@ -90,9 +86,6 @@ class PhoneManager extends AbstractFullService
         return $list;
     }
 
-    /**
-     * @return string|string[]|null
-     */
     private static function purgePhone(string $value): string
     {
         $value = preg_replace("#\D+#", '', $value);
@@ -102,9 +95,7 @@ class PhoneManager extends AbstractFullService
     }
 
     /**
-     * updatePhone.
-     *
-     * @throws Exception
+     * @throws AppException
      */
     public function updatePhone(Person $person, string $value, string $key = null): string
     {
@@ -120,10 +111,9 @@ class PhoneManager extends AbstractFullService
         return base64_encode(self::purgePhone($value));
     }
 
+
     /**
-     * updatePhone.
-     *
-     * @throws Exception
+     * @throws AppException
      */
     public function deletePhone(Person $person, string $key): bool
     {

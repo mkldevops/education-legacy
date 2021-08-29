@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Structure;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -30,33 +31,23 @@ class StructureCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $logo = TextField::new('logo');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $address = TextField::new('address');
-        $city = TextField::new('city');
-        $zip = TextField::new('zip');
-        $president = AssociationField::new('president');
-        $treasurer = AssociationField::new('treasurer');
-        $secretary = AssociationField::new('secretary');
-        $members = AssociationField::new('members');
-        $accounts = AssociationField::new('accounts');
-        $accountSlips = AssociationField::new('accountSlips');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-        $options = TextField::new('options');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $logo, $name, $enable, $createdAt, $deletedAt, $address];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $logo, $options, $name, $enable, $createdAt, $updatedAt, $deletedAt, $address, $city, $zip, $president, $treasurer, $secretary, $members, $accounts, $accountSlips, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$logo, $name, $enable, $createdAt, $updatedAt, $deletedAt, $address, $city, $zip, $president, $treasurer, $secretary, $members, $accounts, $accountSlips, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$logo, $name, $enable, $createdAt, $updatedAt, $deletedAt, $address, $city, $zip, $president, $treasurer, $secretary, $members, $accounts, $accountSlips, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('logo');
+        yield TextField::new('name');
+        yield TextField::new('address');
+        yield TextField::new('city');
+        yield TextField::new('zip');
+        yield AssociationField::new('president');
+        yield AssociationField::new('treasurer');
+        yield AssociationField::new('secretary');
+        yield AssociationField::new('members');
+        yield AssociationField::new('accounts');
+        yield AssociationField::new('accountSlips');
+        yield AssociationField::new('author');
+        yield ArrayField::new('options');
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
     }
 }

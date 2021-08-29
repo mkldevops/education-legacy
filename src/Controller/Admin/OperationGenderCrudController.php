@@ -29,21 +29,11 @@ class OperationGenderCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $code = TextField::new('code');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $code, $name, $enable, $createdAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $code, $name, $enable, $createdAt, $updatedAt];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$code, $name, $enable, $createdAt, $updatedAt];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$code, $name, $enable, $createdAt, $updatedAt];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('code');
+        yield TextField::new('name');
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt');
+        yield DateTimeField::new('updatedAt');
     }
 }

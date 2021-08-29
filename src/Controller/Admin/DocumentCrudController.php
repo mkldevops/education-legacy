@@ -31,31 +31,21 @@ class DocumentCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $mime = TextField::new('mime');
-        $path = TextField::new('path');
-        $extension = TextField::new('extension');
-        $size = IntegerField::new('size');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $school = AssociationField::new('school');
-        $persons = AssociationField::new('persons');
-        $operations = AssociationField::new('operations');
-        $accountStatements = AssociationField::new('accountStatements');
-        $accountSlips = AssociationField::new('accountSlips');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-        $deletedAt = TextareaField::new('DeletedAt');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $mime, $path, $extension, $size, $name, $enable];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $path, $mime, $extension, $size, $name, $school, $createdAt, $updatedAt, $deletedAt, $enable];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$mime, $path, $extension, $size, $name, $enable, $createdAt, $updatedAt, $deletedAt, $school, $persons, $operations, $accountStatements, $accountSlips, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$mime, $path, $extension, $size, $name, $enable, $createdAt, $updatedAt, $deletedAt, $school, $persons, $operations, $accountStatements, $accountSlips, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('mime');
+        yield TextField::new('path');
+        yield TextField::new('extension');
+        yield IntegerField::new('size');
+        yield TextField::new('name');
+        yield AssociationField::new('school');
+        yield AssociationField::new('persons');
+        yield AssociationField::new('operations');
+        yield AssociationField::new('accountStatements');
+        yield AssociationField::new('accountSlips');
+        yield AssociationField::new('author');
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield TextareaField::new('DeletedAt')->onlyOnDetail();
     }
 }

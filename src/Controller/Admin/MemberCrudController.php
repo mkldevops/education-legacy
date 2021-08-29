@@ -8,6 +8,7 @@ use App\Entity\Member;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -30,25 +31,15 @@ class MemberCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $name = TextField::new('name');
-        $positionName = TextField::new('positionName');
-        $person = AssociationField::new('person');
-        $structure = AssociationField::new('structure');
-        $enable = Field::new('enable');
-        $id = IntegerField::new('id', 'ID');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $author = AssociationField::new('author');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $name, $positionName, $person, $structure, $enable, $createdAt, $author];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $positionName, $name, $enable, $createdAt, $updatedAt, $deletedAt, $person, $structure, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $positionName, $person, $structure, $enable];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$name, $positionName, $person, $structure, $enable];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('name');
+        yield TextField::new('positionName');
+        yield AssociationField::new('person');
+        yield AssociationField::new('structure');
+        yield AssociationField::new('author');
+        yield BooleanField::new('enable');
+        yield DateTimeField::new('createdAt');
+        yield DateTimeField::new('updatedAt');
+        yield DateTimeField::new('deletedAt');
     }
 }

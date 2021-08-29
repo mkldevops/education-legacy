@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PersonCrudController extends AbstractCrudController
@@ -27,39 +28,29 @@ class PersonCrudController extends AbstractCrudController
             ->setSearchFields(['id', 'forname', 'phone', 'email', 'birthplace', 'gender', 'address', 'zip', 'city', 'name']);
     }
 
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName = null) : iterable
     {
-        $forname = TextField::new('forname');
-        $phone = TextField::new('phone');
-        $email = TextField::new('email');
-        $birthday = DateTimeField::new('birthday');
-        $birthplace = TextField::new('birthplace');
-        $gender = TextField::new('gender');
-        $address = TextField::new('address');
-        $zip = TextField::new('zip');
-        $city = TextField::new('city');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $user = AssociationField::new('user');
-        $member = AssociationField::new('member');
-        $student = AssociationField::new('student');
-        $schools = AssociationField::new('schools');
-        $image = AssociationField::new('image');
-        $family = AssociationField::new('family');
-        $author = AssociationField::new('author');
-        $id = TextField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $forname, $phone, $email, $birthday, $birthplace, $gender];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $forname, $phone, $email, $birthday, $birthplace, $gender, $address, $zip, $city, $name, $enable, $createdAt, $updatedAt, $deletedAt, $user, $member, $student, $schools, $image, $family, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$forname, $phone, $email, $birthday, $birthplace, $gender, $address, $zip, $city, $name, $enable, $createdAt, $updatedAt, $deletedAt, $user, $member, $student, $schools, $image, $family, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$forname, $phone, $email, $birthday, $birthplace, $gender, $address, $zip, $city, $name, $enable, $createdAt, $updatedAt, $deletedAt, $user, $member, $student, $schools, $image, $family, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('forname');
+        yield TextField::new('phone');
+        yield TextField::new('email')->hideOnIndex();
+        yield DateTimeField::new('birthday')->hideOnIndex();
+        yield TextField::new('birthplace')->hideOnIndex();
+        yield TextField::new('gender');
+        yield TextField::new('address');
+        yield TextField::new('zip');
+        yield TextField::new('city');
+        yield TextField::new('name');
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
+        yield AssociationField::new('user');
+        yield AssociationField::new('member');
+        yield AssociationField::new('student');
+        yield AssociationField::new('schools');
+        yield AssociationField::new('image')->hideOnIndex();
+        yield AssociationField::new('family');
+        yield AssociationField::new('author')->hideOnIndex();
     }
 }

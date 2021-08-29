@@ -33,20 +33,11 @@ accounting:
             label: "Operation"
             sub:
                 Operation:
-                    { label: "List Operation", path: "app_operation_index" }
+                    label: "List Operation"
+                    path: "app_operation_index"
                 statsOperation:
-                    {
-                        label: "Stats Operation",
-                        path: "app_operation_statsbymonth",
-                    }
-
-meet:
-    role: "ROLE_MEMBER"
-    icon: "fa-users"
-    label: "Meet"
-    sub:
-        meet: { label: "List meet", path: "app_meet_index" }
-        member: { label: "Member", path: "app_member_index" }
+                    label: "Stats Operation"
+                    path: "app_operation_statsbymonth"
 
 user:
     role: "ROLE_SUPER_ADMIN"

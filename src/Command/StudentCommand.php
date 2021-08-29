@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Exception\AppException;
 use App\Manager\StudentManager;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -12,9 +13,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class StudentCommand.
- */
 class StudentCommand extends Command
 {
     public const ARG_ACTION = 'action';
@@ -46,26 +44,18 @@ class StudentCommand extends Command
     }
 
     /**
-     * @return int|void|null
-     *
-     * @throws Exception
+     * @throws AppException
      */
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $action = $input->getArgument(self::ARG_ACTION);
         $limit = $input->getOption(self::OPT_LIMIT);
 
-        try {
-            switch ($action) {
-                case self::ACTION_SYNCHRONIZE:
-                    $result = $this->studentManager->synchronize($limit);
-                    $output->writeln('SUCCESS : ' . json_encode($result->getResult()));
-                    break;
-                default:
-                    throw new Exception('The action ' . $action . ' is not supported');
-            }
-        } catch (Exception $e) {
-            $output->writeln('ERROR : ' . $e->getMessage());
+        if ($action === self::ACTION_SYNCHRONIZE) {
+            $result = $this->studentManager->synchronize($limit);
+            $output->writeln('SUCCESS : ' . json_encode($result->getResult()));
+        } else {
+            throw new AppException(sprintf("The action %s is not supported", $action));
         }
     }
 }

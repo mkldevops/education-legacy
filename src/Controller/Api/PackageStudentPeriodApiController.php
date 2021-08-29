@@ -36,12 +36,13 @@ class PackageStudentPeriodApiController extends AbstractBaseController
 
             $this->addFlash('success', 'The package of student has been added.');
             $response->setData(json_encode($packageStudentPeriod));
-        } catch (Exception $e) {
+        } catch (AppException $e) {
             $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $response;
     }
+
     /**
      * @throws AppException
      */
@@ -65,6 +66,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
         $em->persist($packageStudentPeriod);
         $em->flush();
     }
+
     #[Route(path: '/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): JsonResponse
     {
@@ -76,9 +78,12 @@ class PackageStudentPeriodApiController extends AbstractBaseController
 
             $this->persistData($packageStudentPeriod, $form);
 
-            $this->addFlash('success', sprintf('The package of student %s has been updated.', $packageStudentPeriod->getStudent()));
+            $this->addFlash('success', sprintf(
+                'The package of student %s has been updated.',
+                $packageStudentPeriod->getStudent()
+            ));
             $response->setData(json_encode($packageStudentPeriod));
-        } catch (Exception $e) {
+        } catch (AppException $e) {
             $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])
                 ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);

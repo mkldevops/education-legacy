@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Document;
+use App\Exception\AppException;
 use App\Form\DocumentType;
 use App\Manager\DocumentManager;
 use App\Model\ResponseModel;
@@ -22,80 +23,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Document controller.
- */
 #[Route(path: '/document')]
 class DocumentController extends AbstractBaseController
 {
     /**
-     * Lists all Document entities.
-     *
-     *
-     *
-     * @throws NonUniqueResultException
-     */
-    #[Route(path: '/list/{page}/{search}', name: 'app_document_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = ''): Response
-    {
-        $manager = $this->getDoctrine()->getManager();
-        // Escape special characters and decode the search value.
-        $search = addcslashes(urldecode($search), '%_');
-        // Get the total entries.
-        $count = $manager
-            ->getRepository(Document::class)
-            ->createQueryBuilder('e')
-            ->select('COUNT(e)')
-            ->where('e.name LIKE :name')
-            ->setParameter(':name', '%' . $search . '%')
-            ->orWhere('e.path LIKE :path')
-            ->setParameter(':path', '%' . $search . '%')
-            ->getQuery()
-            ->getSingleScalarResult();
-        // Define the number of pages.
-        $pages = ceil($count / 20);
-        // Get the entries of current page.
-        $documentList = $manager
-            ->getRepository(Document::class)
-            ->createQueryBuilder('e')
-            ->where('e.name LIKE :name')
-            ->setParameter(':name', '%' . $search . '%')
-            ->orWhere('e.path LIKE :path')
-            ->setParameter(':path', '%' . $search . '%')
-            ->setFirstResult(($page - 1) * 20)
-            ->setMaxResults(20)
-            ->getQuery()
-            ->getResult();
-        return $this->render('document/index.html.twig', [
-            'documentList' => $documentList,
-            'pages' => $pages,
-            'page' => $page,
-            'search' => stripslashes($search),
-            'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
-        ]);
-    }
-    /**
-     * Creates a form to search Document entities.
-     *
-     *
-     */
-    private function createSearchForm(string $q = ''): FormInterface
-    {
-        $data = ['q' => $q];
-
-        return $this->createFormBuilder($data)
-            ->setAction($this->generateUrl('app_document_search'))
-            ->setMethod(Request::METHOD_POST)
-            ->add('q', SearchType::class, [
-                'label' => false,
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Search'])
-            ->getForm();
-    }
-    /**
-     * Creates a new Document entity.
-     *
-     *
      * @throws ImagickException
      */
     #[Route(path: '/create', name: 'app_document_create', methods: ['POST'])]
@@ -124,13 +55,7 @@ class DocumentController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * Creates a form to create a Document entity.
-     *
-     * @param Document $document The entity
-     *
-     * @return FormInterface The form
-     */
+
     private function createCreateForm(Document $document): FormInterface
     {
         $form = $this->createForm(DocumentType::class, $document, [
@@ -142,9 +67,7 @@ class DocumentController extends AbstractBaseController
 
         return $form;
     }
-    /**
-     * Displays a form to create a new Document entity.
-     */
+
     #[Route(path: '/new', name: 'app_document_new', methods: ['GET'])]
     public function new(): Response
     {
@@ -155,9 +78,7 @@ class DocumentController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * Finds and displays a Document entity.
-     */
+
     #[Route(path: '/show/{id}', name: 'app_document_show', methods: ['GET'])]
     public function show(Document $document): Response
     {
@@ -165,9 +86,7 @@ class DocumentController extends AbstractBaseController
             'document' => $document,
         ]);
     }
-    /**
-     * Displays a form to edit an existing Document entity.
-     */
+
     #[Route(path: '/edit/{id}', name: 'app_document_edit', methods: ['GET'])]
     public function edit(Document $document): Response
     {
@@ -177,13 +96,7 @@ class DocumentController extends AbstractBaseController
             'edit_form' => $editForm->createView(),
         ]);
     }
-    /**
-     * Creates a form to edit a Document entity.
-     *
-     * @param Document $document The entity
-     *
-     * @return FormInterface The form
-     */
+
     private function createEditForm(Document $document): FormInterface
     {
         $form = $this->createForm(DocumentType::class, $document, [
@@ -195,9 +108,7 @@ class DocumentController extends AbstractBaseController
 
         return $form;
     }
-    /**
-     * Edits an existing Document entity.
-     */
+
     #[Route(path: '/update/{id}', name: 'app_document_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Document $document): RedirectResponse|Response
     {
@@ -216,11 +127,9 @@ class DocumentController extends AbstractBaseController
             'edit_form' => $editForm->createView(),
         ]);
     }
-    /**
-     * Deletes a Document entity.
-     */
+
     #[Route(path: '/delete/{id}', name: 'app_document_delete', methods: ['DELETE', 'GET'])]
-    public function delete(Request $request, Document $document, DocumentManager $documentManager): RedirectResponse|Response
+    public function delete(Request $request, Document $document, DocumentManager $documentManager): Response
     {
         $deleteForm = $this->createDeleteForm($document->getId());
         $deleteForm->handleRequest($request);
@@ -233,18 +142,14 @@ class DocumentController extends AbstractBaseController
                 $this->addFlash('danger', 'The Document has not deleted.');
             }
 
-            return $this->redirect($this->generateUrl('app_document_index'));
+            return $this->redirect((string) $request->headers->get('referer'));
         }
         return $this->render('document/delete.html.twig', [
             'document' => $document,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-    /**
-     * Creates a form to delete a Document entity by id.
-     *
-     * @param mixed $id The entity id
-     */
+
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
@@ -253,22 +158,15 @@ class DocumentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-    /**
-     * Redirect the the list URL with the search parameter.
-     */
-    #[Route(path: '/search', name: 'app_document_search', methods: ['GET'])]
-    public function search(Request $request): RedirectResponse
-    {
-        $all = $request->request->all();
-        return $this->redirect($this->generateUrl('app_document_index', [
-            'page' => 1,
-            'search' => urlencode($all['form']['q']),
-        ]));
-    }
+
     public function getBaseUrl(Request $request): string
     {
         return $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
     }
+
+    /**
+     * @throws AppException
+     */
     #[Route(path: '/last', name: 'app_document_last', methods: ['POST', 'GET'], options: ['expose' => true])]
     public function last(Request $request): JsonResponse
     {
@@ -278,16 +176,13 @@ class DocumentController extends AbstractBaseController
             $response->data = $em->getRepository(Document::class)
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0));
         } catch (Exception $e) {
-            $response->success = false;
-            $response->errors[] = $e->getMessage();
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
         return new JsonResponse($response);
     }
+
     /**
-     * uploadAction.
-     *
-     *
-     * @return Response|JsonResponse
+     * @throws AppException
      */
     #[Route(path: '/upload', name: 'app_document_upload', methods: ['POST'])]
     public function upload(Request $request, DocumentManager $documentManager): JsonResponse
@@ -319,7 +214,7 @@ class DocumentController extends AbstractBaseController
                 'class' => get_class($e),
                 'trace' => $e->getTraceAsString(),
             ]);
-            $response->setMessage($e->getMessage());
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
         return ResponseRequest::jsonResponse($response);
     }

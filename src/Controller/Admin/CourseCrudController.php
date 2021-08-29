@@ -33,29 +33,19 @@ class CourseCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $idEvent = TextField::new('idEvent');
-        $date = DateField::new('date');
-        $text = TextareaField::new('text');
-        $hourBegin = TimeField::new('hourBegin');
-        $hourEnd = TimeField::new('hourEnd');
-        $comment = TextField::new('comment');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $students = AssociationField::new('students');
-        $classPeriod = AssociationField::new('classPeriod');
-        $teachers = AssociationField::new('teachers');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $classPeriod, $date, $enable, $createdAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $idEvent, $date, $text, $hourBegin, $hourEnd, $comment, $enable, $createdAt, $updatedAt, $students, $classPeriod, $teachers, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$idEvent, $date, $text, $hourBegin, $hourEnd, $comment, $enable, $createdAt, $updatedAt, $students, $classPeriod, $teachers, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$idEvent, $date, $text, $hourBegin, $hourEnd, $comment, $enable, $createdAt, $updatedAt, $students, $classPeriod, $teachers, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('idEvent');
+        yield DateField::new('date');
+        yield TextareaField::new('text');
+        yield TimeField::new('hourBegin');
+        yield TimeField::new('hourEnd');
+        yield TextField::new('comment');
+        yield AssociationField::new('students');
+        yield AssociationField::new('classPeriod');
+        yield AssociationField::new('teachers');
+        yield AssociationField::new('author')->hideOnForm();
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
     }
 }

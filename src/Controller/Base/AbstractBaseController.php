@@ -8,12 +8,14 @@ use App\Entity\Document;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Exception\AppException;
+use App\Exception\EntityRepositoryNotFoundException;
 use App\Exception\InvalidArgumentException;
 use App\Model\PeriodsList;
 use App\Traits\PeriodManagerTrait;
 use App\Traits\SchoolManagerTrait;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\ObjectRepository;
+use Fardus\Traits\Symfony\Controller\ResponseTrait;
 use Fardus\Traits\Symfony\Manager\LoggerTrait;
 use Fardus\Traits\Symfony\Manager\TranslatorTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +26,7 @@ abstract class AbstractBaseController extends AbstractController
     use TranslatorTrait;
     use PeriodManagerTrait;
     use SchoolManagerTrait;
+    use ResponseTrait;
 
     /**
      * @throws AppException
@@ -84,9 +87,9 @@ abstract class AbstractBaseController extends AbstractController
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException|EntityRepositoryNotFoundException
      */
-    protected function getDocument(int $id): ?Document
+    protected function getDocument(int $id): Document
     {
         if (empty($id)) {
             throw new InvalidArgumentException('Id document is empty');
@@ -94,6 +97,10 @@ abstract class AbstractBaseController extends AbstractController
 
         $document = $this->getRepository(Document::class)->find($id);
 
-        return $document instanceof Document ? $document : null;
+        if(!$document instanceof Document) {
+            throw new EntityRepositoryNotFoundException('Not found document with id '.$id);
+        }
+
+        return $document;
     }
 }
