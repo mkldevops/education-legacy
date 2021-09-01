@@ -2,41 +2,20 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 31/12/18
- * Time: 15:32.
- */
-
 namespace App\Model;
 
 class DataStats
 {
-    private ?string $columnId = null;
-
-    private ?string $columnLabel = null;
-
-    private null|int|string $rowId = null;
-
-    private ?string $rowLabel = null;
-
-    private ?int $count = null;
-
-    private ?float $sum = null;
-
-    /**
-     * DataStats constructor.
-     */
-    public function __construct()
-    {
-        $this->setSum(0)
-            ->setCount(0);
+    public function __construct(
+        private ?string $columnId = null,
+        private ?string $columnLabel = null,
+        private null|int|string $rowId = null,
+        private ?string $rowLabel = null,
+        private int $count = 0,
+        private float $sum = 0
+    ) {
     }
 
-    /**
-     * @return string
-     */
     public function getColumnLabel(): ?string
     {
         return $this->columnLabel;
@@ -54,9 +33,6 @@ class DataStats
         return $this->rowId;
     }
 
-    /**
-     * @param int|string|null $rowId
-     */
     public function setRowId(int|string $rowId): static
     {
         $this->rowId = $rowId;
@@ -66,8 +42,8 @@ class DataStats
 
     public function merge(DataStats $data): static
     {
-        $this->setCount($this->getCount() + $data->getCount());
-        $this->setSum($this->getSum() + $data->getSum());
+        $this->count += $data->getCount();
+        $this->sum += $data->getSum();
 
         return $this;
     }
@@ -84,7 +60,7 @@ class DataStats
         return $this;
     }
 
-    public function getSum(): ?float
+    public function getSum(): float
     {
         return $this->sum;
     }
@@ -96,9 +72,6 @@ class DataStats
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getColumnId(): ?string
     {
         return $this->columnId;
@@ -111,9 +84,6 @@ class DataStats
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRowLabel(): ?string
     {
         return $this->rowLabel;

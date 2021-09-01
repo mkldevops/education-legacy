@@ -25,16 +25,10 @@ phpstan:
     - make stan
   allow_failure: true
 
-psalm:
-  stage: CodingStandards
-  script:
-    - make psalm
-  allow_failure: true
-
 phpunit:
   stage: UniTests
   script:
-    - php bin/phpunit
+    - make test
   allow_failure: false
 
 deploy_prod:

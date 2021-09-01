@@ -113,7 +113,7 @@ phpcs: ## Run phpcs only
 	./vendor/bin/phpcs -v -n --standard=PSR12 --ignore=./src/Kernel.php ./src
 
 stan: ## Run PHPStan only
-	./vendor/bin/phpstan analyse -l 1 src
+	./vendor/bin/phpstan analyse -l 2 src
 
 psalm: ## Run psalm only
 	./vendor/bin/psalm --show-info=false

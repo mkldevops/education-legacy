@@ -36,15 +36,15 @@ class AccountStatement
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $begin;
+    private \DateTime $begin;
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $end;
+    private \DateTime $end;
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private DateTimeInterface $month;
+    private \DateTime $month;
     /**
      * @ORM\Column(type="float", nullable=true)
      */
@@ -77,7 +77,6 @@ class AccountStatement
 
     public function __construct()
     {
-        $this->setNumberOperations(0);
         $this->operations = new ArrayCollection();
         $this->documents = new ArrayCollection();
     }
@@ -99,24 +98,24 @@ class AccountStatement
         return $this;
     }
 
-    public function getBegin(): \DateTimeInterface
+    public function getBegin(): \DateTime
     {
         return $this->begin;
     }
 
-    public function setBegin(DateTimeInterface $begin): self
+    public function setBegin(\DateTime $begin): self
     {
         $this->begin = $begin;
 
         return $this;
     }
 
-    public function getEnd(): \DateTimeInterface
+    public function getEnd(): \DateTime
     {
         return $this->end;
     }
 
-    public function setEnd(DateTimeInterface $end): self
+    public function setEnd(\DateTime $end): self
     {
         $this->end = $end;
 
@@ -276,12 +275,12 @@ class AccountStatement
         return $this;
     }
 
-    public function getMonth(): DateTimeInterface
+    public function getMonth(): \DateTime
     {
         return $this->month;
     }
 
-    public function setMonth(DateTimeInterface $month): self
+    public function setMonth(\DateTime $month): self
     {
         $this->month = $month;
 

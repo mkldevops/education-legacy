@@ -146,8 +146,6 @@ class TransferManager
     }
 
     /**
-     * @return Operation|object|null
-     *
      * @throws AppException
      * @throws Exception
      */

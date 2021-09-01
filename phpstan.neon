@@ -8,7 +8,7 @@ includes:
     - vendor/slam/phpstan-extensions/conf/slam-rules.neon
 
 parameters:
-    level: 1
+    level: 2
     paths:
         - src
         #- vendor/fardus

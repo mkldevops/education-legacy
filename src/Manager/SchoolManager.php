@@ -11,12 +11,16 @@ use App\Repository\SchoolRepository;
 use App\Services\AbstractFullService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Fardus\Traits\Symfony\Manager\SessionTrait;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SchoolManager extends AbstractFullService
 {
-    use SessionTrait;
-
-    public function __construct(private SchoolRepository $repository)
+    public function __construct(
+        private SchoolRepository $repository,
+        private SessionInterface $session,
+        private FlashBagInterface $flashBag,
+    )
     {
     }
 
@@ -60,13 +64,12 @@ class SchoolManager extends AbstractFullService
 
         if ($list->isEmpty()) {
             $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
-            if (null !== $school) {
-                $this->user->addSchoolAccessRight($school);
-                $this->entityManager->persist($this->user);
+            if (null !== $school && $user  = $this->user?->addSchoolAccessRight($school)) {
+                $this->entityManager->persist($user);
                 $this->entityManager->flush();
             } else {
                 $msg = $this->trans('school.not_found', [], 'user');
-                $this->session->getFlashBag()->add('error', $msg);
+                $this->flashBag->add('error', $msg);
                 $this->logger->error(__FUNCTION__ . ' Not found school');
 
                 return false;
