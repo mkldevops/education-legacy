@@ -7,7 +7,7 @@ GIT_DIR=$(git rev-parse --git-dir)
 cd $GIT_DIR
 cd ..
 
-#make stan
+make stan
 
 # $? stores exit value of the last command
 if [ $? -ne 0 ]; then
