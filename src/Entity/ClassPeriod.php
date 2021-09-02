@@ -67,7 +67,7 @@ class ClassPeriod
 
     public function getName(): string
     {
-        return $this->getClassSchool()->getName() . ' - ' . $this->period->getName();
+        return $this->getClassSchool()->getName().' - '.$this->period->getName();
     }
 
     public function getClassSchool(): ClassSchool
@@ -149,7 +149,7 @@ class ClassPeriod
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ') . $teacher;
+            $str .= (empty($str) ? '' : ', ').$teacher;
         }
 
         return $str;

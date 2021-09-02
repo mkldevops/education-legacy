@@ -97,7 +97,7 @@ abstract class AbstractBaseController extends AbstractController
 
         $document = $this->getRepository(Document::class)->find($id);
 
-        if(!$document instanceof Document) {
+        if (!$document instanceof Document) {
             throw new EntityRepositoryNotFoundException('Not found document with id '.$id);
         }
 

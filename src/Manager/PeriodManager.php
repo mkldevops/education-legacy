@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace App\Manager;
 
 use App\Entity\Period;
@@ -10,7 +9,6 @@ use App\Exception\AppException;
 use App\Exception\PeriodException;
 use App\Model\PeriodsList;
 use App\Repository\PeriodRepository;
-use App\Services\AbstractFullService;
 use Fardus\Traits\Symfony\Manager\SessionTrait;
 
 class PeriodManager
@@ -20,8 +18,6 @@ class PeriodManager
     public function __construct(private PeriodRepository $repository)
     {
     }
-
-
 
     public function findCurrentPeriod(): Period
     {
@@ -33,7 +29,7 @@ class PeriodManager
      */
     public function findPeriod(?int $id): Period
     {
-        if ($id === null) {
+        if (null === $id) {
             throw new PeriodException('Period id cannot be null');
         }
 

@@ -35,11 +35,11 @@ class StudentCommentController extends AbstractBaseController
             ->innerJoin('e.author', 'a')
             ->innerJoin('e.student', 's')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%' . $search . '%')
+            ->setParameter(':title', '%'.$search.'%')
             ->orWhere('e.text LIKE :text')
-            ->setParameter(':text', '%' . $search . '%')
+            ->setParameter(':text', '%'.$search.'%')
             ->orWhere('e.type LIKE :type')
-            ->setParameter(':type', '%' . $search . '%')
+            ->setParameter(':type', '%'.$search.'%')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -49,11 +49,11 @@ class StudentCommentController extends AbstractBaseController
             ->getRepository(StudentComment::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%' . $search . '%')
+            ->setParameter(':title', '%'.$search.'%')
             ->orWhere('e.text LIKE :text')
-            ->setParameter(':text', '%' . $search . '%')
+            ->setParameter(':text', '%'.$search.'%')
             ->orWhere('e.type LIKE :type')
-            ->setParameter(':type', '%' . $search . '%')
+            ->setParameter(':type', '%'.$search.'%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
@@ -70,8 +70,6 @@ class StudentCommentController extends AbstractBaseController
 
     /**
      * Creates a form to search StudentComment entities.
-     *
-     *
      */
     private function createSearchForm(string $q = ''): FormInterface
     {
@@ -105,6 +103,7 @@ class StudentCommentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('student-comment_show', ['id' => $studentComment->getId()]));
         }
+
         return $this->render('student_comment/new.html.twig', [
             'studentcomment' => $studentComment,
             'form' => $form->createView(),
@@ -138,6 +137,7 @@ class StudentCommentController extends AbstractBaseController
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateForm($studentComment);
+
         return $this->render('student_comment/new.html.twig', [
             'studentcomment' => $studentComment,
             'form' => $form->createView(),
@@ -162,6 +162,7 @@ class StudentCommentController extends AbstractBaseController
     public function edit(StudentComment $studentComment): Response
     {
         $editForm = $this->createEditForm($studentComment);
+
         return $this->render('student_comment/edit.html.twig', [
             'studentcomment' => $studentComment,
             'edit_form' => $editForm->createView(),
@@ -202,6 +203,7 @@ class StudentCommentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_student_comment_show', ['id' => $studentComment->getId()]));
         }
+
         return $this->render('student_comment/edit.html.twig', [
             'studentcomment' => $studentComment,
             'edit_form' => $editForm->createView(),
@@ -225,6 +227,7 @@ class StudentCommentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_student_show', ['id' => $studentComment->getStudent()->getId()]));
         }
+
         return $this->render('student_comment/delete.html.twig', [
             'studentcomment' => $studentComment,
             'delete_form' => $deleteForm->createView(),
@@ -252,6 +255,7 @@ class StudentCommentController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_student_comment_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

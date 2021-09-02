@@ -11,7 +11,6 @@ use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Manager\ClassPeriodManager;
 use App\Model\ResponseModel;
-use App\Services\ResponseRequest;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,13 +49,14 @@ class ClassPeriodApiController extends AbstractBaseController
         try {
             $students = $request->get('students');
             $success = $manager->treatListStudent($students, $this->getPeriod(), $classPeriod);
+
             return $this->json([
                 'name' => $classPeriod->getClassSchool()->getName(),
                 'count' => count($classPeriod->getStudents()),
-                'success' => $success
+                'success' => $success,
             ]);
         } catch (Exception $e) {
-            $this->getLogger()->error(__METHOD__ . ' ' . $e->getMessage(), $e->getTrace());
+            $this->getLogger()->error(__METHOD__.' '.$e->getMessage(), $e->getTrace());
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }

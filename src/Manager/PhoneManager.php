@@ -14,7 +14,6 @@ namespace App\Manager;
 use App\Entity\Person;
 use App\Exception\AppException;
 use App\Services\AbstractFullService;
-use Exception;
 
 /**
  * Description of class CourseManager.
@@ -106,7 +105,6 @@ class PhoneManager extends AbstractFullService
 
         return base64_encode(self::purgePhone($value));
     }
-
 
     /**
      * @throws AppException

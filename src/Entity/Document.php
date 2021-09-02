@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Exception\AppException;
 use App\Manager\DocumentManager;
+use App\Repository\DocumentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,21 +20,14 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Imagick;
 use ImagickException;
 use RuntimeException;
-use stdClass;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Repository\DocumentRepository;
 
 /**
  * @ORM\Entity(repositoryClass=DocumentRepository::class)
  */
 class Document
 {
-    public const DIR_FILE = 'original';
-    public const DIR_PREVIEW = 'previews';
-    public const DIR_THUMB = 'thumbs';
-    public const EXT_PNG = 'png';
-
     use IdEntityTrait;
     use NameEntityTrait;
     use AuthorEntityTrait;
@@ -41,6 +35,10 @@ class Document
     use TimestampableEntityTrait;
     use SoftDeleteableEntity;
     use SchoolEntityTrait;
+    public const DIR_FILE = 'original';
+    public const DIR_PREVIEW = 'previews';
+    public const DIR_THUMB = 'thumbs';
+    public const EXT_PNG = 'png';
 
     /**
      * @Assert\File(maxSize="60000000")
@@ -98,7 +96,6 @@ class Document
      */
     private ?int $size = null;
 
-
     public function __construct()
     {
         $this->accountStatements = new ArrayCollection();
@@ -142,10 +139,10 @@ class Document
         $url = null;
 
         if (!empty($this->path)) {
-            $url = DocumentManager::getPathUploads($dir) . DIRECTORY_SEPARATOR . $this->getPath($dir);
+            $url = DocumentManager::getPathUploads($dir).DIRECTORY_SEPARATOR.$this->getPath($dir);
         }
 
-        if ($url !== null && !is_file($url)) {
+        if (null !== $url && !is_file($url)) {
             $result = $this->generateImages();
 
             if (
@@ -159,7 +156,6 @@ class Document
         return $url;
     }
 
-
     public function getPath(string $dir = self::DIR_FILE): ?string
     {
         $path = $this->path;
@@ -171,14 +167,12 @@ class Document
         return $path;
     }
 
-
     public function setPath(string $path = null): static
     {
-        $this->path = null === $path && empty($this->path) ? $this->getFileName() . '.' . $this->getExtension() : $path;
+        $this->path = null === $path && empty($this->path) ? $this->getFileName().'.'.$this->getExtension() : $path;
 
         return $this;
     }
-
 
     public static function getPathPNG(string $path): string
     {
@@ -190,6 +184,7 @@ class Document
     /**
      * @throws ImagickException
      * @throws AppException
+     *
      * @return array<string, bool>|array<string, null>
      */
     public function generateImages(): array
@@ -198,12 +193,11 @@ class Document
             $this->fileName = $this->getFileName();
         }
 
-
-        $filepath = self::getUploadRootDir() . '/' . $this->path;
+        $filepath = self::getUploadRootDir().'/'.$this->path;
 
         // If file is not supported
         if (!is_file($filepath) || !$this->isFormat(['pdf', 'image'])) {
-            throw new AppException('File ' . $filepath . ' not supported');
+            throw new AppException('File '.$filepath.' not supported');
         }
 
         $img = new Imagick($filepath);
@@ -220,9 +214,8 @@ class Document
             $img->writeImage();
         }
 
-
         $result = ['thumb' => null, 'preview' => null];
-        $pathPreview = self::getUploadRootDir(self::DIR_PREVIEW) . '/' . $this->fileName . '.' . self::EXT_PNG;
+        $pathPreview = self::getUploadRootDir(self::DIR_PREVIEW).'/'.$this->fileName.'.'.self::EXT_PNG;
         if (!is_file($pathPreview)) {
             // Genreration du preview
             $img->scaleImage(800, 0);
@@ -230,7 +223,7 @@ class Document
             $result['preview'] = $img->writeImage($pathPreview);
         }
 
-        $pathThumb = self::getUploadRootDir(self::DIR_THUMB) . '/' . $this->fileName . '.' . self::EXT_PNG;
+        $pathThumb = self::getUploadRootDir(self::DIR_THUMB).'/'.$this->fileName.'.'.self::EXT_PNG;
         if (!is_file($pathThumb)) {
             // Generation du thumb
             $img->scaleImage(150, 0);
@@ -242,7 +235,6 @@ class Document
 
         return $result;
     }
-
 
     public function getFileName(): string
     {
@@ -265,7 +257,7 @@ class Document
      */
     public static function getUploadRootDir(string $dir = self::DIR_FILE): string
     {
-        $dir = DocumentManager::getPathUploads() . DIRECTORY_SEPARATOR . self::getUploadDir($dir);
+        $dir = DocumentManager::getPathUploads().DIRECTORY_SEPARATOR.self::getUploadDir($dir);
         //dd($dir);
         if (!file_exists($dir) && (!mkdir($dir, 0770, true) && !is_dir($dir))) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
@@ -284,7 +276,6 @@ class Document
         // when displaying uploaded doc/image in the view.
         return $dir;
     }
-
 
     public function isFormat(array|string $formats): bool
     {
@@ -306,7 +297,6 @@ class Document
         return $result;
     }
 
-
     public function getMime(): ?string
     {
         return $this->mime;
@@ -318,7 +308,6 @@ class Document
 
         return $this;
     }
-
 
     public function getExtension(): ?string
     {
@@ -348,7 +337,7 @@ class Document
 
     public function getAbsolutePath(string $dir = self::DIR_FILE): ?string
     {
-        return null === $this->path ? null : DocumentManager::getPathUploads($dir) . '/' . $this->getPath($dir);
+        return null === $this->path ? null : DocumentManager::getPathUploads($dir).'/'.$this->getPath($dir);
     }
 
     /**
@@ -485,8 +474,8 @@ class Document
     /**
      * Get informations to document.
      *
-     *
      * @throws ImagickException
+     *
      * @return array<string, int>|array<string, string>|array<string, null>
      */
     public function getInfos(): array
@@ -503,10 +492,10 @@ class Document
 
     public function getTitle(): string
     {
-        return 'ID : ' . $this->getId() .
-            "\r\nNAME: " . $this->getName() .
-            "\r\nCREATED: " . $this->getCreatedAt()->format('d/m/Y H:i:s') .
-            "\r\nAUTHOR: " . $this->getAuthor()->getName();
+        return 'ID : '.$this->getId().
+            "\r\nNAME: ".$this->getName().
+            "\r\nCREATED: ".$this->getCreatedAt()->format('d/m/Y H:i:s').
+            "\r\nAUTHOR: ".$this->getAuthor()->getName();
     }
 
     /**

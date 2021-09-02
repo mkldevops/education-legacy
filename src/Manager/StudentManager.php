@@ -18,7 +18,6 @@ use Symfony\Component\Security\Core\Security;
 
 class StudentManager
 {
-
     public function __construct(
         private LoggerInterface $logger,
         private StudentRepository $repository,
@@ -41,12 +40,12 @@ class StudentManager
 
             // if student is desactivated
             if (empty($data['student']['enable'])) {
-                $data['amountTotal'] = (float)$data['paymentTotal'];
+                $data['amountTotal'] = (float) $data['paymentTotal'];
                 $data['status'] = PackageStudentPeriod::STATUS_PAYMENT_SUCCESS;
                 $data['percentage'] = 100;
             } else {
                 if (!empty($data['amountTotal'])) {
-                    $data['percentage'] = round((float)$data['paymentTotal'] / (float)$data['amountTotal'] * 100);
+                    $data['percentage'] = round((float) $data['paymentTotal'] / (float) $data['amountTotal'] * 100);
                 }
 
                 $data['status'] = PackageStudentPeriod::getStatusPaymentsStatic($data['percentage'], $period);
@@ -56,8 +55,8 @@ class StudentManager
             ++$list['total']['type'][$data['status']];
 
             $list['total']['discount'] += isset($student['packagePeriods'][0]) ? $student['packagePeriods'][0]['discount'] : 0;
-            $list['total']['totalPaid'] += (int)$data['paymentTotal'];
-            $list['total']['totalPreview'] += (int)$data['amountTotal'];
+            $list['total']['totalPaid'] += (int) $data['paymentTotal'];
+            $list['total']['totalPreview'] += (int) $data['amountTotal'];
         }
 
         if (!empty($list['total']['totalPreview'])) {

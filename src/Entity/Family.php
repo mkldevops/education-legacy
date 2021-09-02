@@ -15,7 +15,6 @@ use Fardus\Traits\Symfony\Entity\CityEntityTrait;
 use Fardus\Traits\Symfony\Entity\EmailEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\ZipEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -110,24 +109,24 @@ class Family
     {
         $persons = [];
         if (null !== $this->mother) {
-            $persons[] = (string)$this->mother;
+            $persons[] = (string) $this->mother;
         }
 
         if (null !== $this->father) {
-            $persons[] = (string)$this->father;
+            $persons[] = (string) $this->father;
         }
 
         if (null !== $this->legalGuardian && count($persons) < 2) {
-            $persons[] = (string)$this->getLegalGuardian();
+            $persons[] = (string) $this->getLegalGuardian();
         }
 
         if (!empty($this->persons)) {
             if (count($persons) < 2 && !empty($this->persons->get(0))) {
-                $persons[] = sprintf('[%s]', (string)$this->persons->first());
+                $persons[] = sprintf('[%s]', (string) $this->persons->first());
             }
 
             if (count($persons) < 2 && !empty($this->persons->get(1))) {
-                $persons[] = sprintf('[%s]', (string)$this->persons->get(1));
+                $persons[] = sprintf('[%s]', (string) $this->persons->get(1));
             }
 
             if (count($this->getPersons()) > 2) {
@@ -147,7 +146,7 @@ class Family
     {
         $this->legalGuardian = $legalGuardian;
 
-        if ($this->legalGuardian !== null && $this->legalGuardian->hasGender()) {
+        if (null !== $this->legalGuardian && !$this->legalGuardian->hasGender()) {
             $this->legalGuardian->setGender(Person::GENDER_FEMALE);
         }
 
@@ -179,7 +178,7 @@ class Family
     {
         $this->father = $father;
 
-        if ($this->father !== null && $this->father->hasGender()) {
+        if (null !== $this->father && !$this->father->hasGender()) {
             $this->father->setGender(Person::GENDER_MALE);
         }
 
@@ -195,7 +194,7 @@ class Family
     {
         $this->mother = $mother;
 
-        if ($this->mother !== null && $this->mother->hasGender()) {
+        if (null !== $this->mother && !$this->mother->hasGender()) {
             $this->mother->setGender(Person::GENDER_FEMALE);
         }
 

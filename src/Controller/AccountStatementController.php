@@ -13,8 +13,6 @@ use App\Exception\InvalidArgumentException;
 use App\Form\AccountStatementType;
 use App\Repository\OperationRepository;
 use App\Services\ResponseRequest;
-use Doctrine\ORM\NonUniqueResultException;
-use Exception;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
@@ -27,7 +25,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/account-statement')]
 class AccountStatementController extends AbstractBaseController
 {
-
     #[Route(path: '/list/{page}/{search}', name: 'app_account_statement_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = ''): Response
     {
@@ -40,9 +37,9 @@ class AccountStatementController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.title LIKE :title')
-            ->setParameter(':title', '%' . $search . '%')
+            ->setParameter(':title', '%'.$search.'%')
             ->orWhere('e.enable LIKE :enable')
-            ->setParameter('enable', '%' . $search . '%')
+            ->setParameter('enable', '%'.$search.'%')
             ->getQuery()
             ->getSingleScalarResult();
         // Define the number of pages.
@@ -53,15 +50,16 @@ class AccountStatementController extends AbstractBaseController
             ->getRepository(AccountStatement::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
-            ->setParameter('title', '%' . $search . '%')
+            ->setParameter('title', '%'.$search.'%')
             ->orWhere('e.enable LIKE :enable')
-            ->setParameter('enable', '%' . $search . '%')
+            ->setParameter('enable', '%'.$search.'%')
             ->orderBy('e.begin', 'DESC')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
         $search = stripslashes($search);
+
         return $this->render(
             'account_statement/index.html.twig',
             [
@@ -110,6 +108,7 @@ class AccountStatementController extends AbstractBaseController
 
             return $this->redirect($url);
         }
+
         return $this->render('account_statement/new.html.twig', [
             'accountstatement' => $accountstatement,
             'form' => $form->createView(),
@@ -136,6 +135,7 @@ class AccountStatementController extends AbstractBaseController
         $accountstatement = new AccountStatement();
         $accountstatement->setAccount($account);
         $form = $this->createCreateForm($accountstatement);
+
         return $this->render('account_statement/new.html.twig', [
             'accountstatement' => $accountstatement,
             'form' => $form->createView(),
@@ -160,6 +160,7 @@ class AccountStatementController extends AbstractBaseController
                 ['accountStatement' => $accountstatement->getId()],
                 ['date' => 'ASC']
             );
+
         return $this->render('account_statement/show.html.twig', [
             'accountstatement' => $accountstatement,
             'operations' => $operations,
@@ -171,11 +172,13 @@ class AccountStatementController extends AbstractBaseController
     public function edit(AccountStatement $accountStatement): Response
     {
         $editForm = $this->createEditForm($accountStatement);
+
         return $this->render('account_statement/edit.html.twig', [
             'accountstatement' => $accountStatement,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a AccountStatement entity.
      *
@@ -196,9 +199,9 @@ class AccountStatementController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing AccountStatement entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -214,11 +217,13 @@ class AccountStatementController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_statement_show', ['id' => $accountStatement->getId()]));
         }
+
         return $this->render('account_statement/edit.html.twig', [
             'accountstatement' => $accountStatement,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a AccountStatement entity.
      */
@@ -236,11 +241,13 @@ class AccountStatementController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_statement_index'));
         }
+
         return $this->render('account_statement/delete.html.twig', [
             'accountstatement' => $accountStatement,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a AccountStatement entity by id.
      *
@@ -256,6 +263,7 @@ class AccountStatementController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -263,6 +271,7 @@ class AccountStatementController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_account_statement_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
@@ -282,6 +291,7 @@ class AccountStatementController extends AbstractBaseController
         $manager->persist($accountStatement);
         $manager->flush();
         $response->success = true;
+
         return new JsonResponse($response);
     }
 
@@ -309,6 +319,7 @@ class AccountStatementController extends AbstractBaseController
 
             $response->success = true;
         }
+
         return new JsonResponse($response);
     }
 

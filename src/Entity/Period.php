@@ -59,7 +59,7 @@ class Period
 
     public function __toString(): string
     {
-        return (string)$this->getName();
+        return (string) $this->getName();
     }
 
     public function setId(int $id): self
@@ -127,7 +127,7 @@ class Period
     {
         $diffNow = $this->begin?->diff(new DateTime());
         $diffPeriod = $this->begin?->diff($this->end);
-        $percent = (int)$diffNow?->format('%R%a') / (int)$diffPeriod?->format('%R%a') * 100;
+        $percent = (int) $diffNow?->format('%R%a') / (int) $diffPeriod?->format('%R%a') * 100;
 
         return $percent > 100 ? 100 : $percent;
     }

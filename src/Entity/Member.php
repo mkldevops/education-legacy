@@ -43,7 +43,7 @@ class Member
 
     public function __toString(): string
     {
-        return (string)$this->person;
+        return (string) $this->person;
     }
 
     public function getId(): ?int

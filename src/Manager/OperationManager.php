@@ -7,7 +7,6 @@ namespace App\Manager;
 use App\Entity\Operation;
 use App\Entity\Period;
 use App\Exception\AppException;
-use App\Fetcher\AccountableFetcher;
 use App\Repository\OperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -60,7 +59,7 @@ class OperationManager
         try {
             $operation = $this->repository->findOneBy(['uniqueId' => $uniqueId]);
         } catch (Exception $e) {
-            $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
+            $this->logger->error(__FUNCTION__.' '.$e->getMessage());
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
@@ -73,7 +72,7 @@ class OperationManager
     public function update(Operation $operation, array $data): bool
     {
         foreach ($data as $property => $value) {
-            $method = 'set' . ucfirst($property);
+            $method = 'set'.ucfirst($property);
 
             if (is_array($value) && (!empty($value['class']) && !empty($value['id']))) {
                 $value = $this->findEntity($value['class'], $value['id']);
@@ -100,7 +99,7 @@ class OperationManager
             ->find($id);
 
         if (empty($result)) {
-            throw new AppException('Not found entity ' . $class . ' with id ' . $id);
+            throw new AppException('Not found entity '.$class.' with id '.$id);
         }
 
         return $result;

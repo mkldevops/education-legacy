@@ -12,7 +12,6 @@ use App\Entity\TypeOperation;
 use App\Exception\AppException;
 use App\Fetcher\AccountableFetcher;
 use App\Model\TransferModel;
-use App\Services\GoogleDriveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use OfxParser\Entities\BankAccount;
@@ -28,7 +27,6 @@ class OFXManager
     public const STATUS_ALREADY = 'already';
     public const STATUS_ADD_OPERATION = 'add_operation';
     public const STATUS_ADD_TRANSFER = 'add_transfer';
-
 
     private Account $account;
     private ?Account $accountTransfer = null;
@@ -63,7 +61,7 @@ class OFXManager
                 $operation = $this->operationManager
                     ->findOperationByUniqueId($transaction->uniqueId);
 
-                if ($operation !== null) {
+                if (null !== $operation) {
                     $operation->setAmount($transaction->amount);
                     $this->entityManager->persist($operation);
                     $this->entityManager->flush();
@@ -137,10 +135,10 @@ class OFXManager
             try {
                 $this->entityManager->persist($operation);
                 $this->entityManager->flush();
-                $this->logger->info(__FUNCTION__ . ' Operation is saved');
+                $this->logger->info(__FUNCTION__.' Operation is saved');
                 $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
             } catch (Exception $e) {
-                $this->logger->error(__FUNCTION__ . ' ' . $e->getMessage());
+                $this->logger->error(__FUNCTION__.' '.$e->getMessage());
                 throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }
@@ -160,9 +158,9 @@ class OFXManager
             'frais ret' => OperationGender::CODE_PRLVT,
         ];
 
-        $pattern = '#(?<gender>' . implode('|', array_keys($listLabels)) . ')#i';
+        $pattern = '#(?<gender>'.implode('|', array_keys($listLabels)).')#i';
         if (!preg_match($pattern, strtolower($transaction->name), $matches)) {
-            $this->logger->error(__FUNCTION__ . ' Not found gender on ofx type : "' . $transaction->name . '"');
+            $this->logger->error(__FUNCTION__.' Not found gender on ofx type : "'.$transaction->name.'"');
 
             return null;
         }
@@ -174,7 +172,7 @@ class OFXManager
             ->findOneBy(['code' => $genderCode]);
 
         if (empty($gender)) {
-            $this->logger->error(__FUNCTION__ . ' Nothing found gender with code : ' . $genderCode);
+            $this->logger->error(__FUNCTION__.' Nothing found gender with code : '.$genderCode);
         }
 
         return $gender;
@@ -182,7 +180,7 @@ class OFXManager
 
     protected static function getReference(Transaction $transaction): string
     {
-        $text = trim($transaction->name) . ' ' . trim($transaction->memo);
+        $text = trim($transaction->name).' '.trim($transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
 
         $reference = '';
@@ -192,7 +190,6 @@ class OFXManager
 
         return $reference;
     }
-
 
     /**
      * @throws AppException

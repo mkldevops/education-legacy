@@ -11,10 +11,8 @@ use App\Form\DocumentType;
 use App\Manager\DocumentManager;
 use App\Model\ResponseModel;
 use App\Services\ResponseRequest;
-use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use ImagickException;
-use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,6 +48,7 @@ class DocumentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_document_show', ['id' => $document->getId()]));
         }
+
         return $this->render('document/new.html.twig', [
             'document' => $document,
             'form' => $form->createView(),
@@ -73,6 +72,7 @@ class DocumentController extends AbstractBaseController
     {
         $document = new Document();
         $form = $this->createCreateForm($document);
+
         return $this->render('document/new.html.twig', [
             'document' => $document,
             'form' => $form->createView(),
@@ -91,6 +91,7 @@ class DocumentController extends AbstractBaseController
     public function edit(Document $document): Response
     {
         $editForm = $this->createEditForm($document);
+
         return $this->render('document/edit.html.twig', [
             'document' => $document,
             'edit_form' => $editForm->createView(),
@@ -122,6 +123,7 @@ class DocumentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_document_show', ['id' => $document->getId()]));
         }
+
         return $this->render('document/edit.html.twig', [
             'document' => $document,
             'edit_form' => $editForm->createView(),
@@ -144,6 +146,7 @@ class DocumentController extends AbstractBaseController
 
             return $this->redirect((string) $request->headers->get('referer'));
         }
+
         return $this->render('document/delete.html.twig', [
             'document' => $document,
             'delete_form' => $deleteForm->createView(),
@@ -161,7 +164,7 @@ class DocumentController extends AbstractBaseController
 
     public function getBaseUrl(Request $request): string
     {
-        return $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+        return $request->getScheme().'://'.$request->getHttpHost().$request->getBasePath();
     }
 
     /**
@@ -178,6 +181,7 @@ class DocumentController extends AbstractBaseController
         } catch (Exception $e) {
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
         return new JsonResponse($response);
     }
 
@@ -216,6 +220,7 @@ class DocumentController extends AbstractBaseController
             ]);
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
         return ResponseRequest::jsonResponse($response);
     }
 }

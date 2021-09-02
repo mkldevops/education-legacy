@@ -9,7 +9,6 @@ use App\Repository\StudentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
 use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -131,7 +130,6 @@ class Student
         return $this->person?->getNameComplete() ?? '';
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -141,7 +139,6 @@ class Student
     {
         return $this->person?->getName();
     }
-
 
     public function setGender(string $gender): static
     {
@@ -285,7 +282,7 @@ class Student
 
         return $this;
     }
-    
+
     public function getListPhones(): array
     {
         return array_unique(array_merge(
@@ -427,7 +424,6 @@ class Student
 
         return $this;
     }
-
 
     public function addCourse(AppealCourse $courses): static
     {

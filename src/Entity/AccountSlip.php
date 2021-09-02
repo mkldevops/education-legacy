@@ -103,7 +103,7 @@ class AccountSlip
 
     public function __toString(): string
     {
-        return $this->getName() . ' - ' . $this->getDate()->format('d M Y');
+        return $this->getName().' - '.$this->getDate()->format('d M Y');
     }
 
     public function getDate(): DateTimeInterface

@@ -44,7 +44,7 @@ class GoogleService extends AbstractService
     public function getClient(): Google_Client
     {
         // Load previously authorized credentials from a file.
-        $credentialsPath = $this->pathTokens . DIRECTORY_SEPARATOR . 'token.json';
+        $credentialsPath = $this->pathTokens.DIRECTORY_SEPARATOR.'token.json';
         $accessToken = $this->getAccessToken($credentialsPath);
         $this->client->setAccessToken($accessToken);
 
@@ -80,7 +80,7 @@ class GoogleService extends AbstractService
     public function getAccessToken(string $credentialsPath): array
     {
         if (file_exists($credentialsPath)) {
-            $accessToken = json_decode((string)file_get_contents($credentialsPath), true);
+            $accessToken = json_decode((string) file_get_contents($credentialsPath), true);
         } else {
             // Request authorization from the user.
             $authUrl = $this->client->createAuthUrl();
@@ -101,7 +101,7 @@ class GoogleService extends AbstractService
             }
 
             file_put_contents($credentialsPath, json_encode($accessToken));
-            $this->logger->info('Credentials saved to ' . $credentialsPath);
+            $this->logger->info('Credentials saved to '.$credentialsPath);
         }
 
         return $accessToken;

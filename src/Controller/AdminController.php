@@ -36,7 +36,7 @@ class AdminController extends AbstractBaseController
     #[Route('', name: 'app_admin_home')]
     public function index(DashboardManager $dashboard, TranslatorInterface $translator): Response
     {
-        $data = (object)['student' => false];
+        $data = (object) ['student' => false];
         $manager = $this->getDoctrine()->getManager();
 
         $structure = $this->getEntitySchool()->getStructure();

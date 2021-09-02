@@ -56,7 +56,7 @@ class CheckDataListener
     private function trans(string $class, string $text = null): string
     {
         return $this->translator->trans(
-            $class . ($text ? '.' . $text : null),
+            $class.($text ? '.'.$text : null),
             ['%url%' => $this->urlGenerator->generate('easyadmin', ['entity' => $class])],
             'check_data'
         );

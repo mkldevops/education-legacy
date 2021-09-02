@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Student;
 use App\Exception\AppException;
 use App\Form\StudentType;
-use Exception;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,7 +38,7 @@ class StudentApiController extends AbstractBaseController
             $this->addFlash('success', 'The student has been added.');
             $response->setData(json_encode($student));
         } catch (AppException $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -56,7 +55,7 @@ class StudentApiController extends AbstractBaseController
         }
 
         if (!$form->isValid()) {
-            throw new AppException('The form is not valid ' . $form->getErrors());
+            throw new AppException('The form is not valid '.$form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -84,7 +83,7 @@ class StudentApiController extends AbstractBaseController
             $this->addFlash('success', sprintf('The student %s has been updated.', $student->getNameComplete()));
             $response->setData(['student' => json_encode($student)]);
         } catch (AppException $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])
                 ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }

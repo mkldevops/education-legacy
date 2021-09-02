@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Doctrine\ORM\QueryBuilder;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Repository\ClassSchoolRepository;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,7 +28,7 @@ class ClassPeriodType extends AbstractType
         $builder
             ->add('classSchool', EntityType::class, [
                 'class' => ClassSchool::class,
-                'query_builder' => fn(ClassSchoolRepository $er) => $er->getQBAvailables(),
+                'query_builder' => fn (ClassSchoolRepository $er) => $er->getQBAvailables(),
             ])
             ->add('period', EntityType::class, [
                 'class' => Period::class,

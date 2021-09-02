@@ -11,11 +11,8 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\CommentEntity;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntity;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -105,7 +102,7 @@ class Course
         return $this;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
@@ -141,7 +138,7 @@ class Course
         return $this;
     }
 
-    public function getHourEnd(): \DateTimeInterface
+    public function getHourEnd(): DateTimeInterface
     {
         return $this->hourEnd;
     }
@@ -166,7 +163,7 @@ class Course
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ') . $teacher;
+            $str .= (empty($str) ? '' : ', ').$teacher;
         }
 
         return $str;

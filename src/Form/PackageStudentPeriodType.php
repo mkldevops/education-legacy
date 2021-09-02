@@ -33,7 +33,7 @@ class PackageStudentPeriodType extends AbstractType
             ->add('package', EntityType::class, [
                 'class' => Package::class,
                 'choice_label' => 'NameWithPrice',
-                'query_builder' => fn(PackageRepository $er) => $er->getAvailable($this->school),
+                'query_builder' => fn (PackageRepository $er) => $er->getAvailable($this->school),
             ])
             ->add('student')
             ->add('discount', MoneyType::class)

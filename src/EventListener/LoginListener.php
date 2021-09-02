@@ -48,7 +48,7 @@ class LoginListener extends AbstractService
 
         $user = $event->getAuthenticationToken()->getUser();
         if (!$user instanceof User) {
-            throw new AppException('The User is not instance of ' . User::class);
+            throw new AppException('The User is not instance of '.User::class);
         }
 
         $this->setUser($user)->setDataDefault();
@@ -88,7 +88,7 @@ class LoginListener extends AbstractService
             $list = new SchoolList([$school], $school);
             $this->session->set('school', $list);
         } else {
-            $this->logger->warning(__FUNCTION__ . ' Not found school');
+            $this->logger->warning(__FUNCTION__.' Not found school');
         }
 
         $this->periodManager->setPeriodsOnSession();

@@ -43,7 +43,7 @@ class Package
 
     public function getNameWithPrice(): string
     {
-        return $this->name . ' ⇒ ' . $this->price . ' €';
+        return $this->name.' ⇒ '.$this->price.' €';
     }
 
     public function getPrice(): float

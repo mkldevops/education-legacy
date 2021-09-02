@@ -2,18 +2,13 @@
 
 declare(strict_types=1);
 
-
 namespace App\Manager;
 
 use App\Entity\Account;
 use App\Entity\AccountStatement;
-use App\Entity\Operation;
 use App\Exception\AppException;
 use App\Repository\AccountStatementRepository;
 use App\Repository\OperationRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 
 class AccountManager
 {
@@ -27,6 +22,7 @@ class AccountManager
 
     /**
      * @return array<string, int>|array<string, mixed[]>|array<string, mixed>
+     *
      * @throws AppException
      */
     public function getDataAccountStatement(Account $account): array

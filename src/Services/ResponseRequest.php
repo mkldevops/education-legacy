@@ -8,10 +8,9 @@ use App\Model\ResponseModel;
 
 class ResponseRequest extends ResponseModel
 {
-
     public static function responseDefault(array $data = []): object
     {
-        return (object)array_merge([
+        return (object) array_merge([
             'success' => true,
             'errors' => [],
             'data' => [],

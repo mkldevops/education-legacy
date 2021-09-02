@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Exception\AppException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
+use App\Exception\AppException;
 use App\Form\FamilyType;
 use App\Model\ResponseModel;
 use Exception;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 
@@ -40,9 +39,10 @@ class FamilyApiController extends AbstractBaseController
                 ->setMessage('The family has been added.')
                 ->setData(['id' => $family->getId(), 'label' => $family->__toString()]);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
         return ResponseModel::jsonResponse($result);
     }
 
@@ -68,7 +68,7 @@ class FamilyApiController extends AbstractBaseController
         }
 
         if (!$form->isValid()) {
-            throw new AppException('The form is not valid ' . $form->getErrors());
+            throw new AppException('The form is not valid '.$form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -100,9 +100,10 @@ class FamilyApiController extends AbstractBaseController
                 ->setMessage('The family has been updated.')
                 ->setData(['family' => $serializer->serialize($family, 'json')]);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
         return ResponseModel::jsonResponse($result);
     }
 

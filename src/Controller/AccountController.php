@@ -17,7 +17,6 @@ use App\Services\GoogleDriveService;
 use Doctrine\ORM\ORMException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,12 +37,14 @@ class AccountController extends AbstractBaseController
         $entities = $repository
             ->getAccounts($this->getSchool(), false)
             ->getResult();
+
         return $this->render('account/index.html.twig', [
             'entities' => $entities,
             'pages' => ceil($count / 20),
             'page' => $page,
         ]);
     }
+
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
@@ -65,11 +66,13 @@ class AccountController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_show', ['id' => $account->getId()]));
         }
+
         return $this->render('account/new.html.twig', [
             'account' => $account,
             'form' => $form->createView(),
         ]);
     }
+
     private function createCreateForm(Account $account): FormInterface
     {
         $form = $this->createForm(AccountType::class, $account, [
@@ -81,6 +84,7 @@ class AccountController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
@@ -89,14 +93,15 @@ class AccountController extends AbstractBaseController
     {
         $account = new Account();
         $form = $this->createCreateForm($account);
+
         return $this->render('account/new.html.twig', [
             'account' => $account,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a Account entity.
-     *
      *
      * @throws ORMException
      */
@@ -113,8 +118,10 @@ class AccountController extends AbstractBaseController
             ->getDataOperationsToAccount($account);
         // Check data to accountStatement
         $data += $accountManager->getDataAccountStatement($account);
+
         return $this->render('account/show.html.twig', $data);
     }
+
     /**
      * Finds and displays a Operations to Account entity.
      */
@@ -125,6 +132,7 @@ class AccountController extends AbstractBaseController
             'account' => $account,
         ]);
     }
+
     /**
      * Displays a form to edit an existing Account entity.
      *
@@ -134,11 +142,13 @@ class AccountController extends AbstractBaseController
     public function edit(Account $account): Response
     {
         $editForm = $this->createEditForm($account);
+
         return $this->render('account/edit.html.twig', [
             'account' => $account,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     private function createEditForm(Account $account): FormInterface
     {
         $form = $this->createForm(AccountType::class, $account, [
@@ -150,6 +160,7 @@ class AccountController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      *
@@ -167,11 +178,13 @@ class AccountController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_show', ['id' => $account->getId()]));
         }
+
         return $this->render('account/edit.html.twig', [
             'account' => $account,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a Account entity.
      *
@@ -191,11 +204,13 @@ class AccountController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_index'));
         }
+
         return $this->render('account/delete.html.twig', [
             'account' => $account,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
@@ -206,6 +221,7 @@ class AccountController extends AbstractBaseController
             ])
             ->getForm();
     }
+
     /**
      * @IsGranted("ROLE_SUPER_ADMIN")
      *
@@ -235,6 +251,7 @@ class AccountController extends AbstractBaseController
                 $this->addFlash('danger', $this->trans('account.ofx.treatment.error', [], 'account'));
             }
         }
+
         return $this->render('account/ofx.html.twig', [
             'account' => $account,
             'files' => $files,
@@ -242,6 +259,7 @@ class AccountController extends AbstractBaseController
             'delete_form' => $form->createView(),
         ]);
     }
+
     private function createOFXForm(Account $account): FormInterface
     {
         $form = $this->createForm(AccountOFXType::class, $account, [

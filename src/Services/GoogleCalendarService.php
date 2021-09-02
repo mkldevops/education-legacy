@@ -25,6 +25,7 @@ class GoogleCalendarService extends GoogleService
 
     /**
      * @throws AppException
+     *
      * @return mixed[]
      */
     public function getEvents(?string $query = null, int $maxResults = 1000): array
@@ -32,7 +33,7 @@ class GoogleCalendarService extends GoogleService
         try {
             $service = new Google_Service_Calendar($this->getClient());
         } catch (Exception $e) {
-            throw new AppException($e->getMessage(), (int)$e->getCode(), $e);
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
         // Print the next 10 events on the user's calendar.

@@ -8,7 +8,6 @@ use Exception;
 
 class AppException extends Exception
 {
-
     public function __toString(): string
     {
         return $this->getMessage();

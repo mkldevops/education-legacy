@@ -47,8 +47,8 @@ class DiplomaGenerateCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $limit = $input->hasOption(self::OPTION_LIMIT) ? (int)$input->getOption(self::OPTION_LIMIT) : 1;
-            $idSchool = (int)$input->getOption(self::OPTION_SCHOOL);
+            $limit = $input->hasOption(self::OPTION_LIMIT) ? (int) $input->getOption(self::OPTION_LIMIT) : 1;
+            $idSchool = (int) $input->getOption(self::OPTION_SCHOOL);
             $school = $this->service->findSchool($idSchool);
             $period = $input->getOption(self::OPTION_PERIOD);
 

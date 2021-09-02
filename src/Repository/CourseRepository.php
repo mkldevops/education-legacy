@@ -9,7 +9,6 @@ use App\Entity\Course;
 use App\Entity\Period;
 use App\Entity\School;
 use DateInterval;
-use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,11 +46,11 @@ class CourseRepository extends ServiceEntityRepository
                         OR e.hourEnd LIKE :hourEnd
                         OR t.name LIKE :teacher
                     ')
-            ->setParameter(':text', '%' . $search . '%')
-            ->setParameter(':comment', '%' . $search . '%')
-            ->setParameter(':hourBegin', '%' . $search . '%')
-            ->setParameter(':hourEnd', '%' . $search . '%')
-            ->setParameter(':teacher', '%' . $search . '%')
+            ->setParameter(':text', '%'.$search.'%')
+            ->setParameter(':comment', '%'.$search.'%')
+            ->setParameter(':hourBegin', '%'.$search.'%')
+            ->setParameter(':hourEnd', '%'.$search.'%')
+            ->setParameter(':teacher', '%'.$search.'%')
             ->orderBy('e.date', 'DESC');
     }
 
@@ -75,7 +74,7 @@ class CourseRepository extends ServiceEntityRepository
 
     public function remove(ClassPeriod $classPeriod): bool
     {
-        return (bool)$this->createQueryBuilder('c')
+        return (bool) $this->createQueryBuilder('c')
             ->delete()
             ->where('c.classPeriod = :classPeriod')
             ->setParameter('classPeriod', $classPeriod)

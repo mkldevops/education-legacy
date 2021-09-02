@@ -95,7 +95,7 @@ class User implements UserInterface
 
     public function getUsername(): string
     {
-        return (string)$this->username;
+        return (string) $this->username;
     }
 
     public function setUsername(string $username): self
@@ -160,7 +160,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getLastLogin(): \DateTimeInterface
+    public function getLastLogin(): DateTimeInterface
     {
         return $this->lastLogin;
     }

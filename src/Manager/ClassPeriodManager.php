@@ -18,16 +18,12 @@ use App\Repository\ClassPeriodStudentRepository;
 use App\Repository\CourseRepository;
 use App\Repository\PackageStudentPeriodRepository;
 use App\Repository\StudentRepository;
-use App\Services\AbstractFullService;
 use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -54,9 +50,10 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         try {
             $classPeriod = $this->classPeriodRepository->getClassPeriodByName($name, $period, $school);
             $this->logger->debug(__FUNCTION__, ['classPeriod' => $classPeriod]);
+
             return $classPeriod;
         } catch (NonUniqueResultException $e) {
-            $msg = 'Not found class period with name : ' . $name;
+            $msg = 'Not found class period with name : '.$name;
             $this->logger->error($msg, compact('name', 'period', 'school'));
             throw new AppException($msg, (int) $e->getCode(), $e);
         }
@@ -76,7 +73,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $id = $studentPeriod->getStudent()->getId();
             $package = $this->packageStudentPeriodRepository->getCurrentPackageStudent($id, $classPeriod->getPeriod());
 
-            if ($package !== null) {
+            if (null !== $package) {
                 $packageStudents[$id] = $package;
             }
         }
@@ -86,6 +83,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
     /**
      * @return ClassPeriodStudent[]
+     *
      * @throws Exception
      */
     public function getStudentsInClassPeriod(ClassPeriod $classPeriod): array
@@ -105,7 +103,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $courses = array_fill(0, 17, []);
         }
 
-        $this->logger->debug(__FUNCTION__ . ' length courses : ' . count($courses));
+        $this->logger->debug(__FUNCTION__.' length courses : '.count($courses));
 
         return $courses;
     }
@@ -114,7 +112,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
     {
         $courses = null;
         try {
-            $courses = (int)$this->courseRepository
+            $courses = (int) $this->courseRepository
                 ->createQueryBuilder('c')
                 ->select('count(c.id)')
                 ->where('c.classPeriod = :classPeriod')
@@ -123,7 +121,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                 ->setParameter('date', $from)
                 ->getQuery()
                 ->getSingleScalarResult();
-            $this->logger->debug(__FUNCTION__ . ' length total courses : ' . $courses);
+            $this->logger->debug(__FUNCTION__.' length total courses : '.$courses);
         } catch (NonUniqueResultException | NoResultException $e) {
             $this->logger->error($e->getMessage());
         }
@@ -134,6 +132,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
     /**
      * @throws ORMException
      * @throws AppException
+     *
      * @internal param array $students
      */
     public function treatListStudent(array $studentsId, Period $period, ClassPeriod $classPeriod): bool
@@ -146,7 +145,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $students = $this->studentRepository->findBy(['id' => $studentsId]);
 
             if (empty($students)) {
-                throw new AppException('Not found student id : ' . implode(',', $studentsId));
+                throw new AppException('Not found student id : '.implode(',', $studentsId));
             }
 
             foreach ($students as $student) {
@@ -155,14 +154,14 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
                 if ($classPeriodStudent instanceof ClassPeriodStudent) {
                     $end = $classPeriodStudent->getClassPeriod()?->getPeriod()?->getEnd();
-                    if ($end === null || $end->getTimestamp() > time()) {
+                    if (null === $end || $end->getTimestamp() > time()) {
                         $end = new DateTime();
                     }
 
                     $classPeriodStudent->setEnd($end)
                         ->setEnable(false)
                         ->setAuthor($this->security->getUser())
-                        ->setComment('Change for new class ' . $classPeriod->getClassSchool()->getName());
+                        ->setComment('Change for new class '.$classPeriod->getClassSchool()->getName());
                 } else {
                     $this->logger->debug("don't have a current ClassPeriodStudent", compact('student'));
                 }
@@ -190,7 +189,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
         // On vérifie si la date debut de la periode n'est pas encore passé
         $timestamp = $classPeriod->getPeriod()->getBegin()?->getTimestamp();
-        if ($timestamp !== null && $timestamp > time()) {
+        if (null !== $timestamp && $timestamp > time()) {
             $begin = $classPeriod->getPeriod()->getBegin();
         }
 
@@ -206,6 +205,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
     /**
      * @throws Exception
+     *
      * @return array<int, array<string, mixed>>
      */
     public function getListStudentWithout(Period $period, School $school): array
@@ -221,7 +221,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $registration = $student['dateRegistration'];
 
             $students[] = [
-                'DT_RowId' => 'student_' . $student['id'],
+                'DT_RowId' => 'student_'.$student['id'],
                 'DT_RowData' => ['id' => $student['id']],
                 'id' => $student['id'],
                 'name' => $student['name'],

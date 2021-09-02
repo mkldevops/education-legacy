@@ -48,7 +48,7 @@ class Meet
 
     public function __toString(): string
     {
-        return (string)$this->title;
+        return (string) $this->title;
     }
 
     public function getTitle(): ?string

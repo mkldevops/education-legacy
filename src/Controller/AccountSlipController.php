@@ -13,7 +13,6 @@ use App\Manager\TransferManager;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
-use Exception;
 use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -49,6 +48,7 @@ class AccountSlipController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
+
         return $this->render('account_slip/index.html.twig', [
             'accountslipList' => $accountSlipList,
             'count' => $count,
@@ -67,15 +67,15 @@ class AccountSlipController extends AbstractBaseController
             ->getRepository(AccountSlip::class)
             ->createQueryBuilder('e')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%' . $search . '%')
+            ->setParameter(':amount', '%'.$search.'%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%' . $search . '%')
+            ->setParameter(':gender', '%'.$search.'%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
+            ->setParameter(':comment', '%'.$search.'%')
             ->orWhere('e.name LIKE :name')
-            ->setParameter(':name', '%' . $search . '%')
+            ->setParameter(':name', '%'.$search.'%')
             ->orWhere('e.reference LIKE :reference')
-            ->setParameter(':reference', '%' . $search . '%')
+            ->setParameter(':reference', '%'.$search.'%')
             ->orWhere('e.operationCredit = :credit')
             ->setParameter(':credit', $search)
             ->orWhere('e.operationDebit = :debit')
@@ -121,14 +121,16 @@ class AccountSlipController extends AbstractBaseController
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (AppException|NonUniqueResultException $e) {
-                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip') . $e->getMessage());
+                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip').$e->getMessage());
             }
         }
+
         return $this->render('account_slip/new.html.twig', [
             'accountslip' => $accountSlip,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Creates a form to create a AccountSlip entity.
      *
@@ -153,6 +155,7 @@ class AccountSlipController extends AbstractBaseController
     {
         $accountSlip = new AccountSlip();
         $form = $this->createCreateForm($accountSlip);
+
         return $this->render('account_slip/new.html.twig', [
             'accountslip' => $accountSlip,
             'form' => $form->createView(),
@@ -171,6 +174,7 @@ class AccountSlipController extends AbstractBaseController
     public function edit(AccountSlip $accountSlip): Response
     {
         $editForm = $this->createEditForm($accountSlip);
+
         return $this->render('account_slip/edit.html.twig', [
             'accountslip' => $accountSlip,
             'edit_form' => $editForm->createView(),
@@ -213,17 +217,18 @@ class AccountSlipController extends AbstractBaseController
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (AppException $e) {
-                $this->addFlash('danger', 'The AccountSlip has not updated : ' . $e->getMessage());
+                $this->addFlash('danger', 'The AccountSlip has not updated : '.$e->getMessage());
             }
         }
+
         return $this->render('account_slip/edit.html.twig', [
             'accountslip' => $accountSlip,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a AccountSlip entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -241,6 +246,7 @@ class AccountSlipController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_account_slip_index'));
         }
+
         return $this->render('account_slip/delete.html.twig', [
             'accountslip' => $accountSlip,
             'delete_form' => $deleteForm->createView(),
@@ -260,6 +266,7 @@ class AccountSlipController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_account_slip_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
@@ -284,7 +291,7 @@ class AccountSlipController extends AbstractBaseController
                     $accountSlip->removeDocument($document);
                     break;
                 default:
-                    throw new InvalidDefinitionException('the action ' . $action . ' is not defined');
+                    throw new InvalidDefinitionException('the action '.$action.' is not defined');
             }
 
             $manager->persist($accountSlip);
@@ -294,6 +301,7 @@ class AccountSlipController extends AbstractBaseController
         } catch (AppException $e) {
             $result->errors[] = $e->getMessage();
         }
+
         return new JsonResponse($result);
     }
 }

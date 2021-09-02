@@ -20,7 +20,6 @@ class TypeOperationController extends AbstractBaseController
     /**
      * Finds and displays a TypeOperation entity.
      *
-     *
      * @throws InvalidArgumentException
      */
     #[Route(path: '/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
@@ -29,11 +28,13 @@ class TypeOperationController extends AbstractBaseController
         $operations = $this->getManager()
             ->getRepository(Operation::class)
             ->getListOperations($this->getPeriod(), $this->getSchool(), $typeOperation);
+
         return $this->render('type_operation/operations.html.twig', [
             'typeoperation' => $typeOperation,
             'operations' => $operations,
         ]);
     }
+
     /**
      * modalList.
      */

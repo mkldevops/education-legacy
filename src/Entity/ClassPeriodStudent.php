@@ -7,13 +7,11 @@ namespace App\Entity;
 use App\Repository\ClassPeriodStudentRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ClassPeriodStudentRepository::class)
@@ -69,8 +67,7 @@ class ClassPeriodStudent
         return $this;
     }
 
-
-    public function getBegin(): \DateTimeInterface
+    public function getBegin(): DateTimeInterface
     {
         return $this->begin;
     }

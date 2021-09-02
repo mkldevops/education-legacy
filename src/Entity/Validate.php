@@ -9,7 +9,6 @@ use App\Traits\AuthorEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ValidateRepository::class)
@@ -43,6 +42,7 @@ class Validate
     public function getData(): array
     {
         dump($this);
+
         return [
             'type' => $this->getType(),
             'created' => [

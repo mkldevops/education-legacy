@@ -86,6 +86,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
 
     /**
      * @return ClassPeriodStudent[]
+     *
      * @throws Exception
      */
     public function getStudentToClassPeriod(ClassPeriod $classPeriod, Student $student = null): array
@@ -112,11 +113,10 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
     /**
      * @return ClassPeriod[]
      */
-    public function getListOfCurrentPeriod(Period $period, School $school) : array
+    public function getListOfCurrentPeriod(Period $period, School $school): array
     {
         return $this->getQueryBuilderList($school)
             ->andWhere('cp.period = :period')
@@ -131,9 +131,9 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->innerJoin('cp.classSchool', 'cs', Join::WITH, 'cs.school = :school')
             ->setParameter(':school', $school)
             ->where('cp.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
+            ->setParameter(':comment', '%'.$search.'%')
             ->orWhere('cp.enable LIKE :status')
-            ->setParameter(':status', '%' . $search . '%');
+            ->setParameter(':status', '%'.$search.'%');
     }
 
     /**
@@ -148,7 +148,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getList(School $school, int $page, string $search) : array
+    public function getList(School $school, int $page, string $search): array
     {
         return $this->getQueryBuilderList($school, $search)
             ->setFirstResult(($page - 1) * 20)

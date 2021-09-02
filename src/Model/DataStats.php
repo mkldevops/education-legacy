@@ -9,7 +9,7 @@ class DataStats
     public function __construct(
         private ?string $columnId = null,
         private ?string $columnLabel = null,
-        private null|int|string $rowId = null,
+        private null | int | string $rowId = null,
         private ?string $rowLabel = null,
         private int $count = 0,
         private float $sum = 0

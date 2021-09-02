@@ -29,7 +29,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class ClassSchoolController extends AbstractBaseController
 {
     /**
-     *
      * @throws InvalidArgumentException
      */
     #[Route(path: '', name: 'app_class_school_index', methods: ['GET'])]
@@ -40,11 +39,13 @@ class ClassSchoolController extends AbstractBaseController
             ->getManager()
             ->getRepository(ClassSchool::class)
             ->findBy(['school' => $this->getSchool()], ['enable' => 'DESC']);
+
         return $this->render('class_school/index.html.twig', [
             'class_schools' => $classSchools,
             'period' => $this->getPeriod(),
         ]);
     }
+
     /**
      * @throws AppException
      */
@@ -66,11 +67,13 @@ class ClassSchoolController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_school_show', ['id' => $classSchool->getId()]));
         }
+
         return $this->render('class_school/new.html.twig', [
             'classschool' => $classSchool,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Creates a form to create a classSchool entity.
      *
@@ -87,6 +90,7 @@ class ClassSchoolController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Displays a form to create a new classSchool entity.
      */
@@ -95,14 +99,15 @@ class ClassSchoolController extends AbstractBaseController
     {
         $classSchool = new ClassSchool();
         $form = $this->createCreateForm($classSchool);
+
         return $this->render('class_school/new.html.twig', [
             'classschool' => $classSchool,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Show class School.
-     *
      *
      * @throws InvalidArgumentException
      */
@@ -113,11 +118,13 @@ class ClassSchoolController extends AbstractBaseController
             ->getManager()
             ->getRepository(Period::class)
             ->getLastPeriods($this->getPeriod());
+
         return $this->render('class_school/show.html.twig', [
             'classschool' => $classSchool,
             'periods' => $periods,
         ]);
     }
+
     /**
      * Displays a form to edit an existing classSchool entity.
      */
@@ -125,11 +132,13 @@ class ClassSchoolController extends AbstractBaseController
     public function edit(ClassSchool $classSchool): Response
     {
         $editForm = $this->createEditForm($classSchool);
+
         return $this->render('class_school/edit.html.twig', [
             'classschool' => $classSchool,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a classSchool entity.
      *
@@ -146,11 +155,12 @@ class ClassSchoolController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing classSchool entity.
      *
-     *
      * @param ClassSchool|null $classSchool
+     *
      * @return RedirectResponse|Response
      */
     #[Route(path: '/update/{id}', name: 'app_class_school_update', methods: ['POST', 'PUT'])]
@@ -167,11 +177,13 @@ class ClassSchoolController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_school_show', ['id' => $classSchool->getId()]));
         }
+
         return $this->render('class_school/edit.html.twig', [
             'classschool' => $classSchool,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a classSchool entity.
      */
@@ -189,11 +201,13 @@ class ClassSchoolController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_school_index'));
         }
+
         return $this->render('class_school/delete.html.twig', [
             'classschool' => $classSchool,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a classSchool entity by id.
      *
@@ -207,6 +221,7 @@ class ClassSchoolController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -214,13 +229,14 @@ class ClassSchoolController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_class_school_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
         ]));
     }
+
     /**
-     *
      * @param ClassPeriod|null $classPeriod
      *
      * @throws Exception
@@ -235,7 +251,7 @@ class ClassSchoolController extends AbstractBaseController
             if ($result) {
                 $this->addFlash(
                     'info',
-                    'Les élèves ont été ajouté à la Classe ' . $classPeriod->getclassSchool()->getName() . ' pour la periode ' . $classPeriod->getPeriod()->getName()
+                    'Les élèves ont été ajouté à la Classe '.$classPeriod->getclassSchool()->getName().' pour la periode '.$classPeriod->getPeriod()->getName()
                 );
 
                 return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
@@ -243,13 +259,13 @@ class ClassSchoolController extends AbstractBaseController
                 $this->addFlash('success', 'The student has not added');
             }
         }
+
         return $this->redirect($this->generateUrl('app_class_period_show_student', [
             'id' => $classPeriod->getId(),
         ]));
     }
+
     /**
-     *
-     *
      * @throws InvalidArgumentException
      * @throws Exception
      */
@@ -274,6 +290,7 @@ class ClassSchoolController extends AbstractBaseController
             $aListStudent[$age][] = $student;
         }
         ksort($aListStudent);
+
         return $this->render('class_period/students.html.twig', [
             'listStudents' => $aListStudent,
             'numberStudents' => count($students),

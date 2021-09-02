@@ -5,24 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Base\AbstractBaseController;
-use App\Entity\AppealCourse;
 use App\Entity\Course;
 use App\Exception\AppException;
-use App\Exception\InvalidArgumentException;
-use App\Form\CourseType;
 use App\Manager\CourseManager;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +27,7 @@ class CourseController extends AbstractBaseController
     #[Route(path: '/save-appeal/{id}', name: 'app_course_save_appeal', methods: ['POST'])]
     public function saveAppeal(Request $request, Course $course): JsonResponse
     {
-        $response = (object)[
+        $response = (object) [
             'success' => false,
             'error' => [],
             'students' => [],
@@ -50,7 +40,7 @@ class CourseController extends AbstractBaseController
             $studentId = $appealCourse->getStudent()->getId();
 
             if (array_key_exists($studentId, $listStudentStatus)) {
-                $status = (int)$listStudentStatus[$studentId]['status'];
+                $status = (int) $listStudentStatus[$studentId]['status'];
             } else {
                 $name = $appealCourse->getStudent()->getNameComplete();
                 $response->error[] = sprintf('%s n\'est pas dans la liste', $name);
@@ -64,6 +54,7 @@ class CourseController extends AbstractBaseController
             }
         }
         $manager->flush();
+
         return $this->json($response);
     }
 
@@ -75,6 +66,7 @@ class CourseController extends AbstractBaseController
             $courseManager->getGoogleCalendar()->getClient();
         } catch (AppException $e) {
             $this->addFlash('warning', 'Your Token is not defined');
+
             return $this->redirectToRoute('app_google_auth');
         }
 
@@ -87,14 +79,15 @@ class CourseController extends AbstractBaseController
             $result = $courseManager->generate($this->getPeriod(), $this->getSchool());
 
             if (0 !== $result) {
-                $this->addFlash('success', 'The course is successfully generated : ' . $result);
+                $this->addFlash('success', 'The course is successfully generated : '.$result);
             } else {
                 $logs = $courseManager->getLogger()->getLogs();
-                $this->addFlash('danger', 'An error occurred during the process <br />' . print_r($logs, true));
+                $this->addFlash('danger', 'An error occurred during the process <br />'.print_r($logs, true));
             }
 
             return $this->redirectToRoute('app_course_index');
         }
+
         return $this->render('course/generate.html.twig', [
             'form' => $form->createView(),
             'manager' => $courseManager,

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -46,7 +46,7 @@ class OperationRepository extends ServiceEntityRepository
             ->setParameter('end', $period->getEnd()?->format('Y-m-d 23:59:59'))
             ->setParameter('structure', $school->getStructure()?->getId());
 
-        if ($typeOperation !== null) {
+        if (null !== $typeOperation) {
             $qb->andWhere('ope.typeOperation = :typeOperation')
                 ->setParameter('typeOperation', $typeOperation);
         }
@@ -55,14 +55,14 @@ class OperationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getAvailableToAccountStatement(AccountStatement $accountStatement) : array
+    public function getAvailableToAccountStatement(AccountStatement $accountStatement): array
     {
         $begin = $accountStatement->getBegin();
         $end = $accountStatement->getEnd();
         $interval = $accountStatement->getAccount()->getIntervalOperationsAccountStatement();
 
-        $begin->modify('-' . $interval . ' days');
-        $end->modify($interval . ' days');
+        $begin->modify('-'.$interval.' days');
+        $end->modify($interval.' days');
 
         return $this->createQueryBuilder('ope')
             ->select(['top.name AS typeOperation', 'ope.id', 'ope.date', 'ope.name', 'ope.amount'])
@@ -110,7 +110,7 @@ class OperationRepository extends ServiceEntityRepository
             throw new AppException(sprintf('%s Error on query', __FUNCTION__), (int) $e->getCode(), $e);
         }
 
-        return (int)$result['nbOperations'];
+        return (int) $result['nbOperations'];
     }
 
     public function getStatsByMonthly(Period $period, School $school): array
@@ -189,7 +189,7 @@ class OperationRepository extends ServiceEntityRepository
 
         if (is_numeric($search)) {
             $qb->orWhere('REGEXP(p.amount, :amount) = 1')
-                ->setParameter('amount', (float)str_replace(',', '.', $search));
+                ->setParameter('amount', (float) str_replace(',', '.', $search));
         }
 
         return $qb->getQuery()

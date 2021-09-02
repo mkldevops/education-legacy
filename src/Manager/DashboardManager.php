@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
-use App\Entity\Document;
-use App\Entity\Family;
-use App\Entity\Operation;
 use App\Entity\Period;
-use App\Entity\Person;
 use App\Entity\School;
-use App\Entity\Student;
 use App\Exception\AppException;
 use App\Repository\DocumentRepository;
 use App\Repository\FamilyRepository;
@@ -40,7 +35,7 @@ class DashboardManager extends AbstractFullService
      */
     public static function generateItemsOfMenu(string $route = null): array
     {
-        $file = __DIR__ . '/../../config/menu.yml';
+        $file = __DIR__.'/../../config/menu.yml';
         if (!is_file($file)) {
             throw new AppException("No such file or directory : $file");
         }
@@ -94,9 +89,9 @@ class DashboardManager extends AbstractFullService
     {
         $si_prefix = ['B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB'];
         $base = 1024;
-        $class = min((int)log($int, $base), count($si_prefix) - 1);
+        $class = min((int) log($int, $base), count($si_prefix) - 1);
 
-        return sprintf('%1.2f', $int / $base ** $class) . ' ' . $si_prefix[$class];
+        return sprintf('%1.2f', $int / $base ** $class).' '.$si_prefix[$class];
     }
 
     /**
@@ -109,7 +104,7 @@ class DashboardManager extends AbstractFullService
         $registred = $this->studentRepository->getStatsStudentRegistered($school, $period);
         $desactivated = $this->studentRepository->getStatsStudentDeactivated($school, $period);
 
-        $data = (object)['registred' => [], 'desactivated' => [], 'average' => []];
+        $data = (object) ['registred' => [], 'desactivated' => [], 'average' => []];
         $tmp = array_merge($registred, $desactivated);
         ksort($tmp);
         $current = new DateTime(key($tmp) ?? 'now');
@@ -164,7 +159,7 @@ class DashboardManager extends AbstractFullService
             yield 'family' => $this->familyRepository->search($search);
             yield 'document' => $this->documentRepository->search($search);
         } catch (Exception $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage());
+            $this->logger->error(__METHOD__.' '.$e->getMessage());
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
