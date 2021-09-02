@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Exception\AppException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Form\FamilyType;
@@ -16,19 +18,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
 
-/**
- * @Route("/api/family", options={"expose"=true})
- */
+#[Route(path: '/api/family', options: ['expose' => true])]
 class FamilyApiController extends AbstractBaseController
 {
     /**
-     * @Route("/create", name="app_api_family_create", methods={"POST"})
+     * @throws AppException
      */
-    public function create(Request $request): Response
+    #[Route(path: '/create', name: 'app_api_family_create', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
-
         try {
             $family = new Family();
             $form = $this->createCreateForm($family)
@@ -41,10 +41,8 @@ class FamilyApiController extends AbstractBaseController
                 ->setData(['id' => $family->getId(), 'label' => $family->__toString()]);
         } catch (Exception $e) {
             $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            $result->setMessage($e->getMessage())
-                ->setSuccess(false);
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
-
         return ResponseModel::jsonResponse($result);
     }
 
@@ -66,11 +64,11 @@ class FamilyApiController extends AbstractBaseController
     private function persistData(Family $family, FormInterface $form): void
     {
         if (!$form->isSubmitted()) {
-            throw new Exception('The form is not submitted ');
+            throw new AppException('The form is not submitted ');
         }
 
         if (!$form->isValid()) {
-            throw new Exception('The form is not valid ' . $form->getErrors());
+            throw new AppException('The form is not valid ' . $form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -85,13 +83,13 @@ class FamilyApiController extends AbstractBaseController
     }
 
     /**
-     * @Route("/update/{id}", name="app_api_family_update", methods={"POST", "PUT"})
+     * @throws AppException
      */
-    public function update(Request $request, Family $family, Serializer $serializer): Response
+    #[Route(path: '/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Family $family, Serializer $serializer): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $result = new ResponseModel();
-
         try {
             $form = $this->createCreateForm($family)
                 ->handleRequest($request);
@@ -103,10 +101,8 @@ class FamilyApiController extends AbstractBaseController
                 ->setData(['family' => $serializer->serialize($family, 'json')]);
         } catch (Exception $e) {
             $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            $result->setMessage($e->getMessage())
-                ->setSuccess(false);
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
-
         return ResponseModel::jsonResponse($result);
     }
 

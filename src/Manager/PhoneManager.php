@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
  * User: fahari
@@ -11,6 +12,7 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Entity\Person;
+use App\Exception\AppException;
 use App\Services\AbstractFullService;
 use Exception;
 
@@ -53,11 +55,9 @@ class PhoneManager extends AbstractFullService
     }
 
     /**
-     * Get Phones.
-     *
-     * @return array
+     * @return array<string, mixed[]>|array<string, int>|null[]
      */
-    public static function getPhones(Person $person)
+    public static function getPhones(Person $person): array
     {
         return [
             'id' => $person->getId(),
@@ -67,11 +67,7 @@ class PhoneManager extends AbstractFullService
 
     public static function stringPhonesToArray(?string $phones): array
     {
-        if (empty($phones)) {
-            return [];
-        }
-
-        $phones = explode(';', $phones);
+        $phones = explode(';', $phones ?? '');
         $phones = array_unique($phones);
 
         $list = [];
@@ -86,10 +82,7 @@ class PhoneManager extends AbstractFullService
         return $list;
     }
 
-    /**
-     * @return string|string[]|null
-     */
-    private static function purgePhone(string $value): ?string
+    private static function purgePhone(string $value): string
     {
         $value = preg_replace("#\D+#", '', $value);
         $value = preg_replace("#(\d{2})#", '$1 ', $value);
@@ -98,11 +91,9 @@ class PhoneManager extends AbstractFullService
     }
 
     /**
-     * updatePhone.
-     *
-     * @throws Exception
+     * @throws AppException
      */
-    public function updatePhone(Person $person, string $value, string $key = null): bool
+    public function updatePhone(Person $person, string $value, string $key = null): string
     {
         if (!empty($key)) {
             $person->removePhone($key);
@@ -116,10 +107,9 @@ class PhoneManager extends AbstractFullService
         return base64_encode(self::purgePhone($value));
     }
 
+
     /**
-     * updatePhone.
-     *
-     * @throws Exception
+     * @throws AppException
      */
     public function deletePhone(Person $person, string $key): bool
     {

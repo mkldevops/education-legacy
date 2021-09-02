@@ -8,6 +8,7 @@ use App\Entity\Student;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -26,43 +27,41 @@ class StudentCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Student')
             ->setEntityLabelInPlural('Student')
-            ->setSearchFields(['id', 'lastSchool', 'personAuthorized', 'remarksHealth']);
+            ->setSearchFields([
+                'id',
+                'person.name',
+                'person.forname',
+                'person.id',
+                'school',
+                'lastSchool',
+                'personAuthorized',
+                'remarksHealth'
+            ]);
     }
 
     public function configureFields(string $pageName): iterable
     {
-        $personName = Field::new('person.name');
-        $personForname = Field::new('person.forname');
-        $grade = AssociationField::new('grade');
-        $lastSchool = TextField::new('lastSchool');
-        $letAlone = Field::new('letAlone');
-        $enable = Field::new('enable');
-        $school = AssociationField::new('school');
-        $id = IntegerField::new('id', 'ID');
-        $personAuthorized = TextField::new('personAuthorized');
-        $remarksHealth = TextareaField::new('remarksHealth');
-        $dateRegistration = DateTimeField::new('dateRegistration');
-        $dateDesactivated = DateTimeField::new('dateDesactivated');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $person = AssociationField::new('person');
-        $classPeriods = AssociationField::new('classPeriods');
-        $packagePeriods = AssociationField::new('packagePeriods');
-        $courses = AssociationField::new('courses');
-        $comments = AssociationField::new('comments');
-        $author = AssociationField::new('author');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            $age = TextareaField::new('age');
-
-            return [$id, $person, $age, $letAlone, $grade, $school, $enable, $createdAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $lastSchool, $personAuthorized, $remarksHealth, $letAlone, $dateRegistration, $dateDesactivated, $enable, $createdAt, $updatedAt, $deletedAt, $person, $grade, $classPeriods, $packagePeriods, $courses, $comments, $author, $school];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$personName, $personForname, $grade, $lastSchool, $letAlone, $enable, $school];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$personName, $personForname, $grade, $lastSchool, $letAlone, $enable, $school];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('person.name');
+        yield TextField::new('person.forname');
+        yield IntegerField::new('age');
+        yield AssociationField::new('grade');
+        yield TextField::new('lastSchool');
+        yield BooleanField::new('letAlone');
+        yield BooleanField::new('enable');
+        yield AssociationField::new('school');
+        yield TextField::new('personAuthorized')->hideOnIndex();
+        yield TextareaField::new('remarksHealth')->hideOnIndex();
+        yield DateTimeField::new('dateRegistration');
+        yield DateTimeField::new('dateDesactivated');
+        yield AssociationField::new('person')->hideOnIndex();
+        yield AssociationField::new('classPeriods');
+        yield AssociationField::new('packagePeriods');
+        yield AssociationField::new('courses');
+        yield AssociationField::new('comments')->hideOnIndex();
+        yield AssociationField::new('author');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
     }
 }

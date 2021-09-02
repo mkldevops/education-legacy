@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
  * User: fahari
@@ -140,7 +141,7 @@ class CourseManager extends AbstractFullService
         return count($courseEvents);
     }
 
-    public function getGoogleCalendar(): ?GoogleCalendarService
+    public function getGoogleCalendar(): GoogleCalendarService
     {
         return $this->googleCalendar;
     }

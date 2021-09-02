@@ -18,31 +18,27 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Package controller.
- *
- * @Route("/package")
  */
+#[Route(path: '/package')]
 class PackageController extends AbstractBaseController
 {
     /**
      * Lists all Package entities.
      *
-     * @Route("/list/{page}/{search}", name="app_package_index", methods={"GET"})
      *
      * @throws NonUniqueResultException
      */
+    #[Route(path: '/list/{page}/{search}', name: 'app_package_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
-
         $count = $em
             ->getRepository(Package::class)
             ->getQueryBuilder($search, $this->isGranted('ROLE_SUPER_ADMIN') ? null : $this->getSchool())
             ->select('COUNT(e)')
             ->getQuery()
             ->getSingleScalarResult();
-
         $pages = ceil($count / 20);
-
         /** @var Package[] $packageList */
         $packageList = $em
             ->getRepository(Package::class)
@@ -51,7 +47,6 @@ class PackageController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('package/index.html.twig', [
             'packageList' => $packageList,
             'pages' => $pages,
@@ -60,7 +55,6 @@ class PackageController extends AbstractBaseController
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
     }
-
     /**
      * Creates a form to search Package entities.
      */
@@ -77,23 +71,19 @@ class PackageController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
      * Displays a form to create a new Package entity.
-     *
-     * @Route("/new", name="app_package_new", methods={"GET"})
      */
+    #[Route(path: '/new', name: 'app_package_new', methods: ['GET'])]
     public function new(): Response
     {
         $package = new Package();
         $form = $this->createCreateForm($package);
-
         return $this->render('package/new.html.twig', [
             'package' => $package,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Creates a form to create a Package entity.
      *
@@ -114,20 +104,18 @@ class PackageController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Creates a new Package entity.
      *
-     * @Route("/create", name="app_package_create", methods={"POST"})
      *
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/create', name: 'app_package_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
         $package = new Package();
         $form = $this->createCreateForm($package);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
@@ -145,40 +133,33 @@ class PackageController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_show', ['id' => $package->getId()]));
         }
-
         return $this->render('package/new.html.twig', [
             'package' => $package,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a Package entity.
-     *
-     * @Route("/show/{id}", name="app_package_show", methods={"GET"})
      */
+    #[Route(path: '/show/{id}', name: 'app_package_show', methods: ['GET'])]
     public function show(Package $package): Response
     {
         return $this->render('package/show.html.twig', [
             'package' => $package,
         ]);
     }
-
     /**
      * Displays a form to edit an existing Package entity.
-     *
-     * @Route("/edit/{id}", name="app_package_edit", methods={"GET"})
      */
+    #[Route(path: '/edit/{id}', name: 'app_package_edit', methods: ['GET'])]
     public function edit(Package $package): Response
     {
         $editForm = $this->createEditForm($package);
-
         return $this->render('package/edit.html.twig', [
             'package' => $package,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a Package entity.
      *
@@ -199,19 +180,17 @@ class PackageController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing Package entity.
      *
-     * @Route("/update/{}id", name="app_package_update", methods={"POST"})
      *
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/update/{}id', name: 'app_package_update', methods: ['POST'])]
     public function update(Request $request, Package $package): Response
     {
         $editForm = $this->createEditForm($package);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->flush();
@@ -220,25 +199,19 @@ class PackageController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_show', ['id' => $package->getId()]));
         }
-
         return $this->render('package/edit.html.twig', [
             'package' => $package,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a Package entity.
-     *
-     * @Route("/delete/{id}", name="app_package_delete", methods={"GET", "POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Package $package)
+    #[Route(path: '/delete/{id}', name: 'app_package_delete', methods: ['GET', 'POST'])]
+    public function delete(Request $request, Package $package): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($package->getId())
             ->handleRequest($request);
-
         if ($deleteForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($package);
@@ -251,21 +224,17 @@ class PackageController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package'));
         }
-
         return $this->render('package/delete.html.twig', [
             'package' => $package,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a Package entity by id.
      *
      * @param mixed $id The entity id
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->set($this->generateUrl('app_package_delete', ['id' => $id]))
@@ -273,16 +242,13 @@ class PackageController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_package_search", methods={"POST"})
      */
+    #[Route(path: '/search', name: 'app_package_search', methods: ['POST'])]
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_package', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

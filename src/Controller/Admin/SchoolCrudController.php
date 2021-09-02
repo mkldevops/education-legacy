@@ -31,30 +31,20 @@ class SchoolCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $name = TextField::new('name');
-        $director = AssociationField::new('director');
-        $structure = AssociationField::new('structure');
-        $address = TextField::new('address');
-        $zip = TextField::new('zip');
-        $city = TextField::new('city');
-        $enable = Field::new('enable');
-        $principal = Field::new('principal');
-        $comment = TextareaField::new('comment');
-        $id = IntegerField::new('id', 'ID');
-        $packages = AssociationField::new('packages');
-        $author = AssociationField::new('author');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $name, $director, $zip, $city, $structure, $principal, $enable, $createdAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $name, $director, $address, $zip, $city, $structure, $packages, $principal, $enable, $author, $comment, $createdAt, $updatedAt, $deletedAt];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $director, $structure, $address, $zip, $city, $enable, $principal, $comment];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$name, $director, $structure, $address, $zip, $city, $enable, $principal, $comment];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('name');
+        yield AssociationField::new('director');
+        yield AssociationField::new('structure');
+        yield TextField::new('address');
+        yield TextField::new('zip');
+        yield TextField::new('city');
+        yield Field::new('principal');
+        yield TextareaField::new('comment');
+        yield AssociationField::new('packages');
+        yield Field::new('enable');
+        yield AssociationField::new('author');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
     }
 }

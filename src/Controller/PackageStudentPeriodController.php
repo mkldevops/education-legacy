@@ -17,23 +17,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * PackageStudentPeriod controller.
- *
- * @Route("/package-student-period")
  */
+#[Route(path: '/package-student-period')]
 class PackageStudentPeriodController extends AbstractBaseController
 {
     /**
      * Lists all PackageStudentPeriod entities.
-     *
-     * @Route("/list/{page}/{search}", name="app_package_student_period_index", methods={"GET"})
-     *
-     * @param int $page
-     * @param string $search
      */
-    public function index($page = 1, $search = ''): Response
+    #[Route(path: '/list/{page}/{search}', name: 'app_package_student_period_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
-
         $count = $em
             ->getRepository(PackageStudentPeriod::class)
             ->createQueryBuilder('e')
@@ -48,9 +42,7 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->setParameter(':comment', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
-
         $pages = ceil($count / 20);
-
         $packageStudentPeriodList = $em
             ->getRepository(PackageStudentPeriod::class)
             ->createQueryBuilder('e')
@@ -66,7 +58,6 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('package_student_period/index.html.twig', [
             'packagestudentperiodList' => $packageStudentPeriodList,
             'pages' => $pages,
@@ -75,7 +66,6 @@ class PackageStudentPeriodController extends AbstractBaseController
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
     }
-
     /**
      * Creates a form to search PackageStudentPeriod entities.
      */
@@ -92,20 +82,18 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
      * Creates a new PackageStudentPeriod entity.
      *
-     * @Route("/create", name="app_package_student_period_create", methods={"POST"})
      *
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/create', name: 'app_package_student_period_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
         $form = $this->createCreateForm($packageStudentPeriod);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
@@ -119,13 +107,11 @@ class PackageStudentPeriodController extends AbstractBaseController
                 ['id' => $packageStudentPeriod->getId()]
             ));
         }
-
         return $this->render('package_student_period/new.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Creates a form to create a PackageStudentPeriod entity.
      *
@@ -144,52 +130,41 @@ class PackageStudentPeriodController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to create a new PackageStudentPeriod entity.
-     *
-     * @Route("/new", name="app_package_student_period_new", methods={"GET"})
      */
+    #[Route(path: '/new', name: 'app_package_student_period_new', methods: ['GET'])]
     public function new(): Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
         $form = $this->createCreateForm($packageStudentPeriod);
-
         return $this->render('package_student_period/new.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a PackageStudentPeriod entity.
-     *
-     * @Route("/show/{id}", name="app_package_student_period_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(PackageStudentPeriod $packageStudentPeriod)
+    #[Route(path: '/show/{id}', name: 'app_package_student_period_show', methods: ['GET'])]
+    public function show(PackageStudentPeriod $packageStudentPeriod): Response
     {
         return $this->render('package_student_period/show.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
         ]);
     }
-
     /**
      * Displays a form to edit an existing PackageStudentPeriod entity.
-     *
-     * @Route("/edit/{id}", name="app_package_student_period_edit", methods={"GET"})
      */
+    #[Route(path: '/edit/{id}', name: 'app_package_student_period_edit', methods: ['GET'])]
     public function edit(PackageStudentPeriod $packageStudentPeriod): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
-
         return $this->render('package_student_period/edit.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a PackageStudentPeriod entity.
      *
@@ -209,46 +184,40 @@ class PackageStudentPeriodController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing PackageStudentPeriod entity.
      *
-     * @Route("/update/{id}", name="app_package_student_period_update", methods={"PUT", "POST"})
      *
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/update/{id}', name: 'app_package_student_period_update', methods: ['PUT', 'POST'])]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $this->getManager()->flush();
             $this->addFlash('success', 'The PackageStudentPeriod has been updated.');
 
             return $this->redirect($this->generateUrl('app_package_student_period_show', ['id' => $packageStudentPeriod->getId()]));
         }
-
         return $this->render('package_student_period/edit.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a PackageStudentPeriod entity.
      *
-     * @Route("/delete/{id}", name="app_package_student_period_delete", methods={"GET", "DELETE"})
      *
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/delete/{id}', name: 'app_package_student_period_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
     {
         $deleteForm = $this->createDeleteForm($packageStudentPeriod->getId());
         $deleteForm->handleRequest($request);
-
         $em = $this->getDoctrine()->getManager();
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $em->remove($packageStudentPeriod);
             $em->flush();
@@ -257,13 +226,11 @@ class PackageStudentPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_student_period_index'));
         }
-
         return $this->render('package_student_period/delete.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a PackageStudentPeriod entity by id.
      *
@@ -280,18 +247,13 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_package_student_period_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    #[Route(path: '/search', name: 'app_package_student_period_search', methods: ['GET'])]
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_package_student_period_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

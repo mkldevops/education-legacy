@@ -12,6 +12,7 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -22,7 +23,7 @@ class ClassPeriodStudent
     use AuthorEntityTrait;
     use CommentEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntity;
+    use TimestampableEntityTrait;
 
     /**
      * @ORM\Id
@@ -44,92 +45,61 @@ class ClassPeriodStudent
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $end;
+    private ?DateTimeInterface $end = null;
 
     public function __toString(): string
     {
-        return sprintf('%s - %s', $this->student, $this->classPeriod);
+        return sprintf('%s - %s', (string) $this->student, (string) $this->classPeriod);
     }
 
     public function isActive(): bool
     {
-        return $this->getEnd()->getTimestamp() < time() && $this->getEnable();
+        return $this->getEnd()?->getTimestamp() < time() && $this->getEnable();
     }
 
-    public function getEnd()
+    public function getEnd(): ?DateTimeInterface
     {
         return $this->end;
     }
 
-    public function setEnd(DateTimeInterface $end): self
+    public function setEnd(?DateTimeInterface $end): self
     {
         $this->end = $end;
 
         return $this;
     }
 
-    /**
-     * Get begin.
-     *
-     * @return Datetime
-     */
-    public function getBegin()
+
+    public function getBegin(): \DateTimeInterface
     {
         return $this->begin;
     }
 
-    /**
-     * Set begin.
-     *
-     * @param DateTime|DateTimeImmutable $begin
-     * @return static
-     *
-     */
-    public function setBegin(DateTimeInterface $begin)
+    public function setBegin(DateTimeInterface $begin): static
     {
         $this->begin = $begin;
 
         return $this;
     }
 
-    /**
-     * Get classPeriod.
-     *
-     * @return ClassPeriod
-     */
-    public function getClassPeriod()
+    public function getClassPeriod(): ?ClassPeriod
     {
         return $this->classPeriod;
     }
 
-    /**
-     * Set classPeriod.
-     *
-     * @return static
-     */
-    public function setClassPeriod(ClassPeriod $classPeriod)
+    public function setClassPeriod(ClassPeriod $classPeriod): static
     {
         $this->classPeriod = $classPeriod;
 
         return $this;
     }
 
-    /**
-     * Get student.
-     *
-     * @return Student
-     */
-    public function getStudent()
+    public function getStudent(): Student
     {
         return $this->student;
     }
 
-    /**
-     * Set student.
-     *
-     * @return static
-     */
-    public function setStudent(Student $student)
+    public function setStudent(Student $student): static
     {
         $this->student = $student;
 

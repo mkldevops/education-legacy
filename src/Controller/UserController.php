@@ -4,57 +4,37 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * Class UserController.
- *
- * @Route("/user")
- */
+#[Route(path: '/user')]
 class UserController extends EasyAdminController
 {
-    private UserPasswordEncoderInterface $passwordEncoder;
-
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(private UserPasswordHasherInterface $passwordHasher)
     {
-        $this->passwordEncoder = $passwordEncoder;
     }
 
-    /**
-     * @param User $entity
-     */
-    public function persistEntity($entity): void
+    public function persistEntity(User $entity): void
     {
         $this->encodePassword($entity);
     }
 
-    /**
-     * @param $user
-     */
-    public function encodePassword($user): void
+    public function encodePassword(UserInterface|User $user): void
     {
-        if (!$user instanceof User || empty($user->getPlainPassword())) {
+        if (empty($user->getPlainPassword())) {
             return;
         }
 
-        $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPlainPassword()));
+        $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPlainPassword()));
     }
 
-    /**
-     * @param object $entity
-     */
-    public function updateEntity($entity): void
-    {
-        $this->encodePassword($entity);
-    }
-
-    /**
-     * @Route("/profile", name="app_user_profile")
-     */
-    public function profile()
+    #[Route(path: '/profile', name: 'app_user_profile')]
+    public function profile(): Response
     {
         return $this->render('user/profile.html.twig', [
             'controller_name' => 'UserController',

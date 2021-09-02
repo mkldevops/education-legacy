@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use App\DataFixtures\AppFixtures;
+use App\DataFixtures\AbstractAppFixtures;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Package;
@@ -24,10 +24,10 @@ class CheckDataListener
     public bool $checked = false;
 
     public function __construct(
-        public SessionInterface      $session,
+        public SessionInterface $session,
         public UrlGeneratorInterface $urlGenerator,
-        public TranslatorInterface   $translator,
-        public Security              $security
+        public TranslatorInterface $translator,
+        public Security $security
     ) {
     }
 
@@ -81,7 +81,7 @@ class CheckDataListener
         if (empty($schools)) {
             $this->session->getFlashBag()->add('danger', $this->trans('School'));
         } else {
-            $schools = $this->entityManager->getRepository(School::class)->count(['name' => AppFixtures::TODEFINE]);
+            $schools = $this->entityManager->getRepository(School::class)->count(['name' => AbstractAppFixtures::TODEFINE]);
             if (!empty($schools)) {
                 $this->session->getFlashBag()->add('warning', $this->trans('School', 'define'));
             }

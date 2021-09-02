@@ -9,7 +9,7 @@ use App\Exception\AppException;
 use DateTime;
 use Doctrine\Persistence\ObjectManager;
 
-class GradeFixtures extends AppFixtures
+class GradeFixtures extends AbstractAppFixtures
 {
     /**
      * @throws AppException

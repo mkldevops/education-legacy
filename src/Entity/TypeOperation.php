@@ -87,7 +87,7 @@ class TypeOperation
         return $this;
     }
 
-    public function getParent(): self
+    public function getParent(): ?\App\Entity\TypeOperation
     {
         return $this->parent;
     }
@@ -130,7 +130,7 @@ class TypeOperation
         return $this;
     }
 
-    public function getTypeAmount()
+    public function getTypeAmount(): string
     {
         return $this->typeAmount;
     }
@@ -144,10 +144,8 @@ class TypeOperation
 
     /**
      * Get isInternalTransfert.
-     *
-     * @return bool
      */
-    public function getIsInternalTransfert()
+    public function getIsInternalTransfert(): bool
     {
         return $this->isInternalTransfert;
     }

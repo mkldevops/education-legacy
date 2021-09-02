@@ -9,7 +9,7 @@ services:
             - ./docker/.env.docker
         environment:
             TZ: "Europe/Paris"
-            APP_ENV : dev
+            APP_ENV : prod
             DATABASE_NAME : education_app
             DATABASE_PASSWORD : $PROJECT_DB_PASSWORD
         ports:

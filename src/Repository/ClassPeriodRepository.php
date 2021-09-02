@@ -12,6 +12,8 @@ use App\Entity\Student;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -29,14 +31,9 @@ use Exception;
  */
 class ClassPeriodRepository extends ServiceEntityRepository
 {
-    private CourseRepository $courseRepository;
-    private ClassPeriodStudentRepository $classPeriodStudentRepository;
-
-    public function __construct(ManagerRegistry $registry, CourseRepository $courseRepository, ClassPeriodStudentRepository $classPeriodStudentRepository)
+    public function __construct(ManagerRegistry $registry, private CourseRepository $courseRepository, private ClassPeriodStudentRepository $classPeriodStudentRepository)
     {
         parent::__construct($registry, ClassPeriod::class);
-        $this->courseRepository = $courseRepository;
-        $this->classPeriodStudentRepository = $classPeriodStudentRepository;
     }
 
     public function remove(ClassPeriod $classPeriod): array
@@ -88,10 +85,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get Students To ClassPeriod.
-     *
      * @return ClassPeriodStudent[]
-     *
      * @throws Exception
      */
     public function getStudentToClassPeriod(ClassPeriod $classPeriod, Student $student = null): array
@@ -115,6 +109,51 @@ class ClassPeriodRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()
+            ->getResult();
+    }
+
+
+    /**
+     * @return ClassPeriod[]
+     */
+    public function getListOfCurrentPeriod(Period $period, School $school) : array
+    {
+        return $this->getQueryBuilderList($school)
+            ->andWhere('cp.period = :period')
+            ->setParameter(':period', $period)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function getQueryBuilderList(School $school, string $search = ''): QueryBuilder
+    {
+        return $this->createQueryBuilder('cp')
+            ->innerJoin('cp.classSchool', 'cs', Join::WITH, 'cs.school = :school')
+            ->setParameter(':school', $school)
+            ->where('cp.comment LIKE :comment')
+            ->setParameter(':comment', '%' . $search . '%')
+            ->orWhere('cp.enable LIKE :status')
+            ->setParameter(':status', '%' . $search . '%');
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function countClassesPeriod(School $school, string $search): int
+    {
+        return (int) $this->getQueryBuilderList($school, $search)
+            ->select('count(cp.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getList(School $school, int $page, string $search) : array
+    {
+        return $this->getQueryBuilderList($school, $search)
+            ->setFirstResult(($page - 1) * 20)
+            ->setMaxResults(20)
+            ->getQuery()
             ->getResult();
     }
 }

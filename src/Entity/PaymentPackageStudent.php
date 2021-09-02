@@ -49,7 +49,7 @@ class PaymentPackageStudent
         return $this->operation->getDate();
     }
 
-    public function getAuthor(): ?Author
+    public function getAuthor(): ?User
     {
         return $this->operation->getAuthor();
     }

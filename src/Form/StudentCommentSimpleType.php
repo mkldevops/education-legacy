@@ -11,9 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class StudentCommentSimpleType.
- */
+
 class StudentCommentSimpleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -40,14 +38,11 @@ class StudentCommentSimpleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => 'App\Entity\StudentComment',
+            'data_class' => StudentComment::class,
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'app_studentcomment';
     }

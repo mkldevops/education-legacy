@@ -10,8 +10,8 @@ use App\Traits\PublisherEntityTrait;
 use App\Traits\SchoolEntityTrait;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -19,9 +19,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Meet
 {
-    use IdEntity;
+    use IdEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
     use SchoolEntityTrait;
     use PublisherEntityTrait;

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\AppException;
+use App\Repository\AccountRepository;
+use App\Repository\StudentRepository;
+use Symfony\Component\HttpFoundation\Response;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\Account;
 use App\Entity\Student;
@@ -11,48 +15,27 @@ use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @author Hamada Sidi Fahari <h.fahari@gmail.com>
- *
- * @Route("/statistics")
- */
+#[Route(path: '/statistics')]
 class StatisticsController extends AbstractBaseController
 {
     /**
-     * Number Students.
-     *
-     * @Route("/number-students", name="app_statistics_numberstudents", methods={"GET"})
-     *
-     * @return array
-     *
      * @throws ORMException
-     * @Template()
+     * @throws AppException
      */
-    public function numberStudents()
+    #[Route(path: '/number-students', name: 'app_statistics_numberstudents', methods: ['GET'])]
+    public function numberStudents(StudentRepository $repository): Response
     {
-        $data = $this
-            ->getDoctrine()->getManager()
-            ->getRepository(Student::class)
-            ->getStatsNumberStudent($this->getSchool());
-
-        return ['data' => $data];
+        $data = $repository->getStatsNumberStudent($this->getSchool());
+        return $this->render('statistics/number_students.html.twig', ['data' => $data]);
     }
 
     /**
-     * statsAccountAction.
-     *
-     * @Route("/account", name="app_statistics_account", methods={"GET"})
-     *
-     * @return array
-     * @Template()
+     * @throws AppException
      */
-    public function statsAccount()
+    #[Route(path: '/account', name: 'app_statistics_account', methods: ['GET'])]
+    public function statsAccount(AccountRepository $repository): Response
     {
-        $data = $this
-            ->getDoctrine()->getManager()
-            ->getRepository(Account::class)
-            ->getStatsAccount($this->getSchool(), true);
-
-        return ['data' => $data];
+        $data = $repository->getStatsAccount($this->getSchool(), true);
+        return $this->render('statistics/stats_account.html.twig', ['data' => $data]);
     }
 }

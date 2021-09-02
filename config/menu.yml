@@ -11,7 +11,6 @@ madrasse:
     sub:
         student: { label: "Student", path: "app_student_index" }
         class: { label: "Class", path: "app_class_period_current" }
-        course: { label: "Course", path: "app_course_index" }
         family: { label: "List family", path: "app_family_index" }
         setting:
             label: Setting
@@ -34,20 +33,11 @@ accounting:
             label: "Operation"
             sub:
                 Operation:
-                    { label: "List Operation", path: "app_operation_index" }
+                    label: "List Operation"
+                    path: "app_operation_index"
                 statsOperation:
-                    {
-                        label: "Stats Operation",
-                        path: "app_operation_statsbymonth",
-                    }
-
-meet:
-    role: "ROLE_MEMBER"
-    icon: "fa-users"
-    label: "Meet"
-    sub:
-        meet: { label: "List meet", path: "app_meet_index" }
-        member: { label: "Member", path: "app_member_index" }
+                    label: "Stats Operation"
+                    path: "app_operation_statsbymonth"
 
 user:
     role: "ROLE_SUPER_ADMIN"

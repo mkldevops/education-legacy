@@ -70,7 +70,7 @@
                             </td>
                             <td><span data-toggle="tooltip" title="{{ student.address }}">{{ student.zip }}</span></td>
                             <td class="text-center">
-                                <span data-toggle="tooltip" data-placement="top" title="" data-original-title=" né(e) le {{ student.birthday.format('d/m/Y') }}">{{ student.getAge() }}</span>
+                                <span data-toggle="tooltip" data-placement="top" title="" data-original-title=" né(e) le {{ student.birthday.format('d/m/Y')|default('unknown') }}">{{ student.getAge() }}</span>
                             </td>
                             <td class="text-center">
                                 <i class="fa fa-{{ student.genderCode }}" data-toggle="tooltip" title="{{ student.gender|capitalize }}"> {{ student.gender|first|capitalize }}</i>

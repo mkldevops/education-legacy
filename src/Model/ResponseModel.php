@@ -10,13 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseModel
 {
-    protected bool $success = false;
-    protected string $message = '';
-    protected array $data = [];
+    public function __construct(
+        protected bool $success = false,
+        protected string $message = '',
+        protected array $data = [],
+    ) {
+    }
 
     public static function responseDefault(array $data = []): object
     {
-        $response = new static();
+        $response = new self();
         $response->setData($data);
 
         return $response;
@@ -45,6 +48,9 @@ class ResponseModel
         return $this;
     }
 
+    /**
+     * @return array<string, mixed[]>|array<string, bool>|array<string, string>
+     */
     public function getResult(): array
     {
         return [
@@ -54,11 +60,17 @@ class ResponseModel
         ];
     }
 
-    public function getData(): ?array
+    /**
+     * @return mixed[]
+     */
+    public function getData(): array
     {
         return $this->data;
     }
 
+    /**
+     * @param mixed[] $data
+     */
     public function setData(array $data): self
     {
         $this->data = $data;
@@ -66,7 +78,7 @@ class ResponseModel
         return $this;
     }
 
-    public function getMessage(): ?string
+    public function getMessage(): string
     {
         return $this->message;
     }

@@ -47,7 +47,7 @@ class Person
      * @Assert\NotBlank
      * @ORM\Column(type="string")
      */
-    protected ?string $forname;
+    protected ?string $forname = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -62,28 +62,28 @@ class Person
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    protected ?string $birthplace;
+    protected ?string $birthplace = null;
 
     /**
      * @ORM\Column(type="string", length=10)
      */
-    protected ?string $gender;
+    protected ?string $gender = null;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
-    protected ?User $user;
+    protected ?User $user = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Member::class, cascade={"persist"}, mappedBy="person")
      */
-    protected ?Member $member;
+    protected ?Member $member = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Student::class, cascade={"persist"}, mappedBy="person")
      */
-    protected ?Student $student;
+    protected ?Student $student = null;
 
     /**
      * @ORM\ManyToMany(targetEntity=School::class, cascade={"persist", "merge", "remove"})
@@ -102,12 +102,11 @@ class Person
      * @ORM\JoinColumn(nullable=true)
      * @Assert\Valid()
      */
-    protected ?Family $family;
+    protected ?Family $family = null;
 
     public function __construct()
     {
-        $this->setSchools(new ArrayCollection())
-            ->setEnable(true);
+        $this->schools = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -117,7 +116,7 @@ class Person
 
     public function getNameComplete(): string
     {
-        return strtoupper($this->name) . ' ' . ucwords($this->forname);
+        return sprintf("%s %s", strtoupper((string) $this->name), ucwords((string) $this->forname));
     }
 
     public function getAge(): ?int
@@ -181,6 +180,9 @@ class Person
         return $this->setPhone(implode(';', $list));
     }
 
+    /**
+     * @return string[]
+     */
     public function getListPhones(): array
     {
         return PhoneManager::stringPhonesToArray($this->getPhone());
@@ -204,6 +206,9 @@ class Person
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getAllPhones(): array
     {
         return PhoneManager::getAllPhones($this);

@@ -12,8 +12,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntity;
+use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -21,10 +24,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Course
 {
-    use IdEntity;
-    use CommentEntity;
+    use IdEntityTrait;
+    use CommentEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     /**
@@ -102,7 +105,7 @@ class Course
         return $this;
     }
 
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
@@ -114,7 +117,7 @@ class Course
         return $this;
     }
 
-    public function getText(): string
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -138,7 +141,7 @@ class Course
         return $this;
     }
 
-    public function getHourEnd(): ?DateTimeInterface
+    public function getHourEnd(): \DateTimeInterface
     {
         return $this->hourEnd;
     }
@@ -177,6 +180,9 @@ class Course
         return $this->teachers;
     }
 
+    /**
+     * @param Teacher[]|Collection $teachers
+     */
     public function setTeachers(ArrayCollection $teachers): self
     {
         $this->teachers = $teachers;
@@ -199,13 +205,16 @@ class Course
     }
 
     /**
-     * @return Collection|Student[]
+     * @return Collection|AppealCourse[]
      */
-    public function getStudents(): ?Collection
+    public function getStudents(): Collection
     {
         return $this->students;
     }
 
+    /**
+     * @param Collection|AppealCourse[] $students
+     */
     public function setStudents(Collection $students): self
     {
         $this->students = $students;
@@ -213,7 +222,7 @@ class Course
         return $this;
     }
 
-    public function getIdEvent(): ?string
+    public function getIdEvent(): string
     {
         return $this->idEvent;
     }

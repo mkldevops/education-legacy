@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use stdClass;
 use App\Entity\AppealCourse;
 use App\Entity\ClassPeriod;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -29,10 +30,8 @@ class AppealCourseRepository extends ServiceEntityRepository
 
     /**
      * Get list Students.
-     *
-     * @return object
      */
-    public function getAppealToClassPeriod(ClassPeriod $classPeriod, array $listStatus)
+    public function getAppealToClassPeriod(ClassPeriod $classPeriod, array $listStatus): stdClass
     {
         $oQuery = $this->createQueryBuilder('apc')
             ->select('apc')

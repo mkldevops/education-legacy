@@ -10,7 +10,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class OperationFixtures extends AppFixtures implements DependentFixtureInterface
+class OperationFixtures extends AbstractAppFixtures implements DependentFixtureInterface
 {
     /**
      * @throws AppException
@@ -38,7 +38,7 @@ class OperationFixtures extends AppFixtures implements DependentFixtureInterface
     /**
      * @return string[]
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             TypeOperationFixtures::class,

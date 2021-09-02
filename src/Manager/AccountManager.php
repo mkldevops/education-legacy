@@ -1,27 +1,35 @@
 <?php
 
 declare(strict_types=1);
-/**
- * PHP version: 7.1.
- *
- * @author fardus
- */
+
 
 namespace App\Manager;
 
 use App\Entity\Account;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
+use App\Exception\AppException;
+use App\Repository\AccountStatementRepository;
+use App\Repository\OperationRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
-class AccountManager extends AccountableManager
+class AccountManager
 {
-    protected TransferManager $transferManager;
-    protected OperationManager $operationManager;
     protected Account $account;
 
+    public function __construct(
+        private AccountStatementRepository $accountStatementRepository,
+        private OperationRepository $operationRepository,
+    ) {
+    }
 
-    public function getDataAccountStatement(Account $account) : array
+    /**
+     * @return array<string, int>|array<string, mixed[]>|array<string, mixed>
+     * @throws AppException
+     */
+    public function getDataAccountStatement(Account $account): array
     {
         $data = ['accountStatements' => [], 'nbWithoutAccountStatements' => 0];
 
@@ -34,8 +42,7 @@ class AccountManager extends AccountableManager
 
         /** @var AccountStatement[] $accountStatements */
         $accountStatements = [];
-        $result = $this->entityManager
-            ->getRepository(AccountStatement::class)
+        $result = $this->accountStatementRepository
             ->findBy(['account' => $account->getId()], ['begin' => 'DESC']);
 
         foreach ($result as $accountStatement) {
@@ -50,8 +57,7 @@ class AccountManager extends AccountableManager
             $listAccountStatementId[] = $id;
         }
 
-        $result = $this->entityManager
-            ->getRepository(Operation::class)
+        $result = $this->operationRepository
             ->getQueryStatsAccountStatement($listAccountStatementId)
             ->getQuery()
             ->getArrayResult();
@@ -63,9 +69,10 @@ class AccountManager extends AccountableManager
 
                 $accountStatement = $accountStatements[$id];
 
-                if ($accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
+                if ($accountStatement->getNumberOperations() === (int) $stats['numberOperations']
+                    && $accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
                     && $accountStatement->getAmountDebit() === round((float) $stats['sumDebit'], 2)
-                    && $accountStatement->getNumberOperations() === (int) $stats['numberOperations']) {
+                ) {
                     $stats['isValid'] = true;
                 }
 
@@ -73,33 +80,15 @@ class AccountManager extends AccountableManager
             }
         }
 
-        $result = $this->entityManager
-            ->getRepository(Operation::class)
-            ->getNumberWithoutAccountStatement($account);
+        $nbOperations = $this->operationRepository->getNumberWithoutAccountStatement($account);
 
-        $data['nbWithoutAccountStatements'] = $result['nbOperations'] ?? 0;
+        $data['nbWithoutAccountStatements'] = $nbOperations;
         $data['accountStatements'] = $accountStatements;
 
         return $data;
     }
 
-    #[Required]
-    public function setTransferManager(TransferManager $transferManager) : static
-    {
-        $this->transferManager = $transferManager;
-
-        return $this;
-    }
-
-    #[Required]
-    public function setOperationManager(OperationManager $operationManager) : static
-    {
-        $this->operationManager = $operationManager;
-
-        return $this;
-    }
-
-    public function setAccount(Account $account) : static
+    public function setAccount(Account $account): static
     {
         $this->account = $account;
 

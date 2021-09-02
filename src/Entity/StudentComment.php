@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use App\Repository\StudentCommentRepository;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\StudentCommentRepository")
+ * @ORM\Entity(repositoryClass=StudentCommentRepository::class)
  */
 class StudentComment
 {
-    use IdEntity;
+    public ?\DateTime $created = null;
+    use IdEntityTrait;
     use StudentEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     public const COMMENT_APPRECIATION = 'success';
@@ -63,82 +66,31 @@ class StudentComment
         return $this->text;
     }
 
-    /**
-     * Set text.
-     *
-     * @return StudentComment
-     */
-    public function setText(string $text)
+    public function setText(string $text): static
     {
         $this->text = $text;
 
         return $this;
     }
 
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return StudentComment
-     */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Set created.
-     *
-     * @param DateTime $created
-     *
-     * @return StudentComment
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get created.
-     *
-     * @return DateTime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Get student.
-     *
-     * @return Student
-     */
-    public function getStudent()
+    public function getStudent() : ?Student
     {
         return $this->student;
     }
 
-    /**
-     * Set student.
-     *
-     * @return StudentComment
-     */
-    public function setStudent(Student $student)
+    public function setStudent(Student $student) : static
     {
         $this->student = $student;
 

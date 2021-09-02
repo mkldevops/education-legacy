@@ -31,36 +31,24 @@ class FamilyCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $language = TextField::new('language');
-        $numberChildren = IntegerField::new('numberChildren');
-        $address = TextareaField::new('address');
-        $city = TextField::new('city');
-        $personAuthorized = TextField::new('personAuthorized');
-        $personEmergency = TextField::new('personEmergency');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $deletedAt = DateTimeField::new('deletedAt');
-        $email = TextField::new('email');
-        $zip = TextField::new('zip');
-        $father = AssociationField::new('father');
-        $mother = AssociationField::new('mother');
-        $legalGuardian = AssociationField::new('legalGuardian');
-        $persons = AssociationField::new('persons');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            $nameComplete = TextareaField::new('nameComplete');
-
-            return [$id, $nameComplete, $persons, $numberChildren, $zip, $city, $enable, $createdAt, $author];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $language, $numberChildren, $address, $city, $personAuthorized, $personEmergency, $name, $enable, $createdAt, $updatedAt, $deletedAt, $email, $zip, $father, $mother, $legalGuardian, $persons, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$language, $numberChildren, $address, $city, $personAuthorized, $personEmergency, $name, $enable, $createdAt, $updatedAt, $deletedAt, $email, $zip, $father, $mother, $legalGuardian, $persons, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$language, $numberChildren, $address, $city, $personAuthorized, $personEmergency, $name, $enable, $createdAt, $updatedAt, $deletedAt, $email, $zip, $father, $mother, $legalGuardian, $persons, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield TextField::new('language');
+        yield IntegerField::new('numberChildren');
+        yield TextareaField::new('address')->hideOnIndex();
+        yield TextField::new('city');
+        yield TextField::new('personAuthorized')->hideOnIndex();
+        yield TextField::new('personEmergency')->hideOnIndex();
+        yield TextField::new('name');
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
+        yield TextField::new('email');
+        yield TextField::new('zip');
+        yield AssociationField::new('father');
+        yield AssociationField::new('mother');
+        yield AssociationField::new('legalGuardian');
+        yield AssociationField::new('persons');
+        yield AssociationField::new('author');
     }
 }

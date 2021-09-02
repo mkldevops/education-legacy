@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Exception\AppException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Meet;
 use App\Model\ResponseModel;
 use Exception;
@@ -12,26 +14,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class OperationApiController.
- *
- * @Route("api/meet")
- */
+#[Route(path: 'api/meet')]
 class MeetApiController extends AbstractController
 {
     /**
-     * @Route(
-     *     "/update/{id}",
-     *     methods={"POST"},
-     *     options={"expose"="true"}
-     * )
-     *
-     * @return Response
+     * @throws AppException
      */
-    public function update(Request $request, Meet $meet)
+    #[Route(path: '/update/{id}', options: ['expose' => 'true'], methods: ['POST'])]
+    public function update(Request $request, Meet $meet): JsonResponse
     {
         $result = new ResponseModel();
-
         try {
             $em = $this->getDoctrine()->getManager();
             $meet->setText($request->get('text'))
@@ -44,10 +36,8 @@ class MeetApiController extends AbstractController
                 ->setMessage('The family has been updated.')
                 ->setData(['id' => $meet->getId(), 'label' => $meet->__toString()]);
         } catch (Exception $e) {
-            $result->setMessage($e->getMessage())
-                ->setSuccess(false);
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
-
         return ResponseModel::jsonResponse($result);
     }
 }

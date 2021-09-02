@@ -58,7 +58,7 @@ class CourseRepository extends ServiceEntityRepository
     /**
      * @return Course[]
      */
-    public function getCourseOfClass(ClassPeriod $classPeriod, DateTimeInterface $form, int $maxResult, int $offset): array
+    public function getCourseOfClass(ClassPeriod $classPeriod, \DateTime $form, int $maxResult, int $offset): array
     {
         $form->sub(new DateInterval('P1D'));
 

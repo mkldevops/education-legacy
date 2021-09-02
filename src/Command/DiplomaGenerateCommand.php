@@ -18,6 +18,9 @@ class DiplomaGenerateCommand extends Command
     public const OPTION_SCHOOL = 'school';
     public const OPTION_PERIOD = 'period';
     public const OPTION_LIMIT = 'limit';
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:diploma:generate';
 
     public function __construct(public DiplomaService $service)
@@ -39,7 +42,7 @@ class DiplomaGenerateCommand extends Command
      *
      * @throws ImagickException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $io = new SymfonyStyle($input, $output);
 

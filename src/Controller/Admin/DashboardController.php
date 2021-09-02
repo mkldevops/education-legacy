@@ -9,6 +9,7 @@ use App\Entity\ClassSchool;
 use App\Entity\Course;
 use App\Entity\Document;
 use App\Entity\Grade;
+use App\Entity\Meet;
 use App\Entity\Member;
 use App\Entity\OperationGender;
 use App\Entity\Package;
@@ -23,18 +24,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
+    #[Route("/admin")]
+    public function index(): Response
+    {
+        // redirect to some CRUD controller
+        $routeBuilder = $this->get(AdminUrlGenerator::class);
+
+        return $this->redirect($routeBuilder->setController(StudentCrudController::class)->generateUrl());
+    }
+
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
             ->setTitle('Education');
-    }
-
-    public function configureCrud(): Crud
-    {
-        return Crud::new();
     }
 
     public function configureActions(): Actions
@@ -86,5 +94,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('User', 'fas fa-folder-open', User::class);
         yield MenuItem::linkToCrud('Person', 'fas fa-folder-open', Person::class);
         yield MenuItem::linkToCrud('Member', 'fas fa-folder-open', Member::class);
+        yield MenuItem::linkToCrud('Réunions', 'fas fa-folder-open', Meet::class);
     }
 }

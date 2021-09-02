@@ -35,22 +35,33 @@
         <tr class="text-center row">
             <td  class="col-sm-4">
                 <img src="{{ absolute_url(asset('img/logo-custom.png')) }}" alt="logo Structure" width="300px">
-                <h5 class="font-weight-bold">{{ packageStudentPeriod.student.school.address }} {{ packageStudentPeriod.student.school.zip }} {{ packageStudentPeriod.student.school.city }}</h5>
+                <h5 class="font-weight-bold">
+                    {{ packageStudentPeriod.student.school.address }}
+                    {{ packageStudentPeriod.student.school.zip }}
+                    {{ packageStudentPeriod.student.school.city }}
+                </h5>
             </td>
             <td class="col-sm-4">
                 <h2 class="font-weight-bold">{{ packageStudentPeriod.student.school.name }}</h2>
                 <h3 class="font-weight-bold text-info">N° : {{ packageStudentPeriod.student.id }}</h3>
                 <h6 class="font-weight-bold text-dark">Supprimé le : &emsp;&emsp; / &emsp;&emsp; / &emsp; </h6>
-                <a href="{{ path('app_student_print', { id : packageStudentPeriod.id, format : 'html', force : true }) }}" class="btn btn-default">
-                    <img src="{{ qr_code_data_uri(absolute_url(path('app_student_show', { id : packageStudentPeriod.student.id })) , { writer: 'svg', size: 120 }) }}" alt="{{ absolute_url(path('app_student_show', { id : packageStudentPeriod.student.id })) }}" />
+                <a href="{{ path('app_student_print', { id : packageStudentPeriod.id, format : 'html', force : true }) }}"
+                   class="btn btn-default">
+                    <img src="{{ qr_code_data_uri(absolute_url(path('app_student_show', { id : packageStudentPeriod.student.id }))) }}"
+                         alt="{{ absolute_url(path('app_student_show', { id : packageStudentPeriod.student.id })) }}" />
                 </a>
                 <div class="d-print-none">
-                    <label for="print_rules"><input type="checkbox" id="print_rules"> {{ 'print.print_rules'|trans }}</label>
+                    <label for="print_rules">
+                        <input type="checkbox" id="print_rules">
+                        {{ 'print.print_rules'|trans }}
+                    </label>
                 </div>
             </td>
             <td align="center" class="text-center col-sm-4">
                 {% if packageStudentPeriod.student.image is not empty %}
-                    <img height="240px" src="{{ absolute_url(asset(packageStudentPeriod.student.image.webPath)) }}" alt="{{ packageStudentPeriod.student.image.webPath }}">
+                    <img height="240px"
+                         src="{{ absolute_url(asset(packageStudentPeriod.student.image.webPath)) }}"
+                         alt="{{ packageStudentPeriod.student.image.webPath }}">
                 {% else %}
                     <img height="240px" src="{{ absolute_url(asset('img/user.png')) }}" alt="">
                 {% endif %}
@@ -58,7 +69,9 @@
         </tr>
         <tr>
             <td colspan="3">
-                <h3 class="col-sm-12 text-center font-weight-bold">{{ 'print.title'|trans({'%period%' : packageStudentPeriod.period.name }) }}</h3>
+                <h3 class="col-sm-12 text-center font-weight-bold">
+                    {{ 'print.title'|trans({'%period%' : packageStudentPeriod.period.name }) }}
+                </h3>
             </td>
         </tr>
     </table>
@@ -197,7 +210,9 @@
                         <tr>
                             <th class="text-center">{{ 'print.family.persons.forname.label'|trans|raw }}</th>
                             {% for person in packageStudentPeriod.student.person.family.persons %}
-                                <td class="text-center">{{ person }}<hr><span class="text-muted">{{ person.age }} ans</span></td>
+                                <td class="text-center">
+                                    {{ person }}<hr><span class="text-muted">{{ person.age }} ans</span>
+                                </td>
                             {% endfor %}
                         </tr>
                     </table>

@@ -161,7 +161,7 @@ class Operation
         return $this->typeOperation;
     }
 
-    public function setTypeOperation(TypeOperation $typeOperation): self
+    public function setTypeOperation(?TypeOperation $typeOperation): self
     {
         $this->typeOperation = $typeOperation;
 
@@ -180,7 +180,7 @@ class Operation
         return $this;
     }
 
-    public function getReference() : ?string
+    public function getReference(): ?string
     {
         return $this->reference;
     }
@@ -205,9 +205,9 @@ class Operation
     }
 
 
-    public function hasStructure(Structure $structure): bool
+    public function hasStructure(?Structure $structure): bool
     {
-        return $this->account->getStructure()?->getId() === $structure->getId();
+        return $this->account->getStructure()?->getId() === $structure?->getId();
     }
 
     public function getValidate(): ?Validate
@@ -268,7 +268,7 @@ class Operation
         return $this->accountStatement;
     }
 
-    public function setAccountStatement(AccountStatement $accountStatement = null) : static
+    public function setAccountStatement(AccountStatement $accountStatement = null): static
     {
         $this->accountStatement = $accountStatement;
 
@@ -285,7 +285,7 @@ class Operation
         return $this->slipsDebit;
     }
 
-    public function setSlipsDebit(AccountSlip $slipsDebit = null) : static
+    public function setSlipsDebit(AccountSlip $slipsDebit = null): static
     {
         $this->slipsDebit = $slipsDebit;
 
@@ -318,7 +318,7 @@ class Operation
         return $this;
     }
 
-    public function getAccount(): ?Account
+    public function getAccount(): Account
     {
         return $this->account;
     }

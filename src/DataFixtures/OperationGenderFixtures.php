@@ -14,7 +14,7 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @author  fardus
  */
-class OperationGenderFixtures extends AppFixtures implements DependentFixtureInterface
+class OperationGenderFixtures extends AbstractAppFixtures implements DependentFixtureInterface
 {
     /**
      * @throws AppException
@@ -37,9 +37,9 @@ class OperationGenderFixtures extends AppFixtures implements DependentFixtureInt
     }
 
     /**
-     * @return array
+     * @return class-string<SchoolFixtures>[]|class-string<StructureFixtures>[]
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             SchoolFixtures::class,

@@ -31,24 +31,14 @@ class StudentCommentCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $title = TextField::new('title');
-        $text = TextareaField::new('text');
-        $type = TextField::new('type');
-        $createdAt = DateTimeField::new('createdAt');
-        $updatedAt = DateTimeField::new('updatedAt');
-        $enable = Field::new('enable');
-        $student = AssociationField::new('student');
-        $author = AssociationField::new('author');
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $title, $type, $createdAt, $enable, $student, $author];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $title, $text, $type, $createdAt, $updatedAt, $enable, $student, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$title, $text, $type, $createdAt, $updatedAt, $enable, $student, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$title, $text, $type, $createdAt, $updatedAt, $enable, $student, $author];
-        }
+        yield TextField::new('title');
+        yield TextareaField::new('text');
+        yield TextField::new('type');
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield Field::new('enable');
+        yield AssociationField::new('student');
+        yield AssociationField::new('author');
+        yield IntegerField::new('id', 'ID');
     }
 }

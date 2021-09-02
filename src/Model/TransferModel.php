@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
  * User: fardus
@@ -60,7 +61,7 @@ class TransferModel
         return $this->gender;
     }
 
-    public function setGender(OperationGender $gender): self
+    public function setGender(?OperationGender $gender): self
     {
         $this->gender = $gender;
 
@@ -99,7 +100,7 @@ class TransferModel
     /**
      * Get AccountDebit.
      */
-    public function getAccountDebit(): Account
+    public function getAccountDebit(): ?Account
     {
         return $this->accountDebit;
     }
@@ -117,7 +118,7 @@ class TransferModel
     /**
      * Get Structure.
      */
-    public function getStructure(): Structure
+    public function getStructure(): ?Structure
     {
         return $this->structure;
     }
@@ -135,7 +136,7 @@ class TransferModel
     /**
      * Get AccountSlip.
      */
-    public function getAccountSlip(): AccountSlip
+    public function getAccountSlip(): ?AccountSlip
     {
         return $this->accountSlip;
     }
@@ -153,7 +154,7 @@ class TransferModel
     /**
      * Get Date.
      */
-    public function getDate(): DateTimeInterface
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
@@ -171,7 +172,7 @@ class TransferModel
     /**
      * Get Amount.
      */
-    public function getAmount(): float
+    public function getAmount(): ?float
     {
         return $this->amount;
     }
@@ -189,7 +190,7 @@ class TransferModel
     /**
      * Get Comment.
      */
-    public function getComment(): string
+    public function getComment(): ?string
     {
         return $this->comment;
     }

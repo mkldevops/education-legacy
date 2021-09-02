@@ -32,22 +32,12 @@ class PackageCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $name = TextField::new('name');
-        $description = TextareaField::new('description');
-        $price = NumberField::new('price');
-        $status = Field::new('status');
-        $school = AssociationField::new('school');
-        $id = IntegerField::new('id', 'ID');
-        $record = DateTimeField::new('record');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $name, $price, $record, $status, $school];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $name, $description, $price, $record, $status, $school];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$name, $description, $price, $status, $school];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$name, $description, $price, $status, $school];
-        }
+        yield TextField::new('name');
+        yield TextareaField::new('description');
+        yield NumberField::new('price');
+        yield Field::new('status');
+        yield AssociationField::new('school');
+        yield IntegerField::new('id', 'ID');
+        yield DateTimeField::new('record');
     }
 }

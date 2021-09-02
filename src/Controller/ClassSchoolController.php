@@ -24,43 +24,36 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @author Hamada Sidi Fahari <h.fahari@gmail.com>
- *
- * @Route("/class-school")
  */
+#[Route(path: '/class-school')]
 class ClassSchoolController extends AbstractBaseController
 {
     /**
-     * @Route("", name="app_class_school_index", methods={"GET"})
-     *
-     * @return Response
      *
      * @throws InvalidArgumentException
      */
-    public function index()
+    #[Route(path: '', name: 'app_class_school_index', methods: ['GET'])]
+    public function index(): Response
     {
         /** @var ClassSchool[] $classSchools */
         $classSchools = $this->getDoctrine()
             ->getManager()
             ->getRepository(ClassSchool::class)
             ->findBy(['school' => $this->getSchool()], ['enable' => 'DESC']);
-
         return $this->render('class_school/index.html.twig', [
             'class_schools' => $classSchools,
             'period' => $this->getPeriod(),
         ]);
     }
-
     /**
-     * @Route("/create", name="app_class_school_create", methods={"POST"})
-     *
      * @throws AppException
      */
+    #[Route(path: '/create', name: 'app_class_school_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
         $classSchool = new ClassSchool();
         $form = $this->createCreateForm($classSchool);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $classSchool->setAuthor($this->getUser())
@@ -73,21 +66,17 @@ class ClassSchoolController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_school_show', ['id' => $classSchool->getId()]));
         }
-
         return $this->render('class_school/new.html.twig', [
             'classschool' => $classSchool,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Creates a form to create a classSchool entity.
      *
      * @param ClassSchool $classSchool The entity
-     *
-     * @return FormInterface
      */
-    private function createCreateForm(ClassSchool $classSchool)
+    private function createCreateForm(ClassSchool $classSchool): FormInterface
     {
         $form = $this->createForm(ClassSchoolType::class, $classSchool, [
             'action' => $this->generateUrl('app_class_school_create'),
@@ -98,68 +87,55 @@ class ClassSchoolController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Displays a form to create a new classSchool entity.
-     *
-     * @Route("/new", name="app_class_school_new", methods={"GET"})
      */
+    #[Route(path: '/new', name: 'app_class_school_new', methods: ['GET'])]
     public function new(): Response
     {
         $classSchool = new ClassSchool();
         $form = $this->createCreateForm($classSchool);
-
         return $this->render('class_school/new.html.twig', [
             'classschool' => $classSchool,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Show class School.
      *
-     * @Route("/show/{id}", name="app_class_school_show", methods={"GET"})
      *
      * @throws InvalidArgumentException
      */
+    #[Route(path: '/show/{id}', name: 'app_class_school_show', methods: ['GET'])]
     public function show(ClassSchool $classSchool): Response
     {
         $periods = $this->getDoctrine()
             ->getManager()
             ->getRepository(Period::class)
             ->getLastPeriods($this->getPeriod());
-
         return $this->render('class_school/show.html.twig', [
             'classschool' => $classSchool,
             'periods' => $periods,
         ]);
     }
-
     /**
      * Displays a form to edit an existing classSchool entity.
-     *
-     * @Route("/edit/{id}", name="app_class_school_edit", methods={"GET"})
-     *
-     * @return Response
      */
-    public function edit(ClassSchool $classSchool)
+    #[Route(path: '/edit/{id}', name: 'app_class_school_edit', methods: ['GET'])]
+    public function edit(ClassSchool $classSchool): Response
     {
         $editForm = $this->createEditForm($classSchool);
-
         return $this->render('class_school/edit.html.twig', [
             'classschool' => $classSchool,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a classSchool entity.
      *
      * @param ClassSchool $classSchool The entity
-     *
-     * @return FormInterface
      */
-    private function createEditForm(ClassSchool $classSchool)
+    private function createEditForm(ClassSchool $classSchool): FormInterface
     {
         $form = $this->createForm(ClassSchoolType::class, $classSchool, [
             'action' => $this->generateUrl('app_class_school_update', ['id' => $classSchool->getId()]),
@@ -170,21 +146,18 @@ class ClassSchoolController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing classSchool entity.
      *
-     * @Route("/update/{id}", name="app_class_school_update", methods={"POST", "PUT"})
      *
      * @param ClassSchool|null $classSchool
-     *
      * @return RedirectResponse|Response
      */
+    #[Route(path: '/update/{id}', name: 'app_class_school_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, ClassSchool $classSchool): Response
     {
         $editForm = $this->createEditForm($classSchool);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $this->getDoctrine()
                 ->getManager()
@@ -194,27 +167,20 @@ class ClassSchoolController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_school_show', ['id' => $classSchool->getId()]));
         }
-
         return $this->render('class_school/edit.html.twig', [
             'classschool' => $classSchool,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a classSchool entity.
-     *
-     * @Route("/delete/{id}", name="app_class_school_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, ClassSchool $classSchool)
+    #[Route(path: '/delete/{id}', name: 'app_class_school_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, ClassSchool $classSchool): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classSchool->getId());
         $deleteForm->handleRequest($request);
-
         $manager = $this->getDoctrine()->getManager();
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $manager->remove($classSchool);
             $manager->flush();
@@ -223,21 +189,17 @@ class ClassSchoolController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_school_index'));
         }
-
         return $this->render('class_school/delete.html.twig', [
             'classschool' => $classSchool,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a classSchool entity by id.
      *
      * @param mixed $id The entity id
-     *
-     * @return FormInterface
      */
-    private function createDeleteForm(int $id)
+    private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_class_school_delete', ['id' => $id]))
@@ -245,34 +207,26 @@ class ClassSchoolController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_class_school_search", methods={"GET"})
-     *
-     * @return RedirectResponse
      */
-    public function search(Request $request)
+    #[Route(path: '/search', name: 'app_class_school_search', methods: ['GET'])]
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_class_school_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
         ]));
     }
-
     /**
-     * @Route("/view-class-period/{id}", name="app_class_school_view_class_period", methods={"POST", "GET"})
      *
      * @param ClassPeriod|null $classPeriod
      *
-     * @return RedirectResponse
-     *
      * @throws Exception
      */
-    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager)
+    #[Route(path: '/view-class-period/{id}', name: 'app_class_school_view_class_period', methods: ['POST', 'GET'])]
+    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager): RedirectResponse
     {
         if (Request::METHOD_POST === $request->getMethod()) {
             $students = $request->request->get('students', []);
@@ -289,30 +243,24 @@ class ClassSchoolController extends AbstractBaseController
                 $this->addFlash('success', 'The student has not added');
             }
         }
-
         return $this->redirect($this->generateUrl('app_class_period_show_student', [
             'id' => $classPeriod->getId(),
         ]));
     }
-
     /**
-     * @Route("/without-student", name="app_class_school_without_student", methods={"POST"}, options={"expose"=true})
      *
-     * @return Response
      *
      * @throws InvalidArgumentException
      * @throws Exception
      */
-    public function withOutStudentAction()
+    #[Route(path: '/without-student', name: 'app_class_school_without_student', methods: ['POST'], options: ['expose' => true])]
+    public function withOutStudent(): Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         $periodSelected = $this->getPeriod();
         $school = $this->getSchool();
-
         $students = $manager->getRepository(Student::class)
             ->getListStudentsWithoutClassPeriod($periodSelected, $school);
-
         $aListStudent = [];
         foreach ($students as $student) {
             /** @var DateTime $birthday */
@@ -325,9 +273,7 @@ class ClassSchoolController extends AbstractBaseController
 
             $aListStudent[$age][] = $student;
         }
-
         ksort($aListStudent);
-
         return $this->render('class_period/students.html.twig', [
             'listStudents' => $aListStudent,
             'numberStudents' => count($students),

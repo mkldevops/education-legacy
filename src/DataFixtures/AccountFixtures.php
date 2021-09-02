@@ -10,12 +10,7 @@ use App\Exception\AppException;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-/**
- * Class Schools.
- *
- * @author  fardus
- */
-class AccountFixtures extends AppFixtures implements DependentFixtureInterface
+class AccountFixtures extends AbstractAppFixtures implements DependentFixtureInterface
 {
     /**
      * @throws AppException
@@ -42,6 +37,9 @@ class AccountFixtures extends AppFixtures implements DependentFixtureInterface
         }
     }
 
+    /**
+     * @return array<class-string<StructureFixtures>>
+     */
     public function getDependencies(): array
     {
         return [

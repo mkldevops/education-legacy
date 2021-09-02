@@ -12,6 +12,8 @@ use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Form\PersonType;
 use App\Manager\PhoneManager;
+use App\Repository\FamilyRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,24 +25,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Person controller.
- *
- * @Route("/person")
  */
+#[Route(path: '/person')]
 class PersonController extends AbstractBaseController
 {
     /**
      * Lists all Person entities.
      *
-     * @Route("/list/{page}/{search}", name="app_person_index", methods={"GET"})
-     *
-     * @return Response
      *
      * @throws NonUniqueResultException
      */
-    public function index(int $page = 1, string $search = '')
+    #[Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
+    public function index(int $page = 1, string $search = ''): Response
     {
         $em = $this->getDoctrine()->getManager();
-
         $count = $em
             ->getRepository(Person::class)
             ->createQueryBuilder('e')
@@ -65,9 +63,7 @@ class PersonController extends AbstractBaseController
             ->setParameter(':city', '%' . $search . '%')
             ->getQuery()
             ->getSingleScalarResult();
-
         $pages = ceil($count / 20);
-
         /** @var Person[] $personList */
         $personList = $em
             ->getRepository(Person::class)
@@ -94,7 +90,6 @@ class PersonController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
-
         return $this->render('person/index.html.twig', [
             'personList' => $personList,
             'pages' => $pages,
@@ -103,15 +98,12 @@ class PersonController extends AbstractBaseController
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
     }
-
     /**
      * Creates a form to search Person entities.
      *
-     * @param string $q
      *
-     * @return FormInterface
      */
-    private function createSearchForm($q = '')
+    private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
 
@@ -124,23 +116,17 @@ class PersonController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
-
     /**
      * Creates a new Person entity.
-     *
-     * @Route("/create", name="app_person_create", methods={"POST"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function create(Request $request)
+    #[Route(path: '/create', name: 'app_person_create', methods: ['POST'])]
+    public function create(Request $request): RedirectResponse|Response
     {
         // If form have redirect
         $pathRedirect = $request->get('pathRedirect');
-
         $person = new Person();
         $form = $this->createCreateForm($person, $pathRedirect);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
 
@@ -162,22 +148,12 @@ class PersonController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl($pathRedirect, $parameters));
         }
-
         return $this->render('person/new.html.twig', [
             'person' => $person,
             'form' => $form->createView(),
         ]);
     }
-
-    /**
-     * Creates a form to create a Person entity.
-     *
-     * @param Person $person The entity
-     * @param null $pathRedirect
-     *
-     * @return FormInterface
-     */
-    private function createCreateForm(Person $person, $pathRedirect = null)
+    private function createCreateForm(Person $person, string $pathRedirect = null): FormInterface
     {
         $form = $this->createForm(PersonType::class, $person, [
             'action' => $this->generateUrl('app_person_create'),
@@ -189,77 +165,48 @@ class PersonController extends AbstractBaseController
 
         return $form;
     }
-
-    /**
-     * Displays a form to create a new Person entity.
-     *
-     * @Route("/new", name="app_person_new", methods={"GET"})
-     *
-     * @param null $pathRedirect
-     *
-     * @return Response
-     */
-    public function new($pathRedirect = null)
+    #[Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
+    public function new(string $pathRedirect = null): Response
     {
         $person = new Person();
         $form = $this->createCreateForm($person, $pathRedirect);
-
         return $this->render('person/new.html.twig', [
             'person' => $person,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Finds and displays a Person entity.
-     *
-     * @Route("/show/{id}", name="app_person_show", methods={"GET"})
-     *
-     * @return Response
      */
-    public function show(Person $person)
+    #[Route(path: '/show/{id}', name: 'app_person_show', methods: ['GET'])]
+    public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $em): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $member = $em->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
         $teacher = $em->getRepository(Teacher::class)->findOneBy(['person' => $person->getId()]);
         $student = $em->getRepository(Student::class)->findOneBy(['person' => $person->getId()]);
-        $families = $em->getRepository(Family::class)->findFamilies($person);
-
         return $this->render('person/show.html.twig', [
             'person' => $person,
             'teacher' => $teacher,
             'member' => $member,
             'student' => $student,
-            'families' => $families,
+            'families' => $familyRepository->findFamilies($person),
         ]);
     }
-
-    /**
-     * Displays a form to edit an existing Person entity.
-     *
-     * @Route("/edit/{id}", name="app_person_edit", methods={"GET"})
-     *
-     * @return Response
-     */
-    public function edit(Person $person)
+    #[Route(path: '/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
+    public function edit(Person $person): Response
     {
         $editForm = $this->createEditForm($person);
-
         return $this->render('person/edit.html.twig', [
             'person' => $person,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to edit a Person entity.
      *
      * @param Person $person The entity
-     *
-     * @return FormInterface
      */
-    private function createEditForm(Person $person)
+    private function createEditForm(Person $person): FormInterface
     {
         $form = $this->createForm(PersonType::class, $person, [
             'action' => $this->generateUrl('app_person_update', ['id' => $person->getId()]),
@@ -270,19 +217,14 @@ class PersonController extends AbstractBaseController
 
         return $form;
     }
-
     /**
      * Edits an existing Person entity.
-     *
-     * @Route("/update/{id}", name="app_person_update", methods={"POST", "PUT"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function update(Request $request, Person $person)
+    #[Route(path: '/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Person $person): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($person);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $this->getDoctrine()
                 ->getManager()
@@ -292,25 +234,19 @@ class PersonController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_person_show', ['id' => $person->getId()]));
         }
-
         return $this->render('person/edit.html.twig', [
             'person' => $person,
             'edit_form' => $editForm->createView(),
         ]);
     }
-
     /**
      * Deletes a Person entity.
-     *
-     * @Route("/delete/{id}", name="app_person_delete", methods={"GET", "DELETE"})
-     *
-     * @return RedirectResponse|Response
      */
-    public function delete(Request $request, Person $person)
+    #[Route(path: '/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Person $person): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($person->getId());
         $deleteForm->handleRequest($request);
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($person);
@@ -320,13 +256,11 @@ class PersonController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_person_index'));
         }
-
         return $this->render('person/delete.html.twig', [
             'person' => $person,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
-
     /**
      * Creates a form to delete a Person entity by id.
      *
@@ -340,33 +274,25 @@ class PersonController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
-
     /**
      * Redirect the the list URL with the search parameter.
-     *
-     * @Route("/search", name="app_person_search", methods={"POST"})
      */
-    public function search(Request $request): Response
+    #[Route(path: '/search', name: 'app_person_search', methods: ['POST'])]
+    public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
-
         return $this->redirect($this->generateUrl('app_person_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
         ]));
     }
-
     /**
      * Finds and displays a Person entity.
-     *
-     * @Route("/phones/{id}", name="app_person_phones", methods={"GET"})
-     *
-     * @return Response
      */
-    public function phones(Person $person)
+    #[Route(path: '/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
+    public function phones(Person $person): Response
     {
         $phones = PhoneManager::getAllPhones($person);
-
         return $this->render('person/phones.html.twig', [
             'phones' => $phones,
         ]);

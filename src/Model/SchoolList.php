@@ -11,12 +11,7 @@ class SchoolList
     public const SCHOOL_SELECTED = 'selected';
     public const SCHOOL_LIST = 'list';
 
-    public ?School $selected = null;
-    public ?array $list = [];
-
-    public function __construct(?array $list, ?School $selected)
+    public function __construct(public ?array $list, public ?School $selected)
     {
-        $this->list = $list;
-        $this->selected = $selected;
     }
 }

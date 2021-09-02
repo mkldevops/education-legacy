@@ -42,10 +42,7 @@ class AccountSlipEditType extends AccountSlipType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'app_accountslip_edit';
     }

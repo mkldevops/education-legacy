@@ -20,9 +20,11 @@ trait AuthorEntityTrait
         return $this->author;
     }
 
-    public function setAuthor(User|UserInterface $author): self
+    public function setAuthor(null|User|UserInterface $author): self
     {
-        $this->author = $author;
+        if ($author !== null) {
+            $this->author = $author;
+        }
 
         return $this;
     }

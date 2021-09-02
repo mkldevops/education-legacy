@@ -7,6 +7,7 @@ namespace App\Controller\Api;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\Student;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Manager\ClassPeriodManager;
 use App\Model\ResponseModel;
@@ -16,11 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * ClassPeriod controller.
- *
- * @Route("/api/class-period")
- */
+#[Route(path: '/api/class-period')]
 class ClassPeriodApiController extends AbstractBaseController
 {
     /**
@@ -40,48 +37,27 @@ class ClassPeriodApiController extends AbstractBaseController
     }
 
     /**
-     * addStudentAction.
-     *
-     * @Route(
-     *     "/update-student/{id}",
-     *     name="app_api_class_period_update_student",
-     *     methods={"POST"},
-     *     options={"expose"=true}
-     *    )
-     *
-     * @return JsonResponse
+     * @throws AppException
      */
-    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod = null)
+    #[Route(
+        path: '/update-student/{id}',
+        name: 'app_api_class_period_update_student',
+        options: ['expose' => true],
+        methods: ['POST']
+    )]
+    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod): JsonResponse
     {
-        $name = $classPeriod->getClassSchool()->getName();
-
-        $response = ResponseRequest::responseDefault([
-            'name' => $name,
-            'count' => null,
-        ]);
-
         try {
             $students = $request->get('students');
-            $response->success = $manager->treatListStudent($students, $this->getPeriod(), $classPeriod);
-
-            if ($classPeriod instanceof ClassPeriod) {
-                $response->count = count($classPeriod->getStudents());
-            }
+            $success = $manager->treatListStudent($students, $this->getPeriod(), $classPeriod);
+            return $this->json([
+                'name' => $classPeriod->getClassSchool()->getName(),
+                'count' => count($classPeriod->getStudents()),
+                'success' => $success
+            ]);
         } catch (Exception $e) {
-            $response->errors[] = $e->getMessage();
             $this->getLogger()->error(__METHOD__ . ' ' . $e->getMessage(), $e->getTrace());
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
-
-        return new JsonResponse($response, empty($response->errors) ? 200 : 500);
-    }
-
-    /**
-     * changeStudentAction.
-     */
-    public function changeStudentAction(Student $student): JsonResponse
-    {
-        $response = ResponseModel::responseDefault();
-
-        return ResponseRequest::jsonResponse($response);
     }
 }

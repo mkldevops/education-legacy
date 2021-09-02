@@ -11,7 +11,6 @@ use Imagick;
 use ImagickException;
 use stdClass;
 
-
 class DocumentManager extends AbstractFullService
 {
     public const IMAGE = 'image';
@@ -21,7 +20,7 @@ class DocumentManager extends AbstractFullService
     private static string $pathUploads = 'uploads/documents';
 
 
-    public function removesWithLinks(Document $document) : bool
+    public function removesWithLinks(Document $document): bool
     {
         $operations = $document->getOperations();
 
@@ -35,8 +34,8 @@ class DocumentManager extends AbstractFullService
             $document->removeStudent($person);
             $person->setImage(null);
             $this->entityManager->persist($person);
-            $this->entityManager->flush();
         }
+        $this->entityManager->flush();
 
         // Remove all documents account statement linked
         $accountStatements = $document->getAccountStatements();
@@ -52,8 +51,9 @@ class DocumentManager extends AbstractFullService
 
     /**
      * @throws FileNotFoundException
+     * @return array<string, mixed>
      */
-    public function upload(Document $document) : array
+    public function upload(Document $document): array
     {
         $data = [
             'move' => false,
@@ -79,13 +79,13 @@ class DocumentManager extends AbstractFullService
             ->setMime($document->getFile()->getClientMimeType())
             ->setName($name);
 
-        $this->logger->debug(__FUNCTION__, compact('document'));
+        $this->logger->debug(__FUNCTION__, ['document' => $document]);
 
         $data['move'] = $document->getFile()->move(self::getPathUploads(Document::DIR_FILE), $document->getPath());
 
-        list('preview' => $data['preview'], 'thumb' => $data['thumb']) = $this->generateImages($document);
+        ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
-        if ($document->getFile()->getError()) {
+        if ($document->getFile()->getError() !== 0) {
             $data->errors = [
                 'error' => $document->getFile()->getError(),
                 'message' => $document->getFile()->getErrorMessage(),
@@ -108,8 +108,9 @@ class DocumentManager extends AbstractFullService
 
     /**
      * @throws FileNotFoundException
+     * @return array<string, bool>|array<string, string>|array<string, null>
      */
-    private function generateImages(Document $document) : array
+    private function generateImages(Document $document): array
     {
         $filepath = self::getPathUploads(Document::DIR_FILE) . DIRECTORY_SEPARATOR . $document->getPath();
 
@@ -118,7 +119,7 @@ class DocumentManager extends AbstractFullService
             throw new FileNotFoundException(sprintf('No such file %s or is not supported', $filepath));
         }
 
-        $this->logger->debug(__FUNCTION__, compact('filepath'));
+        $this->logger->debug(__FUNCTION__, ['filepath' => $filepath]);
 
         chmod($filepath, 0777);
         $error = false;
@@ -139,13 +140,14 @@ class DocumentManager extends AbstractFullService
                 $img->writeImage();
             }
 
-            $filePreview = sprintf("%s%s%s.%s",
+            $filePreview = sprintf(
+                "%s%s%s.%s",
                 self::getPathUploads(Document::DIR_PREVIEW),
                 DIRECTORY_SEPARATOR,
                 $document->getFileName(),
                 Document::EXT_PNG
             );
-            $this->logger->debug(__FUNCTION__, compact('filePreview'));
+            $this->logger->debug(__FUNCTION__, ['filePreview' => $filePreview]);
 
             if (!is_file($filePreview)) {
                 $img->scaleImage(800, 0);
@@ -153,8 +155,14 @@ class DocumentManager extends AbstractFullService
                 $preview = $img->writeImage($filePreview);
             }
 
-            $fileThumb = self::getPathUploads(Document::DIR_THUMB) . DIRECTORY_SEPARATOR . $document->getFileName() . '.' . Document::EXT_PNG;
-            $this->logger->debug(__FUNCTION__, compact('fileThumb'));
+            $fileThumb = sprintf(
+                "%s%s%s.%s",
+                self::getPathUploads(Document::DIR_THUMB),
+                DIRECTORY_SEPARATOR,
+                $document->getFileName(),
+                Document::EXT_PNG
+            );
+            $this->logger->debug(__FUNCTION__, ['fileThumb' => $fileThumb]);
 
             if (!is_file($fileThumb)) {
                 $img->scaleImage(150, 0);
@@ -167,6 +175,6 @@ class DocumentManager extends AbstractFullService
             $error = $exception->getMessage();
         }
 
-        return compact('filepath', 'preview', 'thumb', 'error');
+        return ['filepath' => $filepath, 'preview' => $preview, 'thumb' => $thumb, 'error' => $error];
     }
 }

@@ -27,7 +27,7 @@ class DiplomaService extends AbstractFullService
     private string $pathUploads;
 
     public function __construct(
-        private PeriodRepository  $periodRepository,
+        private PeriodRepository $periodRepository,
         private StudentRepository $studentRepository
     ) {
     }
@@ -109,7 +109,7 @@ class DiplomaService extends AbstractFullService
         return $this;
     }
 
-    public function setPathUploads(string $pathUploads): DiplomaService
+    public function setPathUploads(string $pathUploads): static
     {
         $this->pathUploads = $pathUploads;
 

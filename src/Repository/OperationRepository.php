@@ -44,9 +44,9 @@ class OperationRepository extends ServiceEntityRepository
             ->andWhere('acc.structure = :structure')
             ->setParameter('begin', $period->getBegin()?->format('Y-m-d'))
             ->setParameter('end', $period->getEnd()?->format('Y-m-d 23:59:59'))
-            ->setParameter('structure', $school->getStructure()->getId());
+            ->setParameter('structure', $school->getStructure()?->getId());
 
-        if (!empty($typeOperation)) {
+        if ($typeOperation !== null) {
             $qb->andWhere('ope.typeOperation = :typeOperation')
                 ->setParameter('typeOperation', $typeOperation);
         }
@@ -55,12 +55,7 @@ class OperationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Get list opertions available to Account Statement.
-     *
-     * @return array
-     */
-    public function getAvailableToAccountStatement(AccountStatement $accountStatement)
+    public function getAvailableToAccountStatement(AccountStatement $accountStatement) : array
     {
         $begin = $accountStatement->getBegin();
         $end = $accountStatement->getEnd();
@@ -83,12 +78,7 @@ class OperationRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
-    /**
-     * stats sumCredit & sumDebit Operations To Account Statement.
-     *
-     * @return QueryBuilder
-     */
-    public function getQueryStatsAccountStatement(array $listAccountStatementId)
+    public function getQueryStatsAccountStatement(array $listAccountStatementId): QueryBuilder
     {
         return $this->createQueryBuilder('ope')
             ->select([
@@ -104,8 +94,6 @@ class OperationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get Number Without Account Statement.
-     *
      * @throws AppException
      */
     public function getNumberWithoutAccountStatement(Account $account): int
@@ -119,18 +107,13 @@ class OperationRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleResult(Query::HYDRATE_ARRAY);
         } catch (NoResultException | NonUniqueResultException $e) {
-            throw new AppException(sprintf('%s Error on query', __FUNCTION__), $e->getCode(), $e);
+            throw new AppException(sprintf('%s Error on query', __FUNCTION__), (int) $e->getCode(), $e);
         }
 
         return (int)$result['nbOperations'];
     }
 
-    /**
-     * Get list Students.
-     *
-     * @return array
-     */
-    public function getStatsByMonthly(Period $period, School $school)
+    public function getStatsByMonthly(Period $period, School $school): array
     {
         $query = $this->createQueryBuilder('ope')
             ->select("DATE_FORMAT(ope.date, '%Y-%m-01') AS groupDate")
@@ -144,21 +127,17 @@ class OperationRepository extends ServiceEntityRepository
             ->where('ope.date BETWEEN :begin AND :end')
             ->andWhere('acc.principal = 1')
             ->andWhere('acc.structure = :structure')
-            ->groupBy('groupDate', 'top.name')
-            ->setParameter('begin', $period->getBegin()->format('Y-m-d'))
-            ->setParameter('end', $period->getEnd()->format('Y-m-d 23:59:59'))
-            ->setParameter('structure', $school->getStructure()->getId())
+            ->addGroupBy('groupDate')
+            ->addGroupBy('top.name')
+            ->setParameter('begin', $period->getBegin()?->format('Y-m-d'))
+            ->setParameter('end', $period->getEnd()?->format('Y-m-d 23:59:59'))
+            ->setParameter('structure', $school->getStructure()?->getId())
             ->getQuery();
 
         return $query->getArrayResult();
     }
 
-    /**
-     * getDataOperationsToAccount.
-     *
-     * @return array
-     */
-    public function getDataOperationsToAccount(Account $account)
+    public function getDataOperationsToAccount(Account $account): array
     {
         $result = $this->createQueryBuilder('ope')
             ->innerJoin('ope.typeOperation', 'top')
@@ -176,12 +155,7 @@ class OperationRepository extends ServiceEntityRepository
         return current($result);
     }
 
-    /**
-     * getLastOperation.
-     *
-     * @param int $maxResult
-     */
-    public function getLastOperation(School $school, $maxResult = 10): array
+    public function getLastOperation(School $school, int $maxResult = 10): array
     {
         return $this->createQueryBuilder('ope')
             ->select('ope.id')
@@ -203,7 +177,7 @@ class OperationRepository extends ServiceEntityRepository
     /**
      * @return Operation[]
      */
-    public function search(string $search): ?array
+    public function search(string $search): array
     {
         $qb = $this->createQueryBuilder('p')
             ->where('REGEXP(p.name, :search) = 1')
@@ -225,7 +199,7 @@ class OperationRepository extends ServiceEntityRepository
     /**
      * @return Operation[]
      */
-    public function toValidate(Period $period) : array
+    public function toValidate(Period $period): array
     {
         return $this->createQueryBuilder('o')
             ->andWhere('o.date BETWEEN :begin AND :end')

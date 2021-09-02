@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace App\Manager;
 
 use App\Entity\PackageStudentPeriod;
@@ -28,7 +27,10 @@ class StudentManager
     ) {
     }
 
-    public function dataPayementsStudents(array $students, Period $period) : array
+    /**
+     * @return mixed[]
+     */
+    public function dataPayementsStudents(array $students, Period $period): array
     {
         $list = self::getDataListDefault();
 
@@ -67,7 +69,10 @@ class StudentManager
         return $list;
     }
 
-    private static function getDataListDefault() : array
+    /**
+     * @return array<string, mixed[]>
+     */
+    private static function getDataListDefault(): array
     {
         return [
             'students' => [],
@@ -148,7 +153,7 @@ class StudentManager
         $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()?->getEnd());
         $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
 
-        if ($user = $this->security->getUser()) {
+        if (($user = $this->security->getUser()) !== null) {
             $packageStudentPeriod->setAuthor($user);
         }
 

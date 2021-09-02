@@ -10,10 +10,10 @@ use App\Traits\SchoolEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\DescriptionEntity;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
-use Fardus\Traits\Symfony\Entity\NameEntity;
+use Fardus\Traits\Symfony\Entity\DescriptionEntityTrait;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,13 +23,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ClassSchool
 {
-    use IdEntity;
-    use NameEntity;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use AuthorEntityTrait;
-    use EnableEntity;
+    use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
-    use DescriptionEntity;
+    use DescriptionEntityTrait;
     use SchoolEntityTrait;
 
     /**
@@ -72,7 +72,7 @@ class ClassSchool
         $this->classPeriods->removeElement($classPeriods);
     }
 
-    public function getClassPeriods(): Collection
+    public function getClassPeriods(): ArrayCollection
     {
         $classPeriods = new ArrayCollection();
 
@@ -87,7 +87,7 @@ class ClassSchool
         return $classPeriods;
     }
 
-    public function getAgeMinimum(): ?int
+    public function getAgeMinimum(): int
     {
         return $this->ageMinimum;
     }
@@ -99,7 +99,7 @@ class ClassSchool
         return $this;
     }
 
-    public function getAgeMaximum(): ?int
+    public function getAgeMaximum(): int
     {
         return $this->ageMaximum;
     }

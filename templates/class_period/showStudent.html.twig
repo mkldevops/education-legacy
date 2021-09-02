@@ -62,7 +62,7 @@
             {{ 'title.show_student.ibox'|trans({'%name%' : classperiod}) }}
             <small> - {{ 'title.show_student.date'|trans({
                     '%name%' : classperiod.author.nameComplete,
-                    '%date%' : classperiod.record.format('date.with_hour'|trans({}, 'common'))
+                    '%date%' : classperiod.createdAt.format('date.with_hour'|trans({}, 'common'))
                 }) }}</small>
         {% endblock %}
         {% block config_list %}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\Account;
 use App\Entity\Operation;
 use App\Entity\OperationGender;
@@ -63,10 +64,10 @@ class OperationType extends AbstractType
                 'label' => 'form.account',
                 'class' => Account::class,
                 'choice_label' => 'name',
-                'query_builder' => function (AccountRepository $er) {
+                'query_builder' => function (AccountRepository $er): QueryBuilder {
                     /** @var SchoolList $schoolList */
                     $schoolList = $this->getSession()->get('school');
-                    if($schoolList->selected === null) {
+                    if ($schoolList->selected === null) {
                         throw new AppException('School selected not set');
                     }
 
@@ -119,10 +120,7 @@ class OperationType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'app_operation';
     }

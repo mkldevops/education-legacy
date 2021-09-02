@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Exception\AppException;
 use App\Repository\StudentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
@@ -95,9 +96,6 @@ class Student
      */
     private array|Collection $comments;
 
-    /**
-     * @throws Exception
-     */
     public function __construct()
     {
         $this->setPerson(new Person())
@@ -110,10 +108,7 @@ class Student
         $this->comments = new ArrayCollection();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function setEnable(bool $enable) : static
+    public function setEnable(bool $enable): static
     {
         $this->enable = $enable;
 
@@ -128,12 +123,12 @@ class Student
 
     public function __toString(): string
     {
-        return (string)$this->getNameComplete();
+        return $this->getNameComplete();
     }
 
-    public function getNameComplete(): ?string
+    public function getNameComplete(): string
     {
-        return $this->person?->getNameComplete();
+        return $this->person?->getNameComplete() ?? '';
     }
 
 
@@ -148,65 +143,50 @@ class Student
     }
 
 
-    public function setGender(string $gender) : static
+    public function setGender(string $gender): static
     {
-        $this->person->setGender($gender);
+        $this->person?->setGender($gender);
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getGender()
+    public function getGender(): ?string
     {
-        return $this->person->getGender();
+        return $this->person?->getGender();
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getGenderCode()
+    public function getGenderCode(): ?string
     {
-        return $this->person->getGender();
+        return $this->person?->getGender();
     }
 
-    /**
-     * Set forname.
-     *
-     * @return Student
-     */
-    public function setForname(string $forname)
+    public function setForname(string $forname): static
     {
-        $this->person->setForname($forname);
+        $this->person?->setForname($forname);
 
         return $this;
     }
 
-    public function getForname() : string
+    public function getForname(): ?string
     {
-        return $this->person->getForname();
+        return $this->person?->getForname();
     }
 
-    public function setBirthday(DateTimeInterface $birthday) : static
+    public function setBirthday(DateTimeInterface $birthday): static
     {
-        $this->person->setBirthday($birthday);
+        $this->person?->setBirthday($birthday);
 
         return $this;
     }
 
-    public function getBirthday() : ?DateTimeInterface
+    public function getBirthday(): ?DateTimeInterface
     {
         return $this->person?->getBirthday();
     }
 
-    public function setBirthplace(string $birthplace) : static
+    public function setBirthplace(string $birthplace): static
     {
-        $this->person->setBirthplace($birthplace);
+        $this->person?->setBirthplace($birthplace);
 
         return $this;
     }
@@ -216,19 +196,19 @@ class Student
         return $this->person?->getBirthplace();
     }
 
-    public function setAddress(string $address) : static
+    public function setAddress(string $address): static
     {
         $this->person?->setAddress($address);
 
         return $this;
     }
 
-    public function getAddress() : ?string
+    public function getAddress(): ?string
     {
         return $this->person?->getAddress() ?? $this->person?->getFamily()?->getAddress();
     }
 
-    public function getPerson() : ?Person
+    public function getPerson(): ?Person
     {
         return $this->person;
     }
@@ -242,7 +222,7 @@ class Student
 
     public function setPostcode(string $postcode): self
     {
-        $this->person->setZip($postcode);
+        $this->person?->setZip($postcode);
 
         return $this;
     }
@@ -252,22 +232,14 @@ class Student
         return $this->getZip();
     }
 
-    /**
-     * Get zip.
-     */
     public function getZip(): ?string
     {
-        $zip = $this->person->getZip();
-        if (empty($zip) && !empty($this->person->getFamily())) {
-            $zip = $this->person->getFamily()->getZip();
-        }
-
-        return $zip;
+        return $this->person?->getZip() ?? $this->person?->getFamily()?->getZip();
     }
 
     public function setTown(string $town): self
     {
-        $this->person->setCity($town);
+        $this->person?->setCity($town);
 
         return $this;
     }
@@ -279,69 +251,41 @@ class Student
 
     public function getCity(): ?string
     {
-        $city = $this->person->getCity();
+        return $this->person?->getCity() ?? $this->person?->getFamily()?->getCity();
+    }
 
-        if (empty($city) && !empty($this->person->getFamily())) {
-            $city = $this->person->getFamily()->getCity();
-        }
+    public function setPhone(string $phone, bool $add = false): static
+    {
+        $this->person?->setPhone($phone, $add);
 
-        return $city;
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->person?->getPhone();
     }
 
     /**
-     * Set phone.
-     *
-     * @param bool $add
-     *
-     * @return self
+     * @throws AppException
      */
-    public function setPhone(string $phone, $add = false)
+    public function addPhone(string $phone): static
     {
-        $this->person->setPhone($phone, $add);
+        $this->person?->addPhone($phone);
 
         return $this;
     }
 
     /**
-     * Get phone.
-     *
-     * @return string
-     */
-    public function getPhone()
-    {
-        return $this->person->getPhone();
-    }
-
-    /**
-     * Add number phone.
-     *
-     * @param $phone
-     *
-     * @return self
-     *
-     * @throws Exception
-     */
-    public function addPhone($phone)
-    {
-        $this->person->addPhone($phone);
-
-        return $this;
-    }
-
-    /**
-     * Add number phone.
-     *
-     * @param $key
-     *
-     * @throws Exception
+     * @throws AppException
      */
     public function removePhone(string $key): self
     {
-        $this->person->removePhone($key);
+        $this->person?->removePhone($key);
 
         return $this;
     }
-
+    
     public function getListPhones(): array
     {
         return array_unique(array_merge(
@@ -357,19 +301,19 @@ class Student
         return $this->person?->getFamily();
     }
 
-    public function setEmail(string $email) : static
+    public function setEmail(string $email): static
     {
-        $this->person->setEmail($email);
+        $this->person?->setEmail($email);
 
         return $this;
     }
 
-    public function getEmail() : ?string
+    public function getEmail(): ?string
     {
-        return $this->person->getEmail();
+        return $this->person?->getEmail();
     }
 
-    public function getLastSchool() : ?string
+    public function getLastSchool(): ?string
     {
         return $this->lastSchool;
     }
@@ -395,14 +339,14 @@ class Student
 
     public function setImage(Document $image): self
     {
-        $this->person->setImage($image);
+        $this->person?->setImage($image);
 
         return $this;
     }
 
     public function getImage(): ?Document
     {
-        return $this->person->getImage();
+        return $this->person?->getImage();
     }
 
     public function getStatusLabel(): string
@@ -412,7 +356,7 @@ class Student
 
     public function getAge(): ?int
     {
-        return $this->person->getAge();
+        return $this->person?->getAge();
     }
 
     public function addClassPeriod(ClassPeriodStudent $classPeriod): self
@@ -422,20 +366,17 @@ class Student
         return $this;
     }
 
-    /**
-     * Remove classPeriods.
-     */
     public function removeClassPeriod(ClassPeriodStudent $classPeriod): void
     {
         $this->classPeriods->removeElement($classPeriod);
     }
 
-    public function getClassPeriods() : Collection
+    public function getClassPeriods(): Collection
     {
         return $this->classPeriods;
     }
 
-    public function getClassToPeriod(Period $period) : ?ClassPeriodStudent
+    public function getClassToPeriod(Period $period): ?ClassPeriodStudent
     {
         $current = null;
 
@@ -454,7 +395,7 @@ class Student
         return $current;
     }
 
-    public function addPackagePeriod(PackageStudentPeriod $packagePeriods) : static
+    public function addPackagePeriod(PackageStudentPeriod $packagePeriods): static
     {
         $this->packagePeriods[] = $packagePeriods;
 
@@ -466,12 +407,12 @@ class Student
         $this->packagePeriods->removeElement($packagePeriods);
     }
 
-    public function getPackagePeriods() : Collection
+    public function getPackagePeriods(): Collection
     {
         return $this->packagePeriods;
     }
 
-    public function getDateDesactivated() : ?DateTimeInterface
+    public function getDateDesactivated(): ?DateTimeInterface
     {
         if (!$this->enable && empty($this->dateDesactivated)) {
             $this->dateDesactivated = new DateTime();
@@ -480,7 +421,7 @@ class Student
         return $this->dateDesactivated;
     }
 
-    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null) : static
+    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null): static
     {
         $this->dateDesactivated = $dateDesactivated;
 
@@ -488,7 +429,7 @@ class Student
     }
 
 
-    public function addCourse(AppealCourse $courses) : static
+    public function addCourse(AppealCourse $courses): static
     {
         $this->courses[] = $courses;
 
@@ -503,17 +444,17 @@ class Student
     /**
      * @return Collection|AppealCourse[]
      */
-    public function getCourses() : Collection
+    public function getCourses(): Collection
     {
         return $this->courses;
     }
 
-    public function getDateRegistration() : ?DateTimeInterface
+    public function getDateRegistration(): ?DateTimeInterface
     {
         return $this->dateRegistration;
     }
 
-    public function setDateRegistration(DateTimeInterface $dateRegistration = null) : static
+    public function setDateRegistration(DateTimeInterface $dateRegistration = null): static
     {
         $this->dateRegistration = $dateRegistration;
 
@@ -532,17 +473,17 @@ class Student
         $this->comments?->removeElement($comment);
     }
 
-    public function getComments() : Collection
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function getPersonAuthorized() : ?string
+    public function getPersonAuthorized(): ?string
     {
         return $this->personAuthorized;
     }
 
-    public function setPersonAuthorized(string $personAuthorized = null) : static
+    public function setPersonAuthorized(string $personAuthorized = null): static
     {
         $this->personAuthorized = $personAuthorized;
 
@@ -576,7 +517,7 @@ class Student
     /**
      * @throws Exception
      */
-    public function since(): ?int
+    public function since(): int
     {
         return $this->createdAt?->diff(new DateTime())->y;
     }

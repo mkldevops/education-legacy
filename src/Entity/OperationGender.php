@@ -6,9 +6,9 @@ namespace App\Entity;
 
 use App\Repository\OperationGenderRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
-use Fardus\Traits\Symfony\Entity\IdEntity;
-use Fardus\Traits\Symfony\Entity\NameEntity;
+use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
+use Fardus\Traits\Symfony\Entity\IdEntityTrait;
+use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
@@ -16,9 +16,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class OperationGender
 {
-    use IdEntity;
-    use NameEntity;
-    use EnableEntity;
+    use IdEntityTrait;
+    use NameEntityTrait;
+    use EnableEntityTrait;
     use TimestampableEntity;
 
     public const CODE_CB = 'cb';

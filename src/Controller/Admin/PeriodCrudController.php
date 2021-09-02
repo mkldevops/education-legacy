@@ -31,27 +31,17 @@ class PeriodCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $begin = DateTimeField::new('begin');
-        $end = DateTimeField::new('end');
-        $name = TextField::new('name');
-        $enable = Field::new('enable');
-        $createdAt = DateTimeField::new('createdAt')->hideOnForm();
-        $updatedAt = DateTimeField::new('updatedAt')->hideOnForm();
-        $deletedAt = DateTimeField::new('deletedAt')->hideOnForm();
-        $comment = TextareaField::new('comment');
-        $classPeriods = AssociationField::new('classPeriods')->hideOnForm();
-        $diploma = AssociationField::new('diploma')->hideOnForm();
-        $author = AssociationField::new('author')->hideOnForm();
-        $id = IntegerField::new('id', 'ID');
-
-        if (Crud::PAGE_INDEX === $pageName) {
-            return [$id, $begin, $end, $name, $enable, $createdAt, $deletedAt];
-        } elseif (Crud::PAGE_DETAIL === $pageName) {
-            return [$id, $begin, $end, $name, $enable, $createdAt, $updatedAt, $deletedAt, $comment, $classPeriods, $diploma, $author];
-        } elseif (Crud::PAGE_NEW === $pageName) {
-            return [$begin, $end, $name, $enable, $createdAt, $updatedAt, $deletedAt, $comment, $classPeriods, $diploma, $author];
-        } elseif (Crud::PAGE_EDIT === $pageName) {
-            return [$begin, $end, $name, $enable, $createdAt, $updatedAt, $deletedAt, $comment, $classPeriods, $diploma, $author];
-        }
+        yield IntegerField::new('id', 'ID');
+        yield DateTimeField::new('begin');
+        yield DateTimeField::new('end');
+        yield TextField::new('name');
+        yield TextareaField::new('comment');
+        yield AssociationField::new('classPeriods')->hideOnForm();
+        yield AssociationField::new('diploma')->hideOnForm();
+        yield AssociationField::new('author')->hideOnForm();
+        yield Field::new('enable');
+        yield DateTimeField::new('createdAt')->hideOnForm();
+        yield DateTimeField::new('updatedAt')->hideOnForm();
+        yield DateTimeField::new('deletedAt')->hideOnForm();
     }
 }

@@ -35,12 +35,6 @@
                 {% trans %}Edit{% endtrans %}
             </a>
         </li>
-        <li class="{%if 'app_meet_delete' == app.request.attributes.get('_route')%} active{% endif %}">
-            <a href="{{ path('app_meet_delete', {'id': meet.id}) }}">
-                <span class="fa fa-trash"></span>
-                {% trans %}Delete{% endtrans %}
-            </a>
-        </li>
     {% endif %}
     
 {% endblock %}

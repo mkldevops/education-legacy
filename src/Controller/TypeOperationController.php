@@ -13,30 +13,27 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * TypeOperation controller.
- *
- * @Route("/type-operation")
  */
+#[Route(path: '/type-operation')]
 class TypeOperationController extends AbstractBaseController
 {
     /**
      * Finds and displays a TypeOperation entity.
      *
-     * @Route("/operations/{id}", name="app_type_operation_operations", methods={"GET"})
      *
      * @throws InvalidArgumentException
      */
+    #[Route(path: '/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
     public function operations(TypeOperation $typeOperation): Response
     {
         $operations = $this->getManager()
             ->getRepository(Operation::class)
             ->getListOperations($this->getPeriod(), $this->getSchool(), $typeOperation);
-
         return $this->render('type_operation/operations.html.twig', [
             'typeoperation' => $typeOperation,
             'operations' => $operations,
         ]);
     }
-
     /**
      * modalList.
      */

@@ -105,6 +105,9 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -113,6 +116,9 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param mixed[] $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -142,7 +148,7 @@ class User implements UserInterface
         $this->plainPassword = null;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -154,7 +160,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getLastLogin(): ?DateTimeInterface
+    public function getLastLogin(): \DateTimeInterface
     {
         return $this->lastLogin;
     }

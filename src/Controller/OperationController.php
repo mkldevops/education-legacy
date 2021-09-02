@@ -14,6 +14,8 @@ use App\Exception\InvalidArgumentException;
 use App\Form\OperationType;
 use App\Manager\OperationManager;
 use App\Manager\StatisticsManager;
+use App\Repository\AccountRepository;
+use App\Repository\AccountStatementRepository;
 use App\Repository\OperationRepository;
 use App\Services\ResponseRequest;
 use DateTime;
@@ -35,26 +37,24 @@ use Symfony\Component\Security\Core\Security;
 class OperationController extends AbstractBaseController
 {
     /**
-     * @Route("/{page}", name="app_operation_index", methods={"GET"}, requirements={"page":"\d+"})
+     * @throws AppException
+     * @throws InvalidArgumentException
      */
+    #[Route(path: '/{page}', name: 'app_operation_index', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function index(OperationRepository $repository, int $page = 1): Response
     {
         if ($page < 1) {
             $this->redirectToRoute('app_operation_index', ['page' => 1]);
         }
-
         $period = $this->getPeriod();
         $school = $this->getSchool();
-
         $formSearch = $this->createFormBuilder()
             ->add('account', EntityType::class, [
                 'class' => Account::class,
                 'choice_label' => 'name',
                 'lable' => 'Compte',
             ]);
-
         $operations = $repository->getListOperations($period, $school);
-
         return $this->render('operation/index.html.twig', [
             'operations' => $operations,
             'formSearch' => $formSearch,
@@ -64,10 +64,10 @@ class OperationController extends AbstractBaseController
     /**
      * New Operation.
      *
-     * @Route("/new", name="app_operation_new", methods={"GET"})
      *
      * @throws Exception
      */
+    #[Route(path: '/new', name: 'app_operation_new', methods: ['GET'])]
     public function new(Request $request): Response
     {
         $operation = new Operation();
@@ -75,12 +75,9 @@ class OperationController extends AbstractBaseController
             'account' => $request->get('account'),
             'accountstatement' => $request->get('accountstatement'),
         ];
-
         $operation->setDate(new DateTime($request->get('date') ?? 'now'));
-
         $form = $this->createCreateForm($operation, $params);
         $form->handleRequest($request);
-
         return $this->render('operation/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -108,8 +105,12 @@ class OperationController extends AbstractBaseController
      * @throws AppException
      */
     #[Route("/create", name : "app_operation_create", methods: ["POST", "PUT"])]
-    public function create(Request $request, Security $security): Response
-    {
+    public function create(
+        Request $request,
+        Security $security,
+        AccountRepository $accountRepository,
+        AccountStatementRepository $accountStatementRepository
+    ): Response {
         $operation = new Operation();
         $form = $this->createCreateForm($operation, []);
 
@@ -121,7 +122,7 @@ class OperationController extends AbstractBaseController
                 $accountstatementRequest = $request->get('accountstatement');
 
                 if (null !== $accountstatementRequest) {
-                    $accountStatement = $manager->getRepository(AccountStatement::class)
+                    $accountStatement = $accountStatementRepository
                         ->findOneBy(['id' => $request->get('accountstatement')]);
 
                     $operation->setAccountStatement($accountStatement);
@@ -129,13 +130,12 @@ class OperationController extends AbstractBaseController
                 $accountRequest = $request->get('account');
 
                 if (null !== $accountRequest) {
-                    $account = $manager->getRepository(Account::class)
-                        ->find($request->get('account'));
+                    $account = $accountRepository->find($request->get('account'));
 
                     $operation->setAccount($account);
                 }
 
-                if ($user = $security->getUser()) {
+                if (($user = $security->getUser()) !== null) {
                     $operation->setPublisher($user);
                 }
 
@@ -148,7 +148,7 @@ class OperationController extends AbstractBaseController
             }
         } catch (Exception $e) {
             $this->addFlash('danger', 'The Operation haven\'t been created. because : ' . $e->getMessage());
-            throw new AppException($e->getMessage(), $e->getCode(), $e);
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
         return $this->render('operation/new.html.twig', [
@@ -157,32 +157,27 @@ class OperationController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * @Route("/edit/{id}", name="app_operation_edit", methods={"GET"})
-     */
-    public function edit(Operation $operation) : Response
+    #[Route(path: '/edit/{id}', name: 'app_operation_edit', methods: ['GET'])]
+    public function edit(Operation $operation): Response
     {
         if (!$this->hasStructure($operation)) {
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
-
         return $this->render('operation/edit.html.twig', [
             'operation' => $operation,
             'edit_form' => $this->createEditForm($operation)->createView(),
         ]);
     }
 
-    /**
-     * hasSchool.
-     *
-     * @return bool
-     */
-    private function hasStructure(Operation $operation)
+    private function hasStructure(Operation $operation): bool
     {
         $result = true;
 
-        if (!$operation->hasStructure($this->getSchool()->getStructure())) {
-            $this->addFlash('danger', 'Vous n\'avez pas accès l\'opération numero ' . $operation->getId() . ' avec cette structure');
+        if (!$operation->hasStructure($this->getSchool()?->getStructure())) {
+            $this->addFlash('danger', sprintf(
+                'Vous n\'avez pas accès l\'opération numero %s avec cette structure',
+                $operation->getId() ?? 'undefined'
+            ));
             $result = false;
         }
 
@@ -196,7 +191,7 @@ class OperationController extends AbstractBaseController
      *
      * @return FormInterface The form
      */
-    private function createEditForm(Operation $operation)
+    private function createEditForm(Operation $operation): FormInterface
     {
         $operationType = new OperationType();
         $operationType->setSession($this->get('session'));
@@ -210,19 +205,11 @@ class OperationController extends AbstractBaseController
         return $form;
     }
 
-    /**
-     * Edits an existing Operation entity.
-     *
-     * @Route("/update/{id}", name="app_operation_update", methods={"POST", "PUT"})
-     * @Template()
-     *
-     * @return RedirectResponse|array
-     */
-    public function update(Request $request, Operation $operation)
+    #[Route(path: '/update/{id}', name: 'app_operation_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Operation $operation): Response
     {
         $editForm = $this->createEditForm($operation);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($operation);
@@ -232,44 +219,37 @@ class OperationController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_operation_show', ['id' => $operation->getId()]));
         }
-
-        return [
+        return $this->render('operation/update.html.twig', [
             'operation' => $operation,
             'edit_form' => $editForm->createView(),
-        ];
+        ]);
     }
 
     /**
      * Page view student.
-     *
-     * @Route("/show/{id}", name="app_operation_show", methods={"GET"})
-     * @Template()
-     *
-     * @return array|RedirectResponse
      */
-    public function show(Operation $operation)
+    #[Route(path: '/show/{id}', name: 'app_operation_show', methods: ['GET'])]
+    public function show(Operation $operation): Response
     {
         // Check if the school is good
         if (!$this->hasStructure($operation)) {
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
-
-        return [
+        return $this->render('operation/show.html.twig', [
             'operation' => $operation,
-        ];
+        ]);
     }
 
     /**
      * Page view student.
      *
-     * @Route("/stats-by-month", name="app_operation_statsbymonth", methods={"GET"})
      *
      * @throws InvalidArgumentException
      */
+    #[Route(path: '/stats-by-month', name: 'app_operation_statsbymonth', methods: ['GET'])]
     public function statsByMonthly(StatisticsManager $manager): Response
     {
         $stats = $manager->getStatsByMonth($this->getPeriod(), $this->getSchool());
-
         return $this->render('operation/stats_by_monthly.html.twig', [
             'stats' => $stats,
         ]);
@@ -278,21 +258,17 @@ class OperationController extends AbstractBaseController
     /**
      * Deletes a School entity.
      *
-     * @Route("/delete/{id}", name="app_operation_delete", methods={"GET", "DELETE"})
-     * @Template()
      *
-     * @return Response|array
      */
-    public function delete(Request $request, Operation $operation)
+    #[Route(path: '/delete/{id}', name: 'app_operation_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Operation $operation): Response
     {
         $deleteForm = $this->createDeleteForm($operation->getId());
         $deleteForm->handleRequest($request);
-
         // Check if the school is good
         if (!$this->hasStructure($operation)) {
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
-
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $paymentPackageStudent = $operation->getPaymentPackageStudent();
             $manager = $this->getDoctrine()->getManager();
@@ -309,11 +285,10 @@ class OperationController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
-
-        return [
+        return $this->render('Operation/delete.html.twig', [
             'operation' => $operation,
             'delete_form' => $deleteForm->createView(),
-        ];
+        ]);
     }
 
     /**
@@ -333,17 +308,13 @@ class OperationController extends AbstractBaseController
     }
 
     /**
-     * Add document to operation.
-     *
-     * @Route("/set-document/{id}/{action}", name="app_operation_set_document", methods={"POST"})
-     *
-     * @return JsonResponse
+     * @throws AppException
      */
-    public function setDocument(Request $request, Operation $operation, string $action)
+    #[Route(path: '/set-document/{id}/{action}', name: 'app_operation_set_document', methods: ['POST'])]
+    public function setDocument(Request $request, Operation $operation, string $action): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
-
         try {
             $document = $this->getDocument($request->get('document'));
 
@@ -356,8 +327,7 @@ class OperationController extends AbstractBaseController
             $em->persist($operation);
             $em->flush();
         } catch (Exception $e) {
-            $response->success = false;
-            $response->errors[] = $e->getMessage();
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
         return new JsonResponse($response);
@@ -369,29 +339,23 @@ class OperationController extends AbstractBaseController
      */
     #[IsGranted("ROLE_ACCOUNTANT")]
     #[Route("/to-validate/{id}", name: "app_operation_tovalidate", options: ["expose" => true], methods: ["GET"])]
-    public function toValidate(OperationManager $operationManager) : Response
+    public function toValidate(OperationManager $operationManager): Response
     {
         return $this->render('operation/to_valiate.html.twig', [
             'operation' => $operationManager->toValidate($this->getPeriod())
         ]);
     }
 
-    /**
-     * Add document to operation.
-     *
-     * @IsGranted("ROLE_ACCOUNTANT")
-     * @Route("/validate/{id}", name="app_operation_validate", methods={"POST"}, options={"expose"=true})
-     *
-     * @return JsonResponse
-     */
-    public function validate(Operation $operation, Request $request, Security $security)
+
+    #[IsGranted("ROLE_ACCOUNTANT")]
+    #[Route(path: '/validate/{id}', name: 'app_operation_validate', methods: ['POST'], options: ['expose' => true])]
+    public function validate(Operation $operation, Request $request, Security $security): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
-
         try {
             if ($operation->getValidate() instanceof Validate) {
-                throw new Exception('This operation is already validated');
+                throw new AppException('This operation is already validated');
             }
 
             // If Opertation is planned
@@ -399,7 +363,7 @@ class OperationController extends AbstractBaseController
 
             if (!empty($operationDate)) {
                 $operation->setDate(DateTime::createFromFormat('d/m/Y', $operationDate), true);
-                $response->data['operation_date'] = $operation->getDate()->format('d/m/Y');
+                $response->data['operation_date'] = $operation->getDate()?->format('d/m/Y');
             }
 
             $validate = new Validate();
@@ -410,7 +374,7 @@ class OperationController extends AbstractBaseController
                 'operation'
             ));
 
-            if($user = $security->getUser()) {
+            if (($user = $security->getUser()) !== null) {
                 $validate->setAuthor($user);
             }
 
@@ -429,10 +393,8 @@ class OperationController extends AbstractBaseController
                 'operation'
             );
         } catch (Exception $e) {
-            $response->success = false;
-            $response->errors[] = $e->getMessage();
+            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
-
         return new JsonResponse($response);
     }
 }

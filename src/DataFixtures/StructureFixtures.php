@@ -13,7 +13,7 @@ use Doctrine\Persistence\ObjectManager;
  *
  * @author  fardus
  */
-class StructureFixtures extends AppFixtures
+class StructureFixtures extends AbstractAppFixtures
 {
     /**
      * @throws AppException
