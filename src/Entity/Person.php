@@ -29,9 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Person
 {
-    public const GENDER_MALE = 'male';
-    public const GENDER_FEMALE = 'female';
-
     use IdEntityTrait;
     use NameEntityTrait;
     use EmailEntityTrait;
@@ -42,6 +39,8 @@ class Person
     use EnableEntityTrait;
     use TimestampableEntity;
     use SoftDeleteableEntity;
+    public const GENDER_MALE = 'male';
+    public const GENDER_FEMALE = 'female';
 
     /**
      * @Assert\NotBlank
@@ -116,7 +115,7 @@ class Person
 
     public function getNameComplete(): string
     {
-        return sprintf("%s %s", strtoupper((string) $this->name), ucwords((string) $this->forname));
+        return sprintf('%s %s', strtoupper((string) $this->name), ucwords((string) $this->forname));
     }
 
     public function getAge(): ?int
@@ -197,7 +196,7 @@ class Person
     {
         // Check if number phone is str
         if (!empty($phone) && $add && !empty($this->phone)) {
-            $phone = $this->phone . ';' . $phone;
+            $phone = $this->phone.';'.$phone;
         }
 
         $phone = PhoneManager::stringPhonesToArray($phone);

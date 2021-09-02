@@ -9,7 +9,6 @@ use App\Exception\FileNotFoundException;
 use App\Services\AbstractFullService;
 use Imagick;
 use ImagickException;
-use stdClass;
 
 class DocumentManager extends AbstractFullService
 {
@@ -18,7 +17,6 @@ class DocumentManager extends AbstractFullService
     public const PDF = 'pdf';
 
     private static string $pathUploads = 'uploads/documents';
-
 
     public function removesWithLinks(Document $document): bool
     {
@@ -51,6 +49,7 @@ class DocumentManager extends AbstractFullService
 
     /**
      * @throws FileNotFoundException
+     *
      * @return array<string, mixed>
      */
     public function upload(Document $document): array
@@ -69,10 +68,10 @@ class DocumentManager extends AbstractFullService
         $document->setFileName(sha1(uniqid((string) mt_rand(), true)))
             ->setExtension($document->getFile()->guessClientExtension());
 
-        $name = str_replace('.' . $document->getExtension(), '', $document->getFile()->getClientOriginalName());
+        $name = str_replace('.'.$document->getExtension(), '', $document->getFile()->getClientOriginalName());
 
         if (!empty($document->getPrefix())) {
-            $name = $document->getPrefix() . ' ' . $name;
+            $name = $document->getPrefix().' '.$name;
         }
 
         $document->setPath()
@@ -85,7 +84,7 @@ class DocumentManager extends AbstractFullService
 
         ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
-        if ($document->getFile()->getError() !== 0) {
+        if (0 !== $document->getFile()->getError()) {
             $data->errors = [
                 'error' => $document->getFile()->getError(),
                 'message' => $document->getFile()->getErrorMessage(),
@@ -100,7 +99,7 @@ class DocumentManager extends AbstractFullService
         $path = self::$pathUploads;
 
         if (in_array($dir, [Document::DIR_FILE, Document::DIR_THUMB, Document::DIR_PREVIEW], true)) {
-            $path .= DIRECTORY_SEPARATOR . $dir;
+            $path .= DIRECTORY_SEPARATOR.$dir;
         }
 
         return $path;
@@ -108,11 +107,12 @@ class DocumentManager extends AbstractFullService
 
     /**
      * @throws FileNotFoundException
+     *
      * @return array<string, bool>|array<string, string>|array<string, null>
      */
     private function generateImages(Document $document): array
     {
-        $filepath = self::getPathUploads(Document::DIR_FILE) . DIRECTORY_SEPARATOR . $document->getPath();
+        $filepath = self::getPathUploads(Document::DIR_FILE).DIRECTORY_SEPARATOR.$document->getPath();
 
         // If file is not supported
         if (!is_file($filepath) || !$document->isFormat([self::PDF, self::IMAGE])) {
@@ -141,7 +141,7 @@ class DocumentManager extends AbstractFullService
             }
 
             $filePreview = sprintf(
-                "%s%s%s.%s",
+                '%s%s%s.%s',
                 self::getPathUploads(Document::DIR_PREVIEW),
                 DIRECTORY_SEPARATOR,
                 $document->getFileName(),
@@ -156,7 +156,7 @@ class DocumentManager extends AbstractFullService
             }
 
             $fileThumb = sprintf(
-                "%s%s%s.%s",
+                '%s%s%s.%s',
                 self::getPathUploads(Document::DIR_THUMB),
                 DIRECTORY_SEPARATOR,
                 $document->getFileName(),

@@ -22,7 +22,7 @@ trait AuthorEntityTrait
 
     public function setAuthor(null|User|UserInterface $author): self
     {
-        if ($author !== null) {
+        if (null !== $author) {
             $this->author = $author;
         }
 

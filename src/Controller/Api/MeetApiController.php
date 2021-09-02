@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Exception\AppException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Meet;
+use App\Exception\AppException;
 use App\Model\ResponseModel;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: 'api/meet')]
@@ -38,6 +37,7 @@ class MeetApiController extends AbstractController
         } catch (Exception $e) {
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
         return ResponseModel::jsonResponse($result);
     }
 }

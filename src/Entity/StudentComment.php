@@ -4,27 +4,25 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
+use App\Repository\StudentCommentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use App\Repository\StudentCommentRepository;
 
 /**
  * @ORM\Entity(repositoryClass=StudentCommentRepository::class)
  */
 class StudentComment
 {
-    public ?\DateTime $created = null;
     use IdEntityTrait;
     use StudentEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
     use TimestampableEntity;
+    public ?\DateTime $created = null;
 
     public const COMMENT_APPRECIATION = 'success';
     public const COMMENT_INFORMATION = 'info';
@@ -85,12 +83,12 @@ class StudentComment
         return $this;
     }
 
-    public function getStudent() : ?Student
+    public function getStudent(): ?Student
     {
         return $this->student;
     }
 
-    public function setStudent(Student $student) : static
+    public function setStudent(Student $student): static
     {
         $this->student = $student;
 

@@ -70,6 +70,7 @@ class AppealCourse
 
     /**
      * @throws AppException
+     *
      * @return mixed[]
      */
     public function getInfoStatus(): array

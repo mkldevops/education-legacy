@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Fetcher;
 
 use App\Entity\Account;
@@ -49,7 +51,7 @@ class AccountableFetcher
         $account = $this->accountRepository->find($id);
 
         if (!$account instanceof Account) {
-            throw new AppException('Not found account id  : ' . $id);
+            throw new AppException('Not found account id  : '.$id);
         }
 
         return $account;

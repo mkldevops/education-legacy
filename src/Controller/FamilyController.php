@@ -36,10 +36,12 @@ class FamilyController extends AbstractBaseController
         $families = $this->getDoctrine()->getManager()
             ->getRepository(Family::class)
             ->findBy(['enable' => true]);
+
         return $this->render('family/index.html.twig', [
             'families' => $families,
         ]);
     }
+
     /**
      * Creates a new family entity.
      */
@@ -48,10 +50,12 @@ class FamilyController extends AbstractBaseController
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
+
         return $this->render('family/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Creates a form to create a Grade entity.
      */
@@ -67,6 +71,7 @@ class FamilyController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Creates a new family entity.
      */
@@ -89,14 +94,15 @@ class FamilyController extends AbstractBaseController
 
             return $this->redirectToRoute('app_family_show', ['id' => $family->getId()]);
         }
+
         return $this->render('family/new.html.twig', [
             'family' => $family,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a family entity.
-     *
      *
      * @throws InvalidArgumentException
      */
@@ -123,6 +129,7 @@ class FamilyController extends AbstractBaseController
             'formPackage' => $formPackage->createView(),
         ]);
     }
+
     /**
      * Displays a form to edit an existing family entity.
      */
@@ -130,11 +137,13 @@ class FamilyController extends AbstractBaseController
     public function edit(Request $request, Family $family): Response
     {
         $editForm = $this->createEditForm($request, $family);
+
         return $this->render('family/edit.html.twig', [
             'family' => $family,
             'form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to create a Grade entity.
      */
@@ -150,6 +159,7 @@ class FamilyController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Displays a form to edit an existing family entity.
      */
@@ -162,11 +172,13 @@ class FamilyController extends AbstractBaseController
 
             return $this->redirectToRoute('app_family_show', ['id' => $family->getId()]);
         }
+
         return $this->render('family/edit.html.twig', [
             'family' => $family,
             'form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a family entity.
      */
@@ -180,8 +192,10 @@ class FamilyController extends AbstractBaseController
             $em->remove($family);
             $em->flush();
         }
+
         return $this->redirectToRoute('app_family_index');
     }
+
     /**
      * Creates a form to delete a family entity.
      *

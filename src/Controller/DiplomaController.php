@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Entity\Diploma;
 use App\Form\DiplomaType;
 use App\Repository\DiplomaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +23,7 @@ class DiplomaController extends AbstractController
             'diplomas' => $diplomaRepository->findAll(),
         ]);
     }
+
     #[Route(path: '/new', name: 'app_diploma_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -36,11 +37,13 @@ class DiplomaController extends AbstractController
 
             return $this->redirectToRoute('app_diploma_index');
         }
+
         return $this->render('diploma/new.html.twig', [
             'diploma' => $diploma,
             'form' => $form->createView(),
         ]);
     }
+
     #[Route(path: '/{id}', name: 'app_diploma_show', methods: ['GET'])]
     public function show(Diploma $diploma): Response
     {
@@ -48,6 +51,7 @@ class DiplomaController extends AbstractController
             'diploma' => $diploma,
         ]);
     }
+
     #[Route(path: '/{id}/edit', name: 'app_diploma_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Diploma $diploma): Response
     {
@@ -60,19 +64,22 @@ class DiplomaController extends AbstractController
                 'id' => $diploma->getId(),
             ]);
         }
+
         return $this->render('diploma/edit.html.twig', [
             'diploma' => $diploma,
             'form' => $form->createView(),
         ]);
     }
+
     #[Route(path: '/{id}', name: 'app_diploma_delete', methods: ['DELETE'])]
     public function delete(Request $request, Diploma $diploma): RedirectResponse
     {
-        if ($this->isCsrfTokenValid('delete' . $diploma->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$diploma->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($diploma);
             $entityManager->flush();
         }
+
         return $this->redirectToRoute('app_diploma_index');
     }
 }

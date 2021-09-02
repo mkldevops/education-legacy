@@ -25,9 +25,8 @@ class DocumentRepository extends ServiceEntityRepository
     /**
      * Get list Students.
      *
-     *
-     *
      * @throws ImagickException
+     *
      * @return array<int, array<string, mixed[]>>
      */
     public function last(array $exists, int $firstResult = 0, int $maxResult = 5): array

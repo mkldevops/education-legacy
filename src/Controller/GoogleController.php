@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class GoogleController extends AbstractController
 {
     /**
-     *
      * @throws Exception
      */
     #[Route(path: '/auth', name: 'app_google_auth')]
@@ -39,6 +38,7 @@ class GoogleController extends AbstractController
 
             return $this->redirectToRoute('app_course_generate');
         }
+
         return $this->render('google/index.html.twig', [
             'form' => $form->createView(),
             'authUrl' => $googleService->getAuthUrl(),

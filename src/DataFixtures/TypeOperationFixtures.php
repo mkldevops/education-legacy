@@ -40,7 +40,7 @@ class TypeOperationFixtures extends AbstractAppFixtures
             $manager->persist($entity);
             $manager->flush();
 
-            $this->addReference(self::getKey((int)$item['ID']), $entity);
+            $this->addReference(self::getKey((int) $item['ID']), $entity);
         }
     }
 }

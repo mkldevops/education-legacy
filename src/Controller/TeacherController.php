@@ -43,6 +43,7 @@ class TeacherController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
+
         return $this->render('teacher/index.html.twig', [
             'teacherList' => $teacherList,
             'pages' => $pages,
@@ -51,6 +52,7 @@ class TeacherController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
+
     private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
@@ -64,6 +66,7 @@ class TeacherController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
+
     #[Route(path: 'create', name: 'app_teacher_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
@@ -81,11 +84,13 @@ class TeacherController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_teacher_show', ['id' => $teacher->getId()]));
         }
+
         return $this->render('teacher/new.html.twig', [
             'teacher' => $teacher,
             'form' => $form->createView(),
         ]);
     }
+
     private function createCreateForm(Teacher $teacher): FormInterface
     {
         $form = $this->createForm(TeacherType::class, $teacher, [
@@ -97,16 +102,19 @@ class TeacherController extends AbstractBaseController
 
         return $form;
     }
+
     #[Route(path: '/new', name: 'app_teacher_new', methods: ['GET'])]
     public function new(): Response
     {
         $teacher = new Teacher();
         $form = $this->createCreateForm($teacher);
+
         return $this->render('teacher/new.html.twig', [
             'teacher' => $teacher,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a Teacher entity.
      */
@@ -114,11 +122,13 @@ class TeacherController extends AbstractBaseController
     public function show(Teacher $teacher): Response
     {
         $person = $teacher->getPerson();
+
         return $this->render('teacher/show.html.twig', [
             'teacher' => $teacher,
             'person' => $person,
         ]);
     }
+
     /**
      * Displays a form to edit an existing Teacher entity.
      */
@@ -126,11 +136,13 @@ class TeacherController extends AbstractBaseController
     public function edit(Teacher $teacher): Response
     {
         $editForm = $this->createEditForm($teacher);
+
         return $this->render('teacher/edit.html.twig', [
             'teacher' => $teacher,
             'form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a Teacher entity.
      *
@@ -149,6 +161,7 @@ class TeacherController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing Teacher entity.
      */
@@ -169,11 +182,13 @@ class TeacherController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_teacher_show', ['id' => $teacher->getId()]));
         }
+
         return $this->render('teacher/edit.html.twig', [
             'teacher' => $teacher,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a Teacher entity.
      */
@@ -201,11 +216,13 @@ class TeacherController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_teacher_index'));
         }
+
         return $this->render('teacher/delete.html.twig', [
             'teacher' => $teacher,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a Teacher entity by id.
      *
@@ -225,6 +242,7 @@ class TeacherController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -232,6 +250,7 @@ class TeacherController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_teacher_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

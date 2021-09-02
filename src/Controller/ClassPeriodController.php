@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Manager\Interfaces\ClassPeriodManagerInterface;
-use DateTimeImmutable;
-use DateTimeInterface;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\AppealCourse;
 use App\Entity\ClassPeriod;
@@ -16,15 +13,16 @@ use App\Entity\Student;
 use App\Form\ClassPeriodType;
 use App\Manager\ClassPeriodManager;
 use App\Manager\CourseManager;
+use App\Manager\Interfaces\ClassPeriodManagerInterface;
 use App\Repository\ClassPeriodRepository;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
@@ -49,6 +47,7 @@ class ClassPeriodController extends AbstractBaseController
     {
         $this->checkClasses();
         $classperiodList = $repository->getListOfCurrentPeriod($this->getPeriod(), $this->getSchool());
+
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
         ]);
@@ -82,6 +81,7 @@ class ClassPeriodController extends AbstractBaseController
         $pages = ceil($count / 20);
         // Get the entries of current page.
         $classperiodList = $repository->getList($this->getSchool(), $page, $search);
+
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
             'pages' => $pages,
@@ -108,7 +108,6 @@ class ClassPeriodController extends AbstractBaseController
     /**
      * Creates a new ClassPeriod entity.
      *
-     *
      * @throws InvalidArgumentException
      * @throws LogicException
      */
@@ -128,6 +127,7 @@ class ClassPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classperiod->getId()]));
         }
+
         return $this->render('Clas1_Period/create.html.twig', [
             'classperiod' => $classperiod,
             'form' => $form->createView(),
@@ -162,6 +162,7 @@ class ClassPeriodController extends AbstractBaseController
         $this->checkClasses();
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
+
         return $this->render('Clas1_Period/new.html.twig', [
             'classperiod' => $classperiod,
             'form' => $form->createView(),
@@ -169,7 +170,6 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     /**
-     *
      * @throws InvalidArgumentException
      * @throws LogicException
      * @throws Exception
@@ -181,6 +181,7 @@ class ClassPeriodController extends AbstractBaseController
         $listStatus = CourseManager::getListStatus();
         $appeals = $manager->getRepository(AppealCourse::class)
             ->getAppealToClassPeriod($classperiod, $listStatus);
+
         return $this->render('class_period/show.html.twig', [
             'classperiod' => $classperiod,
             'appeals' => $appeals,
@@ -192,6 +193,7 @@ class ClassPeriodController extends AbstractBaseController
     public function edit(ClassPeriod $classPeriod): Response
     {
         $editForm = $this->createEditForm($classPeriod);
+
         return $this->render('class_period/edit.html.twig', [
             'classperiod' => $classPeriod,
             'edit_form' => $editForm->createView(),
@@ -217,6 +219,7 @@ class ClassPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
         }
+
         return $this->render('class_period/edit.html.twig', [
             'classperiod' => $classPeriod,
             'edit_form' => $editForm->createView(),
@@ -234,6 +237,7 @@ class ClassPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_class_period_current'));
         }
+
         return $this->render('class_period/delete.html.twig', [
             'classperiod' => $classPeriod,
             'delete_form' => $deleteForm->createView(),
@@ -278,10 +282,11 @@ class ClassPeriodController extends AbstractBaseController
             $em->persist($classPeriod);
             $em->flush();
 
-            $this->addFlash('info', 'La Classe ' . $classSchool->getName() . ' a bien ajouté à la periode ' . $period->getName());
+            $this->addFlash('info', 'La Classe '.$classSchool->getName().' a bien ajouté à la periode '.$period->getName());
         } else {
-            $this->addFlash('error', 'La Classe ' . $classSchool->getName() . ' n\'a pas été ajouté à la periode ' . $period->getName() . ', celle-ci esxiste ');
+            $this->addFlash('error', 'La Classe '.$classSchool->getName().' n\'a pas été ajouté à la periode '.$period->getName().', celle-ci esxiste ');
         }
+
         return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
     }
 
@@ -306,6 +311,7 @@ class ClassPeriodController extends AbstractBaseController
         if ($lines < self::NB_LINES_MIN) {
             $lines = self::NB_LINES_MIN;
         }
+
         return $this->render('class_period/print_list_student.html.twig', [
             'classperiod' => $classPeriod,
             'students' => $students,
@@ -316,6 +322,7 @@ class ClassPeriodController extends AbstractBaseController
 
     /**
      * @ParamConverter("from", options={"format": "Y-m-d"})
+     *
      * @throws Exception
      */
     #[Route(

@@ -9,7 +9,6 @@ use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\Document;
 use App\Entity\Family;
-use App\Entity\Package;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Student;
@@ -21,7 +20,6 @@ use App\Form\FamilyType;
 use App\Form\PackageStudentPeriodType;
 use App\Form\StudentCommentSimpleType;
 use App\Form\StudentType;
-use App\Manager\DocumentManager;
 use App\Manager\StudentManager;
 use App\Repository\PackageRepository;
 use App\Repository\PackageStudentPeriodRepository;
@@ -30,10 +28,8 @@ use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\ORMException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -65,11 +61,13 @@ class StudentController extends AbstractBaseController
             ->getListStudents($period, $school);
         $classPeriods = $manager->getRepository(ClassPeriod::class)
             ->getClassPeriods($period, $school);
+
         return $this->render('student/index.html.twig', [
             'students' => $students,
             'classPeriods' => $classPeriods,
         ]);
     }
+
     /**
      * @IsGranted("ROLE_DIRECTOR")
      *
@@ -81,17 +79,19 @@ class StudentController extends AbstractBaseController
         $students = $this->getManager()
             ->getRepository(Student::class)
             ->getListStudents($this->getPeriod(), $this->getSchool(), false);
+
         return $this->render('student/index.html.twig', [
             'students' => $students,
         ]);
     }
+
     /**
      * @throws InvalidArgumentException
      * @throws AppException
      */
     #[IsGranted('ROLE_ACCOUNTANT')]
     #[IsGranted('ROLE_DIRECTOR')]
-    #[Route("/payment-list", name: "app_student_payment_list", methods: ["GET"])]
+    #[Route('/payment-list', name: 'app_student_payment_list', methods: ['GET'])]
     public function paymentList(EntityManagerInterface $manager, StudentManager $studentManager): Response
     {
         ini_set('memory_limit', '-1');
@@ -113,8 +113,10 @@ class StudentController extends AbstractBaseController
             'studentsWithoutPackage' => $studentsWithoutPackage,
         ]);
     }
+
     /**
      * @IsGranted("ROLE_DIRECTOR")
+     *
      * @throws InvalidArgumentException
      * @throws NonUniqueResultException
      * @throws AppException|NoResultException
@@ -159,11 +161,13 @@ class StudentController extends AbstractBaseController
                 print_r($form->getErrors(), true)
             ));
         }
+
         return $this->render('student/add_package.html.twig', [
             'packageStudentPeriod' => $packageStudentPeriod,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * @IsGranted("ROLE_TEACHER")
      */
@@ -173,12 +177,14 @@ class StudentController extends AbstractBaseController
         $student = new Student();
         $form = $this->createCreateForm($student);
         $formFamily = $this->createCreateFormFamily();
+
         return $this->render('student/new.html.twig', [
             'student' => $student,
             'form' => $form->createView(),
             'formFamily' => $formFamily->createView(),
         ]);
     }
+
     private function createCreateForm(Student $student): FormInterface
     {
         $this->logger->info(__METHOD__);
@@ -194,6 +200,7 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
+
     private function createCreateFormFamily(): FormInterface
     {
         $family = new Family();
@@ -206,10 +213,11 @@ class StudentController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * @throws Exception
      */
-    #[Route("/create", methods: ["POST"])]
+    #[Route('/create', methods: ['POST'])]
     public function create(Request $request, FamilyApiController $apiController, EntityManagerInterface $em): Response
     {
         $this->logger->info(__METHOD__);
@@ -275,6 +283,7 @@ class StudentController extends AbstractBaseController
     {
         $form = $this->createEditForm($student);
         $formFamily = $apiController->createEditForm($student->getFamily());
+
         return $this->render('student/edit.html.twig', [
             'formFamily' => $formFamily->createView(),
             'form' => $form->createView(),
@@ -314,6 +323,7 @@ class StudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_student_show', ['id' => $student->getId()]));
         }
+
         return $this->render('student/edit.html.twig', [
             'formFamily' => $formFamily->createView(),
             'student' => $student,
@@ -339,6 +349,7 @@ class StudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_student_index'));
         }
+
         return $this->render('student/delete.html.twig', [
             'student' => $student,
             'delete_form' => $deleteForm->createView(),
@@ -357,7 +368,6 @@ class StudentController extends AbstractBaseController
             ->getForm();
     }
 
-
     #[Route(
         path: '/edit-status/{id}',
         name: 'app_student_edit_status',
@@ -373,6 +383,7 @@ class StudentController extends AbstractBaseController
         $redirectRequest = (bool) $request->get('redirect', false);
         if ($redirectRequest) {
             $this->addFlash('success', 'The status student is updated');
+
             return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
         }
 
@@ -394,7 +405,7 @@ class StudentController extends AbstractBaseController
         /* @var $image Document */
         $image = $em->getRepository(Document::class)->find($request->get('document'));
 
-        if ($image === null) {
+        if (null === $image) {
             throw new AppException('Not found document');
         }
 
@@ -403,6 +414,7 @@ class StudentController extends AbstractBaseController
         $em->flush();
 
         $response->document = $image->getInfos();
+
         return $this->json($response);
     }
 
@@ -428,10 +440,11 @@ class StudentController extends AbstractBaseController
 
         $em->persist($student);
         $em->flush();
+
         return new JsonResponse($response);
     }
 
-    #[Route("/{id}/add-comment", methods:["POST"])]
+    #[Route('/{id}/add-comment', methods: ['POST'])]
     public function addComment(Request $request, Student $student, EntityManagerInterface $manager): RedirectResponse
     {
         $studentComment = new StudentComment();
@@ -459,14 +472,14 @@ class StudentController extends AbstractBaseController
     /**
      * @throws AppException
      */
-    #[Route("/print/{id}/{format}/{force}", name : "app_student_print")]
+    #[Route('/print/{id}/{format}/{force}', name : 'app_student_print')]
     public function print(PackageStudentPeriod $pkgStudent, string $format = 'html', bool $force = false): Response
     {
         $pathFileTmp = implode(DIRECTORY_SEPARATOR, [
             $this->getParameter('kernel.project_dir'),
             'public/uploads/%format%',
             str_replace('/', '_', (string) $pkgStudent->getPeriod()?->getName()),
-            $pkgStudent->getStudent()?->getId() . '.%format%',
+            $pkgStudent->getStudent()?->getId().'.%format%',
         ]);
 
         $pathFileHTML = strtr($pathFileTmp, ['%format%' => 'html']);
@@ -476,7 +489,7 @@ class StudentController extends AbstractBaseController
         if ($force || !is_file($pathFileHTML)) {
             $dir = dirname($pathFileHTML);
             if (!file_exists($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
-                throw new AppException('Not create directory : ' . $dir);
+                throw new AppException('Not create directory : '.$dir);
             }
 
             $html = $this->renderView('student/print.html.twig', [
@@ -485,7 +498,7 @@ class StudentController extends AbstractBaseController
 
             $put = file_put_contents($pathFileHTML, $html);
             if (empty($put)) {
-                throw new AppException('Not put the content HTML ' . $pathFileHTML);
+                throw new AppException('Not put the content HTML '.$pathFileHTML);
             }
         } else {
             $html = file_get_contents($pathFileHTML);

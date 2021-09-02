@@ -192,7 +192,7 @@ class StudentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('std')
             ->select('COUNT(std.id) + 0 AS nb')
             ->where('std.school = :school')
-            ->andWhere('std.' . $fieldDate . ' BETWEEN :begin and :end')
+            ->andWhere('std.'.$fieldDate.' BETWEEN :begin and :end')
             ->groupBy('dateMonth')
             ->orderBy('std.createdAt', 'ASC')
             ->setParameter('school', $school)
@@ -209,7 +209,7 @@ class StudentRepository extends ServiceEntityRepository
         $result = [];
 
         foreach ($data as $value) {
-            $result[$value['dateMonth']] = (int)$value['nb'];
+            $result[$value['dateMonth']] = (int) $value['nb'];
         }
 
         return $result;

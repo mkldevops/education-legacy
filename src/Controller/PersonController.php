@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Base\AbstractBaseController;
-use App\Entity\Family;
 use App\Entity\Member;
 use App\Entity\Person;
 use App\Entity\Student;
@@ -32,7 +31,6 @@ class PersonController extends AbstractBaseController
     /**
      * Lists all Person entities.
      *
-     *
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
@@ -44,23 +42,23 @@ class PersonController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%' . $search . '%')
+            ->setParameter(':name', '%'.$search.'%')
             ->orWhere('e.forname LIKE :forname')
-            ->setParameter(':forname', '%' . $search . '%')
+            ->setParameter(':forname', '%'.$search.'%')
             ->orWhere('e.phone LIKE :phone')
-            ->setParameter(':phone', '%' . $search . '%')
+            ->setParameter(':phone', '%'.$search.'%')
             ->orWhere('e.email LIKE :email')
-            ->setParameter(':email', '%' . $search . '%')
+            ->setParameter(':email', '%'.$search.'%')
             ->orWhere('e.birthplace LIKE :birthplace')
-            ->setParameter(':birthplace', '%' . $search . '%')
+            ->setParameter(':birthplace', '%'.$search.'%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%' . $search . '%')
+            ->setParameter(':gender', '%'.$search.'%')
             ->orWhere('e.address LIKE :address')
-            ->setParameter(':address', '%' . $search . '%')
+            ->setParameter(':address', '%'.$search.'%')
             ->orWhere('e.zip LIKE :zip')
-            ->setParameter(':zip', '%' . $search . '%')
+            ->setParameter(':zip', '%'.$search.'%')
             ->orWhere('e.city LIKE :city')
-            ->setParameter(':city', '%' . $search . '%')
+            ->setParameter(':city', '%'.$search.'%')
             ->getQuery()
             ->getSingleScalarResult();
         $pages = ceil($count / 20);
@@ -69,27 +67,28 @@ class PersonController extends AbstractBaseController
             ->getRepository(Person::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
-            ->setParameter(':name', '%' . $search . '%')
+            ->setParameter(':name', '%'.$search.'%')
             ->orWhere('e.forname LIKE :forname')
-            ->setParameter(':forname', '%' . $search . '%')
+            ->setParameter(':forname', '%'.$search.'%')
             ->orWhere('e.phone LIKE :phone')
-            ->setParameter(':phone', '%' . $search . '%')
+            ->setParameter(':phone', '%'.$search.'%')
             ->orWhere('e.email LIKE :email')
-            ->setParameter(':email', '%' . $search . '%')
+            ->setParameter(':email', '%'.$search.'%')
             ->orWhere('e.birthplace LIKE :birthplace')
-            ->setParameter(':birthplace', '%' . $search . '%')
+            ->setParameter(':birthplace', '%'.$search.'%')
             ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%' . $search . '%')
+            ->setParameter(':gender', '%'.$search.'%')
             ->orWhere('e.address LIKE :address')
-            ->setParameter(':address', '%' . $search . '%')
+            ->setParameter(':address', '%'.$search.'%')
             ->orWhere('e.zip LIKE :zip')
-            ->setParameter(':zip', '%' . $search . '%')
+            ->setParameter(':zip', '%'.$search.'%')
             ->orWhere('e.city LIKE :city')
-            ->setParameter(':city', '%' . $search . '%')
+            ->setParameter(':city', '%'.$search.'%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
+
         return $this->render('person/index.html.twig', [
             'personList' => $personList,
             'pages' => $pages,
@@ -98,10 +97,9 @@ class PersonController extends AbstractBaseController
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
     }
+
     /**
      * Creates a form to search Person entities.
-     *
-     *
      */
     private function createSearchForm(string $q = ''): FormInterface
     {
@@ -116,6 +114,7 @@ class PersonController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
+
     /**
      * Creates a new Person entity.
      */
@@ -136,7 +135,7 @@ class PersonController extends AbstractBaseController
             $manager->persist($person);
             $manager->flush();
 
-            $this->addFlash('success', 'The Person ' . $person->getNameComplete() . ' has been created.');
+            $this->addFlash('success', 'The Person '.$person->getNameComplete().' has been created.');
 
             $pathRedirect = $form->get('pathRedirect')->getData();
             $parameters = ['person' => $person->getId()];
@@ -148,11 +147,13 @@ class PersonController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl($pathRedirect, $parameters));
         }
+
         return $this->render('person/new.html.twig', [
             'person' => $person,
             'form' => $form->createView(),
         ]);
     }
+
     private function createCreateForm(Person $person, string $pathRedirect = null): FormInterface
     {
         $form = $this->createForm(PersonType::class, $person, [
@@ -165,16 +166,19 @@ class PersonController extends AbstractBaseController
 
         return $form;
     }
+
     #[Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
     public function new(string $pathRedirect = null): Response
     {
         $person = new Person();
         $form = $this->createCreateForm($person, $pathRedirect);
+
         return $this->render('person/new.html.twig', [
             'person' => $person,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a Person entity.
      */
@@ -184,6 +188,7 @@ class PersonController extends AbstractBaseController
         $member = $em->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
         $teacher = $em->getRepository(Teacher::class)->findOneBy(['person' => $person->getId()]);
         $student = $em->getRepository(Student::class)->findOneBy(['person' => $person->getId()]);
+
         return $this->render('person/show.html.twig', [
             'person' => $person,
             'teacher' => $teacher,
@@ -192,15 +197,18 @@ class PersonController extends AbstractBaseController
             'families' => $familyRepository->findFamilies($person),
         ]);
     }
+
     #[Route(path: '/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
     public function edit(Person $person): Response
     {
         $editForm = $this->createEditForm($person);
+
         return $this->render('person/edit.html.twig', [
             'person' => $person,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a Person entity.
      *
@@ -217,6 +225,7 @@ class PersonController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing Person entity.
      */
@@ -234,11 +243,13 @@ class PersonController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_person_show', ['id' => $person->getId()]));
         }
+
         return $this->render('person/edit.html.twig', [
             'person' => $person,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a Person entity.
      */
@@ -256,11 +267,13 @@ class PersonController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_person_index'));
         }
+
         return $this->render('person/delete.html.twig', [
             'person' => $person,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a Person entity by id.
      *
@@ -274,6 +287,7 @@ class PersonController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -281,11 +295,13 @@ class PersonController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_person_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),
         ]));
     }
+
     /**
      * Finds and displays a Person entity.
      */
@@ -293,6 +309,7 @@ class PersonController extends AbstractBaseController
     public function phones(Person $person): Response
     {
         $phones = PhoneManager::getAllPhones($person);
+
         return $this->render('person/phones.html.twig', [
             'phones' => $phones,
         ]);

@@ -79,7 +79,7 @@ class CourseManager extends AbstractFullService
 
         if (!empty($status)) {
             if (!isset($list[$status])) {
-                throw new AppException('not found status : ' . $status);
+                throw new AppException('not found status : '.$status);
             }
 
             return $list[$status];
@@ -106,7 +106,7 @@ class CourseManager extends AbstractFullService
                 ->findOneBy(['idEvent' => $courseEvent->getId()]);
 
             if (!$course instanceof Course) {
-                $this->logger->debug(__FUNCTION__ . ' new instance of course', ['course' => $course]);
+                $this->logger->debug(__FUNCTION__.' new instance of course', ['course' => $course]);
                 $course = new Course();
             }
 
@@ -114,7 +114,7 @@ class CourseManager extends AbstractFullService
             $classPeriod = $this->classPeriodManager->findClassPeriod($name, $period, $school);
 
             if (!$classPeriod instanceof ClassPeriod) {
-                $this->logger->warning(__FUNCTION__ . ' Not found class period : ' . $name);
+                $this->logger->warning(__FUNCTION__.' Not found class period : '.$name);
                 unset($course);
                 continue;
             }

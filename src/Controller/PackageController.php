@@ -25,7 +25,6 @@ class PackageController extends AbstractBaseController
     /**
      * Lists all Package entities.
      *
-     *
      * @throws NonUniqueResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_package_index', methods: ['GET'])]
@@ -47,6 +46,7 @@ class PackageController extends AbstractBaseController
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
+
         return $this->render('package/index.html.twig', [
             'packageList' => $packageList,
             'pages' => $pages,
@@ -55,6 +55,7 @@ class PackageController extends AbstractBaseController
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
     }
+
     /**
      * Creates a form to search Package entities.
      */
@@ -71,6 +72,7 @@ class PackageController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
+
     /**
      * Displays a form to create a new Package entity.
      */
@@ -79,11 +81,13 @@ class PackageController extends AbstractBaseController
     {
         $package = new Package();
         $form = $this->createCreateForm($package);
+
         return $this->render('package/new.html.twig', [
             'package' => $package,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Creates a form to create a Package entity.
      *
@@ -104,9 +108,9 @@ class PackageController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Creates a new Package entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -133,11 +137,13 @@ class PackageController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_show', ['id' => $package->getId()]));
         }
+
         return $this->render('package/new.html.twig', [
             'package' => $package,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a Package entity.
      */
@@ -148,6 +154,7 @@ class PackageController extends AbstractBaseController
             'package' => $package,
         ]);
     }
+
     /**
      * Displays a form to edit an existing Package entity.
      */
@@ -155,11 +162,13 @@ class PackageController extends AbstractBaseController
     public function edit(Package $package): Response
     {
         $editForm = $this->createEditForm($package);
+
         return $this->render('package/edit.html.twig', [
             'package' => $package,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a Package entity.
      *
@@ -180,9 +189,9 @@ class PackageController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing Package entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -199,11 +208,13 @@ class PackageController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_show', ['id' => $package->getId()]));
         }
+
         return $this->render('package/edit.html.twig', [
             'package' => $package,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a Package entity.
      */
@@ -224,11 +235,13 @@ class PackageController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package'));
         }
+
         return $this->render('package/delete.html.twig', [
             'package' => $package,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a Package entity by id.
      *
@@ -242,6 +255,7 @@ class PackageController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -249,6 +263,7 @@ class PackageController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_package', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

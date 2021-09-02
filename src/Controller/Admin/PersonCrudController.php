@@ -28,7 +28,7 @@ class PersonCrudController extends AbstractCrudController
             ->setSearchFields(['id', 'forname', 'phone', 'email', 'birthplace', 'gender', 'address', 'zip', 'city', 'name']);
     }
 
-    public function configureFields(string $pageName = null) : iterable
+    public function configureFields(string $pageName = null): iterable
     {
         yield IntegerField::new('id', 'ID');
         yield TextField::new('forname');

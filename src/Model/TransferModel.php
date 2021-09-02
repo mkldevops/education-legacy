@@ -43,7 +43,6 @@ class TransferModel
 
     private ?string $comment = null;
 
-
     public function getAccountCredit(): ?Account
     {
         return $this->accountCredit;
@@ -73,14 +72,12 @@ class TransferModel
         return $this->reference;
     }
 
-
     public function setReference(string $reference): self
     {
         $this->reference = $reference;
 
         return $this;
     }
-
 
     public function getUniqueId(): ?string
     {
@@ -154,7 +151,7 @@ class TransferModel
     /**
      * Get Date.
      */
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }

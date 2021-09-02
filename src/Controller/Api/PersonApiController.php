@@ -32,6 +32,7 @@ class PersonApiController extends AbstractBaseController
         $key = (string) $request->request->get('key', null);
         $value = (string) $request->request->get('value', null);
         $result = $manager->updatePhone($person, $value, $key);
+
         return $this->json(new ResponseModel(success: true, data: ['phones' => $result]));
     }
 
@@ -43,6 +44,7 @@ class PersonApiController extends AbstractBaseController
     {
         list('key' => $key) = $request->request->all();
         $result = $manager->deletePhone($person, $key);
+
         return $this->json(new ResponseModel(success: true, data: ['phones' => $result]));
     }
 }

@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Repository\AccountStatementRepository;
 use App\Traits\AuthorEntityTrait;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

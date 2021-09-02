@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Doctrine\ORM\QueryBuilder;
 use App\Entity\Family;
 use App\Entity\Person;
 use App\Form\Type\DatePickerType;
 use App\Repository\FamilyRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;

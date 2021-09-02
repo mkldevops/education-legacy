@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Exception\AppException;
 use App\Form\PackageStudentPeriodType;
-use Exception;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,9 +36,10 @@ class PackageStudentPeriodApiController extends AbstractBaseController
             $this->addFlash('success', 'The package of student has been added.');
             $response->setData(json_encode($packageStudentPeriod));
         } catch (AppException $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return $response;
     }
 
@@ -54,7 +54,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
         }
 
         if (!$form->isValid()) {
-            throw new AppException('The form is not valid ' . $form->getErrors());
+            throw new AppException('The form is not valid '.$form->getErrors());
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -84,10 +84,11 @@ class PackageStudentPeriodApiController extends AbstractBaseController
             ));
             $response->setData(json_encode($packageStudentPeriod));
         } catch (AppException $e) {
-            $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $response->setData(['message' => $e->getMessage()])
                 ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return $response;
     }
 }

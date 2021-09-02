@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Doctrine\ORM\NonUniqueResultException;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\PaymentPackageStudent;
 use App\Entity\TypeOperation;
 use App\Form\PaymentPackageStudentType;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -24,12 +24,10 @@ class PaymentPackageStudentController extends AbstractBaseController
     /**
      * Lists all PaymentPackageStudent entities.
      *
-     *
      * @throws NonUniqueResultException
      */
     /**
      * Lists all PaymentPackageStudent entities.
-     *
      *
      * @throws NonUniqueResultException
      */
@@ -45,9 +43,9 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
+            ->setParameter(':comment', '%'.$search.'%')
             ->orWhere('e.status LIKE :status')
-            ->setParameter(':status', '%' . $search . '%')
+            ->setParameter(':status', '%'.$search.'%')
             ->getQuery()
             ->getSingleScalarResult();
         // Define the number of pages.
@@ -57,13 +55,14 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->getRepository(PaymentPackageStudent::class)
             ->createQueryBuilder('e')
             ->where('e.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
+            ->setParameter(':comment', '%'.$search.'%')
             ->orWhere('e.status LIKE :status')
-            ->setParameter(':status', '%' . $search . '%')
+            ->setParameter(':status', '%'.$search.'%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
+
         return $this->render('payment_package_student/index.html.twig', [
             'paymentpackagestudentList' => $paymentPackageStudentList,
             'pages' => $pages,
@@ -72,6 +71,7 @@ class PaymentPackageStudentController extends AbstractBaseController
             'searchForm' => $this->createSearchForm(stripslashes($search))->createView(),
         ]);
     }
+
     private function createSearchForm(string $q = ''): FormInterface
     {
         $data = ['q' => $q];
@@ -85,6 +85,7 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
+
     #[Route('/create/{id}', name: 'app_payment_package_student_create', methods: ['GET', 'POST'])]
     public function create(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
     {
@@ -130,6 +131,7 @@ class PaymentPackageStudentController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
+
     private function createCreateForm(
         PaymentPackageStudent $paymentPackageStudent,
         PackageStudentPeriod $packageStudentPeriod
@@ -145,6 +147,7 @@ class PaymentPackageStudentController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Displays a form to create a new PaymentPackageStudent entity.
      */
@@ -153,11 +156,13 @@ class PaymentPackageStudentController extends AbstractBaseController
     {
         $paymentPackageStudent = new PaymentPackageStudent();
         $form = $this->createCreateForm($paymentPackageStudent, $packageStudentPeriod);
+
         return $this->render('payment_package_student/new.html.twig', [
             'paymentPackageStudent' => $paymentPackageStudent,
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/new-student/{id}', name: 'app_payment_package_student_new', methods: ['GET', 'POST'])]
     public function newStudent(PackageStudentPeriod $packageStudentPeriod): Response
     {
@@ -170,6 +175,7 @@ class PaymentPackageStudentController extends AbstractBaseController
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a PaymentPackageStudent entity.
      */
@@ -180,6 +186,7 @@ class PaymentPackageStudentController extends AbstractBaseController
             'paymentpackagestudent' => $paymentPackageStudent,
         ]);
     }
+
     /**
      * Displays a form to edit an existing PaymentPackageStudent entity.
      */
@@ -187,11 +194,13 @@ class PaymentPackageStudentController extends AbstractBaseController
     public function edit(PaymentPackageStudent $paymentPackageStudent): Response
     {
         $editForm = $this->createEditForm($paymentPackageStudent);
+
         return $this->render('payment_package_student/edit.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a PaymentPackageStudent entity.
      *
@@ -210,6 +219,7 @@ class PaymentPackageStudentController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing PaymentPackageStudent entity.
      */
@@ -226,11 +236,13 @@ class PaymentPackageStudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_payment_package_student_show', ['id' => $paymentPackageStudent->getId()]));
         }
+
         return $this->render('payment_package_student/edit.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a PaymentPackageStudent entity.
      */
@@ -251,11 +263,13 @@ class PaymentPackageStudentController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_payment_package_student_index'));
         }
+
         return $this->render('payment_package_student/delete.html.twig', [
             'paymentpackagestudent' => $paymentPackageStudent,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a PaymentPackageStudent entity by id.
      *
@@ -271,6 +285,7 @@ class PaymentPackageStudentController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -278,6 +293,7 @@ class PaymentPackageStudentController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_payment_package_student_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

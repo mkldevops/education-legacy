@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
-use App\Entity\Operation;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Exception\AppException;
@@ -12,7 +11,6 @@ use App\Model\DataStats;
 use App\Model\StatsByMonth;
 use App\Repository\OperationRepository;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -41,12 +39,12 @@ class StatisticsManager
                     ->setRowLabel($operation['nameTypeOperation'])
                     ->setColumnLabel((new DateTime($operation['groupDate']))->format('M Y'))
                     ->setColumnId($operation['groupDate'])
-                    ->setCount((int)$operation['numberOperations'])
-                    ->setSum((float)$operation['sumCredit'] + (float)$operation['sumDebit']);
+                    ->setCount((int) $operation['numberOperations'])
+                    ->setSum((float) $operation['sumCredit'] + (float) $operation['sumDebit']);
 
                 $stats->addData($dataStats);
             } catch (Exception $e) {
-                $this->logger->error(__METHOD__ . ' ' . $e->getMessage(), compact($operation));
+                $this->logger->error(__METHOD__.' '.$e->getMessage(), compact($operation));
                 throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }

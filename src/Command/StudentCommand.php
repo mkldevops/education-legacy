@@ -6,7 +6,6 @@ namespace App\Command;
 
 use App\Exception\AppException;
 use App\Manager\StudentManager;
-use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,11 +50,11 @@ class StudentCommand extends Command
         $action = $input->getArgument(self::ARG_ACTION);
         $limit = $input->getOption(self::OPT_LIMIT);
 
-        if ($action === self::ACTION_SYNCHRONIZE) {
+        if (self::ACTION_SYNCHRONIZE === $action) {
             $result = $this->studentManager->synchronize($limit);
-            $output->writeln('SUCCESS : ' . json_encode($result->getResult()));
+            $output->writeln('SUCCESS : '.json_encode($result->getResult()));
         } else {
-            throw new AppException(sprintf("The action %s is not supported", $action));
+            throw new AppException(sprintf('The action %s is not supported', $action));
         }
     }
 }

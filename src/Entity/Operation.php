@@ -153,7 +153,7 @@ class Operation
 
     public function isPlanned(): bool
     {
-        return !(bool)$this->date;
+        return !(bool) $this->date;
     }
 
     public function getTypeOperation(): ?TypeOperation
@@ -203,7 +203,6 @@ class Operation
 
         return $this;
     }
-
 
     public function hasStructure(?Structure $structure): bool
     {
@@ -311,7 +310,7 @@ class Operation
 
     public function setUniqueId(string $uniqueId = null): self
     {
-        if ($this->getAccount() instanceof Account && $this->account?->getIsBank() !== null) {
+        if ($this->getAccount() instanceof Account && null !== $this->account?->getIsBank()) {
             $this->uniqueId = $uniqueId;
         }
 

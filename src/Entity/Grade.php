@@ -6,13 +6,9 @@ namespace App\Entity;
 
 use App\Repository\GradeRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\DescriptionEntity;
 use Fardus\Traits\Symfony\Entity\DescriptionEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntity;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntity;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntity;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -29,6 +25,6 @@ class Grade
 
     public function __toString(): string
     {
-        return (string)$this->getName();
+        return (string) $this->getName();
     }
 }

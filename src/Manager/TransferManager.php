@@ -23,8 +23,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TransferManager
 {
-
-
     public const ACTION_ADD = 'add';
     public const ACTION_EDIT = 'edit';
 
@@ -55,7 +53,7 @@ class TransferManager
             ->setDate($transferModel->getDate())
             ->setUniqueId($transferModel->getUniqueId())
             ->setAmount($transferModel->getAmount())
-            ->setGender((string)$transferModel->getGender())
+            ->setGender((string) $transferModel->getGender())
             ->setReference($transferModel->getReference())
             ->setAuthor($this->user)
             ->setGender($transferModel->getGender()?->getCode())
@@ -68,7 +66,7 @@ class TransferManager
         try {
             $this->create();
         } catch (AlreadyExistsException | NonUniqueResultException $e) {
-            $this->logger->info(__FUNCTION__ . ' - ' . $e->getMessage());
+            $this->logger->info(__FUNCTION__.' - '.$e->getMessage());
         }
 
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit)
@@ -91,7 +89,7 @@ class TransferManager
             $this->accountSlip->getGender()
         );
 
-        if ($result !== null) {
+        if (null !== $result) {
             $msg = $this->translator->trans(
                 'error.already_exists_ref',
                 ['%reference%' => $this->accountSlip->getReference()],
@@ -178,17 +176,17 @@ class TransferManager
     public function createByForm(): AccountSlip
     {
         $this->create();
-        if ($this->accountDebit === null) {
+        if (null === $this->accountDebit) {
             throw new AppException('Account of debit is not defined');
         }
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit);
 
-        if ($this->accountCredit === null) {
+        if (null === $this->accountCredit) {
             throw new AppException('Account of credit is not defined');
         }
         $this->setOperation(AccountSlip::TYPE_CREDIT, $this->accountCredit);
 
-        if ($this->accountSlip === null) {
+        if (null === $this->accountSlip) {
             throw new AppException('AccountSlip not added correctly');
         }
 
@@ -260,7 +258,6 @@ class TransferManager
         $this->setAccountCredit($account);
         $this->setOperation(AccountSlip::TYPE_DEBIT, $account);
 
-
         if (
             !($operation = $this->accountSlip?->getOperationDebit()) instanceof Operation
             || !($account = $operation->getAccount()) instanceof Account
@@ -281,9 +278,10 @@ class TransferManager
      */
     public function getAccountSlip(): AccountSlip
     {
-        if ($this->accountSlip === null) {
+        if (null === $this->accountSlip) {
             throw new AppException('AccountSlip not defined');
         }
+
         return $this->accountSlip;
     }
 

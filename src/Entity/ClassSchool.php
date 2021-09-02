@@ -57,7 +57,7 @@ class ClassSchool
 
     public function __toString(): string
     {
-        return (string)$this->getName();
+        return (string) $this->getName();
     }
 
     public function addClassPeriod(ClassPeriod $classPeriods): self

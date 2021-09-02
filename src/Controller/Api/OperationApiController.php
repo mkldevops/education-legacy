@@ -36,6 +36,7 @@ class OperationApiController extends AbstractBaseController
         } catch (Exception $e) {
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
         return ResponseModel::jsonResponse($result);
     }
 }

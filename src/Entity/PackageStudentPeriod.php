@@ -76,7 +76,7 @@ class PackageStudentPeriod
 
     public function __toString(): string
     {
-        return $this->getStudent() . ' - ' . $this->getPackage();
+        return $this->getStudent().' - '.$this->getPackage();
     }
 
     public function getPackage(): ?Package
@@ -103,7 +103,7 @@ class PackageStudentPeriod
         return $this;
     }
 
-    public function getDateExpire(): ?\DateTimeInterface
+    public function getDateExpire(): ?DateTimeInterface
     {
         return $this->dateExpire;
     }

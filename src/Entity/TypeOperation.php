@@ -72,7 +72,7 @@ class TypeOperation
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     public function getShortName(): ?string
@@ -87,7 +87,7 @@ class TypeOperation
         return $this;
     }
 
-    public function getParent(): ?\App\Entity\TypeOperation
+    public function getParent(): ?TypeOperation
     {
         return $this->parent;
     }

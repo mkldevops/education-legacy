@@ -23,16 +23,16 @@ class PeriodFixtures extends Fixture implements FixtureInterface
      */
     public function load(ObjectManager $manager): void
     {
-        $yearCurrent = ((int)date('Y')) - 1;
+        $yearCurrent = ((int) date('Y')) - 1;
         $yearMax = $yearCurrent + 5;
 
         while ($yearCurrent <= $yearMax) {
             $period = new Period();
-            $period->setBegin(new DateTime($yearCurrent . '-09-01'))
-                ->setEnd(new DateTime(($yearCurrent + 1) . '-08-31'))
+            $period->setBegin(new DateTime($yearCurrent.'-09-01'))
+                ->setEnd(new DateTime(($yearCurrent + 1).'-08-31'))
                 ->setComment('')
                 ->setEnable(false)
-                ->setName($yearCurrent . '/' . ($yearCurrent + 1));
+                ->setName($yearCurrent.'/'.($yearCurrent + 1));
 
             $manager->persist($period);
             ++$yearCurrent;

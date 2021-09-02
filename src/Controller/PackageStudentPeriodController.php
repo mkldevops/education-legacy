@@ -33,13 +33,13 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%' . $search . '%')
+            ->setParameter(':amount', '%'.$search.'%')
             ->orWhere('e.discount LIKE :discount')
-            ->setParameter(':discount', '%' . $search . '%')
+            ->setParameter(':discount', '%'.$search.'%')
             ->orWhere('e.paid LIKE :paid')
-            ->setParameter(':paid', '%' . $search . '%')
+            ->setParameter(':paid', '%'.$search.'%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
+            ->setParameter(':comment', '%'.$search.'%')
             ->getQuery()
             ->getSingleScalarResult();
         $pages = ceil($count / 20);
@@ -47,17 +47,18 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->getRepository(PackageStudentPeriod::class)
             ->createQueryBuilder('e')
             ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%' . $search . '%')
+            ->setParameter(':amount', '%'.$search.'%')
             ->orWhere('e.discount LIKE :discount')
-            ->setParameter(':discount', '%' . $search . '%')
+            ->setParameter(':discount', '%'.$search.'%')
             ->orWhere('e.paid LIKE :paid')
-            ->setParameter(':paid', '%' . $search . '%')
+            ->setParameter(':paid', '%'.$search.'%')
             ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%' . $search . '%')
+            ->setParameter(':comment', '%'.$search.'%')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
             ->getResult();
+
         return $this->render('package_student_period/index.html.twig', [
             'packagestudentperiodList' => $packageStudentPeriodList,
             'pages' => $pages,
@@ -66,6 +67,7 @@ class PackageStudentPeriodController extends AbstractBaseController
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
     }
+
     /**
      * Creates a form to search PackageStudentPeriod entities.
      */
@@ -82,9 +84,9 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Search'])
             ->getForm();
     }
+
     /**
      * Creates a new PackageStudentPeriod entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -107,11 +109,13 @@ class PackageStudentPeriodController extends AbstractBaseController
                 ['id' => $packageStudentPeriod->getId()]
             ));
         }
+
         return $this->render('package_student_period/new.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Creates a form to create a PackageStudentPeriod entity.
      *
@@ -130,6 +134,7 @@ class PackageStudentPeriodController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Displays a form to create a new PackageStudentPeriod entity.
      */
@@ -138,11 +143,13 @@ class PackageStudentPeriodController extends AbstractBaseController
     {
         $packageStudentPeriod = new PackageStudentPeriod();
         $form = $this->createCreateForm($packageStudentPeriod);
+
         return $this->render('package_student_period/new.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Finds and displays a PackageStudentPeriod entity.
      */
@@ -153,6 +160,7 @@ class PackageStudentPeriodController extends AbstractBaseController
             'packagestudentperiod' => $packageStudentPeriod,
         ]);
     }
+
     /**
      * Displays a form to edit an existing PackageStudentPeriod entity.
      */
@@ -160,11 +168,13 @@ class PackageStudentPeriodController extends AbstractBaseController
     public function edit(PackageStudentPeriod $packageStudentPeriod): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
+
         return $this->render('package_student_period/edit.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to edit a PackageStudentPeriod entity.
      *
@@ -184,9 +194,9 @@ class PackageStudentPeriodController extends AbstractBaseController
 
         return $form;
     }
+
     /**
      * Edits an existing PackageStudentPeriod entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -201,14 +211,15 @@ class PackageStudentPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_student_period_show', ['id' => $packageStudentPeriod->getId()]));
         }
+
         return $this->render('package_student_period/edit.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'edit_form' => $editForm->createView(),
         ]);
     }
+
     /**
      * Deletes a PackageStudentPeriod entity.
-     *
      *
      * @return RedirectResponse|Response
      */
@@ -226,11 +237,13 @@ class PackageStudentPeriodController extends AbstractBaseController
 
             return $this->redirect($this->generateUrl('app_package_student_period_index'));
         }
+
         return $this->render('package_student_period/delete.html.twig', [
             'packagestudentperiod' => $packageStudentPeriod,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
+
     /**
      * Creates a form to delete a PackageStudentPeriod entity by id.
      *
@@ -247,6 +260,7 @@ class PackageStudentPeriodController extends AbstractBaseController
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
             ->getForm();
     }
+
     /**
      * Redirect the the list URL with the search parameter.
      */
@@ -254,6 +268,7 @@ class PackageStudentPeriodController extends AbstractBaseController
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
+
         return $this->redirect($this->generateUrl('app_package_student_period_index', [
             'page' => 1,
             'search' => urlencode($all['form']['q']),

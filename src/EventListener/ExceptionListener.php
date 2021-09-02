@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use Fardus\Traits\Symfony\Controller\ResponseTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +22,6 @@ class ExceptionListener
      */
     public function onKernelException(ExceptionEvent $event): void
     {
-
         $exception = $event->getThrowable();
         $this->logger->error(__METHOD__, compact('exception'));
         if (!str_contains($event->getRequest()->getPathInfo(), '/api')) {

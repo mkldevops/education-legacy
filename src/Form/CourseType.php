@@ -130,7 +130,7 @@ class CourseType extends AbstractType
                     'label' => 'form.label.class_period',
                     'class' => ClassPeriod::class,
                     'choice_label' => 'name',
-                    'query_builder' => fn(ClassPeriodRepository $er) => $er->getClassPeriodsQueryBuilder($this->period, $this->school),
+                    'query_builder' => fn (ClassPeriodRepository $er) => $er->getClassPeriodsQueryBuilder($this->period, $this->school),
                 ]);
         }
 
@@ -139,7 +139,7 @@ class CourseType extends AbstractType
                 'label' => 'form.label.teacher',
                 'class' => Teacher::class,
                 'choice_label' => 'name',
-                'query_builder' => fn(TeacherRepository $er) => $er->getAvailablesQB($this->school),
+                'query_builder' => fn (TeacherRepository $er) => $er->getAvailablesQB($this->school),
                 'multiple' => true,
                 'attr' => ['data-role' => 'multiselect'],
             ])
