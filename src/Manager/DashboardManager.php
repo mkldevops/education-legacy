@@ -12,6 +12,11 @@ use App\Entity\Person;
 use App\Entity\School;
 use App\Entity\Student;
 use App\Exception\AppException;
+use App\Repository\DocumentRepository;
+use App\Repository\FamilyRepository;
+use App\Repository\OperationRepository;
+use App\Repository\PersonRepository;
+use App\Repository\StudentRepository;
 use App\Services\AbstractFullService;
 use DateInterval;
 use DateTime;
@@ -21,6 +26,15 @@ use Symfony\Component\Yaml\Yaml;
 
 class DashboardManager extends AbstractFullService
 {
+    public function __construct(
+        private StudentRepository $studentRepository,
+        private OperationRepository $operationRepository,
+        private PersonRepository $personRepository,
+        private FamilyRepository $familyRepository,
+        private DocumentRepository $documentRepository,
+    ) {
+    }
+
     /**
      * @throws Exception
      */
@@ -92,12 +106,8 @@ class DashboardManager extends AbstractFullService
      */
     public function highChartStatsNumberStudents(Period $period, School $school): Highchart
     {
-        $manager = $this->getEntityManager();
-
-        $registred = $manager->getRepository(Student::class)
-            ->getStatsStudentRegistered($school, $period);
-        $desactivated = $manager->getRepository(Student::class)
-            ->getStatsStudentDeactivated($school, $period);
+        $registred = $this->studentRepository->getStatsStudentRegistered($school, $period);
+        $desactivated = $this->studentRepository->getStatsStudentDeactivated($school, $period);
 
         $data = (object)['registred' => [], 'desactivated' => [], 'average' => []];
         $tmp = array_merge($registred, $desactivated);
@@ -105,7 +115,6 @@ class DashboardManager extends AbstractFullService
         $current = new DateTime(key($tmp) ?? 'now');
 
         $chart = new Highchart();
-        $chart->chart->renderTo = 'stats-number-students';
         $chart->title->text = 'Stats Number Students';
 
         while ($current->getTimeStamp() <= time()) {
@@ -143,35 +152,20 @@ class DashboardManager extends AbstractFullService
     /**
      * @throws AppException
      */
-    public function search(string $search = null): array
+    public function search(string $search = null): iterable
     {
-        $result = [];
-
         try {
             if (empty($search)) {
                 throw new AppException('The search is empty');
             }
 
-            $result['operation'] = $this->entityManager
-                ->getRepository(Operation::class)
-                ->search($search);
-
-            $result['person'] = $this->entityManager
-                ->getRepository(Person::class)
-                ->search($search);
-
-            $result['family'] = $this->entityManager
-                ->getRepository(Family::class)
-                ->search($search);
-
-            $result['document'] = $this->entityManager
-                ->getRepository(Document::class)
-                ->search($search);
+            yield 'operation' => $this->operationRepository->search($search);
+            yield 'person' => $this->personRepository->search($search);
+            yield 'family' => $this->familyRepository->search($search);
+            yield 'document' => $this->documentRepository->search($search);
         } catch (Exception $e) {
             $this->logger->error(__METHOD__ . ' ' . $e->getMessage());
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
-
-        return $result;
     }
 }

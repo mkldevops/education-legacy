@@ -9,6 +9,7 @@ use App\Traits\AuthorEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Fardus\Traits\Symfony\Accessors\NameAccessorsTrait;
 use Fardus\Traits\Symfony\Entity\AddressEntityTrait;
 use Fardus\Traits\Symfony\Entity\CityEntityTrait;
 use Fardus\Traits\Symfony\Entity\EmailEntityTrait;
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Family
 {
     use IdEntityTrait;
-    use NameEntityTrait;
+    use NameAccessorsTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
     use TimestampableEntity;
@@ -36,6 +37,11 @@ class Family
     use AddressEntityTrait;
     use CityEntityTrait;
     use ZipEntityTrait;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected ?string $name = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
@@ -83,9 +89,7 @@ class Family
 
     public function __construct()
     {
-        $this->setNumberChildren(1)
-            ->setEnable(false)
-            ->persons = new ArrayCollection();
+        $this->persons = new ArrayCollection();
     }
 
     public function setGenders(): self
@@ -99,15 +103,7 @@ class Family
 
     public function __toString(): string
     {
-        return sprintf('%d - %s', $this->getId(), $this->getNameComplete());
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId()
-    {
-        return $this->id;
+        return sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
     }
 
     public function getNameComplete(): string
@@ -121,17 +117,17 @@ class Family
             $persons[] = (string)$this->father;
         }
 
-        if (count($persons) < 2 && null !== $this->legalGuardian) {
+        if (null !== $this->legalGuardian && count($persons) < 2) {
             $persons[] = (string)$this->getLegalGuardian();
         }
 
         if (!empty($this->persons)) {
-            if (count($persons) < 2 && !empty($this->persons?->get(0))) {
-                $persons[] = sprintf('[%s]', (string)$this->persons?->first());
+            if (count($persons) < 2 && !empty($this->persons->get(0))) {
+                $persons[] = sprintf('[%s]', (string)$this->persons->first());
             }
 
-            if (count($persons) < 2 && !empty($this->getPersons()->get(1))) {
-                $persons[] = sprintf('[%s]', (string)$this->getPersons()->get(1));
+            if (count($persons) < 2 && !empty($this->persons->get(1))) {
+                $persons[] = sprintf('[%s]', (string)$this->persons->get(1));
             }
 
             if (count($this->getPersons()) > 2) {
@@ -151,18 +147,13 @@ class Family
     {
         $this->legalGuardian = $legalGuardian;
 
-        if (!$this->legalGuardian->hasGender()) {
+        if ($this->legalGuardian !== null && $this->legalGuardian->hasGender()) {
             $this->legalGuardian->setGender(Person::GENDER_FEMALE);
         }
 
         return $this;
     }
 
-    /**
-     * Get persons.
-     *
-     * @return Person[]|Collection
-     */
     public function getPersons(): Collection
     {
         return $this->persons;
@@ -188,7 +179,7 @@ class Family
     {
         $this->father = $father;
 
-        if (!$this->father->hasGender()) {
+        if ($this->father !== null && $this->father->hasGender()) {
             $this->father->setGender(Person::GENDER_MALE);
         }
 
@@ -200,31 +191,22 @@ class Family
         return $this->mother;
     }
 
-    /**
-     * Set mother.
-     */
     public function setMother(Person $mother = null): static
     {
         $this->mother = $mother;
 
-        if (!$this->mother->hasGender()) {
+        if ($this->mother !== null && $this->mother->hasGender()) {
             $this->mother->setGender(Person::GENDER_FEMALE);
         }
 
         return $this;
     }
 
-    /**
-     * Get language.
-     */
     public function getLanguage(): ?string
     {
         return $this->language;
     }
 
-    /**
-     * Set language.
-     */
     public function setLanguage(?string $language = null): static
     {
         $this->language = $language;
@@ -232,19 +214,11 @@ class Family
         return $this;
     }
 
-    /**
-     * Get numberChildren.
-     */
     public function getNumberChildren(): int
     {
         return $this->numberChildren;
     }
 
-    /**
-     * Set numberChildren.
-     *
-     *
-     */
     public function setNumberChildren(int $numberChildren): static
     {
         $this->numberChildren = $numberChildren;
@@ -252,65 +226,11 @@ class Family
         return $this;
     }
 
-    /**
-     * Set address.
-     *
-     * @param string|null $address
-     *
-     * @return Family
-     */
-    public function setAddress($address = null)
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
-    /**
-     * Get address.
-     *
-     * @return string|null
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * Set city.
-     *
-     * @param string|null $city
-     *
-     * @return Family
-     */
-    public function setCity($city = null)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Get city.
-     *
-     * @return string|null
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * Get personAuthorized.
-     */
     public function getPersonAuthorized(): ?string
     {
         return $this->personAuthorized;
     }
 
-    /**
-     * Set personAuthorized.
-     */
     public function setPersonAuthorized(?string $personAuthorized = null): static
     {
         $this->personAuthorized = $personAuthorized;
@@ -318,17 +238,11 @@ class Family
         return $this;
     }
 
-    /**
-     * Get personEmergency.
-     */
     public function getPersonEmergency(): ?string
     {
         return $this->personEmergency;
     }
 
-    /**
-     * Set personEmergency.
-     */
     public function setPersonEmergency(?string $personEmergency = null): static
     {
         $this->personEmergency = $personEmergency;
@@ -336,9 +250,6 @@ class Family
         return $this;
     }
 
-    /**
-     * Add person.
-     */
     public function addPerson(Person $person): static
     {
         $this->persons[] = $person;
@@ -346,11 +257,6 @@ class Family
         return $this;
     }
 
-    /**
-     * Remove person.
-     *
-     * @return bool TRUE if this collection contained the specified element, FALSE otherwise
-     */
     public function removePerson(Person $person): bool
     {
         return $this->persons->removeElement($person);

@@ -67,11 +67,7 @@ class PhoneManager extends AbstractFullService
 
     public static function stringPhonesToArray(?string $phones): array
     {
-        if (empty($phones)) {
-            return [];
-        }
-
-        $phones = explode(';', $phones);
+        $phones = explode(';', $phones ?? '');
         $phones = array_unique($phones);
 
         $list = [];
