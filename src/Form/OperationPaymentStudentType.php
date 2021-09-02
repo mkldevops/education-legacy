@@ -6,9 +6,6 @@ namespace App\Form;
 
 use Symfony\Component\Form\FormBuilderInterface;
 
-/**
- * Class OperationPaymentStudentType.
- */
 class OperationPaymentStudentType extends OperationType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

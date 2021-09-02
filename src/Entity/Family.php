@@ -166,9 +166,6 @@ class Family
         $this->name = $this->getNameComplete();
     }
 
-    /**
-     * Get father.
-     */
     public function getFather(): ?Person
     {
         return $this->father;

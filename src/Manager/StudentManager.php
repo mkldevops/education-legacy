@@ -131,7 +131,7 @@ class StudentManager
     }
 
     /**
-     * @throws Exception
+     * @throws AppException
      */
     public function addPackage(Student $student, PackageStudentPeriod $packageStudentPeriod): Student
     {

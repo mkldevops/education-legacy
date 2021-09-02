@@ -29,7 +29,7 @@ class PaymentPackageStudent
     private PackageStudentPeriod $packageStudentPeriod;
 
     /**
-     * @ORM\OneToOne(targetEntity=Operation::class, cascade={"persist"}, inversedBy="paymentPackageStudent")
+     * @ORM\ManyToOne(targetEntity=Operation::class, cascade={"persist"}, inversedBy="paymentPackageStudents")
      * @ORM\JoinColumn(nullable=false)
      */
     private Operation $operation;
