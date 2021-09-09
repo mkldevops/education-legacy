@@ -42,7 +42,11 @@
                     </tr>
                     <tr>
                         <th>{{ 'show.label.legalguardian'|trans }}</th>
-                        <td>{{ family.legalGuardian }}</td>
+                        <td>
+                            {% if family.legalGuardian|default(null) is not empty %}
+                                <a href="{{ path('app_person_show', {'id': family.legalGuardian.id }) }}">{{ family.legalGuardian }}</a>
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <th>{{ 'show.label.language'|trans }}</th>
@@ -120,6 +124,7 @@
             {% block title 'title.header.persons'|trans %}
             {% block config %}
                 {% include 'family/includes/_modal_form_student.html.twig' with { 'form' : formStudent } %}
+                {{ render(controller('App\\Controller\\PaymentPackageStudentController::family', { family : family.id, period : app.session.get('period').selected })) }}
             {% endblock %}
             {% block content %}
                 {% if persons %}
@@ -135,7 +140,8 @@
                         </tr>
                         {% set unpaid_total = 0 %}
                         {% for person in persons  %}
-                            <tr>
+                            {% set enable = person.student.enable|default(false) %}
+                            <tr class="{{ enable ? '' : 'warning font-italic text-muted' }}">
                                 <td class="text-center">
                                     {% if person.image is not empty %}
                                     <img src="{{ person.image.path }}" alt="" class="ing-thumbnail"></td>
@@ -152,20 +158,22 @@
                                 <td class="text-center">{{ person.age }}</td>
                                 <td class="text-center">{{ person.gender }}</td>
                                 <td class="text-center">
-                                    {% if person.student.classPeriods.first.classPeriod|default(null) is not empty %}
+                                    {% if enable and person.student.classPeriods.first.classPeriod|default(null) is not empty %}
                                         <a href="{{ path('app_class_period_show', { id : person.student.classPeriods.first.classPeriod.id }) }}">{{ person.student.classPeriods.first.classPeriod }}</a>
                                     {% else %}
                                         ---
                                     {% endif %}
                                 </td>
-                                {% set pp = person.student.packagePeriods.first|default(null) %}
+                                {% set pp = enable ? person.student.packagePeriods.first|default(null) : null %}
                                 <td class="text-center">
                                     {% if pp is not empty %}
                                         <a href="{{ path('app_package_student_period_show', {'id': pp.id }) }}" class="badge badge-dark">{{ pp.period }} {{ pp.package }}</a>
-                                    {% else %}
+                                    {% elseif enable %}
                                         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalPackageStudentPeriod" data-student="{{ person.student.id }}">
                                             <i class="far fa-calendar-plus"></i> {{ 'new_package_student'|trans({'%period%' : period}) }}
                                         </button>
+                                    {% else %}
+                                        ---
                                     {% endif %}
                                 </td>
                                 <td class="text-center">

@@ -3,9 +3,7 @@
 {% trans_default_domain 'operation' %}
 
 {% set resources = resources|merge({ uploadfile: true }) %}
-
 {% set title = 'title.show'|trans({ '%id%' : operation.id, '%name%' : operation.name }) %}
-
 {% set breadcrumbs = { ('' ~ title) : path('app_operation_show', { id : operation.id })}|merge(breadcrumbs|default({})) %}
 
 {% block body %}
@@ -27,7 +25,14 @@
 
                         <dt>{% trans %}Operation type{% endtrans %}</dt>
                         <dd>
-                            <a href="{{ path("app_admin_dashboard_index", { "entity" : 'TypeOperation', 'action' : 'show', 'id' : operation.typeOperation.id }) }}">{{ operation.typeOperation.name }}</a>
+                            {% if operation.typeOperation is not empty %}
+                                <a href="{{ path("app_admin_dashboard_index", {
+                                        "entity" : 'TypeOperation',
+                                        'action' : 'show',
+                                        'id' : operation.typeOperation.id|default(null) }) }}">
+                                    {{ operation.typeOperation.name }}
+                                </a>
+                            {% endif %}
                         </dd>
 
                         <dt>Compte</dt>
@@ -85,12 +90,18 @@
                             </dd>
                         {% endif %}
 
-                        {% if(operation.PaymentPackageStudent is not empty) %}
-                            <dt>Eleve</dt>
+                        {% if(operation.PaymentPackageStudents is not empty) %}
+                            <dt>Eleves</dt>
                             <dd>
-                                <a href="{{ path('app_student_show', { "id" : operation.PaymentPackageStudent.packageStudentPeriod.student.id }) }}">
-                                    {{operation.PaymentPackageStudent.packageStudentPeriod.student.getNameComplete() }}
-                                </a>
+                                <ul>
+                                {% for payment in operation.PaymentPackageStudents %}
+                                    <li>
+                                        <a href="{{ path('app_student_show', { "id" : payment.packageStudentPeriod.student.id }) }}">
+                                            {{ payment.packageStudentPeriod.student.getNameComplete() }} ({{ payment.amount }} €)
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
                             </dd>
                         {% endif %}
 
@@ -102,7 +113,7 @@
                     </dl>
 
                     <small>
-                        <em>Operation réalisé par <strong>{{ operation.publisher.nameComplete() }} </strong> le <strong>{{ operation.createdAt.format('d/m/Y à H:i') }}</strong></em>
+                        <em>Operation réalisé par <strong>{{ operation.publisher.nameComplete()|default('Inconnu') }} </strong> le <strong>{{ operation.createdAt.format('d/m/Y à H:i') }}</strong></em>
                     </small>
 
                 {% endblock %}

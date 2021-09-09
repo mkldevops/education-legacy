@@ -38,3 +38,7 @@
 .dataTables_filter {
     margin-top: 2rem;
 }
+
+.font-italic {
+    font-style: italic;
+}

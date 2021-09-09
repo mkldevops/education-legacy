@@ -10,7 +10,6 @@ use App\Entity\OperationGender;
 use App\Entity\TypeOperation;
 use App\Entity\User;
 use App\Exception\AppException;
-use App\Exception\InvalidArgumentException;
 use App\Form\Type\CkeditorType;
 use App\Model\SchoolList;
 use App\Repository\AccountRepository;
@@ -18,45 +17,24 @@ use App\Repository\OperationGenderRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\QueryBuilder;
-use Exception;
-use Fardus\Traits\Symfony\Manager\SessionTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 
-/**
- * Class OperationType.
- */
 class OperationType extends AbstractType
 {
-    use SessionTrait;
-
-    protected User $user;
-
-    /**
-     * @required
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setUser(TokenStorageInterface $tokenStorage): self
-    {
-        $user = $tokenStorage->getToken()?->getUser();
-        if (!$user instanceof User) {
-            throw new InvalidArgumentException('The user of token storage is not instance of UserInterface');
-        }
-        $this->user = $user;
-
-        return $this;
+    public function __construct(
+        private SessionInterface $session,
+        private Security $security
+    ) {
     }
 
-    /**
-     * @throws Exception
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -66,7 +44,7 @@ class OperationType extends AbstractType
                 'choice_label' => 'name',
                 'query_builder' => function (AccountRepository $er): QueryBuilder {
                     /** @var SchoolList $schoolList */
-                    $schoolList = $this->getSession()->get('school');
+                    $schoolList = $this->session->get('school');
                     if (null === $schoolList->selected) {
                         throw new AppException('School selected not set');
                     }
@@ -94,7 +72,7 @@ class OperationType extends AbstractType
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
             ])
-            ->add('amount', MoneyType::class, ['label' => 'form.amount'])
+            ->add('amount', MoneyType::class, ['label' => 'form.amount', 'html5' => true])
             ->add('reference', TextType::class, [
                 'label' => 'form.reference',
                 'required' => false,
@@ -107,8 +85,8 @@ class OperationType extends AbstractType
                 'label' => 'form.author',
                 'class' => User::class,
                 'choice_label' => 'nameComplete',
-                'preferred_choices' => [$this->user],
-                'query_builder' => fn (UserRepository $er) => $er->getAvailable(),
+                'preferred_choices' => [$this->security->getUser()],
+                'query_builder' => fn (UserRepository $er): QueryBuilder => $er->getAvailable(),
             ]);
     }
 

@@ -98,7 +98,6 @@ class Student
     public function __construct()
     {
         $this->setPerson(new Person())
-            ->setEnable(true)
             ->setDateRegistration(new DateTime());
 
         $this->classPeriods = new ArrayCollection();

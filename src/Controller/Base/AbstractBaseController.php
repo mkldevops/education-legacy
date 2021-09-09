@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Base;
 
-use App\Entity\Document;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Exception\AppException;
-use App\Exception\EntityRepositoryNotFoundException;
 use App\Exception\InvalidArgumentException;
 use App\Model\PeriodsList;
 use App\Traits\PeriodManagerTrait;
@@ -30,17 +28,25 @@ abstract class AbstractBaseController extends AbstractController
 
     /**
      * @throws AppException
+     *
+     * @deprecated use App\Manager\SchoolManager::getEntitySchool()
      */
     protected function getEntitySchool(): School
     {
         return $this->schoolManager->getEntitySchool();
     }
 
+    /**
+     * @deprecated use this repository class
+     */
     protected function getRepository(string $repository): ObjectRepository
     {
         return $this->getManager()->getRepository($repository);
     }
 
+    /**
+     * @deprecated EntityManagerInterface
+     */
     protected function getManager(): ObjectManager
     {
         return $this->getDoctrine()->getManager();
@@ -48,6 +54,8 @@ abstract class AbstractBaseController extends AbstractController
 
     /**
      * @throws AppException
+     *
+     * @deprecated use App\Manager\SchoolManager::getSchool()
      */
     protected function getSchool(): School
     {
@@ -57,6 +65,8 @@ abstract class AbstractBaseController extends AbstractController
     /**
      * @throws AppException
      * @throws InvalidArgumentException
+     *
+     * @deprecated use App\Manager\PeriodManager::getEntityPeriodOnSession()
      */
     protected function getEntityPeriod(string $type = 'selected'): Period
     {
@@ -72,6 +82,8 @@ abstract class AbstractBaseController extends AbstractController
     /**
      * @throws AppException
      * @throws InvalidArgumentException
+     *
+     * @deprecated use App\Manager\PeriodManager::getPeriodsOnSession()
      */
     protected function getPeriod(string $type = PeriodsList::PERIOD_SELECTED): Period
     {
@@ -84,23 +96,5 @@ abstract class AbstractBaseController extends AbstractController
         }
 
         return $this->get('session')->get('period')->{$type};
-    }
-
-    /**
-     * @throws InvalidArgumentException|EntityRepositoryNotFoundException
-     */
-    protected function getDocument(int $id): Document
-    {
-        if (empty($id)) {
-            throw new InvalidArgumentException('Id document is empty');
-        }
-
-        $document = $this->getRepository(Document::class)->find($id);
-
-        if (!$document instanceof Document) {
-            throw new EntityRepositoryNotFoundException('Not found document with id '.$id);
-        }
-
-        return $document;
     }
 }

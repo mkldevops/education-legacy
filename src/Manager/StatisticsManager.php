@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
-use App\Entity\Period;
-use App\Entity\School;
 use App\Exception\AppException;
 use App\Model\DataStats;
 use App\Model\StatsByMonth;
@@ -19,14 +17,18 @@ class StatisticsManager
     public function __construct(
         private LoggerInterface $logger,
         private OperationRepository $repository,
+        private PeriodManager $periodManager,
+        private SchoolManager $schoolManager,
     ) {
     }
 
     /**
      * @throws AppException
      */
-    public function getStatsByMonth(Period $period, School $school): StatsByMonth
+    public function getStatsByMonth(): StatsByMonth
     {
+        $period = $this->periodManager->getPeriodsOnSession();
+        $school = $this->schoolManager->getSchool();
         $this->logger->debug(__FUNCTION__, ['period' => $period, 'school' => $school]);
 
         $operations = $this->repository->getStatsByMonthly($period, $school);

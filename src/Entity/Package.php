@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PackageRepository;
-use App\Traits\SchoolEntityTrait;
+use App\Traits\Accessor\SchoolAccessorTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\DescriptionEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
@@ -20,12 +20,16 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Package
 {
     use IdEntityTrait;
-    use SchoolEntityTrait;
+    use SchoolAccessorTrait;
     use NameEntityTrait;
     use DescriptionEntityTrait;
     use TimestampableEntity;
     use EnableEntityTrait;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=School::class, inversedBy="packages", cascade={"persist"})
+     */
+    protected ?School $school = null;
     /**
      * @ORM\Column(type="float")
      */

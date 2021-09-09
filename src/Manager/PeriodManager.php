@@ -6,16 +6,15 @@ namespace App\Manager;
 
 use App\Entity\Period;
 use App\Exception\AppException;
+use App\Exception\InvalidArgumentException;
 use App\Exception\PeriodException;
 use App\Model\PeriodsList;
 use App\Repository\PeriodRepository;
-use Fardus\Traits\Symfony\Manager\SessionTrait;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PeriodManager
 {
-    use SessionTrait;
-
-    public function __construct(private PeriodRepository $repository)
+    public function __construct(private PeriodRepository $repository, private RequestStack $requestStack)
     {
     }
 
@@ -43,6 +42,23 @@ class PeriodManager
 
     /**
      * @throws AppException
+     * @throws InvalidArgumentException
+     */
+    public function getPeriodsOnSession(string $type = PeriodsList::PERIOD_SELECTED): Period
+    {
+        if (!property_exists(PeriodsList::class, $type)) {
+            throw new InvalidArgumentException('Not found the type to Period search');
+        }
+
+        if (empty($this->requestStack->getSession()->get('period'))) {
+            $this->setPeriodsOnSession();
+        }
+
+        return $this->requestStack->getSession()->get('period')->{$type};
+    }
+
+    /**
+     * @throws AppException
      */
     public function setPeriodsOnSession(): void
     {
@@ -53,7 +69,22 @@ class PeriodManager
         }
 
         $current = $this->repository->getCurrentPeriod();
-        $this->session->set('period', new PeriodsList($list, $current, $current));
+        $this->requestStack->getSession()->set('period', new PeriodsList($list, $current, $current));
+    }
+
+    /**
+     * @throws AppException
+     * @throws InvalidArgumentException
+     */
+    public function getEntityPeriodOnSession(string $type = 'selected'): Period
+    {
+        if (!in_array($type, ['selected', 'current', 'list'], true)) {
+            throw new InvalidArgumentException('Not found the type to Period search');
+        }
+
+        $typePeriod = $this->getPeriodsOnSession($type);
+
+        return $this->findPeriod($typePeriod->getId());
     }
 
     /**
@@ -61,13 +92,13 @@ class PeriodManager
      */
     public function switch(Period $period): void
     {
-        $periodList = $this->session->get('period');
+        $periodList = $this->requestStack->getSession()->get('period');
         if (!$periodList instanceof PeriodsList) {
             throw new AppException();
         }
 
         $periodList->selected = $period;
-        $this->session->set('period', $periodList);
-        $this->session->save();
+        $this->requestStack->getSession()->set('period', $periodList);
+        $this->requestStack->getSession()->save();
     }
 }

@@ -1,0 +1,49 @@
+<button type="button" id="btn-payment-package-family" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#payment-package-family"><i class="fas fa-user-plus"></i> {{ 'Payer'|trans }}</button>
+<!-- Modal -->
+<div class="modal fade" id="payment-package-family" tabindex="-1" role="dialog" aria-labelledby="payment-package-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="payment-package-title">Paiement pour la famille {{ family }}</h4>
+            </div>
+            <div class="modal-body modal-form">
+                <div class="alert alert-danger hidden"></div>
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="text-center">
+                    <button type="submit">Enregistrer</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    (() => {
+        const form = document.querySelector('#payment-package-family form');
+        form.addEventListener('submit', (evt) => {
+            evt.preventDefault();
+            const url = Routing.generate('api_payment_package_student_family', { family : {{ family.id }}, period : {{ period.id }} });
+            fetch(url, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(function(response) {
+                const contentType = response.headers.get("content-type");
+                if(response.status === 200 && contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json().then(function(json) {
+                        console.log(json)
+                        document.location.reload();
+                    });
+                } else {
+                    const alert = document.querySelector('#payment-package-family .alert')
+                    console.log(response)
+                    alert.textContent = response.body.error;
+                }
+            })
+        })
+    })();
+</script>

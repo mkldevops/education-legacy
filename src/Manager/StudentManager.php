@@ -12,7 +12,6 @@ use App\Exception\AppException;
 use App\Model\ResponseModel;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -131,7 +130,7 @@ class StudentManager
     }
 
     /**
-     * @throws Exception
+     * @throws AppException
      */
     public function addPackage(Student $student, PackageStudentPeriod $packageStudentPeriod): Student
     {

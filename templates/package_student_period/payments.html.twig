@@ -27,7 +27,7 @@
                     <td>
                         <span data-toggle="tooltip"
                               data-html="true"
-                              title="Author : {{ payment.operation.author.nameComplete }} <br />Publisher : {{ payment.operation.publisher.nameComplete }}">{{ payment.createdAt.format('d/m/y') }}</span>
+                              title="Author : {{ payment.operation.author.nameComplete|default('inconnu') }} <br />Publisher : {{ payment.operation.publisher.nameComplete|default('inconnu') }}">{{ payment.createdAt.format('d/m/y') }}</span>
                     </td>
                     <td class="validate-hidden-text validate-operation">
                         {% include "operation/validation.html.twig" with { operation : payment.operation } %}

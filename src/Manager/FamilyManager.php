@@ -2,46 +2,69 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 04/06/2016
- * Time: 20:37.
- */
-
 namespace App\Manager;
 
 use App\Entity\Family;
-use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Person;
-use App\Services\AbstractFullService;
+use App\Entity\Student;
+use App\Exception\AppException;
+use App\Manager\Interfaces\FamilyManagerInterface;
+use App\Repository\PackageStudentPeriodRepository;
+use App\Repository\PersonRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\Security;
 
-/**
- * Class StudentManager.
- */
-class FamilyManager extends AbstractFullService
+class FamilyManager implements FamilyManagerInterface
 {
-    /**
-     * @return Person[]
-     */
+    public function __construct(
+        private PersonRepository $personRepository,
+        private PackageStudentPeriodRepository $packageStudentPeriodRepository,
+        private EntityManagerInterface $entityManager,
+        private Security $security,
+        private LoggerInterface $logger,
+    ) {
+    }
+
     public function getPersons(Family $family, Period $period): array
     {
-        return $this->getEntityManager()
-            ->getRepository(Person::class)
-            ->getPersonsToFamily($family, $period);
+        return $this->personRepository->getPersonsToFamily($family, $period);
+    }
+
+    public function getPackages(array $persons, Period $period): array
+    {
+        $students = array_map(static fn (Person $person): ?Student => $person->getStudent(), $persons);
+
+        $packages = $this->packageStudentPeriodRepository->findBy(['student' => $students, 'period' => $period]);
+        $this->logger->debug(__METHOD__, compact('packages'));
+
+        return $packages;
     }
 
     /**
-     * @var Person[]
+     * @throws AppException
      */
-    public function getPackages(array $persons, Period $period): void
+    public function persistData(Family $family, FormInterface $form): bool
     {
-        $students = array_map(fn ($person) => $person->getStudent() ?? null, $persons);
+        if (!$form->isSubmitted()) {
+            throw new AppException('The form is not submitted ');
+        }
 
-        $packages = $this->entityManager->getRepository(PackageStudentPeriod::class)
-            ->findBy(['student' => $students, 'period' => $period]);
+        if (!$form->isValid()) {
+            $this->logger->debug(__METHOD__.' Form family invalid', ['errors' => $form->getErrors()]);
+            throw new AppException('The form is not valid '.$form->getErrors());
+        }
 
-        dd($packages);
+        $family
+            ->setName($family->__toString())
+            ->setGenders()
+            ->setEnable(true)
+            ->setAuthor($this->security->getUser());
+        $this->entityManager->persist($family);
+        $this->entityManager->flush();
+
+        return true;
     }
 }

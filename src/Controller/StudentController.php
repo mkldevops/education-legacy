@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Controller\Api\FamilyApiController;
 use App\Controller\Base\AbstractBaseController;
-use App\Entity\ClassPeriod;
 use App\Entity\Document;
 use App\Entity\Family;
 use App\Entity\PackageStudentPeriod;
@@ -21,9 +20,11 @@ use App\Form\PackageStudentPeriodType;
 use App\Form\StudentCommentSimpleType;
 use App\Form\StudentType;
 use App\Manager\StudentManager;
+use App\Repository\ClassPeriodRepository;
 use App\Repository\PackageRepository;
 use App\Repository\PackageStudentPeriodRepository;
 use App\Repository\StudentCommentRepository;
+use App\Repository\StudentRepository;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -38,29 +39,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @since  0.2
- *
- * @author Hamada Sidi Fahari <h.fahari@gmail.com>
- */
 #[Route(path: '/student')]
 class StudentController extends AbstractBaseController
 {
     /**
-     * @IsGranted("ROLE_TEACHER")
-     *
+     * @throws AppException
      * @throws InvalidArgumentException
      */
+    #[IsGranted('ROLE_TEACHER')]
     #[Route(path: '', name: 'app_student_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(StudentRepository $studentRepository, ClassPeriodRepository $classPeriodRepository): Response
     {
         $period = $this->getPeriod();
         $school = $this->getSchool();
-        $manager = $this->getDoctrine()->getManager();
-        $students = $manager->getRepository(Student::class)
-            ->getListStudents($period, $school);
-        $classPeriods = $manager->getRepository(ClassPeriod::class)
-            ->getClassPeriods($period, $school);
+        $students = $studentRepository->getListStudents($period, $school);
+        $classPeriods = $classPeriodRepository->getClassPeriods($period, $school);
 
         return $this->render('student/index.html.twig', [
             'students' => $students,
@@ -69,16 +62,14 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * @IsGranted("ROLE_DIRECTOR")
-     *
      * @throws InvalidArgumentException
+     * @throws AppException
      */
-    #[Route(path: '/desactivated', methods: ['GET'], name: 'app_student_desactivated')]
-    public function desactivated(): Response
+    #[IsGranted('ROLE_DIRECTOR')]
+    #[Route(path: '/desactivated', name: 'app_student_desactivated', methods: ['GET'])]
+    public function desactivated(StudentRepository $studentRepository): Response
     {
-        $students = $this->getManager()
-            ->getRepository(Student::class)
-            ->getListStudents($this->getPeriod(), $this->getSchool(), false);
+        $students = $studentRepository->getListStudents($this->getPeriod(), $this->getSchool(), false);
 
         return $this->render('student/index.html.twig', [
             'students' => $students,
@@ -92,19 +83,14 @@ class StudentController extends AbstractBaseController
     #[IsGranted('ROLE_ACCOUNTANT')]
     #[IsGranted('ROLE_DIRECTOR')]
     #[Route('/payment-list', name: 'app_student_payment_list', methods: ['GET'])]
-    public function paymentList(EntityManagerInterface $manager, StudentManager $studentManager): Response
+    public function paymentList(StudentManager $studentManager, StudentRepository $studentRepository): Response
     {
         ini_set('memory_limit', '-1');
 
         $period = $this->getPeriod();
         $school = $this->getSchool();
-
-        $students = $manager->getRepository(Student::class)
-            ->getPaymentList($period, $school);
-
-        $studentsWithoutPackage = $manager->getRepository(Student::class)
-            ->getListStudentsWithoutPackagePeriod($period, $school);
-
+        $students = $studentRepository->getPaymentList($period, $school);
+        $studentsWithoutPackage = $studentRepository->getListStudentsWithoutPackagePeriod($period, $school);
         $listPayment = $studentManager->dataPayementsStudents($students, $period);
 
         return $this->render('student/payment_list.html.twig', [
@@ -115,12 +101,11 @@ class StudentController extends AbstractBaseController
     }
 
     /**
-     * @IsGranted("ROLE_DIRECTOR")
-     *
      * @throws InvalidArgumentException
      * @throws NonUniqueResultException
      * @throws AppException|NoResultException
      */
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/{id}/add-package/{period}', methods: ['GET', 'POST'])]
     public function addPackage(
         Request $request,

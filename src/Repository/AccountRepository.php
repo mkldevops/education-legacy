@@ -25,7 +25,7 @@ class AccountRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return mixed[]
+     * @return int[]
      */
     public function getStatsAccount(School $school, bool $principalOnly = true, array $listAccountId = []): array
     {

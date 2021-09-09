@@ -88,9 +88,9 @@ class Operation
     private ?DateTimeInterface $datePlanned;
 
     /**
-     * @ORM\OneToOne(targetEntity=PaymentPackageStudent::class, mappedBy="operation")
+     * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
      */
-    private ?PaymentPackageStudent $paymentPackageStudent;
+    private Collection $paymentPackageStudents;
 
     /**
      * @ORM\OneToOne(targetEntity=AccountSlip::class, mappedBy="operationDebit", cascade={"persist"})
@@ -102,14 +102,11 @@ class Operation
      */
     private ?AccountSlip $slipsCredit;
 
-    /**
-     * Constructor Operation.
-     */
     public function __construct()
     {
-        $this->setDate(new Datetime())
-            ->setEnable(true)
-            ->documents = new ArrayCollection();
+        $this->date = new Datetime();
+        $this->documents = new ArrayCollection();
+        $this->paymentPackageStudents = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -168,16 +165,21 @@ class Operation
         return $this;
     }
 
-    public function getPaymentPackageStudent(): ?PaymentPackageStudent
+    public function getPaymentPackageStudents(): Collection
     {
-        return $this->paymentPackageStudent;
+        return $this->paymentPackageStudents;
     }
 
-    public function setPaymentPackageStudent(PaymentPackageStudent $paymentPackageStudent = null): self
+    public function addPaymentPackageStudents(PaymentPackageStudent $paymentPackageStudent): self
     {
-        $this->paymentPackageStudent = $paymentPackageStudent;
+        $this->paymentPackageStudents[] = $paymentPackageStudent;
 
         return $this;
+    }
+
+    public function removePaymentPackageStudents(PaymentPackageStudent $paymentPackageStudent): void
+    {
+        $this->paymentPackageStudents->removeElement($paymentPackageStudent);
     }
 
     public function getReference(): ?string
@@ -221,16 +223,13 @@ class Operation
         return $this;
     }
 
-    /**
-     * Get has Error Amount.
-     */
     public function hasErrorAmount(): bool
     {
         $result = false;
-        $i = $this->typeOperation->getTypeAmount();
-        if (TypeOperation::TYPE_AMOUNT_NEGATIVE == $i) {
+        $i = $this->typeOperation?->getTypeAmount();
+        if (TypeOperation::TYPE_AMOUNT_NEGATIVE === $i) {
             $result = ($this->amount > 0);
-        } elseif (TypeOperation::TYPE_AMOUNT_POSITIVE == $i) {
+        } elseif (TypeOperation::TYPE_AMOUNT_POSITIVE === $i) {
             $result = ($this->amount < 0);
         }
 
@@ -249,19 +248,11 @@ class Operation
         $this->documents->removeElement($documents);
     }
 
-    /**
-     * Get documents.
-     */
     public function getDocuments(): Collection
     {
         return $this->documents;
     }
 
-    /**
-     * Get accountStatement.
-     *
-     * @return AccountStatement
-     */
     public function getAccountStatement(): ?AccountStatement
     {
         return $this->accountStatement;
@@ -310,7 +301,7 @@ class Operation
 
     public function setUniqueId(string $uniqueId = null): self
     {
-        if ($this->getAccount() instanceof Account && null !== $this->account?->getIsBank()) {
+        if ($this->account->getIsBank()) {
             $this->uniqueId = $uniqueId;
         }
 

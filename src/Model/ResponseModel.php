@@ -10,18 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 class ResponseModel
 {
     public function __construct(
-        protected bool $success = false,
-        protected string $message = '',
-        protected array $data = [],
+        public bool $success = false,
+        public string $message = '',
+        public array $data = [],
+        public ?array $errors = null,
     ) {
     }
 
-    public static function responseDefault(array $data = []): object
+    public static function responseDefault(array $data = []): self
     {
-        $response = new self();
-        $response->setData($data);
-
-        return $response;
+        return new self(data: $data);
     }
 
     public static function jsonResponse(ResponseModel $response): JsonResponse
@@ -53,23 +51,17 @@ class ResponseModel
     public function getResult(): array
     {
         return [
-            'success' => $this->isSuccess(),
-            'data' => $this->getData(),
-            'message' => $this->getMessage(),
+            'success' => $this->success,
+            'data' => $this->data,
+            'message' => $this->message,
         ];
     }
 
-    /**
-     * @return mixed[]
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param mixed[] $data
-     */
     public function setData(array $data): self
     {
         $this->data = $data;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Family;
 use App\Entity\Period;
 use App\Entity\Person;
 use App\Entity\School;
@@ -31,6 +32,17 @@ class StudentRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Student::class);
+    }
+
+    public function findByFamily(Family $family): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.person', 'p')
+            ->where('p.family = :family')
+            ->andWhere('s.enable = true')
+            ->setParameter('family', $family)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -150,7 +162,7 @@ class StudentRepository extends ServiceEntityRepository
             $result = $qb->getQuery()
                 ->getSingleResult(AbstractQuery::HYDRATE_ARRAY);
         } catch (ORMException $e) {
-            throw new AppException(sprintf('%s Query failed', __FUNCTION__), $e->getCode(), $e);
+            throw new AppException(sprintf('%s Query failed', __FUNCTION__), previous: $e);
         }
 
         return $result;

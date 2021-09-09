@@ -10,14 +10,17 @@ use App\Entity\Operation;
 use App\Entity\Validate;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
+use App\Fetcher\DocumentFetcher;
 use App\Form\OperationType;
 use App\Manager\OperationManager;
+use App\Manager\SchoolManager;
 use App\Manager\StatisticsManager;
 use App\Repository\AccountRepository;
 use App\Repository\AccountStatementRepository;
 use App\Repository\OperationRepository;
 use App\Services\ResponseRequest;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -33,6 +36,10 @@ use Symfony\Component\Security\Core\Security;
 #[IsGranted('ROLE_ACCOUNTANT')]
 class OperationController extends AbstractBaseController
 {
+    public function __construct(protected SchoolManager $schoolManager)
+    {
+    }
+
     /**
      * @throws AppException
      * @throws InvalidArgumentException
@@ -44,7 +51,7 @@ class OperationController extends AbstractBaseController
             $this->redirectToRoute('app_operation_index', ['page' => 1]);
         }
         $period = $this->getPeriod();
-        $school = $this->getSchool();
+        $school = $this->schoolManager->getSchool();
         $formSearch = $this->createFormBuilder()
             ->add('account', EntityType::class, [
                 'class' => Account::class,
@@ -60,8 +67,6 @@ class OperationController extends AbstractBaseController
     }
 
     /**
-     * New Operation.
-     *
      * @throws Exception
      */
     #[Route(path: '/new', name: 'app_operation_new', methods: ['GET'])]
@@ -83,8 +88,6 @@ class OperationController extends AbstractBaseController
 
     private function createCreateForm(Operation $operation, array $params): FormInterface
     {
-        $operationType = new OperationType();
-        $operationType->setSession($this->get('session'));
         $form = $this->createForm(OperationType::class, $operation, [
             'action' => $this->generateUrl('app_operation_create', $params),
             'method' => Request::METHOD_POST,
@@ -107,7 +110,8 @@ class OperationController extends AbstractBaseController
         Request $request,
         Security $security,
         AccountRepository $accountRepository,
-        AccountStatementRepository $accountStatementRepository
+        AccountStatementRepository $accountStatementRepository,
+        EntityManagerInterface $entityManager,
     ): Response {
         $operation = new Operation();
         $form = $this->createCreateForm($operation, []);
@@ -115,30 +119,27 @@ class OperationController extends AbstractBaseController
         try {
             $form->handleRequest($request);
 
-            if ($form->isValid()) {
-                $manager = $this->getDoctrine()->getManager();
-                $accountstatementRequest = $request->get('accountstatement');
-
-                if (null !== $accountstatementRequest) {
-                    $accountStatement = $accountStatementRepository
-                        ->findOneBy(['id' => $request->get('accountstatement')]);
-
-                    $operation->setAccountStatement($accountStatement);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($accountStatementRequest = $request->get('accountstatement', null)) {
+                    $accountStatement = $accountStatementRepository->findOneBy(['id' => $accountStatementRequest]);
+                    if (null !== $accountStatement) {
+                        $operation->setAccountStatement($accountStatement);
+                    }
                 }
-                $accountRequest = $request->get('account');
 
-                if (null !== $accountRequest) {
-                    $account = $accountRepository->find($request->get('account'));
-
-                    $operation->setAccount($account);
+                if ($accountRequest = $request->get('account')) {
+                    $account = $accountRepository->findOneBy(['id' => $accountRequest]);
+                    if (null !== $account) {
+                        $operation->setAccount($account);
+                    }
                 }
 
                 if (($user = $security->getUser()) !== null) {
                     $operation->setPublisher($user);
                 }
 
-                $manager->persist($operation);
-                $manager->flush();
+                $entityManager->persist($operation);
+                $entityManager->flush();
 
                 $this->addFlash('success', 'The Operation has been created.');
 
@@ -172,7 +173,7 @@ class OperationController extends AbstractBaseController
     {
         $result = true;
 
-        if (!$operation->hasStructure($this->getSchool()?->getStructure())) {
+        if (!$operation->hasStructure($this->schoolManager->getSchool()?->getStructure())) {
             $this->addFlash('danger', sprintf(
                 'Vous n\'avez pas accès l\'opération numero %s avec cette structure',
                 $operation->getId() ?? 'undefined'
@@ -183,17 +184,8 @@ class OperationController extends AbstractBaseController
         return $result;
     }
 
-    /**
-     * Creates a form to edit a Operation entity.
-     *
-     * @param Operation $operation The entity
-     *
-     * @return FormInterface The form
-     */
     private function createEditForm(Operation $operation): FormInterface
     {
-        $operationType = new OperationType();
-        $operationType->setSession($this->get('session'));
         $form = $this->createForm(OperationType::class, $operation, [
             'action' => $this->generateUrl('app_operation_update', ['id' => $operation->getId()]),
             'method' => Request::METHOD_PUT,
@@ -209,7 +201,7 @@ class OperationController extends AbstractBaseController
     {
         $editForm = $this->createEditForm($operation);
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($operation);
             $manager->flush();
@@ -219,15 +211,12 @@ class OperationController extends AbstractBaseController
             return $this->redirect($this->generateUrl('app_operation_show', ['id' => $operation->getId()]));
         }
 
-        return $this->render('operation/update.html.twig', [
+        return $this->render('operation/edit.html.twig', [
             'operation' => $operation,
             'edit_form' => $editForm->createView(),
         ]);
     }
 
-    /**
-     * Page view student.
-     */
     #[Route(path: '/show/{id}', name: 'app_operation_show', methods: ['GET'])]
     public function show(Operation $operation): Response
     {
@@ -242,23 +231,16 @@ class OperationController extends AbstractBaseController
     }
 
     /**
-     * Page view student.
-     *
-     * @throws InvalidArgumentException
+     * @throws AppException
      */
     #[Route(path: '/stats-by-month', name: 'app_operation_statsbymonth', methods: ['GET'])]
     public function statsByMonthly(StatisticsManager $manager): Response
     {
-        $stats = $manager->getStatsByMonth($this->getPeriod(), $this->getSchool());
-
         return $this->render('operation/stats_by_monthly.html.twig', [
-            'stats' => $stats,
+            'stats' => $manager->getStatsByMonth(),
         ]);
     }
 
-    /**
-     * Deletes a School entity.
-     */
     #[Route(path: '/delete/{id}', name: 'app_operation_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Operation $operation): Response
     {
@@ -269,11 +251,13 @@ class OperationController extends AbstractBaseController
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-            $paymentPackageStudent = $operation->getPaymentPackageStudent();
+            $paymentPackageStudents = $operation->getPaymentPackageStudents();
             $manager = $this->getDoctrine()->getManager();
 
-            if (!empty($paymentPackageStudent)) {
-                $manager->remove($paymentPackageStudent);
+            if (null !== $paymentPackageStudents) {
+                foreach ($paymentPackageStudents as $payment) {
+                    $manager->remove($payment);
+                }
                 $manager->flush();
             }
 
@@ -285,19 +269,12 @@ class OperationController extends AbstractBaseController
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
 
-        return $this->render('Operation/delete.html.twig', [
+        return $this->render('operation/delete.html.twig', [
             'operation' => $operation,
             'delete_form' => $deleteForm->createView(),
         ]);
     }
 
-    /**
-     * Creates a form to delete a School entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return FormInterface The form
-     */
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
@@ -311,12 +288,16 @@ class OperationController extends AbstractBaseController
      * @throws AppException
      */
     #[Route(path: '/set-document/{id}/{action}', name: 'app_operation_set_document', methods: ['POST'])]
-    public function setDocument(Request $request, Operation $operation, string $action): JsonResponse
-    {
+    public function setDocument(
+        Request $request,
+        Operation $operation,
+        string $action,
+        DocumentFetcher $documentFetcher
+    ): JsonResponse {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
         try {
-            $document = $this->getDocument($request->get('document'));
+            $document = $documentFetcher->getDocument($request->get('document'));
 
             if ('add' === $action) {
                 $operation->addDocument($document);
@@ -342,25 +323,25 @@ class OperationController extends AbstractBaseController
     public function toValidate(OperationManager $operationManager): Response
     {
         return $this->render('operation/to_valiate.html.twig', [
-            'operation' => $operationManager->toValidate($this->getPeriod()),
+            'operation' => $operationManager->toValidate(),
         ]);
     }
 
+    /**
+     * @throws AppException
+     */
     #[IsGranted('ROLE_ACCOUNTANT')]
-    #[Route(path: '/validate/{id}', name: 'app_operation_validate', methods: ['POST'], options: ['expose' => true])]
+    #[Route(path: '/validate/{id}', name: 'app_operation_validate', options: ['expose' => true], methods: ['POST'])]
     public function validate(Operation $operation, Request $request, Security $security): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
         try {
-            if ($operation->getValidate() instanceof Validate) {
+            if (null !== $operation->getValidate()) {
                 throw new AppException('This operation is already validated');
             }
 
-            // If Opertation is planned
-            $operationDate = $request->get('operation_date');
-
-            if (!empty($operationDate)) {
+            if ($operationDate = $request->get('operation_date')) {
                 $operation->setDate(DateTime::createFromFormat('d/m/Y', $operationDate), true);
                 $response->data['operation_date'] = $operation->getDate()?->format('d/m/Y');
             }

@@ -42,14 +42,14 @@
                     <td>{{ operation.name }}</td>
                     {% if hiddenFields.typeOperation is not defined %}
                         <td>
-                            {% if operation.typeOperation.id > 0 %}
+                            {% if operation.typeOperation.id|default(null) > 0 %}
                                 {% set label = operation.amount > 0 ? 'label-success' : 'label-danger' %}
                             {% endif %}
                             
                             <span class="type-operation label {{ label }}"
-                               title="{{ operation.typeOperation.name }}"
+                               title="{{ operation.typeOperation.name|default('unknow') }}"
                                data-toggle="modal"
-                               data-target="#modalTypeOperation">{{ operation.typeOperation.name }}</span>
+                               data-target="#modalTypeOperation">{{ operation.typeOperation.name|default('unknow') }}</span>
                         </td>
                     {% endif %}
                     {% if hiddenFields.account is not defined %}

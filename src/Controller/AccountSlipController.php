@@ -7,10 +7,15 @@ namespace App\Controller;
 use App\Controller\Base\AbstractBaseController;
 use App\Entity\AccountSlip;
 use App\Exception\AppException;
+use App\Exception\EntityRepositoryNotFoundException;
+use App\Exception\InvalidArgumentException;
+use App\Fetcher\DocumentFetcher;
 use App\Form\AccountSlipEditType;
 use App\Form\AccountSlipType;
+use App\Manager\SchoolManager;
 use App\Manager\TransferManager;
-use App\Services\ResponseRequest;
+use App\Model\ResponseModel;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
@@ -191,8 +196,12 @@ class AccountSlipController extends AbstractBaseController
     }
 
     #[Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
-    public function update(Request $request, AccountSlip $accountSlip, TransferManager $transferManager): Response
-    {
+    public function update(
+        Request $request,
+        AccountSlip $accountSlip,
+        TransferManager $transferManager,
+        SchoolManager $schoolManager,
+    ): Response {
         $editForm = $this->createEditForm($accountSlip);
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -205,9 +214,9 @@ class AccountSlipController extends AbstractBaseController
                     $transferManager->setAccountDebit($editForm->get('accountDebit')->getData());
                 }
 
-                $structure = $this->getEntitySchool()->getStructure();
-
-                $accountSlip->setStructure($structure);
+                if ($structure = $schoolManager->getEntitySchool()->getStructure()) {
+                    $accountSlip->setStructure($structure);
+                }
 
                 $accountSlip = $transferManager
                     ->setAccountSlip($accountSlip)
@@ -273,35 +282,36 @@ class AccountSlipController extends AbstractBaseController
         ]));
     }
 
+    /**
+     * @throws EntityRepositoryNotFoundException
+     * @throws InvalidArgumentException
+     */
     #[Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
-    public function setDocument(Request $request, AccountSlip $accountSlip, string $action): JsonResponse
-    {
-        $result = ResponseRequest::responseDefault();
-        $manager = $this->getDoctrine()->getManager();
-        try {
-            $document = $this->getDocument($request->get('document'));
+    public function setDocument(
+        Request $request,
+        AccountSlip $accountSlip,
+        string $action,
+        DocumentFetcher $documentFetcher,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse {
+        $document = $documentFetcher->getDocument($request->get('document'));
 
-            switch ($action) {
-                case 'add':
-                    $accountSlip->addDocument($document);
-                    $accountSlip->getOperationCredit()?->addDocument($document);
-                    $accountSlip->getOperationDebit()?->addDocument($document);
-                    break;
-                case 'remove':
-                    $accountSlip->removeDocument($document);
-                    break;
-                default:
-                    throw new InvalidDefinitionException('the action '.$action.' is not defined');
-            }
-
-            $manager->persist($accountSlip);
-            $manager->flush();
-
-            $result->success = true;
-        } catch (AppException $e) {
-            $result->errors[] = $e->getMessage();
+        switch ($action) {
+            case 'add':
+                $accountSlip->addDocument($document);
+                $accountSlip->getOperationCredit()?->addDocument($document);
+                $accountSlip->getOperationDebit()?->addDocument($document);
+                break;
+            case 'remove':
+                $accountSlip->removeDocument($document);
+                break;
+            default:
+                throw new InvalidDefinitionException('the action '.$action.' is not defined');
         }
 
-        return new JsonResponse($result);
+        $entityManager->persist($accountSlip);
+        $entityManager->flush();
+
+        return $this->json(new ResponseModel(success: true));
     }
 }

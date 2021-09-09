@@ -10,9 +10,11 @@ use App\Entity\AccountStatement;
 use App\Entity\Operation;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
+use App\Fetcher\DocumentFetcher;
 use App\Form\AccountStatementType;
 use App\Repository\OperationRepository;
 use App\Services\ResponseRequest;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
@@ -45,8 +47,8 @@ class AccountStatementController extends AbstractBaseController
         // Define the number of pages.
         $pages = ceil($count / 20);
         // Get the entries of current page.
-        /** @var AccountStatement[] $accountstatementList */
-        $accountstatementList = $manager
+        /** @var AccountStatement[] $accountStatementList */
+        $accountStatementList = $manager
             ->getRepository(AccountStatement::class)
             ->createQueryBuilder('e')
             ->where('e.title LIKE :title')
@@ -63,7 +65,7 @@ class AccountStatementController extends AbstractBaseController
         return $this->render(
             'account_statement/index.html.twig',
             [
-                'accountstatementList' => $accountstatementList,
+                'accountstatementList' => $accountStatementList,
                 'pages' => $pages,
                 'page' => $page,
                 'search' => $search,
@@ -89,37 +91,37 @@ class AccountStatementController extends AbstractBaseController
     #[Route(path: '/create/{account}', name: 'app_account_statement_create', methods: ['POST'])]
     public function create(Account $account, Request $request): RedirectResponse|Response
     {
-        $accountstatement = new AccountStatement();
-        $accountstatement->setAccount($account);
-        $form = $this->createCreateForm($accountstatement);
+        $accountStatement = new AccountStatement();
+        $accountStatement->setAccount($account);
+        $form = $this->createCreateForm($accountStatement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $accountstatement->setAuthor($this->getUser());
+            $accountStatement->setAuthor($this->getUser());
 
             $manager = $this->getDoctrine()->getManager();
-            $manager->persist($accountstatement);
+            $manager->persist($accountStatement);
             $manager->flush();
 
             $this->addFlash('success', 'The AccountStatement has been created.');
 
             $url = $this->generateUrl('app_account_statement_show', [
-                'id' => $accountstatement->getId(),
+                'id' => $accountStatement->getId(),
             ]);
 
             return $this->redirect($url);
         }
 
         return $this->render('account_statement/new.html.twig', [
-            'accountstatement' => $accountstatement,
+            'accountstatement' => $accountStatement,
             'form' => $form->createView(),
         ]);
     }
 
-    private function createCreateForm(AccountStatement $accountstatement): FormInterface
+    private function createCreateForm(AccountStatement $accountStatement): FormInterface
     {
-        $form = $this->createForm(AccountStatementType::class, $accountstatement, [
+        $form = $this->createForm(AccountStatementType::class, $accountStatement, [
             'action' => $this->generateUrl('app_account_statement_create', [
-                'account' => $accountstatement->getAccount()->getId(),
+                'account' => $accountStatement->getAccount()->getId(),
             ]),
             'method' => Request::METHOD_POST,
         ]);
@@ -132,20 +134,20 @@ class AccountStatementController extends AbstractBaseController
     #[Route(path: '/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
     public function new(Account $account): Response
     {
-        $accountstatement = new AccountStatement();
-        $accountstatement->setAccount($account);
-        $form = $this->createCreateForm($accountstatement);
+        $accountStatement = new AccountStatement();
+        $accountStatement->setAccount($account);
+        $form = $this->createCreateForm($accountStatement);
 
         return $this->render('account_statement/new.html.twig', [
-            'accountstatement' => $accountstatement,
+            'accountstatement' => $accountStatement,
             'form' => $form->createView(),
         ]);
     }
 
     #[Route(path: '/show/{id}', name: 'app_account_statement_show', methods: ['GET'])]
-    public function show(AccountStatement $accountstatement, OperationRepository $operationRepository): Response
+    public function show(AccountStatement $accountStatement, OperationRepository $operationRepository): Response
     {
-        $stats = $operationRepository->getQueryStatsAccountStatement([$accountstatement->getId()])
+        $stats = $operationRepository->getQueryStatsAccountStatement([$accountStatement->getId()])
             ->getQuery()
             ->getArrayResult();
 
@@ -154,15 +156,13 @@ class AccountStatementController extends AbstractBaseController
             'sumCredit' => 0,
             'sumDebit' => 0,
         ] : reset($stats);
-        $operations = $this->getManager()
-            ->getRepository(Operation::class)
-            ->findBy(
-                ['accountStatement' => $accountstatement->getId()],
+        $operations = $operationRepository->findBy(
+                ['accountStatement' => $accountStatement->getId()],
                 ['date' => 'ASC']
             );
 
         return $this->render('account_statement/show.html.twig', [
-            'accountstatement' => $accountstatement,
+            'accountstatement' => $accountStatement,
             'operations' => $operations,
             'statsOperations' => $stats,
         ]);
@@ -179,18 +179,11 @@ class AccountStatementController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to edit a AccountStatement entity.
-     *
-     * @param AccountStatement $accountstatement The entity
-     *
-     * @return FormInterface The form
-     */
-    private function createEditForm(AccountStatement $accountstatement): FormInterface
+    private function createEditForm(AccountStatement $accountStatement): FormInterface
     {
-        $form = $this->createForm(AccountStatementType::class, $accountstatement, [
+        $form = $this->createForm(AccountStatementType::class, $accountStatement, [
             'action' => $this->generateUrl('app_account_statement_update', [
-                'id' => $accountstatement->getId(),
+                'id' => $accountStatement->getId(),
             ]),
             'method' => Request::METHOD_PUT,
         ]);
@@ -200,22 +193,23 @@ class AccountStatementController extends AbstractBaseController
         return $form;
     }
 
-    /**
-     * Edits an existing AccountStatement entity.
-     *
-     * @return RedirectResponse|Response
-     */
     #[Route(path: '/update/{id}', name: 'app_account_statement_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, AccountStatement $accountStatement): Response
-    {
+    public function update(
+        Request $request,
+        AccountStatement $accountStatement,
+        EntityManagerInterface $entityManager
+    ): Response {
         $editForm = $this->createEditForm($accountStatement);
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'The AccountStatement has been updated.');
 
-            return $this->redirect($this->generateUrl('app_account_statement_show', ['id' => $accountStatement->getId()]));
+            return $this->redirect($this->generateUrl(
+                'app_account_statement_show',
+                ['id' => $accountStatement->getId()]
+            ));
         }
 
         return $this->render('account_statement/edit.html.twig', [
@@ -224,9 +218,6 @@ class AccountStatementController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Deletes a AccountStatement entity.
-     */
     #[Route(path: '/delete/{id}', name: 'app_account_statement_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, AccountStatement $accountStatement): RedirectResponse|Response
     {
@@ -248,13 +239,6 @@ class AccountStatementController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to delete a AccountStatement entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return FormInterface The form
-     */
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
@@ -264,9 +248,6 @@ class AccountStatementController extends AbstractBaseController
             ->getForm();
     }
 
-    /**
-     * Redirect the the list URL with the search parameter.
-     */
     #[Route(path: '/search', name: 'app_account_statement_search', methods: ['GET'])]
     public function search(Request $request): RedirectResponse
     {
@@ -280,13 +261,22 @@ class AccountStatementController extends AbstractBaseController
 
     /**
      * @throws InvalidArgumentException
+     * @throws \App\Exception\NotFoundDataException
      */
-    #[Route(path: '/add-document/{id}', name: 'app_account_statement_add_document', methods: ['POST'], options: ['expose' => 'true'])]
-    public function addDocument(Request $request, AccountStatement $accountStatement): JsonResponse
-    {
+    #[Route(
+        path: '/add-document/{id}',
+        name: 'app_account_statement_add_document',
+        methods: ['POST'],
+        options: ['expose' => 'true']
+    )]
+    public function addDocument(
+        Request $request,
+        AccountStatement $accountStatement,
+        DocumentFetcher $documentFetcher
+    ): JsonResponse {
         $response = ResponseRequest::responseDefault();
         $manager = $this->getDoctrine()->getManager();
-        $document = $this->getDocument($request->get('document'));
+        $document = $documentFetcher->getDocument($request->get('document'));
         $accountStatement->addDocument($document);
         $manager->persist($accountStatement);
         $manager->flush();
@@ -301,12 +291,12 @@ class AccountStatementController extends AbstractBaseController
         methods: ['GET', 'POST'],
         options: ['expose' => true]
     )]
-    public function operationsAvailable(AccountStatement $accountStatement): JsonResponse
-    {
+    public function operationsAvailable(
+        AccountStatement $accountStatement,
+        OperationRepository $operationRepository
+    ): JsonResponse {
         $response = ResponseRequest::responseDefault();
-        $operations = $this->getManager()
-            ->getRepository(Operation::class)
-            ->getAvailableToAccountStatement($accountStatement);
+        $operations = $operationRepository->getAvailableToAccountStatement($accountStatement);
         if (!empty($operations)) {
             foreach ($operations as $value) {
                 $value['date'] = $value['date']->format('d/m/Y');

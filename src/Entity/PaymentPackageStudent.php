@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PaymentPackageStudentRepository;
+use App\Traits\AmountEntityTrait;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
@@ -21,6 +22,7 @@ class PaymentPackageStudent
     use TimestampableEntity;
     use CommentEntityTrait;
     use EnableEntityTrait;
+    use AmountEntityTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity=PackageStudentPeriod::class, cascade={"persist"}, inversedBy="payments")
@@ -29,19 +31,19 @@ class PaymentPackageStudent
     private PackageStudentPeriod $packageStudentPeriod;
 
     /**
-     * @ORM\OneToOne(targetEntity=Operation::class, cascade={"persist"}, inversedBy="paymentPackageStudent")
+     * @ORM\ManyToOne(targetEntity=Operation::class, cascade={"persist"}, inversedBy="paymentPackageStudents")
      * @ORM\JoinColumn(nullable=false)
      */
     private Operation $operation;
 
-    public function __construct()
+    public function __toString(): string
     {
-        $this->enable = true;
+        return (string) $this->getId();
     }
 
     public function getAmount(): ?float
     {
-        return $this->operation->getAmount();
+        return $this->amount ?: $this->operation->getAmount();
     }
 
     public function getDate(): ?DateTimeInterface
