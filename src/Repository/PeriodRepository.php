@@ -23,8 +23,6 @@ class PeriodRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get list Students.
-     *
      * @return Period[]
      */
     public function getLastPeriods(Period $period): array
@@ -47,9 +45,6 @@ class PeriodRepository extends ServiceEntityRepository
         return current($periods);
     }
 
-    /**
-     * Get period available.
-     */
     public function getAvailable(): QueryBuilder
     {
         return $this->createQueryBuilder('per')

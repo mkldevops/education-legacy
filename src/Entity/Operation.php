@@ -88,7 +88,7 @@ class Operation
     private ?DateTimeInterface $datePlanned;
 
     /**
-     * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation")
+     * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
      */
     private Collection $paymentPackageStudents;
 

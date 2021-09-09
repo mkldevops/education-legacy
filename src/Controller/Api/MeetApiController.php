@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route(path: 'api/meet')]
 class MeetApiController extends AbstractController
@@ -20,13 +21,13 @@ class MeetApiController extends AbstractController
      * @throws AppException
      */
     #[Route(path: '/update/{id}', options: ['expose' => 'true'], methods: ['POST'])]
-    public function update(Request $request, Meet $meet): JsonResponse
+    public function update(Request $request, Meet $meet, Security $security): JsonResponse
     {
         $result = new ResponseModel();
         try {
             $em = $this->getDoctrine()->getManager();
             $meet->setText($request->get('text'))
-                ->setAuthor($this->getUser());
+                ->setAuthor($security->getUser());
 
             $em->persist($meet);
             $em->flush();

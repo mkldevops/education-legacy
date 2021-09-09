@@ -115,30 +115,21 @@ class PackageStudentPeriod
         return $this;
     }
 
-    /**
-     * Get amount unpaid.
-     */
     public function getUnpaid(): float
     {
-        return $this->amount - $this->discount - $this->getAmountPayments();
+        return $this->student?->getEnable() ? ($this->amount - $this->discount - $this->getAmountPayments()) : 0.00;
     }
 
-    /**
-     * Get amount.
-     */
     public function getAmountPayments(): float|int
     {
         $amount = 0;
         foreach ($this->payments as $payment) {
-            $amount += $payment->getOperation()->getAmount();
+            $amount += $payment->getAmount();
         }
 
         return $amount;
     }
 
-    /**
-     * Get amount unpaid.
-     */
     public function getStatusPayments(): string
     {
         return self::getStatusPaymentsStatic($this->getPercentPayments(), $this->period);
@@ -159,25 +150,16 @@ class PackageStudentPeriod
         return $status;
     }
 
-    /**
-     * Get amount unpaid.
-     */
     public function getPercentPayments(): float
     {
         return ($this->getAmountPayments() + $this->discount) / ($this->amount ?: $this->package->getPrice()) * 100;
     }
 
-    /**
-     * Get discount.
-     */
     public function getDiscount(): float
     {
         return $this->discount;
     }
 
-    /**
-     * Set discount.
-     */
     public function setDiscount(float $discount): static
     {
         $this->discount = $discount;
@@ -185,17 +167,11 @@ class PackageStudentPeriod
         return $this;
     }
 
-    /**
-     * Get paid.
-     */
     public function getPaid(): bool
     {
         return $this->paid;
     }
 
-    /**
-     * Set paid.
-     */
     public function setPaid(bool $paid): static
     {
         $this->paid = $paid;
@@ -203,17 +179,11 @@ class PackageStudentPeriod
         return $this;
     }
 
-    /**
-     * Get paid.
-     */
     public function getPaidStr(): string
     {
         return $this->paid ? 'non' : 'oui';
     }
 
-    /**
-     * Add payments.
-     */
     public function addPayment(PaymentPackageStudent $payments): static
     {
         $this->payments[] = $payments;
@@ -221,17 +191,11 @@ class PackageStudentPeriod
         return $this;
     }
 
-    /**
-     * Remove payments.
-     */
     public function removePayment(PaymentPackageStudent $payments): void
     {
         $this->payments->removeElement($payments);
     }
 
-    /**
-     * Get payments.
-     */
     public function getPayments(): Collection
     {
         return $this->payments;

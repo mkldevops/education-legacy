@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Entity\Operation;
-use App\Entity\Period;
 use App\Exception\AppException;
+use App\Exception\InvalidArgumentException;
 use App\Repository\OperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -19,6 +19,7 @@ class OperationManager
         protected EntityManagerInterface $entityManager,
         protected LoggerInterface $logger,
         protected OperationRepository $repository,
+        private PeriodManager $periodManager,
     ) {
     }
 
@@ -107,9 +108,12 @@ class OperationManager
 
     /**
      * @return Operation[]
+     *
+     * @throws AppException
+     * @throws InvalidArgumentException
      */
-    public function toValidate(Period $period): array
+    public function toValidate(): array
     {
-        return $this->repository->toValidate($period);
+        return $this->repository->toValidate($this->periodManager->getPeriodsOnSession());
     }
 }

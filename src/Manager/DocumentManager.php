@@ -66,16 +66,16 @@ class DocumentManager extends AbstractFullService
         }
 
         $document->setFileName(sha1(uniqid((string) mt_rand(), true)))
-            ->setExtension($document->getFile()->guessClientExtension());
+            ->setExtension($document->getFile()?->guessClientExtension());
 
-        $name = str_replace('.'.$document->getExtension(), '', $document->getFile()->getClientOriginalName());
+        $name = str_replace('.'.$document->getExtension(), '', $document->getFile()?->getClientOriginalName());
 
         if (!empty($document->getPrefix())) {
             $name = $document->getPrefix().' '.$name;
         }
 
         $document->setPath()
-            ->setMime($document->getFile()->getClientMimeType())
+            ->setMime($document->getFile()?->getClientMimeType())
             ->setName($name);
 
         $this->logger->debug(__FUNCTION__, ['document' => $document]);
@@ -84,7 +84,7 @@ class DocumentManager extends AbstractFullService
 
         ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
-        if (0 !== $document->getFile()->getError()) {
+        if (0 !== $document->getFile()?->getError()) {
             $data->errors = [
                 'error' => $document->getFile()->getError(),
                 'message' => $document->getFile()->getErrorMessage(),

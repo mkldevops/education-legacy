@@ -21,7 +21,7 @@ trait PublisherEntityTrait
         return $this->publisher;
     }
 
-    public function setPublisher(User|UserInterface $publisher): self
+    public function setPublisher(User|UserInterface $publisher): static
     {
         $this->publisher = $publisher;
 

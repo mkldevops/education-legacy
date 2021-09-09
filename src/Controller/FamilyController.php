@@ -8,11 +8,15 @@ use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Student;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Form\FamilyType;
 use App\Form\PackageStudentPeriodType;
 use App\Form\StudentType;
 use App\Manager\FamilyManager;
+use App\Manager\Interfaces\FamilyManagerInterface;
+use App\Manager\Interfaces\PaymentPackageStudentManagerInterface;
+use App\Repository\FamilyRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,31 +24,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Family controller.
- */
 #[Route(path: '/family')]
 class FamilyController extends AbstractBaseController
 {
-    /**
-     * Lists all family entities.
-     */
     #[Route(path: '', methods: ['GET'])]
-    public function index(): Response
+    public function index(FamilyRepository $familyRepository): Response
     {
-        /** @var Family[] $families */
-        $families = $this->getDoctrine()->getManager()
-            ->getRepository(Family::class)
-            ->findBy(['enable' => true]);
+        $families = $familyRepository->findBy(['enable' => true]);
 
         return $this->render('family/index.html.twig', [
             'families' => $families,
         ]);
     }
 
-    /**
-     * Creates a new family entity.
-     */
     #[Route(path: '/new', methods: ['GET'])]
     public function new(Request $request): Response
     {
@@ -56,40 +48,26 @@ class FamilyController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to create a Grade entity.
-     */
     private function createCreateForm(Request $request, Family $family): FormInterface
     {
-        $form = $this->createForm(FamilyType::class, $family, [
-            'action' => $this->generateUrl('app_family_create'),
-            'method' => Request::METHOD_POST,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'form.button.create'])
-            ->handleRequest($request);
-
-        return $form;
+        return $this->createForm(FamilyType::class, $family, [
+                'action' => $this->generateUrl('app_family_create'),
+                'method' => Request::METHOD_POST,
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'form.button.create'])
+            ->handleRequest($request)
+            ;
     }
 
     /**
-     * Creates a new family entity.
+     * @throws AppException
      */
     #[Route(path: '/create', methods: ['POST'])]
-    public function create(Request $request): RedirectResponse|Response
+    public function create(Request $request, FamilyManagerInterface $familyManager): RedirectResponse|Response
     {
         $family = new Family();
         $form = $this->createCreateForm($request, $family);
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
-            $family->setAuthor($this->getUser())
-                ->setEnable(true)
-                ->setGenders();
-
-            $em->persist($family);
-            $em->flush();
-
+        if ($familyManager->persistData($family, $form)) {
             $this->addFlash('success', 'The Family has been created.');
 
             return $this->redirectToRoute('app_family_show', ['id' => $family->getId()]);
@@ -102,15 +80,17 @@ class FamilyController extends AbstractBaseController
     }
 
     /**
-     * Finds and displays a family entity.
-     *
      * @throws InvalidArgumentException
+     * @throws AppException
      */
     #[Route(path: '/show/{id}', methods: ['GET'])]
-    public function show(Family $family, FamilyManager $manager): Response
-    {
+    public function show(
+        Family $family,
+        FamilyManager $familyManager,
+        PaymentPackageStudentManagerInterface $paymentPackageStudentManager
+    ): Response {
         $student = new Student();
-        $student->getPerson()->setFamily($family);
+        $student->getPerson()?->setFamily($family);
         $formStudent = $this->createForm(StudentType::class, $student, [
             'action' => $this->generateUrl('app_api_student_create'),
         ]);
@@ -119,20 +99,19 @@ class FamilyController extends AbstractBaseController
         $formPackage = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod, [
             'action' => $this->generateUrl('app_api_package_student_period_create'),
         ]);
-        $persons = $manager->getPersons($family, $this->getPeriod());
-        //$packages = $manager->getPackages($persons, $this->getPeriod());
+        $persons = $familyManager->getPersons($family, $this->getPeriod());
+        $packages = $familyManager->getPackages($persons, $this->getPeriod());
+
         return $this->render('family/show.html.twig', [
             'family' => $family,
             'persons' => $persons,
+            'packages' => $packages,
             'period' => $this->getPeriod(),
             'formStudent' => $formStudent->createView(),
             'formPackage' => $formPackage->createView(),
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing family entity.
-     */
     #[Route(path: '/edit/{id}', methods: ['GET'])]
     public function edit(Request $request, Family $family): Response
     {
@@ -144,9 +123,6 @@ class FamilyController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to create a Grade entity.
-     */
     private function createEditForm(Request $request, Family $family): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
@@ -160,9 +136,6 @@ class FamilyController extends AbstractBaseController
         return $form;
     }
 
-    /**
-     * Displays a form to edit an existing family entity.
-     */
     #[Route(path: '/{id}/update', methods: ['POST'])]
     public function update(Request $request, Family $family): RedirectResponse|Response
     {
@@ -179,9 +152,6 @@ class FamilyController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Deletes a family entity.
-     */
     #[Route(path: '/delete/{id}', methods: ['DELETE'])]
     public function delete(Request $request, Family $family): RedirectResponse
     {
@@ -196,11 +166,6 @@ class FamilyController extends AbstractBaseController
         return $this->redirectToRoute('app_family_index');
     }
 
-    /**
-     * Creates a form to delete a family entity.
-     *
-     * @param Family $family The family entity
-     */
     private function createDeleteForm(Family $family): FormInterface
     {
         return $this->createFormBuilder()

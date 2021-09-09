@@ -13,7 +13,7 @@ trait AmountEntityTrait
      */
     protected float $amount = 0.00;
 
-    public function getAmount(): ?float
+    public function getAmount(): float
     {
         return $this->amount;
     }

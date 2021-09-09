@@ -16,6 +16,7 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -58,12 +59,12 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private DateTimeInterface $lastLogin;
+    #[Ignore]
+    private ?DateTimeInterface $lastLogin = null;
 
     public function __construct()
     {
         $this->schoolAccessRight = new ArrayCollection();
-        $this->enable = true;
     }
 
     public function __toString(): string
@@ -88,11 +89,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getUsername(): string
     {
         return (string) $this->username;
@@ -106,7 +102,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return mixed[]
+     * @return string[]
      */
     public function getRoles(): array
     {
@@ -117,7 +113,7 @@ class User implements UserInterface
     }
 
     /**
-     * @param mixed[] $roles
+     * @param string[] $roles
      */
     public function setRoles(array $roles): self
     {
@@ -160,7 +156,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getLastLogin(): DateTimeInterface
+    public function getLastLogin(): ?DateTimeInterface
     {
         return $this->lastLogin;
     }
