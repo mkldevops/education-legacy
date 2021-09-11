@@ -46,7 +46,7 @@ class AppealCourse
 
     public function __toString(): string 
     {
-        return sprintf('%s %s', $this->course->__toString(), $this->student__toString());
+        return sprintf('%s %s', $this->course->__toString(), $this->student->__toString());
     }
 
     public function getCourse(): Course
