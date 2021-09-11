@@ -37,9 +37,11 @@ class PaymentPackageStudentApiController extends AbstractController
         $this->createForm(OperationPaymentStudentType::class, $operation)
             ->handleRequest($request);
 
-        $packages = $manager->familyPayments($operation, $family, $period);
+        $familyPayment = $manager->familyPayments($operation, $family, $period);
 
-        return $this->json($packages, context: [
+        return $this->json([
+            'payments' => $familyPayment->payments
+        ], context: [
             'ignore' => [],
             'circular_reference_handler' => fn ($object) => $object->__toString(),
         ]);

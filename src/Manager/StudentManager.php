@@ -26,7 +26,7 @@ class StudentManager
     }
 
     /**
-     * @return mixed[]
+     * @return int[]
      */
     public function dataPayementsStudents(array $students, Period $period): array
     {

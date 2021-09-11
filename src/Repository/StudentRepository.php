@@ -118,9 +118,9 @@ class StudentRepository extends ServiceEntityRepository
                 'prs',
             ])
             ->addSelect('CASE WHEN std.enable > 0 
-                THEN (psp.amount - psp.discount) ELSE SUM(ope.amount) END AS amountTotal')
+                THEN (psp.amount - psp.discount) ELSE SUM(psp.amount) END AS amountTotal')
             ->addSelect('COUNT(pps.id) AS numberPayment')
-            ->addSelect('SUM(ope.amount) AS paymentTotal')
+            ->addSelect('SUM(pps.amount) AS paymentTotal')
             ->innerJoin('std.packagePeriods', 'psp')
             ->innerJoin('psp.package', 'pck')
             ->innerJoin('psp.period', 'per')

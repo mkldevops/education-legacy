@@ -19,6 +19,8 @@ use App\Form\FamilyType;
 use App\Form\PackageStudentPeriodType;
 use App\Form\StudentCommentSimpleType;
 use App\Form\StudentType;
+use App\Manager\PeriodManager;
+use App\Manager\SchoolManager;
 use App\Manager\StudentManager;
 use App\Repository\ClassPeriodRepository;
 use App\Repository\PackageRepository;
@@ -42,6 +44,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/student')]
 class StudentController extends AbstractBaseController
 {
+    public function __construct(
+        protected SchoolManager $schoolManager,
+        protected PeriodManager $periodManager,
+    ) {
+    }
+
     /**
      * @throws AppException
      * @throws InvalidArgumentException
@@ -50,8 +58,8 @@ class StudentController extends AbstractBaseController
     #[Route(path: '', name: 'app_student_index', methods: ['GET'])]
     public function index(StudentRepository $studentRepository, ClassPeriodRepository $classPeriodRepository): Response
     {
-        $period = $this->getPeriod();
-        $school = $this->getSchool();
+        $period = $this->periodManager->getPeriodsOnSession();
+        $school = $this->schoolManager->getSchool();
         $students = $studentRepository->getListStudents($period, $school);
         $classPeriods = $classPeriodRepository->getClassPeriods($period, $school);
 
@@ -83,18 +91,20 @@ class StudentController extends AbstractBaseController
     #[IsGranted('ROLE_ACCOUNTANT')]
     #[IsGranted('ROLE_DIRECTOR')]
     #[Route('/payment-list', name: 'app_student_payment_list', methods: ['GET'])]
-    public function paymentList(StudentManager $studentManager, StudentRepository $studentRepository): Response
-    {
+    public function paymentList(
+        StudentManager $studentManager,
+        StudentRepository $studentRepository
+    ): Response {
         ini_set('memory_limit', '-1');
 
-        $period = $this->getPeriod();
-        $school = $this->getSchool();
+        $period = $this->periodManager->getPeriodsOnSession();
+        $school = $this->schoolManager->getSchool();
         $students = $studentRepository->getPaymentList($period, $school);
         $studentsWithoutPackage = $studentRepository->getListStudentsWithoutPackagePeriod($period, $school);
         $listPayment = $studentManager->dataPayementsStudents($students, $period);
 
         return $this->render('student/payment_list.html.twig', [
-            'period' => $this->getPeriod(),
+            'period' => $period,
             'listPayment' => $listPayment,
             'studentsWithoutPackage' => $studentsWithoutPackage,
         ]);
