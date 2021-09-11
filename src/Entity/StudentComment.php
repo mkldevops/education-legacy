@@ -47,6 +47,11 @@ class StudentComment
         $this->enable = true;
     }
 
+    public function __toString(): string
+    {
+        return sprintf('%s %s', $this->id, $this->student->__toString());
+    }
+
     public function getTitle(): ?string
     {
         return $this->title;
