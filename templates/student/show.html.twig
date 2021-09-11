@@ -45,7 +45,7 @@
                         <dt>Prénom</dt> <dd>{{ student.forname }}</dd>
                         <dt>Sexe</dt> <dd>{{ student.genderCode }}</dd>
                         <dt>Niveau</dt> <dd>{{ student.grade.name }}</dd>
-                        <dt>Date de naissance</dt> <dd>{{ student.birthday.format('d/m/Y') }} <strong>({{ student.getAge() }} ans)</strong> à {{ student.birthplace }}</dd>
+                        <dt>Date de naissance</dt> <dd>{{ student.birthday.format('d/m/Y')|default('---') }} <strong>({{ student.getAge() }} ans)</strong> à {{ student.birthplace }}</dd>
                         <dt>E-mail</dt> <dd>{{ student.email }}</dd>
                         <dt>{{ 'show.label.lastschool'|trans }}</dt> <dd>{{ student.lastSchool }}</dd>
                         <dt>Etat</dt> <dd>{{ student.getStatusLabel() }} <em>{{ student.enable is empty ? student.dateDesactivated.format('d/m/Y à H:i:s') : '' }}</em></dd>
