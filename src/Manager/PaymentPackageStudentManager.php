@@ -9,17 +9,21 @@ use App\Entity\Operation;
 use App\Entity\PaymentPackageStudent;
 use App\Entity\Period;
 use App\Entity\TypeOperation;
+use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Manager\Interfaces\PaymentPackageStudentManagerInterface;
+use App\Model\FamilyPaymentModel;
 use App\Repository\PackageStudentPeriodRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TypeOperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
 
 class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterface
 {
     public function __construct(
+        private LoggerInterface $logger,
         private PackageStudentPeriodRepository $packageStudentPeriodRepository,
         private StudentRepository $studentRepository,
         private TypeOperationRepository $typeOperationRepository,
@@ -30,31 +34,13 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
 
     /**
      * @throws InvalidArgumentException
+     * @throws AppException
      */
-    public function familyPayments(Operation $operation, Family $family, Period $period): array
+    public function familyPayments(Operation $operation, Family $family, Period $period): FamilyPaymentModel
     {
         $students = $this->studentRepository->findByFamily($family);
         $packages = $this->packageStudentPeriodRepository->findBy(['period' => $period, 'student' => $students]);
-
-        $toDue = $this->calculToDue($packages, ($toPay = $operation->getAmount()));
-        $amountRest = $toPay % count($packages);
-        $amountByStudent = ($toPay - $amountRest) / count($packages);
-
-        $payments = [];
-        foreach ($packages as $package) {
-            if (($student = $package->getStudent()?->getId()) === null) {
-                continue;
-            }
-
-            $payment = (new PaymentPackageStudent())
-                ->setAmount((($amountRest-- > 0) ? 1 : 0) + $amountByStudent)
-                ->setOperation($operation)
-                ->setPackageStudentPeriod($package)
-            ;
-            $payments[$student] = $payment->getAmount();
-            $toDue -= $payment->getAmount();
-            $this->entityManager->persist($payment);
-        }
+        $familyPaymentModel = $this->persistPayments(family: $family, packages: $packages, operation: $operation);
 
         if (($user = $this->security->getUser()) !== null) {
             $operation->setPublisher($user);
@@ -64,26 +50,55 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
         ])) {
             $operation->setTypeOperation($typeOperation);
         }
+        $operation->setName(sprintf('[%s] %s', $period->__toString(), $family->__toString()));
         $this->entityManager->persist($operation);
         $this->entityManager->flush();
 
-        return ['toDue' => $toDue, 'payments' => $payments];
+        return $familyPaymentModel;
     }
 
     /**
      * @throws InvalidArgumentException
+     * @throws AppException
      */
-    protected function calculToDue(array $packages, float $toPay): float
+    protected function persistPayments(Family $family, array $packages, Operation $operation): FamilyPaymentModel
     {
-        $toDue = 0.00;
-        foreach ($packages as $package) {
-            $toDue += $package->getUnpaid();
+        $familyPaymentModel = new FamilyPaymentModel(operation: $operation, family: $family, packages: $packages);
+        $amountRest = $familyPaymentModel->toPay % count($familyPaymentModel->packages);
+        $amountByStudent = ($familyPaymentModel->toPay - $amountRest) / count($familyPaymentModel->packages);
+
+        foreach ($familyPaymentModel->packages as $package) {
+            if (($student = $package->getStudent()?->getId()) === null) {
+                continue;
+            }
+
+            $amount  = $amountRest + $amountByStudent;
+            $amountRest = 0;
+            if ($package->getUnpaid() < $amount) {
+                $amountRest += ($amount - $package->getUnpaid());
+                $amount = $package->getUnpaid();
+            }
+
+            $this->logger->debug(__METHOD__, [
+                'unpaid' => $package->getUnpaid(),
+                'amount' => $amount,
+                'amountRest' => $amountRest
+            ]);
+
+            $payment = (new PaymentPackageStudent())
+                ->setAmount($amount)
+                ->setOperation($familyPaymentModel->operation)
+                ->setPackageStudentPeriod($package)
+            ;
+            $familyPaymentModel->payments[$student] = $payment->getAmount();
+            $familyPaymentModel->toDue -= $payment->getAmount();
+            $this->entityManager->persist($payment);
         }
 
-        if ($toPay > $toDue) {
-            throw new InvalidArgumentException(sprintf('Amount that you want to pay (%d €) is too high that you due amount (%d €)', $toPay, $toDue));
+        if ($amountRest > 0) {
+            throw new AppException('Rest amount is not equal to zero');
         }
 
-        return $toDue;
+        return $familyPaymentModel;
     }
 }

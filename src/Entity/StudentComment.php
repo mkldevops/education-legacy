@@ -49,7 +49,7 @@ class StudentComment
 
     public function __toString(): string
     {
-        return sprintf('%s %s', $this->id, $this->student->__toString());
+        return sprintf('%s %s', (string) $this->id, (string) $this->student?->__toString());
     }
 
     public function getTitle(): ?string
