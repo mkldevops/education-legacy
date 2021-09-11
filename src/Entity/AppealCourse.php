@@ -44,6 +44,11 @@ class AppealCourse
      */
     private int $status = self::STATUS_NOTHING;
 
+    public function __toString(): string 
+    {
+        return sprintf('%s %s', $this->course->__toString(), $this->student__toString());
+    }
+
     public function getCourse(): Course
     {
         return $this->course;
