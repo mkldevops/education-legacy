@@ -65,7 +65,7 @@ class TransferManager
 
         try {
             $this->create();
-        } catch (AlreadyExistsException | NonUniqueResultException $e) {
+        } catch (AlreadyExistsException|NonUniqueResultException $e) {
             $this->logger->info(__FUNCTION__.' - '.$e->getMessage());
         }
 
@@ -97,6 +97,7 @@ class TransferManager
             );
 
             $this->setAccountSlip($result);
+
             throw new AlreadyExistsException($msg);
         }
 

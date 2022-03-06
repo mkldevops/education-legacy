@@ -18,16 +18,12 @@
 
 #files
 *~
-
-###> squizlabs/php_codesniffer ###
-/.phpcs-cache
-/phpcs.xml
-###< squizlabs/php_codesniffer ###
 .scannerwork/
 
 ###> friendsofphp/php-cs-fixer ###
 /.php_cs
-/.php_cs.cache
+/.phpcs-cache
+/.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
 ###> symfony/phpunit-bridge ###

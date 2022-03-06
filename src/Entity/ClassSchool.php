@@ -117,6 +117,7 @@ class ClassSchool
         foreach ($this->classPeriods as $classPeriod) {
             if ($classPeriod->getPeriod()->getId() === $period->getId()) {
                 $current = $classPeriod;
+
                 break;
             }
         }

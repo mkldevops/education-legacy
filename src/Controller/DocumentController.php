@@ -175,6 +175,7 @@ class DocumentController extends AbstractBaseController
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
+
         try {
             $response->data = $em->getRepository(Document::class)
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0));
@@ -193,6 +194,7 @@ class DocumentController extends AbstractBaseController
     {
         $document = new Document();
         $response = ResponseModel::responseDefault(['upload' => null, 'document' => null]);
+
         try {
             $manager = $this->getManager();
             $school = $this->getEntitySchool();
@@ -215,9 +217,10 @@ class DocumentController extends AbstractBaseController
                 ->setSuccess(true);
         } catch (Exception $e) {
             $documentManager->getLogger()->error($e->getMessage(), [
-                'class' => get_class($e),
+                'class' => $e::class,
                 'trace' => $e->getTraceAsString(),
             ]);
+
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 

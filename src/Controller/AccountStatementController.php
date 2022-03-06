@@ -327,6 +327,7 @@ class AccountStatementController extends AbstractBaseController
     public function treatmentOperations(array $operationsId, AccountStatement $accountStatement = null): JsonResponse
     {
         $response = new Response();
+
         try {
             $response = ResponseRequest::responseDefault([
                 'nbOperations' => count($operationsId),

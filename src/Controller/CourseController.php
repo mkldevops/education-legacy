@@ -62,6 +62,7 @@ class CourseController extends AbstractBaseController
     public function generate(Request $request, CourseManager $courseManager): Response
     {
         set_time_limit(0);
+
         try {
             $courseManager->getGoogleCalendar()->getClient();
         } catch (AppException $e) {

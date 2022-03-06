@@ -147,6 +147,7 @@ class OperationController extends AbstractBaseController
             }
         } catch (Exception $e) {
             $this->addFlash('danger', 'The Operation haven\'t been created. because : '.$e->getMessage());
+
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
 
@@ -296,6 +297,7 @@ class OperationController extends AbstractBaseController
     ): JsonResponse {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
+
         try {
             $document = $documentFetcher->getDocument($request->get('document'));
 
@@ -336,6 +338,7 @@ class OperationController extends AbstractBaseController
     {
         $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
+
         try {
             if (null !== $operation->getValidate()) {
                 throw new AppException('This operation is already validated');

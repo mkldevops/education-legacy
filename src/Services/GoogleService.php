@@ -92,6 +92,7 @@ class GoogleService extends AbstractService
             // Check to see if there was an error.
             if (empty($accessToken) || array_key_exists('error', $accessToken)) {
                 $msg = sprintf("Obtain your authCode with :\n \"%s\"", $authUrl);
+
                 throw new AppException(sprintf("%s  \n %s", $msg, json_encode(['accessToken' => $accessToken])));
             }
 

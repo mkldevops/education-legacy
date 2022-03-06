@@ -72,7 +72,7 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
                 continue;
             }
 
-            $amount  = $amountRest + $amountByStudent;
+            $amount = $amountRest + $amountByStudent;
             $amountRest = 0;
             if ($package->getUnpaid() < $amount) {
                 $amountRest += ($amount - $package->getUnpaid());
@@ -82,7 +82,7 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
             $this->logger->debug(__METHOD__, [
                 'unpaid' => $package->getUnpaid(),
                 'amount' => $amount,
-                'amountRest' => $amountRest
+                'amountRest' => $amountRest,
             ]);
 
             $payment = (new PaymentPackageStudent())

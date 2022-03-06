@@ -22,14 +22,6 @@ RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/inst
 
 EXPOSE 80
 
-# CRON
-RUN apt install -y cron
-COPY docker/cron /etc/cron.d/cron
-RUN chmod 0644 /etc/cron.d/cron
-RUN crontab /etc/cron.d/cron
-RUN touch /var/log/cron.log
-RUN sed -i 's/^exec /service cron start\n\nexec /' /usr/local/bin/apache2-foreground
-
 WORKDIR /var/www/html/
 COPY ./ /var/www/html
 
@@ -37,7 +29,7 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/apache.conf /etc/apache2/conf-available/z-app.conf
 
-RUN make install
+#RUN make install
 
 RUN a2enmod rewrite remoteip && \
     a2enconf z-app

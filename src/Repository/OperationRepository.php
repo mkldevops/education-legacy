@@ -106,7 +106,7 @@ class OperationRepository extends ServiceEntityRepository
                 ->andWhere('ope.accountStatement is null')
                 ->getQuery()
                 ->getSingleResult(Query::HYDRATE_ARRAY);
-        } catch (NoResultException | NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
             throw new AppException(sprintf('%s Error on query', __FUNCTION__), (int) $e->getCode(), $e);
         }
 

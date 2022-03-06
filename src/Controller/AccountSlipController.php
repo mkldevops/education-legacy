@@ -301,9 +301,11 @@ class AccountSlipController extends AbstractBaseController
                 $accountSlip->addDocument($document);
                 $accountSlip->getOperationCredit()?->addDocument($document);
                 $accountSlip->getOperationDebit()?->addDocument($document);
+
                 break;
             case 'remove':
                 $accountSlip->removeDocument($document);
+
                 break;
             default:
                 throw new InvalidDefinitionException('the action '.$action.' is not defined');

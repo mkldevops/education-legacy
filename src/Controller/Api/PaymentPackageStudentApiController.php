@@ -40,7 +40,7 @@ class PaymentPackageStudentApiController extends AbstractController
         $familyPayment = $manager->familyPayments($operation, $family, $period);
 
         return $this->json([
-            'payments' => $familyPayment->payments
+            'payments' => $familyPayment->payments,
         ], context: [
             'ignore' => [],
             'circular_reference_handler' => fn ($object) => $object->__toString(),

@@ -22,6 +22,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
     {
         $this->logger->info(__FUNCTION__);
         $response = $this->json([]);
+
         try {
             $packageStudentPeriod = (new PackageStudentPeriod())
                 ->setPeriod($this->getEntityPeriod())
@@ -72,6 +73,7 @@ class PackageStudentPeriodApiController extends AbstractBaseController
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);
         $response = $this->json([]);
+
         try {
             $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
                 ->handleRequest($request);

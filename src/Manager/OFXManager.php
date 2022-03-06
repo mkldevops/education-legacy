@@ -68,6 +68,7 @@ class OFXManager
 
                     if (!self::isTransfer($transaction->name)) {
                         $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ALREADY];
+
                         continue;
                     }
                 }
@@ -139,6 +140,7 @@ class OFXManager
                 $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
             } catch (Exception $e) {
                 $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+
                 throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }

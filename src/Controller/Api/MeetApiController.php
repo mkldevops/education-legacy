@@ -24,6 +24,7 @@ class MeetApiController extends AbstractController
     public function update(Request $request, Meet $meet, Security $security): JsonResponse
     {
         $result = new ResponseModel();
+
         try {
             $em = $this->getDoctrine()->getManager();
             $meet->setText($request->get('text'))

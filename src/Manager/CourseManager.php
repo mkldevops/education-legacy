@@ -116,6 +116,7 @@ class CourseManager extends AbstractFullService
             if (!$classPeriod instanceof ClassPeriod) {
                 $this->logger->warning(__FUNCTION__.' Not found class period : '.$name);
                 unset($course);
+
                 continue;
             }
 

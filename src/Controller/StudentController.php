@@ -423,11 +423,13 @@ class StudentController extends AbstractBaseController
         switch ($request->get('action')) {
             case 'delete':
                 $student->removePhone($request->get('key'));
+
                 break;
 
             case 'add':
             default:
                 $student->addPhone($request->get('student_phone'));
+
                 break;
         }
 

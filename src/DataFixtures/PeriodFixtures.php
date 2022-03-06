@@ -7,7 +7,6 @@ namespace App\DataFixtures;
 use App\Entity\Period;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 

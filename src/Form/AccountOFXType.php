@@ -55,6 +55,7 @@ class AccountOFXType extends AbstractType
                 }
             } catch (Exception $e) {
                 $form->get('file')->addError(new FormError($e->getMessage()));
+
                 throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         };

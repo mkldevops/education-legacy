@@ -411,7 +411,7 @@ class Document
     /**
      * Get persons.
      *
-     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\Person[]
+     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\Person[]
      */
     public function getPersons()
     {
@@ -439,7 +439,7 @@ class Document
     /**
      * Get operations.
      *
-     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\Operation[]
+     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\Operation[]
      */
     public function getOperations()
     {
@@ -455,16 +455,20 @@ class Document
             case 'image/png':
             case 'image/jpeg':
                 $faIcon = 'fa-file-image-o';
+
                 break;
             case 'application/pdf':
                 $faIcon = 'fa-file-pdf-o';
+
                 break;
             case 'audio/mpeg':
                 $faIcon = 'fa-file-audio-o ';
+
                 break;
 
             default:
                 $faIcon = 'fa-file-o';
+
                 break;
         }
 
@@ -519,7 +523,7 @@ class Document
     /**
      * Get accountStatements.
      *
-     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\AccountStatement[]
+     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\AccountStatement[]
      */
     public function getAccountStatements()
     {
@@ -547,7 +551,7 @@ class Document
     /**
      * Get accountSlips.
      *
-     * @return mixed[]|\Doctrine\Common\Collections\Collection&\App\Entity\AccountSlip[]
+     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\AccountSlip[]
      */
     public function getAccountSlips()
     {

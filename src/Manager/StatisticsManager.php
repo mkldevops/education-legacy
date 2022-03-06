@@ -47,6 +47,7 @@ class StatisticsManager
                 $stats->addData($dataStats);
             } catch (Exception $e) {
                 $this->logger->error(__METHOD__.' '.$e->getMessage(), compact($operation));
+
                 throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
             }
         }

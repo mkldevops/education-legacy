@@ -55,6 +55,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         } catch (NonUniqueResultException $e) {
             $msg = 'Not found class period with name : '.$name;
             $this->logger->error($msg, compact('name', 'period', 'school'));
+
             throw new AppException($msg, (int) $e->getCode(), $e);
         }
     }
@@ -111,6 +112,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
     public function getNbCourses(ClassPeriod $classPeriod, DateTimeInterface $from): ?int
     {
         $courses = null;
+
         try {
             $courses = (int) $this->courseRepository
                 ->createQueryBuilder('c')
@@ -122,7 +124,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                 ->getQuery()
                 ->getSingleScalarResult();
             $this->logger->debug(__FUNCTION__.' length total courses : '.$courses);
-        } catch (NonUniqueResultException | NoResultException $e) {
+        } catch (NonUniqueResultException|NoResultException $e) {
             $this->logger->error($e->getMessage());
         }
 

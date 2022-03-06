@@ -54,6 +54,7 @@ class DashboardManager extends AbstractFullService
                     $menu2['active'] = true;
                     $menu['active'] = true;
                     $found = true;
+
                     break;
                 }
 
@@ -160,6 +161,7 @@ class DashboardManager extends AbstractFullService
             yield 'document' => $this->documentRepository->search($search);
         } catch (Exception $e) {
             $this->logger->error(__METHOD__.' '.$e->getMessage());
+
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }

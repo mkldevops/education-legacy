@@ -54,6 +54,7 @@ class FamilyManager implements FamilyManagerInterface
 
         if (!$form->isValid()) {
             $this->logger->debug(__METHOD__.' Form family invalid', ['errors' => $form->getErrors()]);
+
             throw new AppException('The form is not valid '.$form->getErrors());
         }
 

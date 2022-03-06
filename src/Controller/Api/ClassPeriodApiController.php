@@ -57,6 +57,7 @@ class ClassPeriodApiController extends AbstractBaseController
             ]);
         } catch (Exception $e) {
             $this->getLogger()->error(__METHOD__.' '.$e->getMessage(), $e->getTrace());
+
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }

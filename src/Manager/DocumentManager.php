@@ -125,6 +125,7 @@ class DocumentManager extends AbstractFullService
         $error = false;
         $preview = null;
         $thumb = null;
+
         try {
             $img = new Imagick($filepath);
 

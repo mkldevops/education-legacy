@@ -30,6 +30,7 @@ class GoogleDriveService extends GoogleService
     public function getListFiles(array $params): array
     {
         $files = [];
+
         try {
             $drive = new Google_Service_Drive($this->getClient());
             $googleListFiles = $drive->files->listFiles($params);
@@ -37,10 +38,12 @@ class GoogleDriveService extends GoogleService
             if (!$googleListFiles instanceof Google_Service_Drive_FileList) {
                 $msg = ' Error on get files to google drive';
                 $this->logger->error(__METHOD__.$msg, ['files' => $files, 'params' => $params]);
+
                 throw new AppException($msg);
             }
         } catch (Exception $e) {
             $this->logger->error(__METHOD__.' '.$e->getMessage(), ['params' => $params]);
+
             throw new AppException($e->getMessage(), $e->getCode(), $e);
         }
 

@@ -21,6 +21,7 @@ class OperationApiController extends AbstractBaseController
     public function update(Request $request, Operation $operation, OperationManager $operationManager): JsonResponse
     {
         $result = new ResponseModel();
+
         try {
             $data = json_decode($request->getContent(), true);
 
