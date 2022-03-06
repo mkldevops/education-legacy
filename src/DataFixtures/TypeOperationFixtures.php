@@ -23,6 +23,7 @@ class TypeOperationFixtures extends AbstractAppFixtures
         foreach (self::getData() as $item) {
             $parent = null;
             if (!empty($item['PARENT'])) {
+                /** @var TypeOperation $parent */
                 $parent = $this->getReference(self::getKey($item['PARENT']));
             }
 
@@ -32,9 +33,9 @@ class TypeOperationFixtures extends AbstractAppFixtures
                 ->setDescription($item['DESCRIPTION'])
                 ->setName($item['NAME'])
                 ->setTypeAmount($item['TYPE_AMOUNT'])
-                ->setIsInternalTransfert($item['INTERNAL_TRANSFERT'])
+                ->setIsInternalTransfert((bool) $item['INTERNAL_TRANSFERT'])
                 ->setShortName($item['SHORT_NAME'])
-                ->setStatus($item['STATUS'])
+                ->setEnable((bool) $item['STATUS'])
                 ->setParent($parent);
 
             $manager->persist($entity);

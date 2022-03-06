@@ -57,7 +57,7 @@ class CheckDataListener
     {
         return $this->translator->trans(
             $class.($text ? '.'.$text : null),
-            ['%url%' => $this->urlGenerator->generate('easyadmin', ['entity' => $class])],
+            ['%url%' => $this->urlGenerator->generate('app_admin_dashboard_index', ['entity' => $class])],
             'check_data'
         );
     }

@@ -3,7 +3,7 @@
   username: robot
   email: robot@robot.com
   enable: 1
-  password: "$argon2i$v=19$m=65536,t=4,p=1$QzdGWC92alNhWGpBZ0ZUZg$kqJqs+cHc7KXKKoQ5c3TEQnefce0+V1wcRonTSfjZgI"
+  password: "robot"
   last_login:
   roles: [ "ROLE_SUPER_ADMIN" ]
   name: Robot
@@ -14,9 +14,9 @@
   deleted_at:
 - id: 1
   username: fardus
-  email: h.fahari@gmail.com
+  email: !php/const App\DataFixtures\UserFixtures::EMAIL
   enable: 1
-  password: "$argon2i$v=19$m=65536,t=4,p=1$QzdGWC92alNhWGpBZ0ZUZg$kqJqs+cHc7KXKKoQ5c3TEQnefce0+V1wcRonTSfjZgI"
+  password: "test"
   last_login: '2019-09-08 12:51:07'
   roles: [ "ROLE_SUPER_ADMIN" ]
   name: Hamada Sidi

@@ -1,9 +1,9 @@
-FROM php:8.0-apache
+FROM php:8.1-apache
 
 RUN usermod -u 48 www-data && groupmod -g 48 www-data
 RUN mkdir -p -m 777 /opt/apache/sessiontmp5/
 
-RUN apt update && apt install -y zip curl vim mycli git --no-install-recommends
+RUN apt update && apt install -y zip curl vim mycli git zsh --no-install-recommends
 RUN apt install -y zlib1g-dev libmagickwand-dev libzip-dev --no-install-recommends
 
 RUN apt-get update && apt-get install -y libpng-dev
@@ -13,19 +13,12 @@ RUN apt-get install -y \
     libpng-dev libxpm-dev \
     libfreetype6-dev
 
-RUN docker-php-ext-configure gd      --with-jpeg      --with-freetype
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN docker-php-ext-install gd
+RUN install-php-extensions gd opcache pdo_mysql zip intl imagick @composer
 
 # Install ZSH
-RUN apt install -y zsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-RUN docker-php-ext-install -j$(nproc) opcache pdo_mysql zip intl
-
-RUN mkdir -p /usr/src/php/ext/imagick; \
-    curl -fsSL https://github.com/Imagick/imagick/archive/06116aa24b76edaf6b1693198f79e6c295eda8a9.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
-    docker-php-ext-install imagick;
 
 EXPOSE 80
 
@@ -36,8 +29,6 @@ RUN chmod 0644 /etc/cron.d/cron
 RUN crontab /etc/cron.d/cron
 RUN touch /var/log/cron.log
 RUN sed -i 's/^exec /service cron start\n\nexec /' /usr/local/bin/apache2-foreground
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html/
 COPY ./ /var/www/html

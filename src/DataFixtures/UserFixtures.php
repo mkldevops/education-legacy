@@ -7,14 +7,17 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Exception\AppException;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-/**
- * Class Users.
- *
- * @author fardus
- */
 class UserFixtures extends AbstractAppFixtures
 {
+    public const EMAIL = 'h.fahari@gmail.com';
+
+    public function __construct(
+        private UserPasswordHasherInterface $hasher
+    ) {
+    }
+
     /**
      * @throws AppException
      */
@@ -22,13 +25,14 @@ class UserFixtures extends AbstractAppFixtures
     {
         foreach (self::getData() as $i => $item) {
             // On crée l'utilisateur
-            $entity = (new User())
+            $entity = new User();
+            $entity
                 ->setUsername($item['username'])
                 ->setEmail($item['email'])
                 ->setName($item['name'])
                 ->setSurname($item['surname'])
-                ->setPassword($item['password'])
-                ->setEnable($item['enable']);
+                ->setPassword($this->hasher->hashPassword($entity, $item['password']))
+                ->setEnable((bool) $item['enable']);
 
             if (is_array($item['roles'])) {
                 foreach ($item['roles'] as $role) {

@@ -8,6 +8,7 @@ use App\Exception\AppException;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use ReflectionClass;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Yaml;
 
 abstract class AbstractAppFixtures extends Fixture
 {
@@ -16,7 +17,7 @@ abstract class AbstractAppFixtures extends Fixture
     /**
      * @throws AppException
      */
-    public static function getKey(string $key): string
+    public static function getKey(string|int $key): string
     {
         if (!array_key_exists($key, self::getData())) {
             throw new AppException(sprintf('Not found key "%s" in %s', $key, self::getPath()));
@@ -37,7 +38,7 @@ abstract class AbstractAppFixtures extends Fixture
 
         $yaml = new Parser();
 
-        return $yaml->parseFile($pathFile) ?? [];
+        return $yaml->parseFile($pathFile, Yaml::PARSE_CONSTANT) ?? [];
     }
 
     private static function getPath(): string

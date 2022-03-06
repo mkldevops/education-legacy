@@ -30,7 +30,7 @@ class ClassPeriodCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield IntegerField::new('id', 'ID');
+        yield IntegerField::new('id', 'ID')->hideOnForm();
         yield AssociationField::new('classSchool');
         yield AssociationField::new('period');
         yield AssociationField::new('students');

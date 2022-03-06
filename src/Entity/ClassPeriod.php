@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\ClassPeriodRepository;
 use App\Traits\AuthorEntityTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
@@ -58,6 +59,9 @@ class ClassPeriod
     public function __construct()
     {
         $this->enable = true;
+        $this->students = new ArrayCollection();
+        $this->teachers = new ArrayCollection();
+        $this->courses = new ArrayCollection();
     }
 
     public function __toString(): string

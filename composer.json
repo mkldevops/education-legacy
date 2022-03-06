@@ -60,9 +60,8 @@
     "dama/doctrine-test-bundle": "^6.5",
     "doctrine/doctrine-fixtures-bundle": "^3.4",
     "fakerphp/faker": "^1.14",
-    "friendsofphp/php-cs-fixer": "^3.0",
+    "friendsofphp/php-cs-fixer": "^3.3",
     "liip/test-fixtures-bundle": "^1.6",
-    "pestphp/pest": "^1.2",
     "pheromone/phpcs-security-audit": "^2.0",
     "phpstan/phpstan": "^0.12.9",
     "phpstan/phpstan-deprecation-rules": "^0.12.2",
@@ -84,15 +83,19 @@
     "symfony/web-profiler-bundle": "^5.3",
     "symplify/easy-coding-standard": "^9.3",
     "thecodingmachine/phpstan-strict-rules": "^0.12.0",
-    "theofidry/alice-data-fixtures": "^1.1",
-    "vimeo/psalm": "^4.7"
+    "theofidry/alice-data-fixtures": "^1.1"
   },
   "config": {
     "optimize-autoloader": true,
     "preferred-install": {
       "*": "dist"
     },
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "endroid/installer": true,
+      "pestphp/pest-plugin": true,
+      "symfony/flex": true
+    }
   },
   "replace": {
     "symfony/polyfill-ctype": "*",
@@ -115,7 +118,7 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },
     "init-hooks": [
-      "sh script/install-hooks.sh"
+      "sh bin/hooks/install-hooks.sh"
     ],
     "post-install-cmd": [
       "@auto-scripts",

@@ -8,6 +8,7 @@ use App\Entity\Package;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -35,9 +36,10 @@ class PackageCrudController extends AbstractCrudController
         yield TextField::new('name');
         yield TextareaField::new('description');
         yield NumberField::new('price');
-        yield Field::new('status');
+        yield BooleanField::new('enable');
         yield AssociationField::new('school');
         yield IntegerField::new('id', 'ID');
-        yield DateTimeField::new('record');
+        yield DateTimeField::new('createdAt')->hideOnForm();
+        yield DateTimeField::new('updatedAt')->hideOnForm();
     }
 }

@@ -34,7 +34,7 @@ sf: symfony ## List all Symfony commands
 cc: symfony ## Clear the cache. DID YOU CLEAR YOUR CACHE????
 	$(SYMFONY) c:c
 
-warmup: symfony ## Warmump the cache
+warmup: symfony ## Warmup the cache
 	$(SYMFONY) cache:warmup
 
 fix-perms: ## Fix permissions of all var files
@@ -59,68 +59,39 @@ entity: symfony
 
 ## —— Symfony doctrine 💻 ————————————————————————————————————————————————————————
 doctrine-validate: symfony ## Check validate schema
-	$(SYMFONY) doctrine:schema:validate
+	$(SYMFONY) doctrine:schema:validate  --skip-sync -n
 
-doctrine-migration: symfony ## Make migration structure of databases
+migration: symfony ## Make migration structure of databases
 	$(SYMFONY) make:migration
 
-doctrine-migrate: symfony doctrine-database ## Migrate database structure
+migrate: symfony create-database ## Migrate database structure
 	$(SYMFONY) doctrine:migrations:migrate -n
 
-doctrine-database: symfony ## Add database if not exists
+drop-database: symfony ## Add database if not exists
+	$(SYMFONY) doctrine:database:drop --force --if-exists
+
+create-database: symfony ## Add database if not exists
 	$(SYMFONY) doctrine:database:create --if-not-exists
 
-doctrine-schema: symfony doctrine-database ## implement schema of database if not exists
+doctrine-schema: symfony create-database ## implement schema of database if not exists
 	$(SYMFONY) doctrine:schema:create
 
 load-fixtures: symfony ## load fixtures
 	 $(SYMFONY) doctrine:fixtures:load -n
 
-load-database: symfony ## Build the db, control the schema validity, load fixtures and check the migration status
-	$(SYMFONY) doctrine:cache:clear-metadata
-	$(SYMFONY) doctrine:database:create --if-not-exists
-	$(SYMFONY) doctrine:schema:drop --force
-	$(SYMFONY) doctrine:schema:create
-	$(SYMFONY) doctrine:schema:validate
-	$(SYMFONY) doctrine:fixtures:load -n
-	$(SYMFONY) doctrine:schema:validate
+reset-database: symfony  drop-database migrate load-fixtures  doctrine-validate ## Build the db, control the schema validity, load fixtures and check the migration status
 
 ## —— Symfony binary 💻 ————————————————————————————————————————————————————————
 bin-install: ## Download and install the binary in the project (file is ignored)
 	@test -f ./symfony || ( curl -sS https://get.symfony.com/cli/installer | bash &&	mv ~/.symfony/bin/symfony . )
 
-cert-install: symfony ## Install the local HTTPS certificates
-	$(SYMFONY_BIN) server:ca:install
-
-serve: symfony ## Serve the application with HTTPS support
-	$(SYMFONY_BIN) serve --port=$(PROJECT_APP_PORT)
-
-unserve: symfony ## Stop the web server
-	$(SYMFONY_BIN) server:stop
-
 ## —— Tests ✅ —————————————————————————————————————————————————————————————————
-test: phpunit.xml* ## Launch main functionnal and unit tests
+test: phpunit.xml.dist ## Launch main functional and unit tests
 	./bin/phpunit --stop-on-failure
 
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
-cs: codesniffer phpcs stan psalm ## Launch check style and static analysis
-code: rector cs-fix stan ## Fix code analyzed
-
-codesniffer: ## Run php_codesniffer only
-	./vendor/bin/phpcs --standard=phpcs.xml -n -p src/ vendor/fardus
-
-phpcs: ## Run phpcs only
-	./vendor/bin/phpcs -v -n --standard=PSR12 --ignore=./src/Kernel.php ./src
-
 stan: ## Run PHPStan only
 	./vendor/bin/phpstan analyse -l 1 src
-
-psalm: ## Run psalm only
-	./vendor/bin/psalm --show-info=false
-
-init-psalm: ## Init a new psalm config file for a given level, it must be decremented to have stricter rules
-	[ -f ./psalm.xml ] && rm ./psalm.xml || echo 'no ./psalm.xml'
-	./vendor/bin/psalm --init src/ 1
 
 cs-fix: ## Run php-cs-fixer and fix the code.
 	./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes

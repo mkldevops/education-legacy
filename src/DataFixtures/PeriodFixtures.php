@@ -16,7 +16,7 @@ use Exception;
  *
  * @author  fardus
  */
-class PeriodFixtures extends Fixture implements FixtureInterface
+class PeriodFixtures extends Fixture
 {
     /**
      * @throws Exception
@@ -31,7 +31,7 @@ class PeriodFixtures extends Fixture implements FixtureInterface
             $period->setBegin(new DateTime($yearCurrent.'-09-01'))
                 ->setEnd(new DateTime(($yearCurrent + 1).'-08-31'))
                 ->setComment('')
-                ->setEnable(false)
+                ->setEnable(time() >= $period->getBegin()?->getTimestamp() && time() <= $period->getEnd()?->getTimestamp())
                 ->setName($yearCurrent.'/'.($yearCurrent + 1));
 
             $manager->persist($period);

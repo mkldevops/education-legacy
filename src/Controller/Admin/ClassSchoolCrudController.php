@@ -13,9 +13,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Security\Core\Security;
 
 class ClassSchoolCrudController extends AbstractCrudController
 {
+    public function __construct(private Security $security)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return ClassSchool::class;
@@ -31,7 +36,7 @@ class ClassSchoolCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield IntegerField::new('id', 'ID');
+        yield IntegerField::new('id', 'ID')->hideOnForm();
         yield TextField::new('name');
         yield TextareaField::new('description');
         yield IntegerField::new('ageMinimum');
@@ -39,7 +44,7 @@ class ClassSchoolCrudController extends AbstractCrudController
         yield AssociationField::new('school');
         yield AssociationField::new('classPeriods');
         yield BooleanField::new('enable');
-        yield AssociationField::new('author');
+        yield AssociationField::new('author')->setValue($this->security->getUser());
         yield DateTimeField::new('createdAt')->onlyOnDetail();
         yield DateTimeField::new('updatedAt')->onlyOnDetail();
         yield DateTimeField::new('deletedAt')->onlyOnDetail();

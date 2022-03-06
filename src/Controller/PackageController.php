@@ -16,9 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Package controller.
- */
 #[Route(path: '/package')]
 class PackageController extends AbstractBaseController
 {
