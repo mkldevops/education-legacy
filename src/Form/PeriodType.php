@@ -28,7 +28,8 @@ class PeriodType extends AbstractType
             ])
             ->add('enable', CheckboxType::class, [
                 'required' => false,
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

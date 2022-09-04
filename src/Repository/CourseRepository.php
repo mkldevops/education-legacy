@@ -14,8 +14,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Course|null find($id, $lockMode = null, $lockVersion = null)
- * @method Course|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Course find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Course findOneBy(array $criteria, array $orderBy = null)
  * @method Course[]    findAll()
  * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -51,7 +51,8 @@ class CourseRepository extends ServiceEntityRepository
             ->setParameter(':hourBegin', '%'.$search.'%')
             ->setParameter(':hourEnd', '%'.$search.'%')
             ->setParameter(':teacher', '%'.$search.'%')
-            ->orderBy('e.date', 'DESC');
+            ->orderBy('e.date', 'DESC')
+        ;
     }
 
     /**
@@ -69,7 +70,8 @@ class CourseRepository extends ServiceEntityRepository
             ->setMaxResults($maxResult)
             ->setFirstResult($offset)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     public function remove(ClassPeriod $classPeriod): bool
@@ -79,6 +81,7 @@ class CourseRepository extends ServiceEntityRepository
             ->where('c.classPeriod = :classPeriod')
             ->setParameter('classPeriod', $classPeriod)
             ->getQuery()
-            ->execute();
+            ->execute()
+        ;
     }
 }

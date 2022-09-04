@@ -12,9 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class StudentType.
- */
 class StudentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -32,7 +29,8 @@ class StudentType extends AbstractType
             ->add('lastSchool', null, ['label' => 'label.lastSchool', 'required' => false])
             ->add('personAuthorized', TextareaType::class, ['label' => 'label.personAuthorized', 'required' => false])
             ->add('remarksHealth', TextareaType::class, ['label' => 'label.remarksHealth', 'required' => false])
-            ->add('letAlone', null, ['label' => 'label.letAlone', 'required' => false]);
+            ->add('letAlone', null, ['label' => 'label.letAlone', 'required' => false])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -43,9 +41,6 @@ class StudentType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string|null
-     */
     public function getBlockPrefix(): string
     {
         return 'app_student';

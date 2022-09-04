@@ -3,46 +3,44 @@ services:
     app:
         build: .
         image: app
-        container_name: "${PROJECT_NAME}-app"
+        container_name: "${PROJECT_NAME:-education}-app"
         restart: unless-stopped
         env_file:
             - ./docker/.env.docker
         environment:
-            TZ: "Europe/Paris"
             APP_ENV : prod
             DATABASE_NAME : education_app
-            DATABASE_PASSWORD : $PROJECT_DB_PASSWORD
+            DATABASE_PASSWORD : ${PROJECT_DB_PASSWORD:-db_password}
         ports:
-            - "${PROJECT_APP_PORT}:80"
+            - "${PROJECT_APP_PORT-8800}:80"
         volumes:
             - ./docker/app.png:/var/www/html/public/img/logo-custom.png
             - ./public/uploads:/var/www/html/public/uploads
 
     nice:
         image: app
-        container_name: "${PROJECT_NAME}-nice"
+        container_name: "${PROJECT_NAME:-education}-nice"
         restart: unless-stopped
         env_file:
             - ./docker/.env.docker
         depends_on:
             - app
         environment:
-            TZ: "Europe/Paris"
             APP_ENV : dev
             DATABASE_NAME : education_nice
-            DATABASE_PASSWORD : $PROJECT_DB_PASSWORD
+            DATABASE_PASSWORD : ${PROJECT_DB_PASSWORD:-db_password}
         ports:
-            - "${PROJECT_NICE_PORT}:80"
+            - "${PROJECT_NICE_PORT:-8802}:80"
         volumes:
             - ./docker/app.png:/var/www/html/public/img/logo-custom.png
             - ./public/uploads:/var/www/html/public/uploads
 
     db:
         image: mysql:latest
-        container_name: "${PROJECT_NAME}-db"
+        container_name: "${PROJECT_NAME:-education}-db"
         command: --default-authentication-plugin=mysql_native_password --sql_mode=""
         restart: unless-stopped
         environment:
-            MYSQL_ROOT_PASSWORD: ${PROJECT_DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${PROJECT_DB_PASSWORD:-db_password}
         ports:
-            - "${PROJECT_DB_PORT}:3306"
+            - "${PROJECT_DB_PORT:-8801}:3306"

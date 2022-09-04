@@ -19,8 +19,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Operation|null find($id, $lockMode = null, $lockVersion = null)
- * @method Operation|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Operation find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Operation findOneBy(array $criteria, array $orderBy = null)
  * @method Operation[]    findAll()
  * @method Operation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -44,15 +44,18 @@ class OperationRepository extends ServiceEntityRepository
             ->andWhere('acc.structure = :structure')
             ->setParameter('begin', $period->getBegin()?->format('Y-m-d'))
             ->setParameter('end', $period->getEnd()?->format('Y-m-d 23:59:59'))
-            ->setParameter('structure', $school->getStructure()?->getId());
+            ->setParameter('structure', $school->getStructure()?->getId())
+        ;
 
         if (null !== $typeOperation) {
             $qb->andWhere('ope.typeOperation = :typeOperation')
-                ->setParameter('typeOperation', $typeOperation);
+                ->setParameter('typeOperation', $typeOperation)
+            ;
         }
 
         return $qb->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     public function getAvailableToAccountStatement(AccountStatement $accountStatement): array
@@ -75,7 +78,8 @@ class OperationRepository extends ServiceEntityRepository
             ->setParameter('end', $accountStatement->getEnd()->format('Y-m-d 23:59:59'))
             ->setParameter('account', $accountStatement->getAccount()->getId())
             ->getQuery()
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
     }
 
     public function getQueryStatsAccountStatement(array $listAccountStatementId): QueryBuilder
@@ -90,7 +94,8 @@ class OperationRepository extends ServiceEntityRepository
             ->innerJoin('ope.accountStatement', 'acs')
             ->andWhere('ope.accountStatement in (:accountStatement)')
             ->setParameter('accountStatement', $listAccountStatementId)
-            ->groupBy('acs.id');
+            ->groupBy('acs.id')
+        ;
     }
 
     /**
@@ -105,7 +110,8 @@ class OperationRepository extends ServiceEntityRepository
                 ->setParameter('account', $account->getId())
                 ->andWhere('ope.accountStatement is null')
                 ->getQuery()
-                ->getSingleResult(Query::HYDRATE_ARRAY);
+                ->getSingleResult(Query::HYDRATE_ARRAY)
+            ;
         } catch (NoResultException|NonUniqueResultException $e) {
             throw new AppException(sprintf('%s Error on query', __FUNCTION__), (int) $e->getCode(), $e);
         }
@@ -132,7 +138,8 @@ class OperationRepository extends ServiceEntityRepository
             ->setParameter('begin', $period->getBegin()?->format('Y-m-d'))
             ->setParameter('end', $period->getEnd()?->format('Y-m-d 23:59:59'))
             ->setParameter('structure', $school->getStructure()?->getId())
-            ->getQuery();
+            ->getQuery()
+        ;
 
         return $query->getArrayResult();
     }
@@ -150,7 +157,8 @@ class OperationRepository extends ServiceEntityRepository
             ->where('ope.account = :account')
             ->setParameter('account', $account)
             ->getQuery()
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
 
         return current($result);
     }
@@ -171,7 +179,8 @@ class OperationRepository extends ServiceEntityRepository
             ->orderBy('ope.createdAt', 'DESC')
             ->setMaxResults($maxResult)
             ->getQuery()
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
     }
 
     /**
@@ -185,15 +194,18 @@ class OperationRepository extends ServiceEntityRepository
             ->orWhere('REGEXP(p.reference, :search) = 1')
             ->orWhere('REGEXP(p.comment, :search) = 1')
             ->setParameter('search', $search)
-            ->setMaxResults(10);
+            ->setMaxResults(10)
+        ;
 
         if (is_numeric($search)) {
             $qb->orWhere('REGEXP(p.amount, :amount) = 1')
-                ->setParameter('amount', (float) str_replace(',', '.', $search));
+                ->setParameter('amount', (float) str_replace(',', '.', $search))
+            ;
         }
 
         return $qb->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     /**
@@ -207,6 +219,7 @@ class OperationRepository extends ServiceEntityRepository
             ->setParameter('begin', $period->getBegin())
             ->setParameter('end', $period->getEnd())
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 }

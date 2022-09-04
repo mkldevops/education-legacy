@@ -67,6 +67,80 @@ class StudentManager
         return $list;
     }
 
+    public function synchronize(int $limit): ResponseModel
+    {
+        $response = new ResponseModel();
+
+        $students = $this->repository->findBy(['person' => null]);
+
+        if (empty($students)) {
+            return $response->setSuccess(true)
+                ->setMessage('Nothing data to treat')
+            ;
+        }
+
+        foreach ($students as $student) {
+            $person = (new Person())
+                ->setAuthor($student->getAuthor())
+                ->setEnable($student->getEnable())
+                ->setAddress($student->getAddress())
+                ->setBirthday($student->getBirthday())
+                ->setBirthplace($student->getBirthplace())
+                ->setCity($student->getTown())
+                ->setEmail($student->getEmail())
+                ->setForname($student->getForname())
+                ->setName($student->getName())
+                ->setGender($student->getGender())
+                ->setImage($student->getImage())
+                ->setPhone($student->getPhone())
+                ->setZip($student->getPostcode())
+                ->setCreatedAt($student->getCreatedAt())
+            ;
+
+            $student->setPerson($person);
+            $this->entityManager->persist($person);
+            $this->entityManager->persist($student);
+        }
+        $this->entityManager->flush();
+
+        return $response->setSuccess(true)
+            ->setMessage('The synchronization had successfully')
+        ;
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function addPackage(Student $student, PackageStudentPeriod $packageStudentPeriod): Student
+    {
+        $this->logger->debug(__METHOD__, ['student' => $student, 'packageStudentPeriod' => $packageStudentPeriod]);
+        $hasPackage = $this->entityManager
+            ->getRepository(PackageStudentPeriod::class)
+            ->findBy([
+                'period' => $packageStudentPeriod->getPeriod(),
+                'package' => $packageStudentPeriod->getPackage(),
+                'student' => $packageStudentPeriod->getStudent(),
+            ])
+        ;
+
+        if (!empty($hasPackage)) {
+            throw new AppException('The package is already affected to student');
+        }
+
+        $packageStudentPeriod->setStudent($student);
+        $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()?->getEnd());
+        $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
+
+        if (($user = $this->security->getUser()) !== null) {
+            $packageStudentPeriod->setAuthor($user);
+        }
+
+        $this->entityManager->persist($packageStudentPeriod);
+        $this->entityManager->flush();
+
+        return $student;
+    }
+
     /**
      * @return array<string, mixed[]>
      */
@@ -89,75 +163,5 @@ class StudentManager
                 ],
             ],
         ];
-    }
-
-    public function synchronize(int $limit): ResponseModel
-    {
-        $response = new ResponseModel();
-
-        $students = $this->repository->findBy(['person' => null]);
-
-        if (empty($students)) {
-            return $response->setSuccess(true)
-                ->setMessage('Nothing data to treat');
-        }
-
-        foreach ($students as $student) {
-            $person = (new Person())
-                ->setAuthor($student->getAuthor())
-                ->setEnable($student->getEnable())
-                ->setAddress($student->getAddress())
-                ->setBirthday($student->getBirthday())
-                ->setBirthplace($student->getBirthplace())
-                ->setCity($student->getTown())
-                ->setEmail($student->getEmail())
-                ->setForname($student->getForname())
-                ->setName($student->getName())
-                ->setGender($student->getGender())
-                ->setImage($student->getImage())
-                ->setPhone($student->getPhone())
-                ->setZip($student->getPostcode())
-                ->setCreatedAt($student->getCreatedAt());
-
-            $student->setPerson($person);
-            $this->entityManager->persist($person);
-            $this->entityManager->persist($student);
-        }
-        $this->entityManager->flush();
-
-        return $response->setSuccess(true)
-            ->setMessage('The synchronization had successfully');
-    }
-
-    /**
-     * @throws AppException
-     */
-    public function addPackage(Student $student, PackageStudentPeriod $packageStudentPeriod): Student
-    {
-        $this->logger->debug(__METHOD__, ['student' => $student, 'packageStudentPeriod' => $packageStudentPeriod]);
-        $hasPackage = $this->entityManager
-            ->getRepository(PackageStudentPeriod::class)
-            ->findBy([
-                'period' => $packageStudentPeriod->getPeriod(),
-                'package' => $packageStudentPeriod->getPackage(),
-                'student' => $packageStudentPeriod->getStudent(),
-            ]);
-
-        if (!empty($hasPackage)) {
-            throw new AppException('The package is already affected to student');
-        }
-
-        $packageStudentPeriod->setStudent($student);
-        $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()?->getEnd());
-        $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
-
-        if (($user = $this->security->getUser()) !== null) {
-            $packageStudentPeriod->setAuthor($user);
-        }
-
-        $this->entityManager->persist($packageStudentPeriod);
-        $this->entityManager->flush();
-
-        return $student;
     }
 }

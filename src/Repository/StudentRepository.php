@@ -20,8 +20,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Fardus\Traits\Symfony\Manager\LoggerTrait;
 
 /**
- * @method Student|null find($id, $lockMode = null, $lockVersion = null)
- * @method Student|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Student find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Student findOneBy(array $criteria, array $orderBy = null)
  * @method Student[]    findAll()
  * @method Student[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -42,7 +42,8 @@ class StudentRepository extends ServiceEntityRepository
             ->andWhere('s.enable = true')
             ->setParameter('family', $family)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     /**
@@ -58,7 +59,8 @@ class StudentRepository extends ServiceEntityRepository
             ->where('s.school = :school')
             ->setParameter('school', $school)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
     }
 
     public function getStudents(int $iPage = 1, int $iCountPerPage = 20): Paginator
@@ -67,10 +69,12 @@ class StudentRepository extends ServiceEntityRepository
             ->orderBy('s.name', 'DESC')
             ->leftJoin('s.grade', 'g')
             ->addSelect('g')
-            ->getQuery();
+            ->getQuery()
+        ;
 
         $oQuery->setFirstResult(($iPage - 1) * $iCountPerPage)
-            ->setMaxResults($iCountPerPage);
+            ->setMaxResults($iCountPerPage)
+        ;
 
         return new Paginator($oQuery);
     }
@@ -94,7 +98,8 @@ class StudentRepository extends ServiceEntityRepository
             ->setParameter(1, $period->getId())
             ->setParameter(2, $enable)
             ->setParameter(3, $school->getId())
-            ->setMaxResults($limit);
+            ->setMaxResults($limit)
+        ;
 
         if (null !== $limit) {
             $qb->setMaxResults($limit);
@@ -117,7 +122,7 @@ class StudentRepository extends ServiceEntityRepository
                 'doc',
                 'prs',
             ])
-            ->addSelect('CASE WHEN std.enable > 0 
+            ->addSelect('CASE WHEN std.enable > 0
                 THEN (psp.amount - psp.discount) ELSE SUM(psp.amount) END AS amountTotal')
             ->addSelect('COUNT(pps.id) AS numberPayment')
             ->addSelect('SUM(pps.amount) AS paymentTotal')
@@ -132,7 +137,8 @@ class StudentRepository extends ServiceEntityRepository
             ->andWhere('std.school = :school')
             ->groupBy('std.id')
             ->setParameter('school', $school)
-            ->setParameter('period', $period);
+            ->setParameter('period', $period)
+        ;
 
         return $qb->getQuery()->getArrayResult();
     }
@@ -156,11 +162,13 @@ class StudentRepository extends ServiceEntityRepository
             ->where('std.school = :school')
             ->setParameter('school', $school)
             ->setParameter('gender_male', Person::GENDER_MALE)
-            ->setParameter('gender_female', Person::GENDER_FEMALE);
+            ->setParameter('gender_female', Person::GENDER_FEMALE)
+        ;
 
         try {
             $result = $qb->getQuery()
-                ->getSingleResult(AbstractQuery::HYDRATE_ARRAY);
+                ->getSingleResult(AbstractQuery::HYDRATE_ARRAY)
+            ;
         } catch (ORMException $e) {
             throw new AppException(sprintf('%s Query failed', __FUNCTION__), previous: $e);
         }
@@ -182,10 +190,12 @@ class StudentRepository extends ServiceEntityRepository
             ->andWhere('std.enable = 1')
             ->andWhere('std.school = :school')
             ->setParameter('period', $period->getId())
-            ->setParameter('school', $school->getId());
+            ->setParameter('school', $school->getId())
+        ;
 
         return $qb->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     /**
@@ -194,37 +204,6 @@ class StudentRepository extends ServiceEntityRepository
     public function getStatsStudentRegistered(School $school, Period $period): array
     {
         return $this->getStatsMove($school, $period);
-    }
-
-    /**
-     * @return int[]
-     */
-    private function getStatsMove(School $school, Period $period, string $fieldDate = 'createdAt'): array
-    {
-        $qb = $this->createQueryBuilder('std')
-            ->select('COUNT(std.id) + 0 AS nb')
-            ->where('std.school = :school')
-            ->andWhere('std.'.$fieldDate.' BETWEEN :begin and :end')
-            ->groupBy('dateMonth')
-            ->orderBy('std.createdAt', 'ASC')
-            ->setParameter('school', $school)
-            ->setParameter('end', $period->getEnd())
-            ->setParameter('begin', $period->getBegin());
-
-        if ('sqlite' === $this->_em->getConnection()->getDriver()->getDatabasePlatform()->getName()) {
-            $qb->addSelect(sprintf("strftime('%%Y-%%m', std.%s) AS dateMonth", $fieldDate));
-        } else {
-            $qb->addSelect(sprintf("DATE_FORMAT(std.%s, '%%Y-%%m') AS dateMonth", $fieldDate));
-        }
-
-        $data = $qb->getQuery()->getArrayResult();
-        $result = [];
-
-        foreach ($data as $value) {
-            $result[$value['dateMonth']] = (int) $value['nb'];
-        }
-
-        return $result;
     }
 
     /**
@@ -248,8 +227,36 @@ class StudentRepository extends ServiceEntityRepository
             ->andWhere('s.school = :school')
             ->setParameter('school', $school->getId())
             ->andWhere('s.enable = true')
-            ->getQuery();
+            ->getQuery()
+        ;
 
         return $query->getArrayResult();
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getStatsMove(School $school, Period $period, string $fieldDate = 'createdAt'): array
+    {
+        $qb = $this->createQueryBuilder('std')
+            ->select('COUNT(std.id) + 0 AS nb')
+            ->addSelect(sprintf("DATE_FORMAT(std.%s, '%%Y-%%m') AS dateMonth", $fieldDate))
+            ->where('std.school = :school')
+            ->andWhere('std.'.$fieldDate.' BETWEEN :begin and :end')
+            ->groupBy('dateMonth')
+            ->orderBy('std.createdAt', 'ASC')
+            ->setParameter('school', $school)
+            ->setParameter('end', $period->getEnd())
+            ->setParameter('begin', $period->getBegin())
+        ;
+
+        $data = $qb->getQuery()->getArrayResult();
+        $result = [];
+
+        foreach ($data as $value) {
+            $result[$value['dateMonth']] = (int) $value['nb'];
+        }
+
+        return $result;
     }
 }

@@ -20,7 +20,8 @@ class DocumentUploadType extends AbstractType
         $builder
             ->add('path', FileType::class, [
                 'attr' => ['class' => 'fileuploader'],
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

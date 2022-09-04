@@ -6,19 +6,26 @@ namespace App\EventListener;
 
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
-use App\Services\AbstractFullService;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use App\Repository\AccountStatementRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
-class OperationListener extends AbstractFullService
+class OperationListener
 {
+    public function __construct(
+        private LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
+        private AccountStatementRepository $accountStatementRepository,
+    ) {
+    }
+
     /**
      * @throws Exception
      */
-    public function preUpdate(Operation $operation, LifecycleEventArgs $args): bool
+    public function preUpdate(Operation $operation): bool
     {
-        return $this->setEntityManager($args->getObjectManager())
-            ->retrieveAccountStatement($operation);
+        return $this->retrieveAccountStatement($operation);
     }
 
     public function retrieveAccountStatement(Operation $operation): bool
@@ -29,9 +36,9 @@ class OperationListener extends AbstractFullService
         }
 
         if (!$operation->hasAccountStatement()) {
-            $accountStatement = $this->entityManager
-                ->getRepository(AccountStatement::class)
-                ->findByDate($operation->getAccount(), $operation->getValueDate());
+            $accountStatement = $this->accountStatementRepository
+                ->findByDate($operation->getAccount(), $operation->getValueDate())
+            ;
 
             $this->logger->debug(__FUNCTION__, [
                 'find account statement' => $accountStatement instanceof AccountStatement,
@@ -48,9 +55,10 @@ class OperationListener extends AbstractFullService
                     ->setEnd($end)
                     ->setNumberOperations(1)
                     ->addAmount($operation->getAmount())
-                    ->setAuthor($operation->getAuthor());
+                    ->setAuthor($operation->getAuthor())
+                ;
 
-                $this->getEntityManager()->persist($accountStatement);
+                $this->entityManager->persist($accountStatement);
             }
 
             $operation->setAccountStatement($accountStatement);
@@ -64,9 +72,8 @@ class OperationListener extends AbstractFullService
     /**
      * @throws Exception
      */
-    public function prePersist(Operation $operation, LifecycleEventArgs $args): bool
+    public function prePersist(Operation $operation): bool
     {
-        return $this->setEntityManager($args->getObjectManager())
-            ->retrieveAccountStatement($operation);
+        return $this->retrieveAccountStatement($operation);
     }
 }

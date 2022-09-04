@@ -4,25 +4,31 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
-use App\Entity\AppealCourse;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Period;
 use App\Entity\Student;
+use App\Exception\AppException;
+use App\Exception\InvalidArgumentException;
+use App\Exception\SchoolException;
+use App\Fetcher\SessionFetcher;
 use App\Form\ClassPeriodType;
 use App\Manager\ClassPeriodManager;
 use App\Manager\CourseManager;
 use App\Manager\Interfaces\ClassPeriodManagerInterface;
+use App\Repository\AppealCourseRepository;
 use App\Repository\ClassPeriodRepository;
+use App\Repository\ClassSchoolRepository;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Exception;
-use InvalidArgumentException;
 use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
@@ -33,54 +39,49 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/class-period')]
 #[IsGranted('ROLE_TEACHER')]
-class ClassPeriodController extends AbstractBaseController
+class ClassPeriodController extends AbstractController
 {
     private const NB_LINES_MIN = 30;
     private const NB_DATES = 17;
 
-    /**
-     * @throws \App\Exception\InvalidArgumentException
-     * @throws \App\Exception\AppException
-     */
-    #[Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
-    public function current(ClassPeriodRepository $repository): Response
-    {
-        $this->checkClasses();
-        $classperiodList = $repository->getListOfCurrentPeriod($this->getPeriod(), $this->getSchool());
-
-        return $this->render('class_period/index.html.twig', [
-            'classperiodList' => $classperiodList,
-        ]);
+    public function __construct(
+        private ClassSchoolRepository $classSchoolRepository,
+        private ClassPeriodRepository $classPeriodRepository,
+    ) {
     }
 
-    private function checkClasses(): void
+    /**
+     * @throws InvalidArgumentException
+     * @throws AppException
+     */
+    #[Route(path: '/current', name: 'app_class_period_current', methods: ['GET'])]
+    public function current(SessionFetcher $sessionFetcher): Response
     {
-        $nbClasses = $this->getDoctrine()
-            ->getRepository(ClassSchool::class)
-            ?->count(['enable' => true]);
+        $this->checkClasses();
 
-        if (empty($nbClasses)) {
-            $url = $this->generateUrl('app_admin_dashboard_index', ['entity' => 'ClassSchool']);
-            $this->addFlash(
-                'danger',
-                sprintf('Vous n\'avez pas de classes <a href="%s">Ajouter une class</a>', $url)
-            );
-        }
+        return $this->render('class_period/index.html.twig', [
+            'classperiodList' => $this->classPeriodRepository->getListOfCurrentPeriod(
+                period: $sessionFetcher->getPeriodOnSession(),
+                school: $sessionFetcher->getSchoolOnSession()
+            ),
+        ]);
     }
 
     /**
      * @throws NonUniqueResultException
+     * @throws SchoolException
+     * @throws NoResultException
      */
     #[Route(path: '', name: 'app_class_period_index', methods: ['GET'])]
-    public function index(ClassPeriodRepository $repository, int $page = 1, string $search = ''): Response
+    public function index(SessionFetcher $sessionFetcher, int $page = 1, string $search = ''): Response
     {
         $this->checkClasses();
         // Escape special characters and decode the search value.
         $search = addcslashes(urldecode($search), '%_');
-        $count = $repository->countClassesPeriod($this->getSchool(), $search);
+        $count = $this->classPeriodRepository->countClassesPeriod($sessionFetcher->getSchoolOnSession(), $search);
         $pages = ceil($count / 20);
         // Get the entries of current page.
-        $classperiodList = $repository->getList($this->getSchool(), $page, $search);
+        $classperiodList = $this->classPeriodRepository->getList($sessionFetcher->getSchoolOnSession(), $page, $search);
 
         return $this->render('class_period/index.html.twig', [
             'classperiodList' => $classperiodList,
@@ -91,66 +92,29 @@ class ClassPeriodController extends AbstractBaseController
         ]);
     }
 
-    private function createSearchForm(string $q = ''): FormInterface
-    {
-        $data = ['q' => $q];
-
-        return $this->createFormBuilder($data)
-            ->setAction($this->generateUrl('app_class_period_search'))
-            ->setMethod(Request::METHOD_POST)
-            ->add('q', TextareaType::class, [
-                'label' => false,
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Search'])
-            ->getForm();
-    }
-
     /**
-     * Creates a new ClassPeriod entity.
-     *
-     * @throws InvalidArgumentException
      * @throws LogicException
      */
     #[Route(path: '/create', name: 'app_class_period_create', methods: ['POST'])]
-    public function create(Request $request): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $classperiod = new ClassPeriod();
-        $form = $this->createCreateForm($classperiod);
+        $classPeriod = new ClassPeriod();
+        $form = $this->createCreateForm($classPeriod);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $manager = $this->getDoctrine()->getManager();
-            $classperiod->setAuthor($this->getUser());
-            $manager->persist($classperiod);
-            $manager->flush();
+            $classPeriod->setAuthor($this->getUser());
+            $entityManager->persist($classPeriod);
+            $entityManager->flush();
 
             $this->addFlash('success', 'The ClassPeriod has been created.');
 
-            return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classperiod->getId()]));
+            return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
         }
 
-        return $this->render('Clas1_Period/create.html.twig', [
-            'classperiod' => $classperiod,
+        return $this->render('class_period/new.html.twig', [
+            'classPeriod' => $classPeriod,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * Creates a form to create a ClassPeriod entity.
-     *
-     * @param ClassPeriod $classPeriod The entity
-     *
-     * @return FormInterface The form
-     */
-    private function createCreateForm(ClassPeriod $classPeriod): FormInterface
-    {
-        $form = $this->createForm(ClassPeriodType::class, $classPeriod, [
-            'action' => $this->generateUrl('app_class_period_create'),
-            'method' => Request::METHOD_POST,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Create']);
-
-        return $form;
     }
 
     /**
@@ -163,7 +127,7 @@ class ClassPeriodController extends AbstractBaseController
         $classperiod = new ClassPeriod();
         $form = $this->createCreateForm($classperiod);
 
-        return $this->render('Clas1_Period/new.html.twig', [
+        return $this->render('class_period/new.html.twig', [
             'classperiod' => $classperiod,
             'form' => $form->createView(),
         ]);
@@ -174,16 +138,14 @@ class ClassPeriodController extends AbstractBaseController
      * @throws LogicException
      * @throws Exception
      */
-    #[Route(path: '/show/{id}', name: 'app_class_period_show', methods: ['GET'], options: ['expose' => true])]
-    public function show(ClassPeriod $classperiod): Response
+    #[Route(path: '/show/{id}', name: 'app_class_period_show', options: ['expose' => true], methods: ['GET'])]
+    public function show(ClassPeriod $classPeriod, AppealCourseRepository $appealCourseRepository): Response
     {
-        $manager = $this->getDoctrine()->getManager();
         $listStatus = CourseManager::getListStatus();
-        $appeals = $manager->getRepository(AppealCourse::class)
-            ->getAppealToClassPeriod($classperiod, $listStatus);
+        $appeals = $appealCourseRepository->getAppealToClassPeriod($classPeriod, $listStatus);
 
         return $this->render('class_period/show.html.twig', [
-            'classperiod' => $classperiod,
+            'classperiod' => $classPeriod,
             'appeals' => $appeals,
             'listStatus' => $listStatus,
         ]);
@@ -200,21 +162,13 @@ class ClassPeriodController extends AbstractBaseController
         ]);
     }
 
-    private function createEditForm(ClassPeriod $classPeriod): FormInterface
-    {
-        return $this->createForm(ClassPeriodType::class, $classPeriod, [
-            'action' => $this->generateUrl('app_class_period_update', ['id' => $classPeriod->getId()]),
-            'method' => Request::METHOD_PUT,
-        ])->add('submit', SubmitType::class, ['label' => 'Update']);
-    }
-
     #[Route(path: '/update/{id}', name: 'app_class_period_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, ClassPeriod $classPeriod): Response
+    public function update(Request $request, ClassPeriod $classPeriod, EntityManagerInterface $entityManager): Response
     {
         $editForm = $this->createEditForm($classPeriod);
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager->flush();
             $this->addFlash('success', 'The ClassPeriod has been updated.');
 
             return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
@@ -227,12 +181,13 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     #[Route(path: '/delete/{id}', name: 'app_class_period_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, ClassPeriodRepository $repository, ClassPeriod $classPeriod): RedirectResponse|Response
+    public function delete(Request $request, ClassPeriod $classPeriod): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
-            ->handleRequest($request);
+            ->handleRequest($request)
+        ;
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-            $repository->remove($classPeriod);
+            $this->classPeriodRepository->remove($classPeriod);
             $this->addFlash('success', 'The ClassPeriod has been deleted.');
 
             return $this->redirect($this->generateUrl('app_class_period_current'));
@@ -242,15 +197,6 @@ class ClassPeriodController extends AbstractBaseController
             'classperiod' => $classPeriod,
             'delete_form' => $deleteForm->createView(),
         ]);
-    }
-
-    private function createDeleteForm(int $id): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('app_class_period_delete', ['id' => $id]))
-            ->setMethod(Request::METHOD_DELETE)
-            ->add('submit', SubmitType::class, ['label' => 'Delete'])
-            ->getForm();
     }
 
     #[Route('/search', name: 'app_class_period_search', methods: ['GET'])]
@@ -268,19 +214,18 @@ class ClassPeriodController extends AbstractBaseController
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
-    public function add(ClassSchool $classSchool, Period $period): RedirectResponse
+    public function add(ClassSchool $classSchool, Period $period, EntityManagerInterface $entityManager): RedirectResponse
     {
-        $em = $this->getDoctrine()->getManager();
-        $classPeriod = $em->getRepository(ClassPeriod::class)
-            ->findBy(['classSchool' => $classSchool, 'period' => $period]);
+        $classPeriod = $this->classPeriodRepository->findBy(['classSchool' => $classSchool, 'period' => $period]);
         if (empty($classPeriod)) {
             $classPeriod = new ClassPeriod();
             $classPeriod->setAuthor($this->getUser())
                 ->setClassSchool($classSchool)
-                ->setPeriod($period);
+                ->setPeriod($period)
+            ;
 
-            $em->persist($classPeriod);
-            $em->flush();
+            $entityManager->persist($classPeriod);
+            $entityManager->flush();
 
             $this->addFlash('info', 'La Classe '.$classSchool->getName().' a bien ajouté à la periode '.$period->getName());
         } else {
@@ -307,7 +252,7 @@ class ClassPeriodController extends AbstractBaseController
     {
         $packageStudents = $manager->getPackageStudent($classPeriod);
         $students = $manager->getStudentsInClassPeriod($classPeriod);
-        $lines = count($students);
+        $lines = \count($students);
         if ($lines < self::NB_LINES_MIN) {
             $lines = self::NB_LINES_MIN;
         }
@@ -322,8 +267,6 @@ class ClassPeriodController extends AbstractBaseController
 
     /**
      * @ParamConverter("from", options={"format": "Y-m-d"})
-     *
-     * @throws Exception
      */
     #[Route(
         '/print-appeal-student/{id}/{page}/{from}',
@@ -336,7 +279,7 @@ class ClassPeriodController extends AbstractBaseController
         int $page = 1,
         DateTimeInterface $from = null
     ): Response {
-        $from = $from ?? new DateTime();
+        $from ??= new DateTime();
         $students = $manager->getStudentsInClassPeriod($classPeriod);
         $courses = $manager->getCourses($classPeriod, $page, self::NB_DATES, $from);
         $nbCourses = $manager->getNbCourses($classPeriod, $from) ?? self::NB_DATES;
@@ -344,7 +287,7 @@ class ClassPeriodController extends AbstractBaseController
         // Define the number of pages.
         $pages = ceil($nbCourses / self::NB_DATES);
 
-        $lines = count($students);
+        $lines = \count($students);
         if ($lines < self::NB_LINES_MIN) {
             $lines = self::NB_LINES_MIN;
         }
@@ -361,28 +304,26 @@ class ClassPeriodController extends AbstractBaseController
     }
 
     /**
-     * @throws InvalidArgumentException
      * @throws LogicException
      */
     #[Route('/delete-student/{id}/{student}', name: 'app_class_period_delete_student', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function deleteStudent(
-        ClassPeriodRepository $repository,
+        EntityManagerInterface $entityManager,
         ClassPeriod $classPeriod,
         Student $student
     ): RedirectResponse {
-        $list = $repository->getStudentToClassPeriod($classPeriod, $student);
+        $list = $this->classPeriodRepository->getStudentToClassPeriod($classPeriod, $student);
 
         $classPeriodStudent = current($list);
 
         if (!empty($classPeriodStudent)) {
-            $manager = $this->getDoctrine()->getManager();
-            $manager->remove($classPeriodStudent);
-            $manager->flush();
+            $entityManager->remove($classPeriodStudent);
+            $entityManager->flush();
 
             $this->addFlash('info', sprintf(
                 'L\'élève %s à été supprimé de la classe %s',
-                (string) $student->getNameComplete(),
+                $student->getNameComplete(),
                 $classPeriod->getName()
             ));
         } else {
@@ -400,5 +341,70 @@ class ClassPeriodController extends AbstractBaseController
     public function changeStudent(ClassPeriod $classPeriod, Student $student): RedirectResponse
     {
         return $this->redirect($this->generateUrl('app_class_period_show_student', ['id' => $classPeriod->getId()]));
+    }
+
+    private function checkClasses(): void
+    {
+        $nbClasses = $this->classSchoolRepository->count(['enable' => true]);
+
+        if (empty($nbClasses)) {
+            $url = $this->generateUrl('app_admin_dashboard_index', ['entity' => 'ClassSchool']);
+            $this->addFlash(
+                'danger',
+                sprintf('Vous n\'avez pas de classes <a href="%s">Ajouter une class</a>', $url)
+            );
+        }
+    }
+
+    private function createSearchForm(string $q = ''): FormInterface
+    {
+        $data = ['q' => $q];
+
+        return $this->createFormBuilder($data)
+            ->setAction($this->generateUrl('app_class_period_search'))
+            ->setMethod(Request::METHOD_POST)
+            ->add('q', TextareaType::class, [
+                'label' => false,
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Search'])
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to create a ClassPeriod entity.
+     *
+     * @param ClassPeriod $classPeriod The entity
+     *
+     * @return FormInterface The form
+     */
+    private function createCreateForm(ClassPeriod $classPeriod): FormInterface
+    {
+        $form = $this->createForm(ClassPeriodType::class, $classPeriod, [
+            'action' => $this->generateUrl('app_class_period_create'),
+            'method' => Request::METHOD_POST,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
+
+        return $form;
+    }
+
+    private function createEditForm(ClassPeriod $classPeriod): FormInterface
+    {
+        return $this->createForm(ClassPeriodType::class, $classPeriod, [
+            'action' => $this->generateUrl('app_class_period_update', ['id' => $classPeriod->getId()]),
+            'method' => Request::METHOD_PUT,
+        ])->add('submit', SubmitType::class, ['label' => 'Update']);
+    }
+
+    private function createDeleteForm(int $id): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('app_class_period_delete', ['id' => $id]))
+            ->setMethod(Request::METHOD_DELETE)
+            ->add('submit', SubmitType::class, ['label' => 'Delete'])
+            ->getForm()
+        ;
     }
 }

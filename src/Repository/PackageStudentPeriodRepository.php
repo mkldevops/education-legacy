@@ -12,8 +12,8 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method PackageStudentPeriod|null find($id, $lockMode = null, $lockVersion = null)
- * @method PackageStudentPeriod|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|PackageStudentPeriod find($id, $lockMode = null, $lockVersion = null)
+ * @method null|PackageStudentPeriod findOneBy(array $criteria, array $orderBy = null)
  * @method PackageStudentPeriod[]    findAll()
  * @method PackageStudentPeriod[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -45,7 +45,8 @@ class PackageStudentPeriodRepository extends ServiceEntityRepository
             ->addSelect('pck')
             ->where($qb->expr()->eq('std.id', $sIdStudent))
             ->andWhere('per.id = :period')
-            ->setParameter('period', $period);
+            ->setParameter('period', $period)
+        ;
 
         return $qb->getQuery()->getOneOrNullResult();
     }
@@ -69,6 +70,7 @@ class PackageStudentPeriodRepository extends ServiceEntityRepository
             ->addOrderBy('o.date', 'ASC')
             ->addOrderBy('o.datePlanned', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 }

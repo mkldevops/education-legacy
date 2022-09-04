@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Exception\AppException;
 use App\Form\FamilyType;
 use App\Manager\Interfaces\FamilyManagerInterface;
 use App\Model\ResponseModel;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,8 +18,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/family', options: ['expose' => true])]
-class FamilyApiController extends AbstractBaseController
+class FamilyApiController extends AbstractController
 {
+    public function __construct(private LoggerInterface $logger)
+    {
+    }
+
     /**
      * @throws AppException
      */
@@ -29,7 +34,8 @@ class FamilyApiController extends AbstractBaseController
 
         $family = new Family();
         $form = $this->createCreateForm($family)
-            ->handleRequest($request);
+            ->handleRequest($request)
+        ;
 
         $familyManager->persistData($family, $form);
 
@@ -60,7 +66,8 @@ class FamilyApiController extends AbstractBaseController
     {
         $this->logger->info(__FUNCTION__);
         $form = $this->createCreateForm($family)
-            ->handleRequest($request);
+            ->handleRequest($request)
+        ;
 
         $manager->persistData($family, $form);
 

@@ -1,2 +1,0 @@
-# test
-#* * * * * echo "hello-world" >> /var/www/html/var/log/cron_`date +\%Y-\%m-\%d`.log 2>&1

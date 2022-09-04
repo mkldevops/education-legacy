@@ -72,7 +72,7 @@ class OperationType extends AbstractType
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
             ])
-            ->add('amount', MoneyType::class, ['label' => 'form.amount', 'html5' => true])
+            ->add('amount', MoneyType::class, ['label' => 'form.amount', 'html5' => false, 'divisor' => 100])
             ->add('reference', TextType::class, [
                 'label' => 'form.reference',
                 'required' => false,
@@ -87,7 +87,8 @@ class OperationType extends AbstractType
                 'choice_label' => 'nameComplete',
                 'preferred_choices' => [$this->security->getUser()],
                 'query_builder' => fn (UserRepository $er): QueryBuilder => $er->getAvailable(),
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

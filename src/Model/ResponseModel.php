@@ -22,7 +22,7 @@ class ResponseModel
         return new self(data: $data);
     }
 
-    public static function jsonResponse(ResponseModel $response): JsonResponse
+    public static function jsonResponse(self $response): JsonResponse
     {
         $statusCode = Response::HTTP_OK;
 
@@ -46,7 +46,7 @@ class ResponseModel
     }
 
     /**
-     * @return array<string, mixed[]>|array<string, bool>|array<string, string>
+     * @return array<string, bool>|array<string, mixed[]>|array<string, string>
      */
     public function getResult(): array
     {

@@ -9,7 +9,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route(path: '/user')]
 class UserController extends EasyAdminController
@@ -23,9 +22,9 @@ class UserController extends EasyAdminController
         $this->encodePassword($entity);
     }
 
-    public function encodePassword(UserInterface|User $user): void
+    public function encodePassword(User $user): void
     {
-        if (empty($user->getPlainPassword())) {
+        if (empty($user->getPassword())) {
             return;
         }
 

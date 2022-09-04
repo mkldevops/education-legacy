@@ -44,7 +44,7 @@ class GoogleService extends AbstractService
     public function getClient(): Google_Client
     {
         // Load previously authorized credentials from a file.
-        $credentialsPath = $this->pathTokens.DIRECTORY_SEPARATOR.'token.json';
+        $credentialsPath = $this->pathTokens.\DIRECTORY_SEPARATOR.'token.json';
         $accessToken = $this->getAccessToken($credentialsPath);
         $this->client->setAccessToken($accessToken);
 
@@ -90,15 +90,15 @@ class GoogleService extends AbstractService
             $this->logger->info(__METHOD__, ['credentialsPath' => $credentialsPath, 'authUrl' => $authUrl, 'accessToken' => $accessToken]);
 
             // Check to see if there was an error.
-            if (empty($accessToken) || array_key_exists('error', $accessToken)) {
+            if (empty($accessToken) || \array_key_exists('error', $accessToken)) {
                 $msg = sprintf("Obtain your authCode with :\n \"%s\"", $authUrl);
 
                 throw new AppException(sprintf("%s  \n %s", $msg, json_encode(['accessToken' => $accessToken])));
             }
 
             // Store the credentials to disk.
-            if (!file_exists(dirname($credentialsPath))) {
-                mkdir(dirname($credentialsPath), 0700, true);
+            if (!file_exists(\dirname($credentialsPath))) {
+                mkdir(\dirname($credentialsPath), 0o700, true);
             }
 
             file_put_contents($credentialsPath, json_encode($accessToken));
@@ -141,7 +141,7 @@ class GoogleService extends AbstractService
     {
         $this->pathTokens = $pathTokens;
         if (!file_exists($this->pathTokens)) {
-            mkdir($this->pathTokens, 0775, true);
+            mkdir($this->pathTokens, 0o775, true);
         }
 
         return $this;

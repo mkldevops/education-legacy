@@ -12,8 +12,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Account|null find($id, $lockMode = null, $lockVersion = null)
- * @method Account|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Account find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Account findOneBy(array $criteria, array $orderBy = null)
  * @method Account[]    findAll()
  * @method Account[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -31,9 +31,10 @@ class AccountRepository extends ServiceEntityRepository
     {
         $result = $this
             ->getAccounts($school, $principalOnly, $listAccountId)
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
 
-        if (empty($result) || !is_array($result)) {
+        if (empty($result) || !\is_array($result)) {
             return [];
         }
 
@@ -63,7 +64,8 @@ class AccountRepository extends ServiceEntityRepository
             ->addSelect('SUM(CASE WHEN ope.amount < 0 THEN ope.amount ELSE 0 END) AS amountDebit')
             ->addSelect('SUM(CASE WHEN ope.amount < 0 AND top.isInternalTransfert = 0 THEN ope.amount ELSE 0 END) AS amountITD')
             ->groupBy('acc.id')
-            ->getQuery();
+            ->getQuery()
+        ;
     }
 
     public function getAccountsQB(School $school, bool $principalOnly = true, array $listAccountId = []): QueryBuilder
@@ -71,18 +73,21 @@ class AccountRepository extends ServiceEntityRepository
         $query = $this
             ->createQueryBuilder('acc')
             ->where('acc.structure = :structure')
-            ->setParameter('structure', $school->getStructure());
+            ->setParameter('structure', $school->getStructure())
+        ;
 
         if ($principalOnly) {
             $query
                 ->andWhere('acc.principal in (:principal)')
-                ->setParameter('principal', 1);
+                ->setParameter('principal', 1)
+            ;
         }
 
         if (!empty($listAccountId)) {
             $query
                 ->andWhere('acc.id in (:accounts)')
-                ->setParameter('accounts', $listAccountId);
+                ->setParameter('accounts', $listAccountId)
+            ;
         }
 
         return $query;

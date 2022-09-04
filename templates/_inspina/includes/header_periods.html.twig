@@ -2,7 +2,7 @@
 
 <li class="dropdown">
     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-        <i class="fa fa-calendar"></i> {{ app.session.get('period').selected }}
+        <em class="fa fa-calendar"></em> {{ app.session.get('period').selected|default(null) }}
     </a>
     <ul class="dropdown-menu dropdown-alerts">
         {% for period in app.session.get('period').list|default({}) %}
@@ -11,10 +11,10 @@
                 <li class="{{ active ? 'active' : null }}">
                     <a href="{{ path('app_period_switch', { 'id' : period.id }) }}">
                         <div>
-                            <i class="fas fa-angle-double-right"></i> <strong>{{ period.name }}</strong>
+                            <em class="fas fa-angle-double-right"></em> <strong>{{ period.name }}</strong>
                             <span class="pull-right">
                                 {% if active %}
-                                    <i class="fas fa-check"></i>
+                                    <em class="fas fa-check"></em>
                                 {% endif %}
                             </span>
                         </div>

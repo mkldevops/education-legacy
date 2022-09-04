@@ -55,7 +55,8 @@ class PersonType extends PersonSimpleType
             ->add('pathRedirect', HiddenType::class, [
                 'mapped' => false,
                 'data' => $options['pathRedirect'],
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

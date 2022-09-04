@@ -10,8 +10,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use ImagickException;
 
 /**
- * @method Document|null find($id, $lockMode = null, $lockVersion = null)
- * @method Document|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Document find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Document findOneBy(array $criteria, array $orderBy = null)
  * @method Document[]    findAll()
  * @method Document[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -25,9 +25,9 @@ class DocumentRepository extends ServiceEntityRepository
     /**
      * Get list Students.
      *
-     * @throws ImagickException
-     *
      * @return array<int, array<string, mixed[]>>
+     *
+     * @throws ImagickException
      */
     public function last(array $exists, int $firstResult = 0, int $maxResult = 5): array
     {
@@ -38,7 +38,8 @@ class DocumentRepository extends ServiceEntityRepository
             ->setMaxResults($maxResult)
             ->setFirstResult($firstResult)
             ->orderBy('doc.id', 'DESC')
-            ->getQuery();
+            ->getQuery()
+        ;
 
         $result = $query->getResult();
         $data = [];
@@ -61,6 +62,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('search', $search)
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 }

@@ -18,7 +18,8 @@ class DocumentType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('file');
+            ->add('file')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

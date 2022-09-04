@@ -64,8 +64,8 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
     protected function persistPayments(Family $family, array $packages, Operation $operation): FamilyPaymentModel
     {
         $familyPaymentModel = new FamilyPaymentModel(operation: $operation, family: $family, packages: $packages);
-        $amountRest = $familyPaymentModel->toPay % count($familyPaymentModel->packages);
-        $amountByStudent = ($familyPaymentModel->toPay - $amountRest) / count($familyPaymentModel->packages);
+        $amountRest = $familyPaymentModel->toPay % \count($familyPaymentModel->packages);
+        $amountByStudent = ($familyPaymentModel->toPay - $amountRest) / \count($familyPaymentModel->packages);
 
         foreach ($familyPaymentModel->packages as $package) {
             if (($student = $package->getStudent()?->getId()) === null) {

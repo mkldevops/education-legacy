@@ -23,9 +23,9 @@ class GoogleDriveService extends GoogleService
     }
 
     /**
-     * @throws AppException
-     *
      * @return mixed[]
+     *
+     * @throws AppException
      */
     public function getListFiles(array $params): array
     {

@@ -28,13 +28,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Document
 {
-    use IdEntityTrait;
-    use NameEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntityTrait;
-    use SoftDeleteableEntity;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use SchoolEntityTrait;
+    use SoftDeleteableEntity;
+    use TimestampableEntityTrait;
     public const DIR_FILE = 'original';
     public const DIR_PREVIEW = 'previews';
     public const DIR_THUMB = 'thumbs';
@@ -69,24 +69,28 @@ class Document
 
     /**
      * @var Collection|Person[]
+     *
      * @ORM\OneToMany(targetEntity=Person::class, mappedBy="image", cascade={"remove"})
      */
     private Collection|array $persons;
 
     /**
      * @var Collection|Operation[]
+     *
      * @ORM\ManyToMany(targetEntity=Operation::class, mappedBy="documents", cascade={"remove"})
      */
     private Collection|array $operations;
 
     /**
      * @var AccountStatement[]|Collection
+     *
      * @ORM\ManyToMany(targetEntity=AccountStatement::class, mappedBy="documents", cascade={"remove"})
      */
     private Collection|array $accountStatements;
 
     /**
-     * @var Collection|AccountSlip[]
+     * @var AccountSlip[]|Collection
+     *
      * @ORM\ManyToMany(targetEntity=AccountSlip::class, mappedBy="documents", cascade={"remove"})
      */
     private Collection|array $accountSlips;
@@ -139,7 +143,7 @@ class Document
         $url = null;
 
         if (!empty($this->path)) {
-            $url = DocumentManager::getPathUploads($dir).DIRECTORY_SEPARATOR.$this->getPath($dir);
+            $url = DocumentManager::getPathUploads($dir).\DIRECTORY_SEPARATOR.$this->getPath($dir);
         }
 
         if (null !== $url && !is_file($url)) {
@@ -182,10 +186,10 @@ class Document
     }
 
     /**
+     * @return array<string, bool>|array<string, null>
+     *
      * @throws ImagickException
      * @throws AppException
-     *
-     * @return array<string, bool>|array<string, null>
      */
     public function generateImages(): array
     {
@@ -257,9 +261,9 @@ class Document
      */
     public static function getUploadRootDir(string $dir = self::DIR_FILE): string
     {
-        $dir = DocumentManager::getPathUploads().DIRECTORY_SEPARATOR.self::getUploadDir($dir);
-        //dd($dir);
-        if (!file_exists($dir) && (!mkdir($dir, 0770, true) && !is_dir($dir))) {
+        $dir = DocumentManager::getPathUploads().\DIRECTORY_SEPARATOR.self::getUploadDir($dir);
+        // dd($dir);
+        if (!file_exists($dir) && (!mkdir($dir, 0o770, true) && !is_dir($dir))) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
         }
 
@@ -268,7 +272,7 @@ class Document
 
     public static function getUploadDir(string $dir = self::DIR_FILE): string
     {
-        if (!in_array($dir, [self::DIR_FILE, self::DIR_THUMB, self::DIR_PREVIEW], true)) {
+        if (!\in_array($dir, [self::DIR_FILE, self::DIR_THUMB, self::DIR_PREVIEW], true)) {
             $dir = self::DIR_FILE;
         }
 
@@ -281,7 +285,7 @@ class Document
     {
         $result = false;
 
-        if (!is_array($formats)) {
+        if (!\is_array($formats)) {
             $formats = [$formats];
         }
 
@@ -348,51 +352,30 @@ class Document
         return $this->isFormat('image');
     }
 
-    /**
-     * Set school.
-     *
-     * @return Document
-     */
-    public function setSchool(School $school)
+    public function setSchool(School $school): self
     {
         $this->school = $school;
 
         return $this;
     }
 
-    /**
-     * Get school.
-     *
-     * @return School|null
-     */
-    public function getSchool()
+    public function getSchool(): ?School
     {
         return $this->school;
     }
 
-    /**
-     * Get status.
-     */
     public function getPrefix(): ?string
     {
         return $this->prefix;
     }
 
-    /**
-     * Set status.
-     *
-     * @param $prefix
-     */
-    public function setPrefix($prefix): static
+    public function setPrefix(string $prefix): static
     {
         $this->prefix = trim($prefix);
 
         return $this;
     }
 
-    /**
-     * Add student.
-     */
     public function addStudent(Person $person): static
     {
         $this->persons[] = $person;
@@ -411,16 +394,13 @@ class Document
     /**
      * Get persons.
      *
-     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\Person[]
+     * @return Collection|Person[]
      */
-    public function getPersons()
+    public function getPersons(): iterable|Collection
     {
         return $this->persons;
     }
 
-    /**
-     * Add operation.
-     */
     public function addOperation(Operation $operation): static
     {
         $this->operations[] = $operation;
@@ -428,66 +408,43 @@ class Document
         return $this;
     }
 
-    /**
-     * Remove operation.
-     */
     public function removeOperation(Operation $operation): void
     {
         $this->operations->removeElement($operation);
     }
 
     /**
-     * Get operations.
-     *
-     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\Operation[]
+     * @return Collection|Operation[]
      */
-    public function getOperations()
+    public function getOperations(): iterable|Collection
     {
         return $this->operations;
     }
 
-    /**
-     * Get code classe Font awesome Icon File.
-     */
     public function getFaIconFile(): string
     {
-        switch ($this->mime) {
-            case 'image/png':
-            case 'image/jpeg':
-                $faIcon = 'fa-file-image-o';
-
-                break;
-            case 'application/pdf':
-                $faIcon = 'fa-file-pdf-o';
-
-                break;
-            case 'audio/mpeg':
-                $faIcon = 'fa-file-audio-o ';
-
-                break;
-
-            default:
-                $faIcon = 'fa-file-o';
-
-                break;
-        }
-
-        return $faIcon;
+        return match ($this->mime) {
+            'image/png', 'image/jpeg' => 'fa-file-image-o',
+            'application/pdf' => 'fa-file-pdf-o',
+            'audio/mpeg' => 'fa-file-audio-o ',
+            default => 'fa-file-o',
+        };
     }
 
     /**
      * Get informations to document.
      *
-     * @throws ImagickException
+     * @return array<string, int>|array<string, null>|array<string, string>
      *
-     * @return array<string, int>|array<string, string>|array<string, null>
+     * @throws AppException
+     * @throws ImagickException
      */
     public function getInfos(): array
     {
         return [
             'path' => $this->getWebPath(),
-            'pathThumb' => $this->getWebPath(Document::DIR_THUMB),
-            'pathPreview' => $this->getWebPath(Document::DIR_PREVIEW),
+            'pathThumb' => $this->getWebPath(self::DIR_THUMB),
+            'pathPreview' => $this->getWebPath(self::DIR_PREVIEW),
             'name' => $this->getName(),
             'id' => $this->getId(),
             'title' => $this->getTitle(),
@@ -499,7 +456,7 @@ class Document
         return 'ID : '.$this->getId().
             "\r\nNAME: ".$this->getName().
             "\r\nCREATED: ".$this->getCreatedAt()->format('d/m/Y H:i:s').
-            "\r\nAUTHOR: ".$this->getAuthor()->getName();
+            "\r\nAUTHOR: ".$this->getAuthor()?->getName();
     }
 
     /**
@@ -521,18 +478,13 @@ class Document
     }
 
     /**
-     * Get accountStatements.
-     *
-     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\AccountStatement[]
+     * @return AccountStatement[]|Collection
      */
-    public function getAccountStatements()
+    public function getAccountStatements(): iterable|Collection
     {
         return $this->accountStatements;
     }
 
-    /**
-     * Add accountSlip.
-     */
     public function addAccountSlip(AccountSlip $accountSlip): static
     {
         $this->accountSlips[] = $accountSlip;
@@ -540,20 +492,15 @@ class Document
         return $this;
     }
 
-    /**
-     * Remove accountSlip.
-     */
     public function removeAccountSlip(AccountSlip $accountSlip): void
     {
         $this->accountSlips->removeElement($accountSlip);
     }
 
     /**
-     * Get accountSlips.
-     *
-     * @return mixed[]&\Doctrine\Common\Collections\Collection&\App\Entity\AccountSlip[]
+     * @return AccountSlip[]|Collection
      */
-    public function getAccountSlips()
+    public function getAccountSlips(): iterable|Collection
     {
         return $this->accountSlips;
     }

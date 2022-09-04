@@ -8,7 +8,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class AppException extends Exception
+class AppException extends Exception implements MainErrorInterface
 {
     public function __construct(
         string $message = '',

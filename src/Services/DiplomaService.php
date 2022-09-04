@@ -15,15 +15,13 @@ use ImagickException;
 use ImagickPixel;
 use Symfony\Component\HttpFoundation\File\File;
 
-class DiplomaService extends AbstractFullService
+class DiplomaService
 {
-    public const FONT_MILLENIA = 'millenia.ttf';
-    public const FONT_SIGNATARA = 'signatra.otf';
+    private const FONT_MILLENIA = 'millenia.ttf';
+    private const FONT_SIGNATARA = 'signatra.otf';
 
     private File $file;
-
     private string $pathFont;
-
     private string $pathUploads;
 
     public function __construct(
@@ -34,6 +32,7 @@ class DiplomaService extends AbstractFullService
 
     /**
      * @throws ImagickException
+     * @throws ImagickDrawException
      */
     public function generate(School $school, Period $period = null, int $limit = 1): bool
     {
@@ -61,10 +60,10 @@ class DiplomaService extends AbstractFullService
         $image = new Imagick($this->file->getRealPath());
 
         $draw = new ImagickDraw();
-        $draw->setFont($this->pathFont.DIRECTORY_SEPARATOR.self::FONT_MILLENIA);
+        $draw->setFont($this->pathFont.\DIRECTORY_SEPARATOR.self::FONT_MILLENIA);
         $draw->setFontSize(200);
         $draw->setFontWeight(900);
-        $draw->setFillColor('#444');
+        $draw->setFillColor(new ImagickPixel('#444'));
         $draw->setStrokeColor(new ImagickPixel('#f95000'));
         $draw->setStrokeWidth(1);
         $draw->setTextAlignment(Imagick::ALIGN_CENTER);
@@ -76,7 +75,7 @@ class DiplomaService extends AbstractFullService
         $draw->annotation($x, $y, wordwrap(ucwords(strtolower($student)), 20, "\n"));
 
         $draw->setFontSize(250);
-        $draw->setFont($this->pathFont.DIRECTORY_SEPARATOR.self::FONT_SIGNATARA);
+        $draw->setFont($this->pathFont.\DIRECTORY_SEPARATOR.self::FONT_SIGNATARA);
         $x = $image->getImageWidth() / 5.5;
         $y = $image->getImageHeight() / 1.11;
 
@@ -85,7 +84,7 @@ class DiplomaService extends AbstractFullService
         $image->drawImage($draw);
         $image->setImageFormat('jpeg');
 
-        $image->writeImage($this->pathUploads.DIRECTORY_SEPARATOR.$id.'.jpeg');
+        $image->writeImage($this->pathUploads.\DIRECTORY_SEPARATOR.$id.'.jpeg');
 
         return $image;
     }

@@ -40,7 +40,7 @@ class DataStats
         return $this;
     }
 
-    public function merge(DataStats $data): static
+    public function merge(self $data): static
     {
         $this->count += $data->getCount();
         $this->sum += $data->getSum();

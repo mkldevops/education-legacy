@@ -21,10 +21,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Course
 {
-    use IdEntityTrait;
-    use CommentEntityTrait;
     use AuthorEntityTrait;
+    use CommentEntityTrait;
     use EnableEntityTrait;
+    use IdEntityTrait;
     use TimestampableEntity;
 
     /**
@@ -33,7 +33,7 @@ class Course
     protected Collection $students;
 
     /**
-     * @ORM\Column(type="string", unique=true, nullable=true, options={"default":NULL})
+     * @ORM\Column(type="string", unique=true, nullable=true, options={"default": NULL})
      */
     private string $idEvent;
 
@@ -71,7 +71,8 @@ class Course
     {
         $this->setStudents(new ArrayCollection())
             ->setTeachers(new ArrayCollection())
-            ->setDate(new DateTime());
+            ->setDate(new DateTime())
+        ;
     }
 
     public function __toString(): string
@@ -170,17 +171,17 @@ class Course
     }
 
     /**
-     * @return Teacher[]|Collection
+     * @return Collection|Teacher[]
      */
-    public function getTeachers(): Collection
+    public function getTeachers(): iterable|Collection
     {
         return $this->teachers;
     }
 
     /**
-     * @param Teacher[]|Collection $teachers
+     * @param Collection|Teacher[] $teachers
      */
-    public function setTeachers(ArrayCollection $teachers): self
+    public function setTeachers(Collection $teachers): self
     {
         $this->teachers = $teachers;
 
@@ -202,7 +203,7 @@ class Course
     }
 
     /**
-     * @return Collection|AppealCourse[]
+     * @return AppealCourse[]|Collection
      */
     public function getStudents(): Collection
     {
@@ -210,7 +211,7 @@ class Course
     }
 
     /**
-     * @param Collection|AppealCourse[] $students
+     * @param AppealCourse[]|Collection $students
      */
     public function setStudents(Collection $students): self
     {

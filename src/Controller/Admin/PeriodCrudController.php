@@ -26,7 +26,8 @@ class PeriodCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Period')
             ->setEntityLabelInPlural('Period')
-            ->setSearchFields(['id', 'name', 'comment']);
+            ->setSearchFields(['id', 'name', 'comment'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

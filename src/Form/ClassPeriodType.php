@@ -34,11 +34,13 @@ class ClassPeriodType extends AbstractType
                 'class' => Period::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('p')
-                        ->orderBy('p.begin', 'DESC');
+                        ->orderBy('p.begin', 'DESC')
+                    ;
                 },
             ])
             ->add('comment')
-            ->add('status');
+            ->add('status')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

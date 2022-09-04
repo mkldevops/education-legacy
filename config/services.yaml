@@ -11,15 +11,19 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: true
         bind:
             $debug: '%kernel.debug%'
+            $env: '%kernel.environment%'
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Model,Tests,Kernel.php}'
+    App\ :
+        resource : '../src/'
+        exclude :
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Exception/'
+            - '../src/Model/'
+            - '../src/Traits/'
+            - '../src/Kernel.php'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -29,10 +33,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\EventListener\LoginListener:
-        arguments: ["@security.authorization_checker", "@session"]
-        tags:
-            - { name: 'kernel.event_listener', event: security.interactive_login }
 
     App\Services\GoogleService:
         autowire: false
@@ -49,15 +49,10 @@ services:
         class: App\Services\GoogleCalendarService
         parent: App\Services\GoogleService
 
-    App\EventListener\CheckDataListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.finish_request }
-
     App\EventListener\OperationListener:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: prePersist, entity: App\Entity\Operation }
             - { name: 'doctrine.orm.entity_listener', event: preUpdate, entity: App\Entity\Operation }
-
 
     App\Services\DiplomaService:
         calls:

@@ -48,9 +48,9 @@ class DocumentManager extends AbstractFullService
     }
 
     /**
-     * @throws FileNotFoundException
-     *
      * @return array<string, mixed>
+     *
+     * @throws FileNotFoundException
      */
     public function upload(Document $document): array
     {
@@ -66,7 +66,8 @@ class DocumentManager extends AbstractFullService
         }
 
         $document->setFileName(sha1(uniqid((string) mt_rand(), true)))
-            ->setExtension($document->getFile()?->guessClientExtension());
+            ->setExtension($document->getFile()?->guessClientExtension())
+        ;
 
         $name = str_replace('.'.$document->getExtension(), '', $document->getFile()?->getClientOriginalName());
 
@@ -76,7 +77,8 @@ class DocumentManager extends AbstractFullService
 
         $document->setPath()
             ->setMime($document->getFile()?->getClientMimeType())
-            ->setName($name);
+            ->setName($name)
+        ;
 
         $this->logger->debug(__FUNCTION__, ['document' => $document]);
 
@@ -85,7 +87,7 @@ class DocumentManager extends AbstractFullService
         ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
         if (0 !== $document->getFile()?->getError()) {
-            $data->errors = [
+            $data['errors'] = [
                 'error' => $document->getFile()->getError(),
                 'message' => $document->getFile()->getErrorMessage(),
             ];
@@ -98,21 +100,21 @@ class DocumentManager extends AbstractFullService
     {
         $path = self::$pathUploads;
 
-        if (in_array($dir, [Document::DIR_FILE, Document::DIR_THUMB, Document::DIR_PREVIEW], true)) {
-            $path .= DIRECTORY_SEPARATOR.$dir;
+        if (\in_array($dir, [Document::DIR_FILE, Document::DIR_THUMB, Document::DIR_PREVIEW], true)) {
+            $path .= \DIRECTORY_SEPARATOR.$dir;
         }
 
         return $path;
     }
 
     /**
-     * @throws FileNotFoundException
+     * @return array<string, bool>|array<string, null>|array<string, string>
      *
-     * @return array<string, bool>|array<string, string>|array<string, null>
+     * @throws FileNotFoundException
      */
     private function generateImages(Document $document): array
     {
-        $filepath = self::getPathUploads(Document::DIR_FILE).DIRECTORY_SEPARATOR.$document->getPath();
+        $filepath = self::getPathUploads(Document::DIR_FILE).\DIRECTORY_SEPARATOR.$document->getPath();
 
         // If file is not supported
         if (!is_file($filepath) || !$document->isFormat([self::PDF, self::IMAGE])) {
@@ -121,7 +123,7 @@ class DocumentManager extends AbstractFullService
 
         $this->logger->debug(__FUNCTION__, ['filepath' => $filepath]);
 
-        chmod($filepath, 0777);
+        chmod($filepath, 0o777);
         $error = false;
         $preview = null;
         $thumb = null;
@@ -144,7 +146,7 @@ class DocumentManager extends AbstractFullService
             $filePreview = sprintf(
                 '%s%s%s.%s',
                 self::getPathUploads(Document::DIR_PREVIEW),
-                DIRECTORY_SEPARATOR,
+                \DIRECTORY_SEPARATOR,
                 $document->getFileName(),
                 Document::EXT_PNG
             );
@@ -159,7 +161,7 @@ class DocumentManager extends AbstractFullService
             $fileThumb = sprintf(
                 '%s%s%s.%s',
                 self::getPathUploads(Document::DIR_THUMB),
-                DIRECTORY_SEPARATOR,
+                \DIRECTORY_SEPARATOR,
                 $document->getFileName(),
                 Document::EXT_PNG
             );

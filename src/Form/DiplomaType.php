@@ -25,7 +25,8 @@ class DiplomaType extends AbstractType
                 'allow_delete' => true,
                 'download_uri' => '...',
                 'download_label' => '...',
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

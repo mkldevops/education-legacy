@@ -18,7 +18,6 @@ madrasse:
             sub:
                 teacher: { label: "Teacher", path: "app_teacher_index" }
                 package: { label: "Package", path: "app_package_index" }
-                diploma: { label: "Diploma", path: "app_diploma_index" }
 
 accounting:
     role: "ROLE_ACCOUNTANT"

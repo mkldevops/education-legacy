@@ -24,12 +24,12 @@ use Symfony\Component\Serializer\Annotation\Ignore;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use IdEntityTrait;
-    use NameEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntity;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use SoftDeleteableEntity;
+    use TimestampableEntity;
 
     public const USER_ROBOT = 0;
     /**

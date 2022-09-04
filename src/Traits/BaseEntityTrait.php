@@ -11,9 +11,9 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 trait BaseEntityTrait
 {
-    use NameEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntityTrait;
+    use NameEntityTrait;
     use SoftDeleteableEntity;
+    use TimestampableEntityTrait;
 }

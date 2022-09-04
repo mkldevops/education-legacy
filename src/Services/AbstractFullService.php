@@ -16,10 +16,10 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractFullService
 {
-    use LoggerTrait;
-    use TranslatorTrait;
     use EntityManagerTrait;
+    use LoggerTrait;
     use PeriodManagerTrait;
+    use TranslatorTrait;
 
     protected ?User $user = null;
 
@@ -43,7 +43,8 @@ abstract class AbstractFullService
     {
         $school = $this->entityManager
             ->getRepository(School::class)
-            ->find($id);
+            ->find($id)
+        ;
 
         if (!$school instanceof School) {
             throw new SchoolException();

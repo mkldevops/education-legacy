@@ -17,17 +17,22 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class StudentComment
 {
-    use IdEntityTrait;
-    use StudentEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
+    use IdEntityTrait;
+    use StudentEntityTrait;
     use TimestampableEntity;
-    public ?\DateTime $created = null;
 
     public const COMMENT_APPRECIATION = 'success';
     public const COMMENT_INFORMATION = 'info';
     public const COMMENT_WARNING = 'warning';
     public const COMMENT_ALERT = 'danger';
+    public ?\DateTime $created = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="comments", cascade={"persist", "remove"})
+     */
+    protected ?Student $student = null;
 
     /**
      * @ORM\Column(type="string")

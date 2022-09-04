@@ -16,7 +16,8 @@ class OperationGenderType extends AbstractType
         $builder
             ->add('name', null, ['label' => 'form.name'])
             ->add('code', null, ['label' => 'form.code'])
-            ->add('enable', null, ['label' => 'form.enable']);
+            ->add('enable', null, ['label' => 'form.enable'])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

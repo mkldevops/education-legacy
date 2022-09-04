@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Document;
 use App\Exception\AppException;
+use App\Exception\FileNotFoundException;
 use App\Form\DocumentType;
 use App\Manager\DocumentManager;
-use App\Model\ResponseModel;
+use App\Manager\SchoolManager;
+use App\Repository\DocumentRepository;
 use App\Services\ResponseRequest;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use ImagickException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,24 +24,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/document')]
-class DocumentController extends AbstractBaseController
+class DocumentController extends AbstractController
 {
     /**
-     * @throws ImagickException
+     * @throws FileNotFoundException
      */
     #[Route(path: '/create', name: 'app_document_create', methods: ['POST'])]
-    public function create(Request $request): RedirectResponse|Response
+    public function create(Request $request, EntityManagerInterface $entityManager, DocumentManager $documentManager): RedirectResponse|Response
     {
         $document = new Document();
         $form = $this->createCreateForm($document);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $manager = $this->getDoctrine()->getManager();
+            $documentManager->upload($document);
 
-            $document->upload();
-
-            $manager->persist($document);
-            $manager->flush();
+            $entityManager->persist($document);
+            $entityManager->flush();
 
             $this->addFlash(
                 'success',
@@ -53,18 +53,6 @@ class DocumentController extends AbstractBaseController
             'document' => $document,
             'form' => $form->createView(),
         ]);
-    }
-
-    private function createCreateForm(Document $document): FormInterface
-    {
-        $form = $this->createForm(DocumentType::class, $document, [
-            'action' => $this->generateUrl('app_document_create'),
-            'method' => 'POST',
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Create']);
-
-        return $form;
     }
 
     #[Route(path: '/new', name: 'app_document_new', methods: ['GET'])]
@@ -98,26 +86,13 @@ class DocumentController extends AbstractBaseController
         ]);
     }
 
-    private function createEditForm(Document $document): FormInterface
-    {
-        $form = $this->createForm(DocumentType::class, $document, [
-            'action' => $this->generateUrl('app_document_update', ['id' => $document->getId()]),
-            'method' => Request::METHOD_PUT,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Update']);
-
-        return $form;
-    }
-
     #[Route(path: '/update/{id}', name: 'app_document_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Document $document): RedirectResponse|Response
+    public function update(Request $request, Document $document, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
-        $manager = $this->getDoctrine()->getManager();
         $editForm = $this->createEditForm($document);
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $manager->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'The Document has been updated.');
 
@@ -153,15 +128,6 @@ class DocumentController extends AbstractBaseController
         ]);
     }
 
-    private function createDeleteForm(int $id): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('app_document_delete', ['id' => $id]))
-            ->setMethod(Request::METHOD_DELETE)
-            ->add('submit', SubmitType::class, ['label' => 'Delete'])
-            ->getForm();
-    }
-
     public function getBaseUrl(Request $request): string
     {
         return $request->getScheme().'://'.$request->getHttpHost().$request->getBasePath();
@@ -170,15 +136,15 @@ class DocumentController extends AbstractBaseController
     /**
      * @throws AppException
      */
-    #[Route(path: '/last', name: 'app_document_last', methods: ['POST', 'GET'], options: ['expose' => true])]
-    public function last(Request $request): JsonResponse
+    #[Route(path: '/last', name: 'app_document_last', options: ['expose' => true], methods: ['POST', 'GET'])]
+    public function last(Request $request, DocumentRepository $documentRepository): JsonResponse
     {
-        $em = $this->getDoctrine()->getManager();
         $response = ResponseRequest::responseDefault();
 
         try {
-            $response->data = $em->getRepository(Document::class)
-                ->last($request->get('exists', [0]), $request->get('firstResult', 0));
+            $response->data = $documentRepository
+                ->last($request->get('exists', [0]), $request->get('firstResult', 0))
+            ;
         } catch (Exception $e) {
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
@@ -190,31 +156,24 @@ class DocumentController extends AbstractBaseController
      * @throws AppException
      */
     #[Route(path: '/upload', name: 'app_document_upload', methods: ['POST'])]
-    public function upload(Request $request, DocumentManager $documentManager): JsonResponse
+    public function upload(Request $request, DocumentManager $documentManager, EntityManagerInterface $entityManager, SchoolManager $schoolManager): JsonResponse
     {
-        $document = new Document();
-        $response = ResponseModel::responseDefault(['upload' => null, 'document' => null]);
-
         try {
-            $manager = $this->getManager();
-            $school = $this->getEntitySchool();
-
-            $document->setSchool($school)
+            $document = (new Document())
+                ->setSchool($schoolManager->getEntitySchool())
                 ->setAuthor($this->getUser())
                 ->setEnable(true)
                 ->setFile($request->files->get('file'))
                 ->setName($request->get('name'))
-                ->setPrefix($request->get('prefix'));
+                ->setPrefix($request->get('prefix'))
+            ;
 
-            $data = $documentManager->upload($document);
-            $response->setData($data, 'upload');
+            $documentManager->upload($document);
 
-            $manager->persist($document);
-            $manager->flush();
+            $entityManager->persist($document);
+            $entityManager->flush();
 
-            $data = $document->getInfos();
-            $response->setData($data, 'document')
-                ->setSuccess(true);
+            return $this->json(['upload' => true, 'document' => $document->getInfos(), 'success' => true]);
         } catch (Exception $e) {
             $documentManager->getLogger()->error($e->getMessage(), [
                 'class' => $e::class,
@@ -223,7 +182,39 @@ class DocumentController extends AbstractBaseController
 
             throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
         }
+    }
 
-        return ResponseRequest::jsonResponse($response);
+    private function createCreateForm(Document $document): FormInterface
+    {
+        $form = $this->createForm(DocumentType::class, $document, [
+            'action' => $this->generateUrl('app_document_create'),
+            'method' => 'POST',
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
+
+        return $form;
+    }
+
+    private function createEditForm(Document $document): FormInterface
+    {
+        $form = $this->createForm(DocumentType::class, $document, [
+            'action' => $this->generateUrl('app_document_update', ['id' => $document->getId()]),
+            'method' => Request::METHOD_PUT,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Update']);
+
+        return $form;
+    }
+
+    private function createDeleteForm(int $id): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('app_document_delete', ['id' => $id]))
+            ->setMethod(Request::METHOD_DELETE)
+            ->add('submit', SubmitType::class, ['label' => 'Delete'])
+            ->getForm()
+        ;
     }
 }

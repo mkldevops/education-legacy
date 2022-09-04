@@ -21,11 +21,11 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class AppealCourse
 {
-    use IdEntityTrait;
     use CommentEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntity;
+    use IdEntityTrait;
     use StudentEntityTrait;
+    use TimestampableEntity;
 
     public const STATUS_NOTHING = 0;
     public const STATUS_PRESENT = 1;
@@ -33,6 +33,11 @@ class AppealCourse
     public const STATUS_ABSENT_JUSTIFIED = 3;
     public const STATUS_LAG = 4;
     public const STATUS_LAG_UNACCEPTED = 5;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="appealCourses", cascade={"persist", "remove"})
+     */
+    protected ?Student $student = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Course::class, cascade={"persist", "remove"}, inversedBy="students")
@@ -74,9 +79,9 @@ class AppealCourse
     }
 
     /**
-     * @throws AppException
+     * @return array[]
      *
-     * @return mixed[]
+     * @throws AppException
      */
     public function getInfoStatus(): array
     {

@@ -19,12 +19,12 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
  */
 class Member
 {
-    use IdEntityTrait;
-    use NameEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntityTrait;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use SoftDeleteableEntity;
+    use TimestampableEntityTrait;
 
     /**
      * @ORM\Column(type="string")

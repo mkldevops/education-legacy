@@ -44,7 +44,8 @@ class AccountSlipType extends AbstractType
             ->add('reference')
             ->add('comment', CkeditorType::class, [
                 'required' => false,
-            ]);
+            ])
+        ;
 
         /**
          * @param FormEvent $event
@@ -57,7 +58,8 @@ class AccountSlipType extends AbstractType
 
                 if ($accountCredit === $accountDebit) {
                     $form['accountCredit']
-                        ->addError(new FormError('accountCredit and accountDebit may not be the same'));
+                        ->addError(new FormError('accountCredit and accountDebit may not be the same'))
+                    ;
                 }
             }
         };

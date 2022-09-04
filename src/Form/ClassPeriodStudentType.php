@@ -26,7 +26,8 @@ class ClassPeriodStudentType extends AbstractType
             ->add('comment', IntegerType::class, ['label' => 'Age maximum'])
             ->add('professors', TextType::class, ['label' => 'Liste professeurs'])
             ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false])
-            ->add('status', CheckboxType::class, ['label' => 'Etat', 'required' => false]);
+            ->add('status', CheckboxType::class, ['label' => 'Etat', 'required' => false])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

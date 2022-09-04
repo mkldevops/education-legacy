@@ -15,8 +15,8 @@ use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
  */
 class Validate
 {
-    use IdEntityTrait;
     use AuthorEntityTrait;
+    use IdEntityTrait;
     use TimestampableEntityTrait;
 
     public const TYPE_MUTED = 'muted';
@@ -83,7 +83,7 @@ class Validate
         ];
 
         if (!empty($type)) {
-            if (array_key_exists($type, $list)) {
+            if (\array_key_exists($type, $list)) {
                 return $list[$type];
             }
 

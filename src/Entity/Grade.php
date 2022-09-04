@@ -17,10 +17,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Grade
 {
+    use DescriptionEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use EnableEntityTrait;
-    use DescriptionEntityTrait;
     use TimestampableEntity;
 
     public function __toString(): string

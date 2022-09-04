@@ -28,14 +28,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class AccountSlip
 {
+    use AmountEntityTrait;
+    use AuthorEntityTrait;
+    use CommentEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntityTrait;
     use SoftDeleteableEntity;
-    use CommentEntityTrait;
-    use AmountEntityTrait;
+    use TimestampableEntityTrait;
 
     public const GENDER_BANK_TRANSFER = 'virement';
     public const GENDER_PAYMENT_SPECIES = 'versement';
@@ -91,6 +91,11 @@ class AccountSlip
             ->documents = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getName().' - '.$this->getDate()->format('d M Y');
+    }
+
     public static function getGenders(): array
     {
         return [
@@ -99,11 +104,6 @@ class AccountSlip
             self::GENDER_REBATE_CHECK => self::GENDER_REBATE_CHECK,
             self::GENDER_CASH_WITHDRAWAL => self::GENDER_CASH_WITHDRAWAL,
         ];
-    }
-
-    public function __toString(): string
-    {
-        return $this->getName().' - '.$this->getDate()->format('d M Y');
     }
 
     public function getDate(): DateTimeInterface
@@ -185,7 +185,7 @@ class AccountSlip
      */
     public function getOperation(string $type): ?Operation
     {
-        if (!in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
+        if (!\in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
             throw new AppException(sprintf("The type \"%s\" of operation don't supported", $type));
         }
 
@@ -202,7 +202,7 @@ class AccountSlip
      */
     public function hasOperation(string $type): bool
     {
-        if (!in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
+        if (!\in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
             throw new AppException(sprintf("The type \"%s\" of operation don't supported", $type));
         }
 
@@ -219,7 +219,7 @@ class AccountSlip
      */
     public function setOperation(Operation $operation, string $type): Operation
     {
-        if (in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
+        if (\in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
             self::TYPE_DEBIT === $type ? $this->setOperationDebit($operation) : $this->setOperationCredit($operation);
         } else {
             throw new AppException(sprintf("The type \"%s\" of operation don't exists", $type));

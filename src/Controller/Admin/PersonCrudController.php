@@ -25,7 +25,8 @@ class PersonCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Person')
             ->setEntityLabelInPlural('Person')
-            ->setSearchFields(['id', 'forname', 'phone', 'email', 'birthplace', 'gender', 'address', 'zip', 'city', 'name']);
+            ->setSearchFields(['id', 'forname', 'phone', 'email', 'birthplace', 'gender', 'address', 'zip', 'city', 'name'])
+        ;
     }
 
     public function configureFields(string $pageName = null): iterable

@@ -10,8 +10,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Family|null find($id, $lockMode = null, $lockVersion = null)
- * @method Family|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Family find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Family findOneBy(array $criteria, array $orderBy = null)
  * @method Family[]    findAll()
  * @method Family[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -33,7 +33,8 @@ class FamilyRepository extends ServiceEntityRepository
             ->orWhere('f.legalGuardian = :person')
             ->setParameter('person', $person)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     /**
@@ -52,6 +53,7 @@ class FamilyRepository extends ServiceEntityRepository
             ->setParameter('search', $search)
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 }

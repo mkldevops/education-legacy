@@ -17,21 +17,20 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ClassPeriodRepository::class)
- *
  * @UniqueEntity(fields={"classSchool"}, groups={"classPeriod"})
  * @UniqueEntity(fields={"period"}, groups={"classPeriod"})
  */
 class ClassPeriod
 {
-    use IdEntityTrait;
     use AuthorEntityTrait;
     use CommentEntityTrait;
     use EnableEntityTrait;
+    use IdEntityTrait;
     use TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity=ClassSchool::class, cascade={"persist"}, inversedBy="classPeriods")
-     * @ORM\JoinColumn( nullable=false)
+     * @ORM\JoinColumn(nullable=false)
      */
     private ClassSchool $classSchool;
 

@@ -32,9 +32,10 @@ class UserFixtures extends AbstractAppFixtures
                 ->setName($item['name'])
                 ->setSurname($item['surname'])
                 ->setPassword($this->hasher->hashPassword($entity, $item['password']))
-                ->setEnable((bool) $item['enable']);
+                ->setEnable((bool) $item['enable'])
+            ;
 
-            if (is_array($item['roles'])) {
+            if (\is_array($item['roles'])) {
                 foreach ($item['roles'] as $role) {
                     $entity->addRole($role);
                 }

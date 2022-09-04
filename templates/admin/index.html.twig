@@ -10,22 +10,6 @@
     {{ parent() }}
     <script src="{{ asset('inspina/js/plugins/morris/raphael-2.1.0.min.js') }}"></script>
     <script src="{{ asset('inspina/js/plugins/morris/morris.js') }}"></script>
-    <script src="{{ asset('bower/highcharts/js/highcharts.js') }}"></script>
-    <script src="{{ asset('bower/highcharts/modules/exporting.js') }}"></script>
-
-    <script type="text/javascript">
-        {{ data.chartNbStudents.render("chart1")|raw }}
-
-
-        Morris.Donut({
-            element: 'morris-donut-chart',
-            data: [{ label: "Download Sales", value: 12 },
-                { label: "In-Store Sales", value: 30 },
-                { label: "Mail-Order Sales", value: 20 } ],
-            resize: true,
-            colors: ['#87d6c6', '#54cdb4','#1ab394'],
-        });
-    </script>
 {% endblock %}
 
 {% block body %}
@@ -35,7 +19,7 @@
             <div class="widget style1 navy-bg">
                 <div class="row">
                     <div class="col-xs-4">
-                        <a href="{{ path('app_student_index') }}" class="btn-link"><i class="fa fa-graduation-cap fa-5x"></i></a>
+                        <a href="{{ path('app_student_index') }}" class="btn-link"><em class="fa fa-graduation-cap fa-5x"></em></a>
                     </div>
                     <div class="col-xs-8 text-right">
                         <span> {% trans %}panel.title.student{% endtrans %} </span>
@@ -51,7 +35,7 @@
                 <div class="widget style1 lazur-bg">
                     <div class="row">
                         <div class="col-xs-4">
-                            <i class="fa fa-money fa-5x"></i>
+                            <em class="fa fa-money fa-5x"></em>
                         </div>
                         <div class="col-xs-8 text-right">
                             <span> {% trans %}account.total_sum{% endtrans %} </span>
@@ -84,36 +68,7 @@
                     </div>
                 {% endif %}
 
-                <div id='stats-number-students' class="col-md-12">
-                </div>
 
-                <div class="col-lg-6">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>Donut Chart Example</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link">
-                                    <i class="fa fa-chevron-up"></i>
-                                </a>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <i class="fa fa-wrench"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user">
-                                    <li><a href="#">Config option 1</a>
-                                    </li>
-                                    <li><a href="#">Config option 2</a>
-                                    </li>
-                                </ul>
-                                <a class="close-link">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="ibox-content">
-                            <div id="morris-donut-chart" ></div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -122,8 +77,8 @@
                 <legend class="clearfix">
                     <span class="pull-left">{% trans %}panel.title.last_operation{% endtrans %}</span>
                     <span class="pull-right">
-                        <a href="{{ path('app_account_slip_new') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> Opération</a>
-                        <a href="{{ path('app_operation_new') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> Transfert</a>
+                        <a href="{{ path('app_account_slip_new') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> Transfert</a>
+                        <a href="{{ path('app_operation_new') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus"> Opération</i> </a>
                         <a href="{{ path('app_operation_index') }}" class="btn btn-xs btn-primary"><i class="fa fa-list-ol"></i> {% trans %}panel.title.btn_list_operations{% endtrans %}</a>
                     </span>
                 </legend>

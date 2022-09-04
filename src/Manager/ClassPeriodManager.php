@@ -84,8 +84,6 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
     /**
      * @return ClassPeriodStudent[]
-     *
-     * @throws Exception
      */
     public function getStudentsInClassPeriod(ClassPeriod $classPeriod): array
     {
@@ -104,7 +102,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $courses = array_fill(0, 17, []);
         }
 
-        $this->logger->debug(__FUNCTION__.' length courses : '.count($courses));
+        $this->logger->debug(__FUNCTION__.' length courses : '.\count($courses));
 
         return $courses;
     }
@@ -122,7 +120,8 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                 ->andWhere('c.date >= :date')
                 ->setParameter('date', $from)
                 ->getQuery()
-                ->getSingleScalarResult();
+                ->getSingleScalarResult()
+            ;
             $this->logger->debug(__FUNCTION__.' length total courses : '.$courses);
         } catch (NonUniqueResultException|NoResultException $e) {
             $this->logger->error($e->getMessage());
@@ -152,7 +151,8 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
             foreach ($students as $student) {
                 $classPeriodStudent = $this->classPeriodStudentRepository
-                    ->getCurrentClassPeriodStudent($student, $period);
+                    ->getCurrentClassPeriodStudent($student, $period)
+                ;
 
                 if ($classPeriodStudent instanceof ClassPeriodStudent) {
                     $end = $classPeriodStudent->getClassPeriod()?->getPeriod()?->getEnd();
@@ -163,7 +163,8 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                     $classPeriodStudent->setEnd($end)
                         ->setEnable(false)
                         ->setAuthor($this->security->getUser())
-                        ->setComment('Change for new class '.$classPeriod->getClassSchool()->getName());
+                        ->setComment('Change for new class '.$classPeriod->getClassSchool()->getName())
+                    ;
                 } else {
                     $this->logger->debug("don't have a current ClassPeriodStudent", compact('student'));
                 }
@@ -180,35 +181,9 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
     }
 
     /**
-     * @throws ORMException
-     * @throws Exception
-     */
-    private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student): void
-    {
-        $classPeriodStudent = new ClassPeriodStudent();
-
-        $begin = new DateTime();
-
-        // On vérifie si la date debut de la periode n'est pas encore passé
-        $timestamp = $classPeriod->getPeriod()->getBegin()?->getTimestamp();
-        if (null !== $timestamp && $timestamp > time()) {
-            $begin = $classPeriod->getPeriod()->getBegin();
-        }
-
-        $classPeriodStudent->setClassPeriod($classPeriod)
-            ->setBegin($begin)
-            ->setEnable(true)
-            ->setEnd($classPeriod->getPeriod()->getEnd())
-            ->setStudent($student)
-            ->setAuthor($this->security->getUser());
-
-        $this->entityManager->persist($classPeriodStudent);
-    }
-
-    /**
-     * @throws Exception
-     *
      * @return array<int, array<string, mixed>>
+     *
+     * @throws Exception
      */
     public function getListStudentWithout(Period $period, School $school): array
     {
@@ -235,5 +210,32 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         }
 
         return $students;
+    }
+
+    /**
+     * @throws ORMException
+     * @throws Exception
+     */
+    private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student): void
+    {
+        $classPeriodStudent = new ClassPeriodStudent();
+
+        $begin = new DateTime();
+
+        // On vérifie si la date debut de la periode n'est pas encore passé
+        $timestamp = $classPeriod->getPeriod()->getBegin()?->getTimestamp();
+        if (null !== $timestamp && $timestamp > time()) {
+            $begin = $classPeriod->getPeriod()->getBegin();
+        }
+
+        $classPeriodStudent->setClassPeriod($classPeriod)
+            ->setBegin($begin)
+            ->setEnable(true)
+            ->setEnd($classPeriod->getPeriod()->getEnd())
+            ->setStudent($student)
+            ->setAuthor($this->security->getUser())
+        ;
+
+        $this->entityManager->persist($classPeriodStudent);
     }
 }

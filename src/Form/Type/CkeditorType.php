@@ -29,6 +29,6 @@ class CkeditorType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return CkeditorType::class;
+        return self::class;
     }
 }

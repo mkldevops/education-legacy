@@ -12,8 +12,8 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Person|null find($id, $lockMode = null, $lockVersion = null)
- * @method Person|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Person find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Person findOneBy(array $criteria, array $orderBy = null)
  * @method Person[]    findAll()
  * @method Person[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -41,7 +41,8 @@ class PersonRepository extends ServiceEntityRepository
             ->setParameter('period', $period)
             ->groupBy('p.id')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     /**
@@ -58,6 +59,7 @@ class PersonRepository extends ServiceEntityRepository
             ->setParameter('search', preg_quote($search))
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 }

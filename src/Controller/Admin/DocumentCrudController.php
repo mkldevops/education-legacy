@@ -26,7 +26,8 @@ class DocumentCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Document')
             ->setEntityLabelInPlural('Document')
-            ->setSearchFields(['id', 'mime', 'path', 'extension', 'size', 'name']);
+            ->setSearchFields(['id', 'mime', 'path', 'extension', 'size', 'name'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

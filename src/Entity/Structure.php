@@ -22,15 +22,15 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Structure
 {
+    use AddressEntityTrait;
+    use AuthorEntityTrait;
+    use CityEntityTrait;
+    use EnableEntityTrait;
     use IdentityTrait;
     use NameEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntity;
     use SoftDeleteableEntity;
-    use CityEntityTrait;
+    use TimestampableEntity;
     use ZipEntityTrait;
-    use AddressEntityTrait;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -180,7 +180,7 @@ class Structure
     }
 
     /**
-     * @return ArrayCollection|Account[]
+     * @return Account[]|ArrayCollection
      */
     public function getAccounts(): Collection
     {
@@ -188,7 +188,7 @@ class Structure
     }
 
     /**
-     * @param ArrayCollection|Account[] $accounts
+     * @param Account[]|ArrayCollection $accounts
      */
     public function setAccounts(ArrayCollection $accounts): static
     {
@@ -215,7 +215,7 @@ class Structure
     }
 
     /**
-     * @return ArrayCollection|AccountSlip[]
+     * @return AccountSlip[]|ArrayCollection
      */
     public function getAccountSlips(): Collection
     {
@@ -223,7 +223,7 @@ class Structure
     }
 
     /**
-     * @param ArrayCollection|AccountSlip[] $accountSlips
+     * @param AccountSlip[]|ArrayCollection $accountSlips
      */
     public function setAccountSlips(Collection $accountSlips): self
     {

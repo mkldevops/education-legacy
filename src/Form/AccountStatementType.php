@@ -28,7 +28,8 @@ class AccountStatementType extends AbstractType
             ->add('newBalance')
             ->add('numberOperations')
             ->add('reference')
-            ->add('enable');
+            ->add('enable')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

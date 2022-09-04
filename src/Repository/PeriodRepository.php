@@ -6,12 +6,11 @@ namespace App\Repository;
 
 use App\Entity\Period;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Period|null find($id, $lockMode = null, $lockVersion = null)
- * @method Period|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Period find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Period findOneBy(array $criteria, array $orderBy = null)
  * @method Period[]    findAll()
  * @method Period[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -40,15 +39,22 @@ class PeriodRepository extends ServiceEntityRepository
         $periods = $this->createQueryBuilder('per')
             ->where('CURRENT_TIMESTAMP() BETWEEN per.begin AND per.end')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
 
         return current($periods);
     }
 
-    public function getAvailable(): QueryBuilder
+    /**
+     * @return Period[]
+     */
+    public function getAvailable(): array
     {
         return $this->createQueryBuilder('per')
             ->where('per.enable = 1')
-            ->andWhere('per.end > CURRENT_TIMESTAMP()');
+            ->andWhere('per.end > CURRENT_TIMESTAMP()')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }

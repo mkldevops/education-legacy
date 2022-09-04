@@ -1,43 +1,91 @@
-image: jakzal/phpqa:php8.1
+image: $CI_REGISTRY_IMAGE:pipeline
 
 before_script:
-  - apt-get update -qq
-  - apt-get install -qq git
-  # Setup SSH deploy keys
-  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
-  - mkdir -p ~/.ssh
-  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-  - composer install
+    - symfony composer install --no-scripts
 
 cache:
-  paths:
-    - vendor
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - vendor
 
 stages:
-  - CodingStandards
-  - UniTests
+    - security
+    - coding_standards
+    - tests
+    - deploy
+
+check_vulnerabilities:
+    stage: security
+    needs : []
+    script :
+        - symfony check:security
+        - symfony check:requirements
+    allow_failure: false
+
+lint:
+    stage: coding_standards
+    needs : []
+    script :
+        - symfony console lint:yaml config --parse-tags
+        - symfony console lint:twig templates --env=prod
+        - symfony console lint:container --no-debug
+        - make doctrine-validate c="--env=test"
 
 phpstan:
-  stage: CodingStandards
-  script:
-    - make stan
-  allow_failure: true
+    needs: []
+    stage: coding_standards
+    script:
+        - make stan
+    allow_failure: false
+
+php-cs-fixer:
+    needs: []
+    stage: coding_standards
+    script:
+        - make cs-dry
+    allow_failure: false
 
 phpunit:
-  stage: UniTests
-  script:
-    - make test
-  allow_failure: false
+    needs: []
+    services:
+        - mysql:8.0
+    stage: tests
+    variables:
+        MYSQL_ROOT_PASSWORD: test
+        DATABASE_PASSWORD: test
+        MYSQL_DATABASE: app_test
+        MYSQL_DATABASE_TEST: app_test
+        DATABASE_NAME: app_test
+        MYSQL_USER: app_user
+        MYSQL_PASSWORD: test
+        MYSQL_HOST: mysql
+        MYSQL_PORT: 3306
+    script:
+        - symfony console debug:dotenv --env=test
+        - make test-report
+    allow_failure: true
+
+    artifacts:
+        when: always
+        reports:
+            junit: report.xml
+
+.deploy:
+  image : alpine
+  stage: deploy
+  before_script :
+    - apk add --no-cache openssh-client ca-certificates bash
+    - mkdir -p -m 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
 deploy_prod:
-  type: deploy
-  stage: .post
-  environment:
-    name: prod
-    url: $IP_PROD
-  script:
-    - ssh fardus@$IP_PROD "cd /var/www/$REPO && git checkout master && git pull origin master --rebase && make build-up && exit"
-  only:
-    - master
+    extends : .deploy
+    stage: deploy
+    environment:
+        name: prod
+        url: https://education.msadawaheri.fr
+    script:
+        - ssh fardus@$IP_PROD "cd /var/www/$REPO && git checkout master && git pull origin master --rebase && make build-up && exit"
+    only:
+        - main

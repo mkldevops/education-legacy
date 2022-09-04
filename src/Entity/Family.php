@@ -22,19 +22,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=FamilyRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks
  */
 class Family
 {
+    use AddressEntityTrait;
+    use AuthorEntityTrait;
+    use CityEntityTrait;
+    use EmailEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameAccessorsTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntity;
     use SoftDeleteableEntity;
-    use EmailEntityTrait;
-    use AddressEntityTrait;
-    use CityEntityTrait;
+    use TimestampableEntity;
     use ZipEntityTrait;
 
     /**
@@ -91,6 +91,11 @@ class Family
         $this->persons = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
+    }
+
     public function setGenders(): self
     {
         $this->mother?->setGender(Person::GENDER_FEMALE);
@@ -98,11 +103,6 @@ class Family
         $this->legalGuardian?->setGender(Person::GENDER_MALE);
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
     }
 
     public function getNameComplete(): string
@@ -116,20 +116,20 @@ class Family
             $persons[] = (string) $this->father;
         }
 
-        if (null !== $this->legalGuardian && count($persons) < 2) {
+        if (null !== $this->legalGuardian && \count($persons) < 2) {
             $persons[] = (string) $this->getLegalGuardian();
         }
 
         if (!empty($this->persons)) {
-            if (count($persons) < 2 && !empty($this->persons->get(0))) {
+            if (\count($persons) < 2 && !empty($this->persons->get(0))) {
                 $persons[] = sprintf('[%s]', (string) $this->persons->first());
             }
 
-            if (count($persons) < 2 && !empty($this->persons->get(1))) {
+            if (\count($persons) < 2 && !empty($this->persons->get(1))) {
                 $persons[] = sprintf('[%s]', (string) $this->persons->get(1));
             }
 
-            if (count($this->getPersons()) > 2) {
+            if (\count($this->getPersons()) > 2) {
                 $persons[] = '...';
             }
         }

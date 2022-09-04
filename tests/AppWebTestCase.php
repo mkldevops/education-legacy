@@ -9,8 +9,12 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
 class AppWebTestCase extends WebTestCase
 {
@@ -33,17 +37,8 @@ class AppWebTestCase extends WebTestCase
         $user = $repository->findOneBy(['email' => $email]);
 
         static::$client->loginUser($user);
-    }
-
-    public static function queryRequest(string $query): string
-    {
-        static::$client->request(Request::METHOD_GET, '/', ['query' => $query]);
-        static::assertResponseIsSuccessful();
-
-        $content = (string) static::$client->getResponse()->getContent();
-        static::assertJson($content);
-
-        return $content;
+        $dispatcher = static::$client->getContainer()->get(EventDispatcherInterface::class);
+        $token = static::$client->getContainer()->get(Security::class)->getToken();
     }
 
     public static function getUser(): User

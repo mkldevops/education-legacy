@@ -26,7 +26,8 @@ class TypeOperationCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('TypeOperation')
             ->setEntityLabelInPlural('TypeOperation')
-            ->setSearchFields(['id', 'shortName', 'code', 'typeAmount', 'description', 'name']);
+            ->setSearchFields(['id', 'shortName', 'code', 'typeAmount', 'description', 'name'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

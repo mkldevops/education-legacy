@@ -36,7 +36,8 @@ class TypeOperationFixtures extends AbstractAppFixtures
                 ->setIsInternalTransfert((bool) $item['INTERNAL_TRANSFERT'])
                 ->setShortName($item['SHORT_NAME'])
                 ->setEnable((bool) $item['STATUS'])
-                ->setParent($parent);
+                ->setParent($parent)
+            ;
 
             $manager->persist($entity);
             $manager->flush();

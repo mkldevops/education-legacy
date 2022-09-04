@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\AccountSlip;
+use App\Entity\Structure;
 use App\Exception\AppException;
-use App\Exception\EntityRepositoryNotFoundException;
 use App\Exception\InvalidArgumentException;
+use App\Exception\NotFoundDataException;
 use App\Fetcher\DocumentFetcher;
 use App\Form\AccountSlipEditType;
 use App\Form\AccountSlipType;
 use App\Manager\SchoolManager;
 use App\Manager\TransferManager;
 use App\Model\ResponseModel;
+use App\Repository\AccountSlipRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -27,12 +29,21 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/account-slip')]
-class AccountSlipController extends AbstractBaseController
+class AccountSlipController extends AbstractController
 {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private AccountSlipRepository $accountSlipRepository,
+        private TranslatorInterface $translator,
+    ) {
+    }
+
     /**
      * @throws NonUniqueResultException
+     * @throws \Doctrine\ORM\NoResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = ''): Response
@@ -43,7 +54,8 @@ class AccountSlipController extends AbstractBaseController
         $count = $this->getQuery($search)
             ->select('COUNT(e)')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
         // Define the number of pages.
         $pages = ceil($count / 20);
         // Get the entries of current page.
@@ -52,7 +64,8 @@ class AccountSlipController extends AbstractBaseController
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
 
         return $this->render('account_slip/index.html.twig', [
             'accountslipList' => $accountSlipList,
@@ -64,46 +77,8 @@ class AccountSlipController extends AbstractBaseController
         ]);
     }
 
-    private function getQuery(string $search): QueryBuilder
-    {
-        $manager = $this->getDoctrine()->getManager();
-
-        return $manager
-            ->getRepository(AccountSlip::class)
-            ->createQueryBuilder('e')
-            ->where('e.amount LIKE :amount')
-            ->setParameter(':amount', '%'.$search.'%')
-            ->orWhere('e.gender LIKE :gender')
-            ->setParameter(':gender', '%'.$search.'%')
-            ->orWhere('e.comment LIKE :comment')
-            ->setParameter(':comment', '%'.$search.'%')
-            ->orWhere('e.name LIKE :name')
-            ->setParameter(':name', '%'.$search.'%')
-            ->orWhere('e.reference LIKE :reference')
-            ->setParameter(':reference', '%'.$search.'%')
-            ->orWhere('e.operationCredit = :credit')
-            ->setParameter(':credit', $search)
-            ->orWhere('e.operationDebit = :debit')
-            ->setParameter(':debit', $search)
-            ->orderBy('e.date', 'DESC');
-    }
-
-    private function createSearchForm(string $q = ''): FormInterface
-    {
-        $data = ['q' => $q];
-
-        return $this->createFormBuilder($data)
-            ->setAction($this->generateUrl('app_account_slip_search'))
-            ->setMethod(Request::METHOD_POST)
-            ->add('q', SearchType::class, [
-                'label' => false,
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Search'])
-            ->getForm();
-    }
-
     #[Route(path: '/create', name: 'app_account_slip_create', methods: ['POST'])]
-    public function create(Request $request, TransferManager $transferManager): Response
+    public function create(Request $request, TransferManager $transferManager, SchoolManager $schoolManager): Response
     {
         $accountSlip = new AccountSlip();
         $form = $this->createCreateForm($accountSlip);
@@ -112,21 +87,24 @@ class AccountSlipController extends AbstractBaseController
             try {
                 $accountCredit = $form->get('accountCredit')->getData();
                 $accountDebit = $form->get('accountDebit')->getData();
-                $structure = $this->getEntitySchool()->getStructure();
+                $structure = $schoolManager->getEntitySchoolOnSession()->getStructure();
 
-                $accountSlip->setStructure($structure);
+                if ($structure instanceof Structure) {
+                    $accountSlip->setStructure($structure);
+                }
 
                 $accountSlip = $transferManager
                     ->setAccountCredit($accountCredit)
                     ->setAccountDebit($accountDebit)
                     ->setAccountSlip($accountSlip)
-                    ->createByForm();
+                    ->createByForm()
+                ;
 
                 $this->addFlash('success', 'The AccountSlip has been created.');
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
             } catch (AppException|NonUniqueResultException $e) {
-                $this->addFlash('danger', $this->trans('error.not_created', [], 'account_slip').$e->getMessage());
+                $this->addFlash('danger', $this->translator->trans('error.not_created', [], 'account_slip').$e->getMessage());
             }
         }
 
@@ -134,25 +112,6 @@ class AccountSlipController extends AbstractBaseController
             'accountslip' => $accountSlip,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * Creates a form to create a AccountSlip entity.
-     *
-     * @param AccountSlip $accountSlip The entity
-     *
-     * @return FormInterface The form
-     */
-    private function createCreateForm(AccountSlip $accountSlip): FormInterface
-    {
-        $form = $this->createForm(AccountSlipType::class, $accountSlip, [
-            'action' => $this->generateUrl('app_account_slip_create'),
-            'method' => Request::METHOD_POST,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Create']);
-
-        return $form;
     }
 
     #[Route(path: '/new', name: 'app_account_slip_new', methods: ['GET'])]
@@ -186,15 +145,6 @@ class AccountSlipController extends AbstractBaseController
         ]);
     }
 
-    private function createEditForm(AccountSlip $accountSlip): FormInterface
-    {
-        return $this->createForm(AccountSlipEditType::class, $accountSlip, [
-            'action' => $this->generateUrl('app_account_slip_update', ['id' => $accountSlip->getId()]),
-            'method' => Request::METHOD_PUT,
-        ])
-            ->add('submit', SubmitType::class, ['label' => 'Update']);
-    }
-
     #[Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
     public function update(
         Request $request,
@@ -220,7 +170,8 @@ class AccountSlipController extends AbstractBaseController
 
                 $accountSlip = $transferManager
                     ->setAccountSlip($accountSlip)
-                    ->update();
+                    ->update()
+                ;
 
                 $this->addFlash('success', 'The AccountSlip has been updated.');
 
@@ -236,20 +187,15 @@ class AccountSlipController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Deletes a AccountSlip entity.
-     *
-     * @return RedirectResponse|Response
-     */
     #[Route(path: '/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, AccountSlip $accountSlip): Response
     {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
         $deleteForm->handleRequest($request);
-        $manager = $this->getDoctrine()->getManager();
+
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-            $manager->remove($accountSlip);
-            $manager->flush();
+            $this->entityManager->remove($accountSlip);
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'The AccountSlip has been deleted.');
 
@@ -260,15 +206,6 @@ class AccountSlipController extends AbstractBaseController
             'accountslip' => $accountSlip,
             'delete_form' => $deleteForm->createView(),
         ]);
-    }
-
-    private function createDeleteForm($id): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('app_account_slip_delete', ['id' => $id]))
-            ->setMethod('DELETE')
-            ->add('submit', SubmitType::class, ['label' => $this->trans('Delete', [], 'account_slip')])
-            ->getForm();
     }
 
     #[Route(path: '/search', name: 'app_account_slip_search', methods: ['POST'])]
@@ -283,8 +220,8 @@ class AccountSlipController extends AbstractBaseController
     }
 
     /**
-     * @throws EntityRepositoryNotFoundException
      * @throws InvalidArgumentException
+     * @throws NotFoundDataException
      */
     #[Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
     public function setDocument(
@@ -315,5 +252,81 @@ class AccountSlipController extends AbstractBaseController
         $entityManager->flush();
 
         return $this->json(new ResponseModel(success: true));
+    }
+
+    private function getQuery(string $search): QueryBuilder
+    {
+        return $this->accountSlipRepository
+            ->createQueryBuilder('e')
+            ->where('e.amount LIKE :amount')
+            ->setParameter(':amount', '%'.$search.'%')
+            ->orWhere('e.gender LIKE :gender')
+            ->setParameter(':gender', '%'.$search.'%')
+            ->orWhere('e.comment LIKE :comment')
+            ->setParameter(':comment', '%'.$search.'%')
+            ->orWhere('e.name LIKE :name')
+            ->setParameter(':name', '%'.$search.'%')
+            ->orWhere('e.reference LIKE :reference')
+            ->setParameter(':reference', '%'.$search.'%')
+            ->orWhere('e.operationCredit = :credit')
+            ->setParameter(':credit', $search)
+            ->orWhere('e.operationDebit = :debit')
+            ->setParameter(':debit', $search)
+            ->orderBy('e.date', 'DESC')
+        ;
+    }
+
+    private function createSearchForm(string $q = ''): FormInterface
+    {
+        $data = ['q' => $q];
+
+        return $this->createFormBuilder($data)
+            ->setAction($this->generateUrl('app_account_slip_search'))
+            ->setMethod(Request::METHOD_POST)
+            ->add('q', SearchType::class, [
+                'label' => false,
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Search'])
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to create a AccountSlip entity.
+     *
+     * @param AccountSlip $accountSlip The entity
+     *
+     * @return FormInterface The form
+     */
+    private function createCreateForm(AccountSlip $accountSlip): FormInterface
+    {
+        $form = $this->createForm(AccountSlipType::class, $accountSlip, [
+            'action' => $this->generateUrl('app_account_slip_create'),
+            'method' => Request::METHOD_POST,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
+
+        return $form;
+    }
+
+    private function createEditForm(AccountSlip $accountSlip): FormInterface
+    {
+        return $this->createForm(AccountSlipEditType::class, $accountSlip, [
+            'action' => $this->generateUrl('app_account_slip_update', ['id' => $accountSlip->getId()]),
+            'method' => Request::METHOD_PUT,
+        ])
+            ->add('submit', SubmitType::class, ['label' => 'Update'])
+        ;
+    }
+
+    private function createDeleteForm($id): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('app_account_slip_delete', ['id' => $id]))
+            ->setMethod('DELETE')
+            ->add('submit', SubmitType::class, ['label' => $this->translator->trans('Delete', [], 'account_slip')])
+            ->getForm()
+        ;
     }
 }

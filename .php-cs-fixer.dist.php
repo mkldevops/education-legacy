@@ -7,14 +7,18 @@ $finder = (new PhpCsFixer\Finder())
 
 return (new PhpCsFixer\Config())
     ->setRules([
-        '@Symfony' => true,
+        '@PhpCsFixer' => true,
+        '@PhpCsFixer:risky' => true,
+        '@PHP80Migration:risky' => true,
+        '@PHP81Migration' => true,
+        '@PHPUnit84Migration:risky' => true,
+        '@DoctrineAnnotation' => true,
+        '@PSR2' => true,
         'blank_line_before_statement' => true,
-        'strict_param' => true,
         'array_syntax' => ['syntax' => 'short'],
         'full_opening_tag' => false,
-        'strict_comparison' => true,
-        '@PSR1' => true,
-        '@PHP80Migration:risky' => true,
+        'single_line_throw' => false,
+        'phpdoc_to_comment' => false,
     ])
     ->setFinder($finder)
     ;

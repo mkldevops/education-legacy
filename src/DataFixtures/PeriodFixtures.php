@@ -31,7 +31,8 @@ class PeriodFixtures extends Fixture
                 ->setEnd(new DateTime(($yearCurrent + 1).'-08-31'))
                 ->setComment('')
                 ->setEnable(time() >= $period->getBegin()?->getTimestamp() && time() <= $period->getEnd()?->getTimestamp())
-                ->setName($yearCurrent.'/'.($yearCurrent + 1));
+                ->setName($yearCurrent.'/'.($yearCurrent + 1))
+            ;
 
             $manager->persist($period);
             ++$yearCurrent;

@@ -62,7 +62,8 @@ class FamilyManager implements FamilyManagerInterface
             ->setName($family->__toString())
             ->setGenders()
             ->setEnable(true)
-            ->setAuthor($this->security->getUser());
+            ->setAuthor($this->security->getUser())
+        ;
         $this->entityManager->persist($family);
         $this->entityManager->flush();
 
