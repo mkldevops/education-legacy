@@ -54,7 +54,7 @@ class PhoneManager extends AbstractFullService
     }
 
     /**
-     * @return array<string, mixed[]>|array<string, int>|null[]
+     * @return array<string, int>|array<string, mixed[]>|null[]
      */
     public static function getPhones(Person $person): array
     {
@@ -79,14 +79,6 @@ class PhoneManager extends AbstractFullService
         }
 
         return $list;
-    }
-
-    private static function purgePhone(string $value): string
-    {
-        $value = preg_replace("#\D+#", '', $value);
-        $value = preg_replace("#(\d{2})#", '$1 ', $value);
-
-        return trim($value);
     }
 
     /**
@@ -117,5 +109,13 @@ class PhoneManager extends AbstractFullService
         $this->getEntityManager()->flush();
 
         return true;
+    }
+
+    private static function purgePhone(string $value): string
+    {
+        $value = preg_replace('#\\D+#', '', $value);
+        $value = preg_replace('#(\\d{2})#', '$1 ', $value);
+
+        return trim($value);
     }
 }

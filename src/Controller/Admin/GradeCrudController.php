@@ -25,7 +25,8 @@ class GradeCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Grade')
             ->setEntityLabelInPlural('Grade')
-            ->setSearchFields(['id', 'name', 'description']);
+            ->setSearchFields(['id', 'name', 'description'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

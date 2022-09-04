@@ -28,7 +28,8 @@ class CourseCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Course')
             ->setEntityLabelInPlural('Course')
-            ->setSearchFields(['id', 'idEvent', 'text', 'comment']);
+            ->setSearchFields(['id', 'idEvent', 'text', 'comment'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

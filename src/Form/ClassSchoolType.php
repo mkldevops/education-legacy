@@ -25,7 +25,8 @@ class ClassSchoolType extends AbstractType
             ->add('ageMinimum', IntegerType::class, ['label' => 'Age minimum'])
             ->add('ageMaximum', IntegerType::class, ['label' => 'Age maximum'])
             ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false])
-            ->add('enable', CheckboxType::class, ['label' => 'Activer', 'required' => false]);
+            ->add('enable', CheckboxType::class, ['label' => 'Activer', 'required' => false])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

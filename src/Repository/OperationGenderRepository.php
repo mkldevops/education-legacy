@@ -10,8 +10,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method OperationGender|null find($id, $lockMode = null, $lockVersion = null)
- * @method OperationGender|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|OperationGender find($id, $lockMode = null, $lockVersion = null)
+ * @method null|OperationGender findOneBy(array $criteria, array $orderBy = null)
  * @method OperationGender[]    findAll()
  * @method OperationGender[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -28,6 +28,7 @@ class OperationGenderRepository extends ServiceEntityRepository
     public function getAvailable(): QueryBuilder
     {
         return $this->createQueryBuilder('opg')
-            ->where('opg.enable = 1');
+            ->where('opg.enable = 1')
+        ;
     }
 }

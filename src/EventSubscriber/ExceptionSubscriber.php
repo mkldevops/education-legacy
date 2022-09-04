@@ -2,29 +2,43 @@
 
 declare(strict_types=1);
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
 
-class ExceptionListener
+class ExceptionSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private LoggerInterface $logger, private bool $debug)
+    public function __construct(
+        private LoggerInterface $logger,
+        private string $env,
+        private bool $debug
+    ) {
+    }
+
+    public static function getSubscribedEvents(): array
     {
+        return [
+            KernelEvents::EXCEPTION => [
+                ['processException', 10],
+            ],
+        ];
     }
 
     /**
      * @throws Throwable
      */
-    public function onKernelException(ExceptionEvent $event): void
+    public function processException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
         $this->logger->error(__METHOD__, compact('exception'));
-        if (!str_contains($event->getRequest()->getPathInfo(), '/api')) {
+        if ('dev' === $this->env && !str_contains($event->getRequest()->getPathInfo(), '/api')) {
             throw $exception;
         }
 

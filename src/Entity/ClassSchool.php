@@ -23,14 +23,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ClassSchool
 {
+    use AuthorEntityTrait;
+    use DescriptionEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntity;
-    use SoftDeleteableEntity;
-    use DescriptionEntityTrait;
     use SchoolEntityTrait;
+    use SoftDeleteableEntity;
+    use TimestampableEntity;
 
     /**
      * @ORM\OneToMany(targetEntity=ClassPeriod::class, mappedBy="classSchool")
@@ -78,7 +78,7 @@ class ClassSchool
 
         if (!empty($this->classPeriods)) {
             foreach ($this->classPeriods as $classPeriod) {
-                /* @var ClassPeriod $classPeriod */
+                // @var ClassPeriod $classPeriod
 
                 $classPeriods[$classPeriod->getPeriod()->getId()] = $classPeriod;
             }

@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Package;
+use App\Exception\AppException;
 use App\Form\PackageType;
+use App\Manager\SchoolManager;
+use App\Repository\PackageRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
@@ -17,32 +22,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/package')]
-class PackageController extends AbstractBaseController
+class PackageController extends AbstractController
 {
     /**
-     * Lists all Package entities.
-     *
      * @throws NonUniqueResultException
+     * @throws AppException
+     * @throws NoResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_package_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = ''): Response
+    public function index(PackageRepository $repository, SchoolManager $schoolManager, int $page = 1, string $search = ''): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $count = $em
-            ->getRepository(Package::class)
-            ->getQueryBuilder($search, $this->isGranted('ROLE_SUPER_ADMIN') ? null : $this->getSchool())
+        $count = $repository
+            ->getQueryBuilder($search, $this->isGranted('ROLE_SUPER_ADMIN') ? null : $schoolManager->getSchool())
             ->select('COUNT(e)')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
         $pages = ceil($count / 20);
         /** @var Package[] $packageList */
-        $packageList = $em
-            ->getRepository(Package::class)
-            ->getQueryBuilder($search, $this->isGranted('ROLE_SUPER_ADMIN') ? null : $this->getSchool())
+        $packageList = $repository
+            ->getQueryBuilder($search, $this->isGranted('ROLE_SUPER_ADMIN') ? null : $schoolManager->getSchool())
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
 
         return $this->render('package/index.html.twig', [
             'packageList' => $packageList,
@@ -51,23 +55,6 @@ class PackageController extends AbstractBaseController
             'search' => $search,
             'searchForm' => $this->createSearchForm($search)->createView(),
         ]);
-    }
-
-    /**
-     * Creates a form to search Package entities.
-     */
-    private function createSearchForm(string $q = ''): FormInterface
-    {
-        $data = ['q' => $q];
-
-        return $this->createFormBuilder($data)
-            ->setAction($this->generateUrl('app_package_search'))
-            ->setMethod(Request::METHOD_POST)
-            ->add('q', TextType::class, [
-                'label' => false,
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Search'])
-            ->getForm();
     }
 
     /**
@@ -86,46 +73,21 @@ class PackageController extends AbstractBaseController
     }
 
     /**
-     * Creates a form to create a Package entity.
-     *
-     * @param Package $package The entity
-     */
-    private function createCreateForm(Package $package): FormInterface
-    {
-        $form = $this->createForm(PackageType::class, $package, [
-            'action' => $this->generateUrl('app_package_create'),
-            'method' => Request::METHOD_POST,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Create']);
-
-        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-            $form->remove('school');
-        }
-
-        return $form;
-    }
-
-    /**
-     * Creates a new Package entity.
-     *
-     * @return RedirectResponse|Response
+     * @throws AppException
      */
     #[Route(path: '/create', name: 'app_package_create', methods: ['POST'])]
-    public function create(Request $request): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): Response
     {
         $package = new Package();
         $form = $this->createCreateForm($package);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-
             if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-                $package->setSchool($this->getEntitySchool());
+                $package->setSchool($schoolManager->getEntitySchool());
             }
 
-            $em->persist($package);
-            $em->flush();
+            $entityManager->persist($package);
+            $entityManager->flush();
 
             $this->addFlash(
                 'success',
@@ -166,6 +128,105 @@ class PackageController extends AbstractBaseController
         ]);
     }
 
+    #[Route(path: '/update/{}id', name: 'app_package_update', methods: ['POST'])]
+    public function update(Request $request, Package $package, EntityManagerInterface $entityManager): Response
+    {
+        $editForm = $this->createEditForm($package);
+        $editForm->handleRequest($request);
+        if ($editForm->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'The Package has been updated.');
+
+            return $this->redirect($this->generateUrl('app_package_show', ['id' => $package->getId()]));
+        }
+
+        return $this->render('package/edit.html.twig', [
+            'package' => $package,
+            'edit_form' => $editForm->createView(),
+        ]);
+    }
+
+    /**
+     * Deletes a Package entity.
+     */
+    #[Route(path: '/delete/{id}', name: 'app_package_delete', methods: ['GET', 'POST'])]
+    public function delete(Request $request, Package $package, EntityManagerInterface $entityManager): RedirectResponse|Response
+    {
+        $deleteForm = $this->createDeleteForm($package->getId())
+            ->handleRequest($request)
+        ;
+        if ($deleteForm->isValid()) {
+            $entityManager->remove($package);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'The Package has been deleted.'
+            );
+
+            return $this->redirect($this->generateUrl('app_package_index'));
+        }
+
+        return $this->render('package/delete.html.twig', [
+            'package' => $package,
+            'delete_form' => $deleteForm->createView(),
+        ]);
+    }
+
+    /**
+     * Redirect the the list URL with the search parameter.
+     */
+    #[Route(path: '/search', name: 'app_package_search', methods: ['POST'])]
+    public function search(Request $request): RedirectResponse
+    {
+        $all = $request->request->all();
+
+        return $this->redirect($this->generateUrl('app_package_index', [
+            'page' => 1,
+            'search' => urlencode($all['form']['q']),
+        ]));
+    }
+
+    /**
+     * Creates a form to search Package entities.
+     */
+    private function createSearchForm(string $q = ''): FormInterface
+    {
+        $data = ['q' => $q];
+
+        return $this->createFormBuilder($data)
+            ->setAction($this->generateUrl('app_package_search'))
+            ->setMethod(Request::METHOD_POST)
+            ->add('q', TextType::class, [
+                'label' => false,
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Search'])
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to create a Package entity.
+     *
+     * @param Package $package The entity
+     */
+    private function createCreateForm(Package $package): FormInterface
+    {
+        $form = $this->createForm(PackageType::class, $package, [
+            'action' => $this->generateUrl('app_package_create'),
+            'method' => Request::METHOD_POST,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
+
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $form->remove('school');
+        }
+
+        return $form;
+    }
+
     /**
      * Creates a form to edit a Package entity.
      *
@@ -187,83 +248,13 @@ class PackageController extends AbstractBaseController
         return $form;
     }
 
-    /**
-     * Edits an existing Package entity.
-     *
-     * @return RedirectResponse|Response
-     */
-    #[Route(path: '/update/{}id', name: 'app_package_update', methods: ['POST'])]
-    public function update(Request $request, Package $package): Response
-    {
-        $editForm = $this->createEditForm($package);
-        $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
-
-            $this->addFlash('success', 'The Package has been updated.');
-
-            return $this->redirect($this->generateUrl('app_package_show', ['id' => $package->getId()]));
-        }
-
-        return $this->render('package/edit.html.twig', [
-            'package' => $package,
-            'edit_form' => $editForm->createView(),
-        ]);
-    }
-
-    /**
-     * Deletes a Package entity.
-     */
-    #[Route(path: '/delete/{id}', name: 'app_package_delete', methods: ['GET', 'POST'])]
-    public function delete(Request $request, Package $package): RedirectResponse|Response
-    {
-        $deleteForm = $this->createDeleteForm($package->getId())
-            ->handleRequest($request);
-        if ($deleteForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($package);
-            $em->flush();
-
-            $this->addFlash(
-                'success',
-                'The Package has been deleted.'
-            );
-
-            return $this->redirect($this->generateUrl('app_package'));
-        }
-
-        return $this->render('package/delete.html.twig', [
-            'package' => $package,
-            'delete_form' => $deleteForm->createView(),
-        ]);
-    }
-
-    /**
-     * Creates a form to delete a Package entity by id.
-     *
-     * @param mixed $id The entity id
-     */
     private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
-            ->set($this->generateUrl('app_package_delete', ['id' => $id]))
+            ->setAction($this->generateUrl('app_package_delete', ['id' => $id]))
             ->setMethod(Request::METHOD_DELETE)
             ->add('submit', SubmitType::class, ['label' => 'Delete'])
-            ->getForm();
-    }
-
-    /**
-     * Redirect the the list URL with the search parameter.
-     */
-    #[Route(path: '/search', name: 'app_package_search', methods: ['POST'])]
-    public function search(Request $request): RedirectResponse
-    {
-        $all = $request->request->all();
-
-        return $this->redirect($this->generateUrl('app_package', [
-            'page' => 1,
-            'search' => urlencode($all['form']['q']),
-        ]));
+            ->getForm()
+        ;
     }
 }

@@ -16,9 +16,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class OperationGender
 {
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use EnableEntityTrait;
     use TimestampableEntity;
 
     public const CODE_CB = 'cb';

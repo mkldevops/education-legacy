@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Member;
 use App\Entity\Person;
 use App\Entity\Student;
 use App\Entity\Teacher;
+use App\Exception\AppException;
 use App\Form\PersonType;
 use App\Manager\PhoneManager;
+use App\Manager\SchoolManager;
 use App\Repository\FamilyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
@@ -22,22 +25,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Person controller.
- */
 #[Route(path: '/person')]
-class PersonController extends AbstractBaseController
+class PersonController extends AbstractController
 {
     /**
-     * Lists all Person entities.
-     *
-     * @throws NonUniqueResultException
+     * @throws NonUniqueResultException|NoResultException
      */
     #[Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
-    public function index(int $page = 1, string $search = ''): Response
+    public function index(EntityManagerInterface $entityManager, int $page = 1, string $search = ''): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $count = $em
+        $count = $entityManager
             ->getRepository(Person::class)
             ->createQueryBuilder('e')
             ->select('COUNT(e)')
@@ -60,10 +57,12 @@ class PersonController extends AbstractBaseController
             ->orWhere('e.city LIKE :city')
             ->setParameter(':city', '%'.$search.'%')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
         $pages = ceil($count / 20);
+
         /** @var Person[] $personList */
-        $personList = $em
+        $personList = $entityManager
             ->getRepository(Person::class)
             ->createQueryBuilder('e')
             ->where('e.name LIKE :name')
@@ -87,7 +86,8 @@ class PersonController extends AbstractBaseController
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
 
         return $this->render('person/index.html.twig', [
             'personList' => $personList,
@@ -99,27 +99,10 @@ class PersonController extends AbstractBaseController
     }
 
     /**
-     * Creates a form to search Person entities.
-     */
-    private function createSearchForm(string $q = ''): FormInterface
-    {
-        $data = ['q' => $q];
-
-        return $this->createFormBuilder($data)
-            ->setAction($this->generateUrl('app_person_search'))
-            ->setMethod(Request::METHOD_POST)
-            ->add('q', TextType::class, [
-                'label' => false,
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Search'])
-            ->getForm();
-    }
-
-    /**
-     * Creates a new Person entity.
+     * @throws AppException
      */
     #[Route(path: '/create', name: 'app_person_create', methods: ['POST'])]
-    public function create(Request $request): RedirectResponse|Response
+    public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): RedirectResponse|Response
     {
         // If form have redirect
         $pathRedirect = $request->get('pathRedirect');
@@ -127,13 +110,11 @@ class PersonController extends AbstractBaseController
         $form = $this->createCreateForm($person, $pathRedirect);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $manager = $this->getDoctrine()->getManager();
-
             $person->setAuthor($this->getUser());
-            $person->addSchool($this->getEntitySchool());
+            $person->addSchool($schoolManager->getEntitySchool());
 
-            $manager->persist($person);
-            $manager->flush();
+            $entityManager->persist($person);
+            $entityManager->flush();
 
             $this->addFlash('success', 'The Person '.$person->getNameComplete().' has been created.');
 
@@ -152,19 +133,6 @@ class PersonController extends AbstractBaseController
             'person' => $person,
             'form' => $form->createView(),
         ]);
-    }
-
-    private function createCreateForm(Person $person, string $pathRedirect = null): FormInterface
-    {
-        $form = $this->createForm(PersonType::class, $person, [
-            'action' => $this->generateUrl('app_person_create'),
-            'method' => Request::METHOD_POST,
-            'pathRedirect' => $pathRedirect,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Create']);
-
-        return $form;
     }
 
     #[Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
@@ -209,35 +177,13 @@ class PersonController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to edit a Person entity.
-     *
-     * @param Person $person The entity
-     */
-    private function createEditForm(Person $person): FormInterface
-    {
-        $form = $this->createForm(PersonType::class, $person, [
-            'action' => $this->generateUrl('app_person_update', ['id' => $person->getId()]),
-            'method' => Request::METHOD_PUT,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'form.button.update']);
-
-        return $form;
-    }
-
-    /**
-     * Edits an existing Person entity.
-     */
     #[Route(path: '/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Person $person): RedirectResponse|Response
+    public function update(Request $request, Person $person, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($person);
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
-            $this->getDoctrine()
-                ->getManager()
-                ->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'The Person has been updated.');
 
@@ -250,18 +196,14 @@ class PersonController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Deletes a Person entity.
-     */
     #[Route(path: '/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, Person $person): RedirectResponse|Response
+    public function delete(Request $request, Person $person, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($person->getId());
         $deleteForm->handleRequest($request);
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($person);
-            $em->flush();
+            $entityManager->remove($person);
+            $entityManager->flush();
 
             $this->addFlash('success', 'The Person has been deleted.');
 
@@ -274,23 +216,6 @@ class PersonController extends AbstractBaseController
         ]);
     }
 
-    /**
-     * Creates a form to delete a Person entity by id.
-     *
-     * @param mixed $id The entity id
-     */
-    private function createDeleteForm(int $id): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('app_person_delete', ['id' => $id]))
-            ->setMethod(Request::METHOD_DELETE)
-            ->add('submit', SubmitType::class, ['label' => 'Delete'])
-            ->getForm();
-    }
-
-    /**
-     * Redirect the the list URL with the search parameter.
-     */
     #[Route(path: '/search', name: 'app_person_search', methods: ['POST'])]
     public function search(Request $request): RedirectResponse
     {
@@ -302,9 +227,6 @@ class PersonController extends AbstractBaseController
         ]));
     }
 
-    /**
-     * Finds and displays a Person entity.
-     */
     #[Route(path: '/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
     public function phones(Person $person): Response
     {
@@ -313,5 +235,58 @@ class PersonController extends AbstractBaseController
         return $this->render('person/phones.html.twig', [
             'phones' => $phones,
         ]);
+    }
+
+    /**
+     * Creates a form to search Person entities.
+     */
+    private function createSearchForm(string $q = ''): FormInterface
+    {
+        $data = ['q' => $q];
+
+        return $this->createFormBuilder($data)
+            ->setAction($this->generateUrl('app_person_search'))
+            ->setMethod(Request::METHOD_POST)
+            ->add('q', TextType::class, [
+                'label' => false,
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Search'])
+            ->getForm()
+        ;
+    }
+
+    private function createCreateForm(Person $person, string $pathRedirect = null): FormInterface
+    {
+        $form = $this->createForm(PersonType::class, $person, [
+            'action' => $this->generateUrl('app_person_create'),
+            'method' => Request::METHOD_POST,
+            'pathRedirect' => $pathRedirect,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
+
+        return $form;
+    }
+
+    private function createEditForm(Person $person): FormInterface
+    {
+        $form = $this->createForm(PersonType::class, $person, [
+            'action' => $this->generateUrl('app_person_update', ['id' => $person->getId()]),
+            'method' => Request::METHOD_PUT,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'form.button.update']);
+
+        return $form;
+    }
+
+    private function createDeleteForm(int $id): FormInterface
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('app_person_delete', ['id' => $id]))
+            ->setMethod(Request::METHOD_DELETE)
+            ->add('submit', SubmitType::class, ['label' => 'Delete'])
+            ->getForm()
+        ;
     }
 }

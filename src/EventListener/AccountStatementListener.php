@@ -13,18 +13,21 @@ class AccountStatementListener extends AbstractFullService
     public function preUpdate(AccountStatement $accountStatement, LifecycleEventArgs $args): void
     {
         $this->setEntityManager($args->getObjectManager())
-            ->calculate($accountStatement);
-    }
-
-    private function calculate(AccountStatement $accountStatement): void
-    {
-        $accountStatement->calcNumberOperations()
-            ->calcAmount();
+            ->calculate($accountStatement)
+        ;
     }
 
     public function prePersist(AccountStatement $accountStatement, LifecycleEventArgs $args): void
     {
         $this->setEntityManager($args->getObjectManager())
-            ->calculate($accountStatement);
+            ->calculate($accountStatement)
+        ;
+    }
+
+    private function calculate(AccountStatement $accountStatement): void
+    {
+        $accountStatement->calcNumberOperations()
+            ->calcAmount()
+        ;
     }
 }

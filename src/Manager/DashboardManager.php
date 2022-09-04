@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
-use App\Entity\Period;
-use App\Entity\School;
 use App\Exception\AppException;
 use App\Repository\DocumentRepository;
 use App\Repository\FamilyRepository;
@@ -13,10 +11,7 @@ use App\Repository\OperationRepository;
 use App\Repository\PersonRepository;
 use App\Repository\StudentRepository;
 use App\Services\AbstractFullService;
-use DateInterval;
-use DateTime;
 use Exception;
-use Ghunti\HighchartsPHP\Highchart;
 use Symfony\Component\Yaml\Yaml;
 
 class DashboardManager extends AbstractFullService
@@ -31,13 +26,13 @@ class DashboardManager extends AbstractFullService
     }
 
     /**
-     * @throws Exception
+     * @throws AppException
      */
     public static function generateItemsOfMenu(string $route = null): array
     {
         $file = __DIR__.'/../../config/menu.yml';
         if (!is_file($file)) {
-            throw new AppException("No such file or directory : $file");
+            throw new AppException("No such file or directory : {$file}");
         }
 
         // extract yaml file menu
@@ -90,59 +85,9 @@ class DashboardManager extends AbstractFullService
     {
         $si_prefix = ['B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB'];
         $base = 1024;
-        $class = min((int) log($int, $base), count($si_prefix) - 1);
+        $class = min((int) log($int, $base), \count($si_prefix) - 1);
 
         return sprintf('%1.2f', $int / $base ** $class).' '.$si_prefix[$class];
-    }
-
-    /**
-     * Get highChartStatsNumberStudents.
-     *
-     * @throws Exception
-     */
-    public function highChartStatsNumberStudents(Period $period, School $school): Highchart
-    {
-        $registred = $this->studentRepository->getStatsStudentRegistered($school, $period);
-        $desactivated = $this->studentRepository->getStatsStudentDeactivated($school, $period);
-
-        $data = (object) ['registred' => [], 'desactivated' => [], 'average' => []];
-        $tmp = array_merge($registred, $desactivated);
-        ksort($tmp);
-        $current = new DateTime(key($tmp) ?? 'now');
-
-        $chart = new Highchart();
-        $chart->title->text = 'Stats Number Students';
-
-        while ($current->getTimeStamp() <= time()) {
-            $key = $current->format('Y-m');
-            $chart->xAxis->categories[] = $current->format('M Y');
-
-            $data->registred[] = $nbRregistred = isset($registred[$key]) ? $registred[$key] : 0;
-            $data->desactivated[] = $nbDesactivated = isset($desactivated[$key]) ? -$desactivated[$key] : 0;
-            $data->average[] = $nbRregistred + $nbDesactivated;
-
-            $current->add(new DateInterval('P1M'));
-        }
-
-        $chart->series[] = [
-            'type' => 'column',
-            'name' => 'Registred',
-            'data' => $data->registred,
-        ];
-
-        $chart->series[] = [
-            'type' => 'column',
-            'name' => 'Desactivated',
-            'data' => $data->desactivated,
-        ];
-
-        $chart->series[] = [
-            'type' => 'spline',
-            'name' => 'Average',
-            'data' => $data->average,
-        ];
-
-        return $chart;
     }
 
     /**

@@ -13,7 +13,8 @@ class OperationPaymentStudentType extends OperationType
         parent::buildForm($builder, $options);
 
         $builder->remove('name')
-            ->remove('typeOperation');
+            ->remove('typeOperation')
+        ;
     }
 
     public function getBlockPrefix(): string

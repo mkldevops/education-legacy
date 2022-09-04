@@ -25,7 +25,8 @@ class StructureFixtures extends AbstractAppFixtures
                 ->setCity($item['city'])
                 ->setAddress($item['address'])
                 ->setName($item['name'])
-                ->setEnable(true);
+                ->setEnable(true)
+            ;
 
             $manager->persist($entity);
             $manager->flush();

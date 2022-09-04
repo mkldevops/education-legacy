@@ -4,21 +4,27 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\ClassPeriod;
 use App\Entity\Student;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
+use App\Fetcher\SessionFetcher;
 use App\Manager\ClassPeriodManager;
-use App\Model\ResponseModel;
+use Doctrine\ORM\ORMException;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/api/class-period')]
-class ClassPeriodApiController extends AbstractBaseController
+class ClassPeriodApiController extends AbstractController
 {
+    public function __construct(
+        private SessionFetcher $sessionFetcher
+    ) {
+    }
+
     /**
      * Get student WithOut Class School to Period selected.
      *
@@ -27,16 +33,14 @@ class ClassPeriodApiController extends AbstractBaseController
      */
     public function studentWithOut(ClassPeriodManager $manager): JsonResponse
     {
-        $response = ResponseModel::responseDefault();
-        $students = $manager->getListStudentWithout($this->getPeriod(), $this->getSchool());
+        $students = $manager->getListStudentWithout($this->sessionFetcher->getPeriodOnSession(), $this->sessionFetcher->getSchoolOnSession());
 
-        $response->setData(['students' => $students]);
-
-        return ResponseModel::jsonResponse($response);
+        return $this->json(['data' => ['students' => $students]]);
     }
 
     /**
      * @throws AppException
+     * @throws ORMException
      */
     #[Route(
         path: '/update-student/{id}',
@@ -46,19 +50,13 @@ class ClassPeriodApiController extends AbstractBaseController
     )]
     public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod): JsonResponse
     {
-        try {
-            $students = $request->get('students');
-            $success = $manager->treatListStudent($students, $this->getPeriod(), $classPeriod);
+        $students = $request->get('students');
+        $success = $manager->treatListStudent($students, $this->sessionFetcher->getPeriodOnSession(), $classPeriod);
 
-            return $this->json([
-                'name' => $classPeriod->getClassSchool()->getName(),
-                'count' => count($classPeriod->getStudents()),
-                'success' => $success,
-            ]);
-        } catch (Exception $e) {
-            $this->getLogger()->error(__METHOD__.' '.$e->getMessage(), $e->getTrace());
-
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
-        }
+        return $this->json([
+            'name' => $classPeriod->getClassSchool()->getName(),
+            'count' => \count($classPeriod->getStudents()),
+            'success' => $success,
+        ]);
     }
 }

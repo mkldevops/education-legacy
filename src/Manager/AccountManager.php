@@ -21,7 +21,7 @@ class AccountManager
     }
 
     /**
-     * @return array<string, int>|array<string, mixed[]>|array<string, mixed>
+     * @return array<string, int>|array<string, mixed>|array<string, mixed[]>
      *
      * @throws AppException
      */
@@ -39,7 +39,8 @@ class AccountManager
         /** @var AccountStatement[] $accountStatements */
         $accountStatements = [];
         $result = $this->accountStatementRepository
-            ->findBy(['account' => $account->getId()], ['begin' => 'DESC']);
+            ->findBy(['account' => $account->getId()], ['begin' => 'DESC'])
+        ;
 
         foreach ($result as $accountStatement) {
             $id = $accountStatement->getId();
@@ -56,7 +57,8 @@ class AccountManager
         $result = $this->operationRepository
             ->getQueryStatsAccountStatement($listAccountStatementId)
             ->getQuery()
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
 
         if (!empty($result)) {
             foreach ($result as $stats) {

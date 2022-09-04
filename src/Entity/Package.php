@@ -14,17 +14,17 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @ORM\Table()
+ * @ORM\Table
  * @ORM\Entity(repositoryClass=PackageRepository::class)
  */
 class Package
 {
-    use IdEntityTrait;
-    use SchoolAccessorTrait;
-    use NameEntityTrait;
     use DescriptionEntityTrait;
-    use TimestampableEntity;
     use EnableEntityTrait;
+    use IdEntityTrait;
+    use NameEntityTrait;
+    use SchoolAccessorTrait;
+    use TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity=School::class, inversedBy="packages", cascade={"persist"})

@@ -23,7 +23,8 @@ class PersonSimpleType extends AbstractType
                 'attr' => [
                     'placeholder' => 'form.phone.placeholder',
                 ],
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

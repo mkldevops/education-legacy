@@ -38,7 +38,8 @@ class AccountOFXType extends AbstractType
                 'class' => Account::class,
                 'label' => 'account.ofx.form.account_transfer',
                 'mapped' => false,
-            ]);
+            ])
+        ;
 
         $accountsFieldValidator = function (FormEvent $event): void {
             $form = $event->getForm();
@@ -50,7 +51,7 @@ class AccountOFXType extends AbstractType
                 }
 
                 $types = ['application/x-ofx', 'text/plain'];
-                if (!in_array($file->getMimeType(), $types, true)) {
+                if (!\in_array($file->getMimeType(), $types, true)) {
                     throw new AppException('Is not a file of ofx');
                 }
             } catch (Exception $e) {

@@ -26,7 +26,8 @@ class StructureCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Structure')
             ->setEntityLabelInPlural('Structure')
-            ->setSearchFields(['id', 'logo', 'options', 'name', 'address', 'city', 'zip']);
+            ->setSearchFields(['id', 'logo', 'options', 'name', 'address', 'city', 'zip'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

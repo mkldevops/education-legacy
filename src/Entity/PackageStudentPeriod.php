@@ -18,18 +18,18 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(columns={"package_id", "period_id", "student_id"})})
+ * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(fields={"package", "period", "student"})})
  * @ORM\Entity(repositoryClass=PackageStudentPeriodRepository::class)
  * @UniqueEntity(fields={"package", "period", "student"}, groups={"registration"})
  */
 class PackageStudentPeriod
 {
-    use IdEntityTrait;
-    use TimestampableEntity;
+    use AmountEntityTrait;
     use AuthorEntityTrait;
     use CommentEntityTrait;
+    use IdEntityTrait;
     use StudentEntityTrait;
-    use AmountEntityTrait;
+    use TimestampableEntity;
 
     public const STATUS_PAYMENT_INFO = 'info';
     public const STATUS_PAYMENT_SUCCESS = 'success';
@@ -44,26 +44,26 @@ class PackageStudentPeriod
     public ?Package $package = null;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="packagePeriods", cascade={"persist", "remove"})
+     */
+    protected ?Student $student = null;
+    /**
      * @ORM\ManyToOne(targetEntity=Period::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Period $period = null;
-
     /**
      * @ORM\Column(type="datetime")
      */
     private ?DateTimeInterface $dateExpire;
-
     /**
      * @ORM\Column(type="float")
      */
     private float $discount = 0;
-
     /**
      * @ORM\Column(type="boolean")
      */
     private bool $paid = false;
-
     /**
      * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="packageStudentPeriod")
      */

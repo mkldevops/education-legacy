@@ -24,9 +24,9 @@ class GoogleCalendarService extends GoogleService
     }
 
     /**
-     * @throws AppException
-     *
      * @return mixed[]
+     *
+     * @throws AppException
      */
     public function getEvents(?string $query = null, int $maxResults = 1000): array
     {

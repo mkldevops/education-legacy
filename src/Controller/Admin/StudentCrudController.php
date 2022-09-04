@@ -35,7 +35,8 @@ class StudentCrudController extends AbstractCrudController
                 'lastSchool',
                 'personAuthorized',
                 'remarksHealth',
-            ]);
+            ])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

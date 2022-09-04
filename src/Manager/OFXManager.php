@@ -59,7 +59,8 @@ class OFXManager
 
             foreach ($bank->statement->transactions as $transaction) {
                 $operation = $this->operationManager
-                    ->findOperationByUniqueId($transaction->uniqueId);
+                    ->findOperationByUniqueId($transaction->uniqueId)
+                ;
 
                 if (null !== $operation) {
                     $operation->setAmount($transaction->amount);
@@ -75,10 +76,10 @@ class OFXManager
 
                 $this->transactionToOperation($transaction);
             }
-            $count += count($bank->statement->transactions);
+            $count += \count($bank->statement->transactions);
         }
 
-        return count($this->logs) === $count;
+        return \count($this->logs) === $count;
     }
 
     /**
@@ -99,7 +100,7 @@ class OFXManager
 
     public static function uniformizeContent(string $content): ?string
     {
-        return preg_replace("#<TRNAMT>([\-]?\d+)\n<FITID>#", "<TRNAMT>$1.00\n<FITID>", $content);
+        return preg_replace("#<TRNAMT>([\\-]?\\d+)\n<FITID>#", "<TRNAMT>$1.00\n<FITID>", $content);
     }
 
     public static function isTransfer(string $txt): bool
@@ -107,43 +108,28 @@ class OFXManager
         return (bool) preg_match('#REMISE CHEQUE|VERSEMENT|VRST|RETRAIT#i', $txt);
     }
 
-    /**
-     * @throws AppException
-     */
-    private function transactionToOperation(Transaction $transaction): void
+    public function getLogs(): ?array
     {
-        $transaction->memo = trim($transaction->memo);
-        $gender = $this->getGenderByOFX($transaction);
-        $reference = self::getReference($transaction);
+        return $this->logs;
+    }
 
-        if (self::isTransfer($transaction->name)) {
-            $this->transferOperation($transaction, $reference, $gender);
-        } else {
-            $type = $this->accountableFetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_TO_DEFINE);
+    public function getAccountTransfer(): ?Account
+    {
+        return $this->accountTransfer;
+    }
 
-            $operation = OperationManager::createOperationOfx($transaction)
-                ->setReference($reference)
-                ->setAccount($this->account)
-                ->setUniqueId($transaction->uniqueId)
-                ->setTypeOperation($type)
-                ->setOperationGender($gender);
+    public function setAccountTransfer(Account $accountTransfer): static
+    {
+        $this->accountTransfer = $accountTransfer;
 
-            if ($user = $this->security->getUser()) {
-                $operation->setAuthor($user)
-                    ->setPublisher($user);
-            }
+        return $this;
+    }
 
-            try {
-                $this->entityManager->persist($operation);
-                $this->entityManager->flush();
-                $this->logger->info(__FUNCTION__.' Operation is saved');
-                $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
-            } catch (Exception $e) {
-                $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+    public function setAccount(Account $account): static
+    {
+        $this->account = $account;
 
-                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
-            }
-        }
+        return $this;
     }
 
     protected function getGenderByOFX(Transaction $transaction): ?OperationGender
@@ -171,7 +157,8 @@ class OFXManager
 
         $gender = $this->entityManager
             ->getRepository(OperationGender::class)
-            ->findOneBy(['code' => $genderCode]);
+            ->findOneBy(['code' => $genderCode])
+        ;
 
         if (empty($gender)) {
             $this->logger->error(__FUNCTION__.' Nothing found gender with code : '.$genderCode);
@@ -196,6 +183,47 @@ class OFXManager
     /**
      * @throws AppException
      */
+    private function transactionToOperation(Transaction $transaction): void
+    {
+        $transaction->memo = trim($transaction->memo);
+        $gender = $this->getGenderByOFX($transaction);
+        $reference = self::getReference($transaction);
+
+        if (self::isTransfer($transaction->name)) {
+            $this->transferOperation($transaction, $reference, $gender);
+        } else {
+            $type = $this->accountableFetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_TO_DEFINE);
+
+            $operation = OperationManager::createOperationOfx($transaction)
+                ->setReference($reference)
+                ->setAccount($this->account)
+                ->setUniqueId($transaction->uniqueId)
+                ->setTypeOperation($type)
+                ->setOperationGender($gender)
+            ;
+
+            if ($user = $this->security->getUser()) {
+                $operation->setAuthor($user)
+                    ->setPublisher($user)
+                ;
+            }
+
+            try {
+                $this->entityManager->persist($operation);
+                $this->entityManager->flush();
+                $this->logger->info(__FUNCTION__.' Operation is saved');
+                $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
+            } catch (Exception $e) {
+                $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+
+                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+            }
+        }
+    }
+
+    /**
+     * @throws AppException
+     */
     private function transferOperation(
         Transaction $transaction,
         string $reference,
@@ -211,7 +239,8 @@ class OFXManager
             ->setDate($transaction->date)
             ->setUniqueId($transaction->uniqueId)
             ->setAmount($transaction->amount)
-            ->setGender($gender);
+            ->setGender($gender)
+        ;
 
         $accountSlip = $this->transferManager->createByTransferModel($transferModel);
 
@@ -224,29 +253,5 @@ class OFXManager
         $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_TRANSFER];
 
         return $operation;
-    }
-
-    public function getLogs(): ?array
-    {
-        return $this->logs;
-    }
-
-    public function getAccountTransfer(): ?Account
-    {
-        return $this->accountTransfer;
-    }
-
-    public function setAccountTransfer(Account $accountTransfer): static
-    {
-        $this->accountTransfer = $accountTransfer;
-
-        return $this;
-    }
-
-    public function setAccount(Account $account): static
-    {
-        $this->account = $account;
-
-        return $this;
     }
 }

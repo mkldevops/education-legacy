@@ -19,12 +19,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Meet
 {
-    use IdEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntity;
-    use SchoolEntityTrait;
+    use IdEntityTrait;
     use PublisherEntityTrait;
+    use SchoolEntityTrait;
+    use TimestampableEntity;
 
     /**
      * @ORM\Column(type="string")

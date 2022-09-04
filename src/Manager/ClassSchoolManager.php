@@ -2,64 +2,51 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 13/12/18
- * Time: 21:48.
- */
-
 namespace App\Manager;
 
 use App\Entity\ClassPeriod;
 use App\Entity\ClassPeriodStudent;
-use App\Entity\Student;
-use App\Services\AbstractFullService;
+use App\Repository\StudentRepository;
 use DateTime;
-use Exception;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
-/**
- * Description of class ClassSchoolManager.
- *
- * @author  fahari
- */
-class ClassSchoolManager extends AbstractFullService
+class ClassSchoolManager
 {
-    /**
-     * @throws Exception
-     */
-    public function addStudentToClass(array $student, ClassPeriod $classPeriod): bool
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private StudentRepository $studentRepository,
+        private Security $security,
+    ) {
+    }
+
+    public function addStudentToClass(array $students, ClassPeriod $classPeriod): bool
     {
-        if (!empty($students) && is_array($students)) {
-            $manager = $this->getEntityManager();
-
-            $students = $manager->getRepository(Student::class)
-                ->findBy(['id' => array_keys($students)]);
-
-            foreach ($students as $student) {
-                $classPeriodStudent = new ClassPeriodStudent();
-
-                $oBegin = new DateTime();
-
-                // On verifie si la date debut de la periode n'est pas encore passé
-                if ($classPeriod->getPeriod()->getBegin()->getTimestamp() > time()) {
-                    $oBegin = $classPeriod->getPeriod()->getBegin();
-                }
-
-                $classPeriodStudent->setClassPeriod($classPeriod);
-                $classPeriodStudent->setBegin($oBegin);
-                $classPeriodStudent->setEnd($classPeriod->getPeriod()->getEnd());
-                $classPeriodStudent->setStudent($student);
-                $classPeriodStudent->setAuthor($this->getUser());
-
-                $manager->persist($classPeriodStudent);
-            }
-
-            $manager->flush();
-
-            return true;
+        if (empty($students)) {
+            return false;
         }
 
-        return false;
+        $students = $this->studentRepository->findBy(['id' => array_keys($students)]);
+
+        $begin = new DateTime();
+        if ($classPeriod->getPeriod()->getBegin()?->getTimestamp() > time()) {
+            $begin = $classPeriod->getPeriod()->getBegin();
+        }
+
+        foreach ($students as $student) {
+            $classPeriodStudent = (new ClassPeriodStudent())
+                ->setClassPeriod($classPeriod)
+                ->setBegin($begin)
+                ->setEnd($classPeriod->getPeriod()->getEnd())
+                ->setStudent($student)
+                ->setAuthor($this->security->getUser())
+            ;
+
+            $this->entityManager->persist($classPeriodStudent);
+        }
+
+        $this->entityManager->flush();
+
+        return true;
     }
 }

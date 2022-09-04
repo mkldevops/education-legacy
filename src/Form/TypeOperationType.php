@@ -44,7 +44,8 @@ class TypeOperationType extends AbstractType
             ])
             ->add('description')
             ->add('isInternalTransfert')
-            ->add('status');
+            ->add('status')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

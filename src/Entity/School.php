@@ -24,19 +24,19 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
  */
 class School
 {
+    use AddressEntityTrait;
+    use AuthorEntityTrait;
+    use CityEntityTrait;
+    use CommentEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntityTrait;
     use SoftDeleteableEntity;
-    use CommentEntityTrait;
+    use TimestampableEntityTrait;
     use ZipEntityTrait;
-    use CityEntityTrait;
-    use AddressEntityTrait;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" = 0})
+     * @ORM\Column(type="boolean", options={"default": 0})
      */
     protected bool $principal = false;
 

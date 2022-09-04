@@ -19,7 +19,8 @@ class MemberType extends AbstractType
                 'label' => false,
             ])
             ->add('positionName')
-            ->add('enable');
+            ->add('enable')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

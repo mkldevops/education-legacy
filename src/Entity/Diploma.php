@@ -28,12 +28,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class Diploma
 {
-    use IdEntityTrait;
-    use NameEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntityTrait;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use SoftDeleteableEntity;
+    use TimestampableEntityTrait;
 
     /**
      * @ORM\OneToMany(targetEntity=Period::class, mappedBy="diploma")

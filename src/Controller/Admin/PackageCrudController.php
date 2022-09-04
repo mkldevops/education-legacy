@@ -27,7 +27,8 @@ class PackageCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Package')
             ->setEntityLabelInPlural('Package')
-            ->setSearchFields(['id', 'name', 'description', 'price']);
+            ->setSearchFields(['id', 'name', 'description', 'price'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

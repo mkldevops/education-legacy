@@ -18,10 +18,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Account
 {
-    use IdEntityTrait;
-    use TimestampableEntity;
     use EnableEntityTrait;
+    use IdEntityTrait;
     use NameEntityTrait;
+    use TimestampableEntity;
 
     public const DEFAULT_INTERVAL_STATEMENT = 5;
 
@@ -76,7 +76,7 @@ class Account
     private ?string $bankBic = null;
 
     /**
-     * @ORM\Column(type="integer", options={"default" : "5"})
+     * @ORM\Column(type="integer", options={"default": "5"})
      */
     private int $intervalOperationsAccountStatement = self::DEFAULT_INTERVAL_STATEMENT;
 

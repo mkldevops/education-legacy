@@ -57,11 +57,13 @@ class TransferManager
             ->setReference($transferModel->getReference())
             ->setAuthor($this->user)
             ->setGender($transferModel->getGender()?->getCode())
-            ->setStructure($transferModel->getStructure());
+            ->setStructure($transferModel->getStructure())
+        ;
 
         $this
             ->setAccountCredit($transferModel->getAccountCredit())
-            ->setAccountDebit($transferModel->getAccountDebit());
+            ->setAccountDebit($transferModel->getAccountDebit())
+        ;
 
         try {
             $this->create();
@@ -70,7 +72,8 @@ class TransferManager
         }
 
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit)
-            ->setOperation(AccountSlip::TYPE_CREDIT, $this->accountCredit);
+            ->setOperation(AccountSlip::TYPE_CREDIT, $this->accountCredit)
+        ;
 
         return $this->accountSlip;
     }
@@ -103,70 +106,13 @@ class TransferManager
 
         $name = $this->translator->trans($this->accountSlip->getGender(), [], 'account_slip');
         $this->accountSlip->setName($name)
-            ->setAuthor($this->user);
+            ->setAuthor($this->user)
+        ;
 
         $this->entityManager->persist($this->accountSlip);
         $this->entityManager->flush();
 
         return $this->accountSlip;
-    }
-
-    /**
-     * @throws AppException
-     */
-    private function setOperation(string $type, Account $account): self
-    {
-        $this->logger->info(__FUNCTION__, ['type' => $type]);
-
-        $operation = $this->findOperation($type, $account, $this->accountSlip->getUniqueId());
-
-        $typeOperation = $this->fetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_SPLIT);
-        $gender = $this->fetcher->findOperationGender($this->accountSlip->getGender());
-
-        $name = mb_strtoupper($this->accountSlip->getName(), 'UTF-8');
-
-        $operation->setComment($this->accountSlip->getComment())
-            ->setName($name)
-            ->setAmount($this->accountSlip->getAmount($type))
-            ->setDate($this->accountSlip->getDate())
-            ->setReference($this->accountSlip->getReference())
-            ->setOperationGender($gender)
-            ->setAuthor($this->accountSlip->getAuthor())
-            ->setPublisher($this->user)
-            ->setAccount($account)
-            ->setTypeOperation($typeOperation)
-            ->setUniqueId($this->accountSlip->getUniqueId());
-
-        $this->accountSlip->setOperation($operation, $type);
-        $this->entityManager->persist($operation);
-        $this->entityManager->flush();
-
-        return $this;
-    }
-
-    /**
-     * @throws AppException
-     * @throws Exception
-     */
-    private function findOperation(string $type, Account $account, string $uniqueId = null): ?Operation
-    {
-        $operation = new Operation();
-
-        if ($this->accountSlip->hasOperation($type)) {
-            $operation = $this->accountSlip->getOperation($type);
-        }
-
-        if (!empty($uniqueId)) {
-            $operationUnique = $this->entityManager
-                ->getRepository(Operation::class)
-                ->findOneBy(['uniqueId' => $uniqueId, 'account' => $account]);
-
-            if (!empty($operationUnique)) {
-                $operation = $operationUnique;
-            }
-        }
-
-        return $operation;
     }
 
     /**
@@ -291,5 +237,65 @@ class TransferManager
         $this->accountSlip = $accountSlip;
 
         return $this;
+    }
+
+    /**
+     * @throws AppException
+     */
+    private function setOperation(string $type, Account $account): self
+    {
+        $this->logger->info(__FUNCTION__, ['type' => $type]);
+
+        $operation = $this->findOperation($type, $account, $this->accountSlip->getUniqueId());
+
+        $typeOperation = $this->fetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_SPLIT);
+        $gender = $this->fetcher->findOperationGender($this->accountSlip->getGender());
+
+        $name = mb_strtoupper($this->accountSlip->getName(), 'UTF-8');
+
+        $operation->setComment($this->accountSlip->getComment())
+            ->setName($name)
+            ->setAmount($this->accountSlip->getAmount($type))
+            ->setDate($this->accountSlip->getDate())
+            ->setReference($this->accountSlip->getReference())
+            ->setOperationGender($gender)
+            ->setAuthor($this->accountSlip->getAuthor())
+            ->setPublisher($this->user)
+            ->setAccount($account)
+            ->setTypeOperation($typeOperation)
+            ->setUniqueId($this->accountSlip->getUniqueId())
+        ;
+
+        $this->accountSlip->setOperation($operation, $type);
+        $this->entityManager->persist($operation);
+        $this->entityManager->flush();
+
+        return $this;
+    }
+
+    /**
+     * @throws AppException
+     * @throws Exception
+     */
+    private function findOperation(string $type, Account $account, string $uniqueId = null): ?Operation
+    {
+        $operation = new Operation();
+
+        if ($this->accountSlip->hasOperation($type)) {
+            $operation = $this->accountSlip->getOperation($type);
+        }
+
+        if (!empty($uniqueId)) {
+            $operationUnique = $this->entityManager
+                ->getRepository(Operation::class)
+                ->findOneBy(['uniqueId' => $uniqueId, 'account' => $account])
+            ;
+
+            if (!empty($operationUnique)) {
+                $operation = $operationUnique;
+            }
+        }
+
+        return $operation;
     }
 }

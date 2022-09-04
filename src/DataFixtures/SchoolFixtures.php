@@ -33,7 +33,8 @@ class SchoolFixtures extends AbstractAppFixtures implements DependentFixtureInte
                 ->setZip($data['zip'])
                 ->setEnable(true)
                 ->setPrincipal($data['principal'])
-                ->setStructure($structure);
+                ->setStructure($structure)
+            ;
 
             $manager->persist($school);
             $manager->flush();

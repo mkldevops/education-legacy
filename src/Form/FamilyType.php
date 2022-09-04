@@ -57,7 +57,8 @@ class FamilyType extends AbstractType
             ])
             ->add('language', null, [
                 'label' => 'form.language.label',
-            ]);
+            ])
+        ;
     }
 
     /**

@@ -26,15 +26,15 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Operation
 {
+    use AmountEntityTrait;
+    use AuthorEntityTrait;
+    use CommentEntityTrait;
+    use EnableEntityTrait;
     use IdentityTrait;
     use NameEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntity;
-    use SoftDeleteableEntity;
-    use CommentEntityTrait;
     use PublisherEntityTrait;
-    use AmountEntityTrait;
+    use SoftDeleteableEntity;
+    use TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="operations")
@@ -80,12 +80,12 @@ class Operation
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTimeInterface $date;
+    private ?DateTime $date;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $datePlanned;
+    private ?DateTime $datePlanned;
 
     /**
      * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
@@ -119,7 +119,7 @@ class Operation
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date, bool $force = false): self
+    public function setDate(DateTime $date, bool $force = false): self
     {
         $this->date = $date;
         $this->datePlanned = $date;
@@ -131,7 +131,7 @@ class Operation
         return $this;
     }
 
-    public function getValueDate(): ?DateTimeInterface
+    public function getValueDate(): null|DateTime
     {
         return $this->date ?? $this->datePlanned;
     }

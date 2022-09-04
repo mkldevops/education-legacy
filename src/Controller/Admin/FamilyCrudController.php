@@ -26,7 +26,8 @@ class FamilyCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Family')
             ->setEntityLabelInPlural('Family')
-            ->setSearchFields(['id', 'language', 'numberChildren', 'address', 'city', 'personAuthorized', 'personEmergency', 'name', 'email', 'zip']);
+            ->setSearchFields(['id', 'language', 'numberChildren', 'address', 'city', 'personAuthorized', 'personEmergency', 'name', 'email', 'zip'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

@@ -24,13 +24,13 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
  */
 class Period
 {
+    use AuthorEntityTrait;
+    use CommentEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntityTrait;
     use SoftDeleteableEntity;
-    use CommentEntityTrait;
+    use TimestampableEntityTrait;
 
     /**
      * @ORM\OneToMany(targetEntity=ClassPeriod::class, mappedBy="period")

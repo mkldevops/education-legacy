@@ -7,7 +7,6 @@ namespace App\Controller\Api;
 use App\Entity\Family;
 use App\Entity\Operation;
 use App\Entity\Period;
-use App\Exception\AppException;
 use App\Form\OperationPaymentStudentType;
 use App\Manager\Interfaces\PaymentPackageStudentManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,14 +17,11 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: 'api/payment-package-student')]
 class PaymentPackageStudentApiController extends AbstractController
 {
-    /**
-     * @throws AppException
-     */
     #[Route(
         path: '/family/{family}/{period}',
         name: 'api_payment_package_student_family',
         options: ['expose' => 'true'],
-        methods: ['POST']
+        methods: [Request::METHOD_POST]
     )]
     public function family(
         Request $request,
@@ -35,7 +31,8 @@ class PaymentPackageStudentApiController extends AbstractController
     ): JsonResponse {
         $operation = new Operation();
         $this->createForm(OperationPaymentStudentType::class, $operation)
-            ->handleRequest($request);
+            ->handleRequest($request)
+        ;
 
         $familyPayment = $manager->familyPayments($operation, $family, $period);
 

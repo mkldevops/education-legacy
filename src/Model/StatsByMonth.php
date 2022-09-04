@@ -76,16 +76,10 @@ class StatsByMonth
 
         $this->addRow($dataStats)
             ->addColumn($dataStats)
-            ->addGlobal($dataStats);
+            ->addGlobal($dataStats)
+        ;
 
         $this->data[$dataStats->getRowId()][$dataStats->getColumnId()] = $dataStats;
-
-        return $this;
-    }
-
-    private function addGlobal(DataStats $dataStats): static
-    {
-        $this->getGlobal()->merge($dataStats);
 
         return $this;
     }
@@ -109,7 +103,8 @@ class StatsByMonth
                 ->setColumnId($data->getColumnId())
                 ->setColumnLabel($data->getColumnLabel())
                 ->setSum(0)
-                ->setCount(0);
+                ->setCount(0)
+            ;
         }
 
         $this->column[$data->getColumnId()]->merge($data);
@@ -130,7 +125,8 @@ class StatsByMonth
                 ->setRowId($rowId)
                 ->setRowLabel($dataStats->getRowLabel())
                 ->setCount(0)
-                ->setSum(0);
+                ->setSum(0)
+            ;
         }
 
         $this->row[$rowId]->merge($dataStats);
@@ -154,6 +150,13 @@ class StatsByMonth
     public function setData(array $data): static
     {
         $this->data = $data;
+
+        return $this;
+    }
+
+    private function addGlobal(DataStats $dataStats): static
+    {
+        $this->getGlobal()->merge($dataStats);
 
         return $this;
     }

@@ -55,9 +55,11 @@ class PersonStudentType extends PersonSimpleType
                 'label' => 'form.family.label',
                 'query_builder' => function (FamilyRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('f')
-                        ->where('f.enable = 1');
+                        ->where('f.enable = 1')
+                    ;
                 },
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

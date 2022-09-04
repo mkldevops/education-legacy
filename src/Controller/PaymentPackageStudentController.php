@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Family;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\PaymentPackageStudent;
@@ -12,6 +11,9 @@ use App\Entity\Period;
 use App\Entity\TypeOperation;
 use App\Form\OperationPaymentStudentType;
 use App\Form\PaymentPackageStudentType;
+use App\Repository\TypeOperationRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,19 +22,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route(path: 'payment-package-student')]
-class PaymentPackageStudentController extends AbstractBaseController
+class PaymentPackageStudentController extends AbstractController
 {
     #[Route('/create/{id}', name: 'app_payment_package_student_create', methods: ['GET', 'POST'])]
-    public function create(Request $request, PackageStudentPeriod $packageStudentPeriod): Response
+    public function create(Request $request, PackageStudentPeriod $packageStudentPeriod, TypeOperationRepository $repository, EntityManagerInterface $entityManager): Response
     {
         $paymentPackageStudent = new PaymentPackageStudent();
         $form = $this->createCreateForm($paymentPackageStudent, $packageStudentPeriod);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $manager = $this->getDoctrine()->getManager();
-            $typeOperation = $manager->getRepository(TypeOperation::class)
-                ->findOneBy(['code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT]);
+            $typeOperation = $repository->findOneBy(['code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT]);
 
             $paymentPackageStudent->setPackageStudentPeriod($packageStudentPeriod);
             $paymentPackageStudent->getOperation()->setTypeOperation($typeOperation);
@@ -51,10 +51,11 @@ class PaymentPackageStudentController extends AbstractBaseController
                     '%s - %s ',
                     $packageStudentPeriod->getStudent()?->getNameComplete() ?? '',
                     $packageStudentPeriod->getPeriod()?->getName() ?? ''
-                ));
+                ))
+            ;
 
-            $manager->persist($paymentPackageStudent);
-            $manager->flush();
+            $entityManager->persist($paymentPackageStudent);
+            $entityManager->flush();
 
             $this->addFlash('success', 'The PaymentPackageStudent has been created.');
         } else {
@@ -64,22 +65,6 @@ class PaymentPackageStudentController extends AbstractBaseController
         return $this->redirect($this->generateUrl('app_student_show', [
             'id' => $packageStudentPeriod->getStudent()?->getId(),
         ]));
-    }
-
-    private function createCreateForm(
-        PaymentPackageStudent $paymentPackageStudent,
-        PackageStudentPeriod $packageStudentPeriod
-    ): FormInterface {
-        $form = $this->createForm(PaymentPackageStudentType::class, $paymentPackageStudent, [
-            'action' => $this->generateUrl('app_payment_package_student_create', [
-                'id' => $packageStudentPeriod->getId(),
-            ]),
-            'method' => Request::METHOD_POST,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Create']);
-
-        return $form;
     }
 
     #[Route(path: '/family/{family}/{period}', name: 'app_payment_package_student_family', methods: ['GET'])]
@@ -105,5 +90,21 @@ class PaymentPackageStudentController extends AbstractBaseController
             'paymentPackageStudent' => $paymentPackageStudent,
             'form' => $form->createView(),
         ]);
+    }
+
+    private function createCreateForm(
+        PaymentPackageStudent $paymentPackageStudent,
+        PackageStudentPeriod $packageStudentPeriod
+    ): FormInterface {
+        $form = $this->createForm(PaymentPackageStudentType::class, $paymentPackageStudent, [
+            'action' => $this->generateUrl('app_payment_package_student_create', [
+                'id' => $packageStudentPeriod->getId(),
+            ]),
+            'method' => Request::METHOD_POST,
+        ]);
+
+        $form->add('submit', SubmitType::class, ['label' => 'Create']);
+
+        return $form;
     }
 }

@@ -24,7 +24,7 @@ class OperationManager
     }
 
     /**
-     * @return array<string, mixed[]>
+     * @return array<string, array>
      */
     public static function getData(Operation $operation): array
     {
@@ -45,7 +45,8 @@ class OperationManager
             ->setName($transaction->name)
             ->setAmount($transaction->amount)
             ->setDate($transaction->date)
-            ->setComment($transaction->memo);
+            ->setComment($transaction->memo)
+        ;
     }
 
     /**
@@ -69,42 +70,14 @@ class OperationManager
     }
 
     /**
-     * @throws AppException
+     * @todo use BaseManager
      */
-    public function update(Operation $operation, array $data): bool
+    public function update(Operation $operation): bool
     {
-        foreach ($data as $property => $value) {
-            $method = 'set'.ucfirst($property);
-
-            if (is_array($value) && (!empty($value['class']) && !empty($value['id']))) {
-                $value = $this->findEntity($value['class'], $value['id']);
-            }
-
-            if (method_exists($operation, $method)) {
-                call_user_func([$operation, $method], $value);
-            }
-        }
-
         $this->entityManager->persist($operation);
         $this->entityManager->flush();
 
         return true;
-    }
-
-    /**
-     * @throws AppException
-     */
-    private function findEntity(string $class, int $id): ?object
-    {
-        $result = $this->entityManager
-            ->getRepository($class)
-            ->find($id);
-
-        if (empty($result)) {
-            throw new AppException('Not found entity '.$class.' with id '.$id);
-        }
-
-        return $result;
     }
 
     /**
@@ -116,5 +89,22 @@ class OperationManager
     public function toValidate(): array
     {
         return $this->repository->toValidate($this->periodManager->getPeriodsOnSession());
+    }
+
+    /**
+     * @throws AppException
+     */
+    private function findEntity(string $class, int $id): ?object
+    {
+        $result = $this->entityManager
+            ->getRepository($class)
+            ->find($id)
+        ;
+
+        if (empty($result)) {
+            throw new AppException('Not found entity '.$class.' with id '.$id);
+        }
+
+        return $result;
     }
 }

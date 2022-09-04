@@ -10,8 +10,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method TypeOperation|null find($id, $lockMode = null, $lockVersion = null)
- * @method TypeOperation|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|TypeOperation find($id, $lockMode = null, $lockVersion = null)
+ * @method null|TypeOperation findOneBy(array $criteria, array $orderBy = null)
  * @method TypeOperation[]    findAll()
  * @method TypeOperation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -25,6 +25,7 @@ class TypeOperationRepository extends ServiceEntityRepository
     public function getParents(): QueryBuilder
     {
         return $this->createQueryBuilder('to')
-            ->where('to.status = 1 and to.parent is null');
+            ->where('to.status = 1 and to.parent is null')
+        ;
     }
 }

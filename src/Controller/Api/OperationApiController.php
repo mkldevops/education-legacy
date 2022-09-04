@@ -4,40 +4,31 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Operation;
-use App\Exception\AppException;
 use App\Manager\OperationManager;
-use App\Model\ResponseModel;
-use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route(path: '/api/operation', options: ['expose' => 'true'])]
-class OperationApiController extends AbstractBaseController
+class OperationApiController extends AbstractController
 {
     #[Route(path: '/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Operation $operation, OperationManager $operationManager): JsonResponse
+    public function update(Request $request, Operation $operation, OperationManager $operationManager, SerializerInterface $serializer): JsonResponse
     {
-        $result = new ResponseModel();
+        $operation = $serializer->deserialize($request->getContent(), Operation::class, 'json', [
+            AbstractNormalizer::OBJECT_TO_POPULATE => $operation,
+        ]);
 
-        try {
-            $data = json_decode($request->getContent(), true);
+        $operationManager->update($operation);
 
-            if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new AppException(json_last_error_msg());
-            }
-
-            $update = $operationManager->update($operation, $data);
-
-            $result->setSuccess($update)
-                ->setMessage('Operation updated successfully')
-                ->setData(OperationManager::getData($operation));
-        } catch (Exception $e) {
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
-        }
-
-        return ResponseModel::jsonResponse($result);
+        return $this->json([
+            'success' => true,
+            'message' => 'Operation updated successfully',
+            'data' => OperationManager::getData($operation),
+        ]);
     }
 }

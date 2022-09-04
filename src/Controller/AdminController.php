@@ -4,23 +4,28 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Base\AbstractBaseController;
-use App\Entity\Account;
-use App\Entity\Operation;
 use App\Entity\Person;
 use App\Entity\Structure;
-use App\Entity\Student;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
+use App\Fetcher\SessionFetcherInterface;
 use App\Manager\DashboardManager;
+use App\Repository\AccountRepository;
+use App\Repository\OperationRepository;
+use App\Repository\PersonRepository;
+use App\Repository\StudentRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('')]
-class AdminController extends AbstractBaseController
+class AdminController extends AbstractController
 {
+    /**
+     * @throws AppException
+     */
     #[Route('/search', name: 'app_admin_seacrh', methods: ['GET', 'POST'])]
     public function search(Request $request, DashboardManager $dashboard): Response
     {
@@ -31,15 +36,21 @@ class AdminController extends AbstractBaseController
     }
 
     /**
-     * @throws InvalidArgumentException|AppException
+     * @throws AppException|InvalidArgumentException
+     * @throws \Exception
      */
     #[Route('', name: 'app_admin_home')]
-    public function index(DashboardManager $dashboard, TranslatorInterface $translator): Response
-    {
+    public function index(
+        DashboardManager $dashboard,
+        TranslatorInterface $translator,
+        StudentRepository $studentRepository,
+        AccountRepository $accountRepository,
+        OperationRepository $operationRepository,
+        SessionFetcherInterface $sessionFetcher,
+    ): Response {
         $data = (object) ['student' => false];
-        $manager = $this->getDoctrine()->getManager();
 
-        $structure = $this->getEntitySchool()->getStructure();
+        $structure = $sessionFetcher->getEntitySchoolOnSession()->getStructure();
 
         if ((!$structure instanceof Structure) || empty($structure->getAccounts()->count())) {
             $this->addFlash('danger', $translator->trans('account.not_exists', [
@@ -47,24 +58,24 @@ class AdminController extends AbstractBaseController
             ], 'account'));
         }
 
-        $data->chartNbStudents = $dashboard->highChartStatsNumberStudents($this->getPeriod(), $this->getSchool());
-        $data->student = $manager->getRepository(Student::class)->getStatsStudent($this->getSchool());
-        $data->account = $manager->getRepository(Account::class)->getStatsAccount($this->getSchool());
-        $data->lastOperations = $manager->getRepository(Operation::class)->getLastOperation($this->getSchool());
+        $data->student = $studentRepository->getStatsStudent($sessionFetcher->getSchoolOnSession());
+        $data->account = $accountRepository->getStatsAccount($sessionFetcher->getSchoolOnSession());
+        $data->lastOperations = $operationRepository->getLastOperation($sessionFetcher->getSchoolOnSession());
 
         return $this->render('admin/index.html.twig', ['data' => $data]);
     }
 
-    public function menuInspina(Request $request): Response
+    /**
+     * @throws AppException
+     */
+    public function menuInspina(Request $request, PersonRepository $personRepository): Response
     {
         $response = new Response();
         $response->setSharedMaxAge(60);
         $menus = DashboardManager::generateItemsOfMenu($request->get('route'));
 
         /** @var Person $person */
-        $person = $this->getDoctrine()
-            ->getRepository(Person::class)
-            ->findOneBy(['user' => $this->getUser()->getId()]);
+        $person = $personRepository->findOneBy(['user' => $this->getUser()]);
 
         return $this->render('admin/menu.html.twig', [
             'menus' => $menus,
@@ -76,9 +87,7 @@ class AdminController extends AbstractBaseController
     {
         $total = disk_total_space('/');
         $free = disk_free_space('/');
-        //$memory = memory_get_peak_usage();
 
-        //dump($memory);
         return $this->render('admin/disk_usage.html.twig', [
             'free' => DashboardManager::size($free),
             'total' => DashboardManager::size($total),

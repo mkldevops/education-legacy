@@ -37,7 +37,8 @@ class PackageStudentPeriodType extends AbstractType
             ])
             ->add('student')
             ->add('discount', MoneyType::class)
-            ->add('comment', TextareaType::class, ['required' => false]);
+            ->add('comment', TextareaType::class, ['required' => false])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

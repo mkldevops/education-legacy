@@ -21,13 +21,13 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class TypeOperation
 {
+    use AuthorEntityTrait;
+    use DescriptionEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use DescriptionEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntity;
     use SoftDeleteableEntity;
+    use TimestampableEntity;
 
     public const TYPE_AMOUNT_NEGATIVE = 'negative';
     public const TYPE_AMOUNT_POSITIVE = 'positive';
@@ -55,7 +55,7 @@ class TypeOperation
     private ?string $code = null;
 
     /**
-     * @ORM\Column(type="string", length=10, options={"default" = "mixte"})
+     * @ORM\Column(type="string", length=10, options={"default": "mixte"})
      */
     private string $typeAmount = self::TYPE_AMOUNT_MIXTE;
 
@@ -87,19 +87,19 @@ class TypeOperation
         return $this;
     }
 
-    public function getParent(): ?TypeOperation
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    public function setParent(?TypeOperation $parent): self
+    public function setParent(?self $parent): self
     {
         $this->parent = $parent;
 
         return $this;
     }
 
-    public function addTypeOperation(TypeOperation $typeOperations): self
+    public function addTypeOperation(self $typeOperations): self
     {
         if (!$this->typeOperations->contains($typeOperations)) {
             $this->typeOperations[] = $typeOperations;
@@ -108,7 +108,7 @@ class TypeOperation
         return $this;
     }
 
-    public function removeTypeOperation(TypeOperation $typeOperations): void
+    public function removeTypeOperation(self $typeOperations): void
     {
         $this->typeOperations->removeElement($typeOperations);
     }

@@ -11,8 +11,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Teacher|null find($id, $lockMode = null, $lockVersion = null)
- * @method Teacher|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Teacher find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Teacher findOneBy(array $criteria, array $orderBy = null)
  * @method Teacher[]    findAll()
  * @method Teacher[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -30,6 +30,7 @@ class TeacherRepository extends ServiceEntityRepository
             ->innerJoin('cp.classSchool', 'cs')
             ->where('cs.school = :school')
             ->setParameter('school', $school)
-            ->andWhere('t.enable = true');
+            ->andWhere('t.enable = true')
+        ;
     }
 }

@@ -6,12 +6,7 @@ GIT_DIR=$(git rev-parse --git-dir)
 
 cd "$GIT_DIR"/.. || exit
 
-make schema
-
-git add public/schema.graphql
-git commit -m "Generate graphql schema"
-
-make doctrine-validate
+#make doctrine-validate
 
 # $? stores exit value of the last command
 if [ $? -ne 0 ]; then

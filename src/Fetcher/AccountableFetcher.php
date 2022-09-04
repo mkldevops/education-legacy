@@ -32,7 +32,8 @@ class AccountableFetcher
     public function findAccountSlip(string $ref, Structure $structure, string $gender): ?AccountSlip
     {
         $accountSlip = $this->accountSlipRepository
-            ->getAccountSlipByRefs($ref, $structure, $gender);
+            ->getAccountSlipByRefs($ref, $structure, $gender)
+        ;
 
         $this->logger->debug(__FUNCTION__, ['accountSlip' => $accountSlip]);
 
@@ -61,13 +62,15 @@ class AccountableFetcher
     {
         return $this->entityManager
             ->getRepository(TypeOperation::class)
-            ->findOneBy(['code' => $code]);
+            ->findOneBy(['code' => $code])
+        ;
     }
 
     public function findOperationGender(string $code): ?OperationGender
     {
         return $this->entityManager
             ->getRepository(OperationGender::class)
-            ->findOneBy(['code' => $code]);
+            ->findOneBy(['code' => $code])
+        ;
     }
 }

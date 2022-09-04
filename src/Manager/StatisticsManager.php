@@ -42,7 +42,8 @@ class StatisticsManager
                     ->setColumnLabel((new DateTime($operation['groupDate']))->format('M Y'))
                     ->setColumnId($operation['groupDate'])
                     ->setCount((int) $operation['numberOperations'])
-                    ->setSum((float) $operation['sumCredit'] + (float) $operation['sumDebit']);
+                    ->setSum((float) $operation['sumCredit'] + (float) $operation['sumDebit'])
+                ;
 
                 $stats->addData($dataStats);
             } catch (Exception $e) {

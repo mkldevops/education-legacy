@@ -26,7 +26,8 @@ class StudentCommentCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('StudentComment')
             ->setEntityLabelInPlural('StudentComment')
-            ->setSearchFields(['id', 'title', 'text', 'type']);
+            ->setSearchFields(['id', 'title', 'text', 'type'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

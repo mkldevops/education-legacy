@@ -55,7 +55,8 @@ class TeacherType extends AbstractType
             ->add('enable', CheckboxType::class, [
                 'required' => false,
                 'label' => 'form.label.enabled',
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -24,7 +24,8 @@ class OperationGenderCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('OperationGender')
             ->setEntityLabelInPlural('OperationGender')
-            ->setSearchFields(['id', 'code', 'name']);
+            ->setSearchFields(['id', 'code', 'name'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable

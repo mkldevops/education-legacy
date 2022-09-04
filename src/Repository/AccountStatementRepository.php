@@ -27,7 +27,8 @@ class AccountStatementRepository extends ServiceEntityRepository
                 ->andWhere('a.account = :account')
                 ->setParameter('account', $account)
                 ->getQuery()
-                ->getOneOrNullResult();
+                ->getOneOrNullResult()
+            ;
         } catch (NonUniqueResultException $e) {
             $result = null;
         }

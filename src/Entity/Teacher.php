@@ -20,12 +20,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Teacher
 {
-    use IdEntityTrait;
-    use NameEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntity;
+    use IdEntityTrait;
+    use NameEntityTrait;
     use SoftDeleteableEntity;
+    use TimestampableEntity;
 
     /**
      * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="teachers", cascade={"persist", "merge"})
@@ -81,7 +81,7 @@ class Teacher
 
     public function setClassPeriods(array|Collection $items): self
     {
-        if ($items instanceof ArrayCollection || is_array($items)) {
+        if ($items instanceof ArrayCollection || \is_array($items)) {
             foreach ($items as $item) {
                 $this->addClassPeriod($item);
             }

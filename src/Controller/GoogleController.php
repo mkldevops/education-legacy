@@ -13,9 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class GoogleController.
- */
 #[Route(path: '/google')]
 class GoogleController extends AbstractController
 {
@@ -30,10 +27,12 @@ class GoogleController extends AbstractController
             ->add('submit', SubmitType::class)
             ->setMethod(Request::METHOD_POST)
             ->getForm()
-            ->handleRequest($request);
+            ->handleRequest($request)
+        ;
         if ($form->isSubmitted() && $form->isValid()) {
             $googleService->setAuthCode($form->get('code')->getData())
-                ->getClient();
+                ->getClient()
+            ;
             $this->addFlash('success', 'You are authentified');
 
             return $this->redirectToRoute('app_course_generate');

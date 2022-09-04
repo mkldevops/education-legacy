@@ -30,19 +30,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
+    public function __construct(
+        private AdminUrlGenerator $adminUrlGenerator
+    ) {
+    }
+
     #[Route('/admin')]
     public function index(): Response
     {
-        // redirect to some CRUD controller
-        $routeBuilder = $this->get(AdminUrlGenerator::class);
-
-        return $this->redirect($routeBuilder->setController(StudentCrudController::class)->generateUrl());
+        return $this->redirect($this->adminUrlGenerator->setController(StudentCrudController::class)->generateUrl());
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Education');
+            ->setTitle('Education')
+        ;
     }
 
     public function configureActions(): Actions
@@ -63,7 +66,8 @@ class DashboardController extends AbstractDashboardController
                 fn (Action $action) => $action->setIcon('fa fa-edit')->setLabel(false)
             )
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
-            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
+            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
+        ;
     }
 
     public function configureMenuItems(): iterable

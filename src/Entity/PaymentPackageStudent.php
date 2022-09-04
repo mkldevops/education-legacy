@@ -18,11 +18,11 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class PaymentPackageStudent
 {
-    use IdEntityTrait;
-    use TimestampableEntity;
+    use AmountEntityTrait;
     use CommentEntityTrait;
     use EnableEntityTrait;
-    use AmountEntityTrait;
+    use IdEntityTrait;
+    use TimestampableEntity;
 
     /**
      * @ORM\ManyToOne(targetEntity=PackageStudentPeriod::class, cascade={"persist"}, inversedBy="payments")

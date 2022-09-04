@@ -19,7 +19,7 @@ abstract class AbstractAppFixtures extends Fixture
      */
     public static function getKey(string|int $key): string
     {
-        if (!array_key_exists($key, self::getData())) {
+        if (!\array_key_exists($key, self::getData())) {
             throw new AppException(sprintf('Not found key "%s" in %s', $key, self::getPath()));
         }
 

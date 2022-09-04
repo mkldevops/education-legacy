@@ -22,11 +22,6 @@ use App\Services\GoogleCalendarService;
 use DateTime;
 use Symfony\Contracts\Service\Attribute\Required;
 
-/**
- * Description of class CourseManager.
- *
- * @author  fahari
- */
 class CourseManager extends AbstractFullService
 {
     private GoogleCalendarService $googleCalendar;
@@ -34,6 +29,8 @@ class CourseManager extends AbstractFullService
     private ClassPeriodManager $classPeriodManager;
 
     /**
+     * @param null|mixed $status
+     *
      * @throws AppException
      */
     public static function getListStatus($status = null): array
@@ -96,21 +93,23 @@ class CourseManager extends AbstractFullService
         $courseEvents = $this->googleCalendar
             ->setTimeMin($period->getBegin())
             ->setTimeMax($period->getEnd())
-            ->getEvents('Cours');
+            ->getEvents('Cours')
+        ;
 
         $this->logger->debug(__METHOD__, ['courseEvents' => $courseEvents]);
 
         foreach ($courseEvents as $courseEvent) {
             $course = $this->getEntityManager()
                 ->getRepository(Course::class)
-                ->findOneBy(['idEvent' => $courseEvent->getId()]);
+                ->findOneBy(['idEvent' => $courseEvent->getId()])
+            ;
 
             if (!$course instanceof Course) {
                 $this->logger->debug(__FUNCTION__.' new instance of course', ['course' => $course]);
                 $course = new Course();
             }
 
-            $name = preg_replace("/(\w+) (\w+)( .*+)?/", '$2', $courseEvent->getSummary());
+            $name = preg_replace('/(\\w+) (\\w+)( .*+)?/', '$2', $courseEvent->getSummary());
             $classPeriod = $this->classPeriodManager->findClassPeriod($name, $period, $school);
 
             if (!$classPeriod instanceof ClassPeriod) {
@@ -133,13 +132,14 @@ class CourseManager extends AbstractFullService
                 ->setHourBegin($begin)
                 ->setHourEnd($end)
                 ->setCreatedAt(new DateTime($courseEvent->getCreated()))
-                ->setAuthor($this->getUser());
+                ->setAuthor($this->getUser())
+            ;
 
             $this->getEntityManager()->persist($course);
             $this->getEntityManager()->flush();
         }
 
-        return count($courseEvents);
+        return \count($courseEvents);
     }
 
     public function getGoogleCalendar(): GoogleCalendarService

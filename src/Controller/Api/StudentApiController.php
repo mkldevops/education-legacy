@@ -4,45 +4,65 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Controller\Base\AbstractBaseController;
 use App\Entity\Student;
 use App\Exception\AppException;
 use App\Form\StudentType;
+use App\Manager\SchoolManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 #[Route('/api/student', options: ['expose' => true])]
-class StudentApiController extends AbstractBaseController
+class StudentApiController extends AbstractController
 {
-    public function __construct(private Security $security)
-    {
+    public function __construct(
+        private Security $security,
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
+        private SchoolManager $schoolManager,
+    ) {
     }
 
+    /**
+     * @throws AppException
+     */
     #[Route('/create', name: 'app_api_student_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student)
+            ->handleRequest($request)
+        ;
+
+        $this->persistData($student, $form);
+
+        $this->addFlash('success', 'The student has been added.');
+
+        return $this->json($student);
+    }
+
+    /**
+     * @throws AppException
+     */
+    #[Route('/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Student $student): JsonResponse
+    {
         $this->logger->info(__FUNCTION__);
-        $response = $this->json([]);
 
-        try {
-            $student = new Student();
-            $form = $this->createForm(StudentType::class, $student)
-                ->handleRequest($request);
+        $form = $this->createForm(StudentType::class, $student)
+            ->handleRequest($request)
+        ;
 
-            $this->persistData($student, $form);
+        $this->persistData($student, $form);
 
-            $this->addFlash('success', 'The student has been added.');
-            $response->setData(json_encode($student));
-        } catch (AppException $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            $response->setData(['message' => $e->getMessage()])->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $this->addFlash('success', sprintf('The student %s has been updated.', $student->getNameComplete()));
 
-        return $response;
+        return $this->json($student);
     }
 
     /**
@@ -58,36 +78,12 @@ class StudentApiController extends AbstractBaseController
             throw new AppException('The form is not valid '.$form->getErrors());
         }
 
-        $em = $this->getDoctrine()->getManager();
-
         $student
-            ->setSchool($this->getEntitySchool())
-            ->setAuthor($this->security->getUser());
+            ->setSchool($this->schoolManager->getEntitySchoolOnSession())
+            ->setAuthor($this->security->getUser())
+        ;
 
-        $em->persist($student);
-        $em->flush();
-    }
-
-    #[Route('/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Student $student): JsonResponse
-    {
-        $this->logger->info(__FUNCTION__);
-        $response = $this->json([]);
-
-        try {
-            $form = $this->createForm(StudentType::class, $student)
-                ->handleRequest($request);
-
-            $this->persistData($student, $form);
-
-            $this->addFlash('success', sprintf('The student %s has been updated.', $student->getNameComplete()));
-            $response->setData(['student' => json_encode($student)]);
-        } catch (AppException $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            $response->setData(['message' => $e->getMessage()])
-                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return $response;
+        $this->entityManager->persist($student);
+        $this->entityManager->flush();
     }
 }

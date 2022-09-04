@@ -36,7 +36,8 @@ class AccountSlipRepository extends ServiceEntityRepository
             ->andWhere('a.gender = :gender')
             ->setParameter('ref', $ref)
             ->setParameter('structure', $structure)
-            ->setParameter('gender', $gender);
+            ->setParameter('gender', $gender)
+        ;
 
         return $qb->getQuery()->getSingleResult();
     }

@@ -18,13 +18,14 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class AccountStatement
 {
-    use IdEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
+    use IdEntityTrait;
     use TimestampableEntity;
 
     /**
      * @var Collection|Operation[]
+     *
      * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="accountStatement")
      */
     protected array|Collection $operations;

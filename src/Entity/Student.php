@@ -24,12 +24,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  */
 class Student
 {
-    use IdEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
-    use TimestampableEntity;
-    use SoftDeleteableEntity;
+    use IdEntityTrait;
     use SchoolEntityTrait;
+    use SoftDeleteableEntity;
+    use TimestampableEntity;
 
     /**
      * @ORM\OneToOne(targetEntity=Person::class, inversedBy="student", cascade={"persist"})
@@ -72,25 +72,29 @@ class Student
     private ?Grade $grade = null;
 
     /**
-     * @var Collection|ClassPeriodStudent[]
+     * @var ClassPeriodStudent[]|Collection
+     *
      * @ORM\OneToMany(targetEntity=ClassPeriodStudent::class, mappedBy="student", cascade={"persist"})
      */
     private array|Collection $classPeriods;
 
     /**
      * @var Collection|PackageStudentPeriod[]
+     *
      * @ORM\OneToMany(targetEntity=PackageStudentPeriod::class, mappedBy="student", cascade={"persist"})
      */
     private array|Collection $packagePeriods;
 
     /**
-     * @var Collection|AppealCourse[]
+     * @var AppealCourse[]|Collection
+     *
      * @ORM\OneToMany(targetEntity=AppealCourse::class, mappedBy="student")
      */
-    private array|Collection $courses;
+    private array|Collection $appealCourses;
 
     /**
      * @var Collection|StudentComment[]
+     *
      * @ORM\OneToMany(targetEntity=StudentComment::class, mappedBy="student")
      */
     private array|Collection $comments;
@@ -98,12 +102,18 @@ class Student
     public function __construct()
     {
         $this->setPerson(new Person())
-            ->setDateRegistration(new DateTime());
+            ->setDateRegistration(new DateTime())
+        ;
 
         $this->classPeriods = new ArrayCollection();
         $this->packagePeriods = new ArrayCollection();
-        $this->courses = new ArrayCollection();
+        $this->appealCourses = new ArrayCollection();
         $this->comments = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getNameComplete();
     }
 
     public function setEnable(bool $enable): static
@@ -117,11 +127,6 @@ class Student
         }
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->getNameComplete();
     }
 
     public function getNameComplete(): string
@@ -376,7 +381,7 @@ class Student
     {
         $current = null;
 
-        /* @var $classes ClassPeriodStudent[] */
+        /** @var ClassPeriodStudent[] $classes */
         $classes = $this->classPeriods->toArray();
         foreach ($classes as $classPeriod) {
             if (!$classPeriod->getClassPeriod() instanceof ClassPeriod) {
@@ -426,22 +431,22 @@ class Student
 
     public function addCourse(AppealCourse $courses): static
     {
-        $this->courses[] = $courses;
+        $this->appealCourses[] = $courses;
 
         return $this;
     }
 
     public function removeCourse(AppealCourse $courses): void
     {
-        $this->courses?->removeElement($courses);
+        $this->appealCourses?->removeElement($courses);
     }
 
     /**
-     * @return Collection|AppealCourse[]
+     * @return AppealCourse[]|Collection
      */
-    public function getCourses(): Collection
+    public function getAppealCourses(): Collection
     {
-        return $this->courses;
+        return $this->appealCourses;
     }
 
     public function getDateRegistration(): ?DateTimeInterface

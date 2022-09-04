@@ -22,7 +22,8 @@ class GradeFixtures extends AbstractAppFixtures
                 ->setName($data['name'])
                 ->setDescription($data['description'])
                 ->setCreatedAt(new DateTime())
-                ->setEnable(true);
+                ->setEnable(true)
+            ;
 
             $manager->persist($grade);
 

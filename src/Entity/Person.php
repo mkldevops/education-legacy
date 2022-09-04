@@ -29,16 +29,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Person
 {
+    use AddressEntityTrait;
+    use AuthorEntityTrait;
+    use CityEntityTrait;
+    use EmailEntityTrait;
+    use EnableEntityTrait;
     use IdEntityTrait;
     use NameEntityTrait;
-    use EmailEntityTrait;
-    use AddressEntityTrait;
-    use ZipEntityTrait;
-    use CityEntityTrait;
-    use AuthorEntityTrait;
-    use EnableEntityTrait;
-    use TimestampableEntity;
     use SoftDeleteableEntity;
+    use TimestampableEntity;
+    use ZipEntityTrait;
     public const GENDER_MALE = 'male';
     public const GENDER_FEMALE = 'female';
 
@@ -92,14 +92,14 @@ class Person
     /**
      * @ORM\ManyToOne(targetEntity=Document::class, inversedBy="persons", cascade={"remove"})
      * @ORM\JoinColumn(nullable=true)
-     * @Assert\Valid()
+     * @Assert\Valid
      */
     protected ?Document $image = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="persons", cascade={"remove"})
      * @ORM\JoinColumn(nullable=true)
-     * @Assert\Valid()
+     * @Assert\Valid
      */
     protected ?Family $family = null;
 
@@ -170,7 +170,7 @@ class Person
 
         $list = $this->getListPhones();
 
-        if (array_key_exists($key, $list)) {
+        if (\array_key_exists($key, $list)) {
             unset($list[$key]);
         } else {
             throw new AppException('The key phone number is undefined to list');
@@ -246,8 +246,8 @@ class Person
     {
         $gender = $this->gender;
 
-        if (in_array($gender, ['feminin', 'masculin'], true)) {
-            $gender = 'masculin' === $gender ? Person::GENDER_MALE : self::GENDER_FEMALE;
+        if (\in_array($gender, ['feminin', 'masculin'], true)) {
+            $gender = 'masculin' === $gender ? self::GENDER_MALE : self::GENDER_FEMALE;
         }
 
         return $gender;
