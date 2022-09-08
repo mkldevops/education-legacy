@@ -364,7 +364,7 @@ class OperationController extends AbstractController
     {
         $result = true;
 
-        if (!$operation->hasStructure($this->schoolManager->getSchool()?->getStructure())) {
+        if (!$operation->hasStructure($this->schoolManager->getSchool()->getStructure())) {
             $this->addFlash('danger', sprintf(
                 'Vous n\'avez pas accès l\'opération numero %s avec cette structure',
                 $operation->getId()

@@ -92,7 +92,8 @@ class StudentController extends AbstractController
      * @throws InvalidArgumentException
      * @throws AppException
      */
-    #[IsGranted(['ROLE_ACCOUNTANT', 'ROLE_DIRECTOR'])]
+    #[IsGranted('ROLE_ACCOUNTANT')]
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route('/payment-list', name: 'app_student_payment_list', methods: ['GET'])]
     public function paymentList(
         StudentManager $studentManager,

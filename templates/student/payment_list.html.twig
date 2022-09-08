@@ -196,7 +196,7 @@
                                 <td class="text-center" data-toggle="tooltip" title="{{ student.since }} ans">{{ student.createdAt.format('d/m/Y') }}</td>
                                 <td class="num text-center">{{  student.person.age }}</td>
                                 <td class="text-center">
-                                    <a href="{{ path('app_student_addpackage', { id : student.id }) }}"
+                                    <a href="{{ path('app_student_addpackage', { id : student.id, period : period.id }) }}"
                                         target="_blank"
                                         data-student="{{ student.id }}" 
                                         class="add-package-student btn btn-primary btn-xs">

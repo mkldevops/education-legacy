@@ -9,7 +9,6 @@ use App\Repository\AccountSlipRepository;
 use App\Traits\AmountEntityTrait;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -62,7 +61,7 @@ class AccountSlip
     /**
      * @ORM\Column(type="datetime")
      */
-    protected DateTimeInterface $date;
+    protected DateTime $date;
 
     /**
      * @ORM\Column(type="string", length=20)
@@ -106,12 +105,12 @@ class AccountSlip
         ];
     }
 
-    public function getDate(): DateTimeInterface
+    public function getDate(): DateTime
     {
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date): self
+    public function setDate(DateTime $date): self
     {
         $this->date = $date;
 

@@ -37,9 +37,6 @@ update: composer.json ## Update vendors according to the composer.json file
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 
-sf: ## List all Symfony commands
-	$(CONSOLE)
-
 cc: ## Clear the cache. DID YOU CLEAR YOUR CACHE????
 	$(CONSOLE) c:c
 

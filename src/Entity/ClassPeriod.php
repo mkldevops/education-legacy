@@ -126,6 +126,9 @@ class ClassPeriod
         $this->courses->removeElement($courses);
     }
 
+    /**
+     * @return Collection<int, Course>
+     */
     public function getCourses(): Collection
     {
         return $this->courses;
