@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Exception\AppException;
+use App\Helper\UploaderHelper;
 use App\Manager\DocumentManager;
 use App\Repository\DocumentRepository;
 use App\Traits\AuthorEntityTrait;
@@ -17,9 +18,7 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use Imagick;
 use ImagickException;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -68,32 +67,32 @@ class Document
     private ?string $extension = null;
 
     /**
-     * @var Collection|Person[]
+     * @var Collection<int, Person>
      *
      * @ORM\OneToMany(targetEntity=Person::class, mappedBy="image", cascade={"remove"})
      */
-    private Collection|array $persons;
+    private Collection $persons;
 
     /**
-     * @var Collection|Operation[]
+     * @var Collection<int, Operation>
      *
      * @ORM\ManyToMany(targetEntity=Operation::class, mappedBy="documents", cascade={"remove"})
      */
-    private Collection|array $operations;
+    private Collection $operations;
 
     /**
-     * @var AccountStatement[]|Collection
+     * @var Collection<int, AccountStatement>
      *
      * @ORM\ManyToMany(targetEntity=AccountStatement::class, mappedBy="documents", cascade={"remove"})
      */
-    private Collection|array $accountStatements;
+    private Collection $accountStatements;
 
     /**
-     * @var AccountSlip[]|Collection
+     * @var Collection<int, AccountSlip>
      *
      * @ORM\ManyToMany(targetEntity=AccountSlip::class, mappedBy="documents", cascade={"remove"})
      */
-    private Collection|array $accountSlips;
+    private Collection $accountSlips;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -147,7 +146,7 @@ class Document
         }
 
         if (null !== $url && !is_file($url)) {
-            $result = $this->generateImages();
+            $result = UploaderHelper::generateImages($this);
 
             if (
                 (self::DIR_THUMB === $dir && empty($result['thumb']))
@@ -185,61 +184,6 @@ class Document
         return str_replace($ext, self::EXT_PNG, $path);
     }
 
-    /**
-     * @return array<string, bool>|array<string, null>
-     *
-     * @throws ImagickException
-     * @throws AppException
-     */
-    public function generateImages(): array
-    {
-        if (empty($this->fileName)) {
-            $this->fileName = $this->getFileName();
-        }
-
-        $filepath = self::getUploadRootDir().'/'.$this->path;
-
-        // If file is not supported
-        if (!is_file($filepath) || !$this->isFormat(['pdf', 'image'])) {
-            throw new AppException('File '.$filepath.' not supported');
-        }
-
-        $img = new Imagick($filepath);
-
-        if ($this->isFormat('pdf')) {
-            $img->setIteratorIndex(0);
-        }
-
-        // If file is image, so to compress
-        if ($this->isFormat('image')) {
-            $img->setCompression(Imagick::COMPRESSION_LZW);
-            $img->setCompressionQuality(80);
-            $img->stripImage();
-            $img->writeImage();
-        }
-
-        $result = ['thumb' => null, 'preview' => null];
-        $pathPreview = self::getUploadRootDir(self::DIR_PREVIEW).'/'.$this->fileName.'.'.self::EXT_PNG;
-        if (!is_file($pathPreview)) {
-            // Genreration du preview
-            $img->scaleImage(800, 0);
-            $img->setImageFormat('png');
-            $result['preview'] = $img->writeImage($pathPreview);
-        }
-
-        $pathThumb = self::getUploadRootDir(self::DIR_THUMB).'/'.$this->fileName.'.'.self::EXT_PNG;
-        if (!is_file($pathThumb)) {
-            // Generation du thumb
-            $img->scaleImage(150, 0);
-            $img->setImageFormat('png');
-            $result['thumb'] = $img->writeImage($pathThumb);
-        }
-
-        $img->clear();
-
-        return $result;
-    }
-
     public function getFileName(): string
     {
         if (empty($this->fileName)) {
@@ -258,13 +202,15 @@ class Document
 
     /**
      * Get Upload Root Dir.
+     *
+     * @throws AppException
      */
     public static function getUploadRootDir(string $dir = self::DIR_FILE): string
     {
         $dir = DocumentManager::getPathUploads().\DIRECTORY_SEPARATOR.self::getUploadDir($dir);
-        // dd($dir);
+
         if (!file_exists($dir) && (!mkdir($dir, 0o770, true) && !is_dir($dir))) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
+            throw new AppException(sprintf('Directory "%s" was not created', $dir));
         }
 
         return $dir;
@@ -392,11 +338,9 @@ class Document
     }
 
     /**
-     * Get persons.
-     *
-     * @return Collection|Person[]
+     * @return Collection<int, Person>
      */
-    public function getPersons(): iterable|Collection
+    public function getPersons(): Collection
     {
         return $this->persons;
     }
@@ -414,9 +358,9 @@ class Document
     }
 
     /**
-     * @return Collection|Operation[]
+     * @return Collection<int, Operation>
      */
-    public function getOperations(): iterable|Collection
+    public function getOperations(): Collection
     {
         return $this->operations;
     }
@@ -432,7 +376,7 @@ class Document
     }
 
     /**
-     * Get informations to document.
+     * Get information to document.
      *
      * @return array<string, int>|array<string, null>|array<string, string>
      *
@@ -478,9 +422,9 @@ class Document
     }
 
     /**
-     * @return AccountStatement[]|Collection
+     * @return Collection<int, AccountStatement>
      */
-    public function getAccountStatements(): iterable|Collection
+    public function getAccountStatements(): Collection
     {
         return $this->accountStatements;
     }
@@ -498,9 +442,9 @@ class Document
     }
 
     /**
-     * @return AccountSlip[]|Collection
+     * @return Collection<int, AccountSlip>
      */
-    public function getAccountSlips(): iterable|Collection
+    public function getAccountSlips(): Collection
     {
         return $this->accountSlips;
     }

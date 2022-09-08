@@ -86,11 +86,11 @@ class Student
     private array|Collection $packagePeriods;
 
     /**
-     * @var AppealCourse[]|Collection
+     * @var Collection<int, AppealCourse>
      *
      * @ORM\OneToMany(targetEntity=AppealCourse::class, mappedBy="student")
      */
-    private array|Collection $appealCourses;
+    private Collection $appealCourses;
 
     /**
      * @var Collection|StudentComment[]
@@ -158,7 +158,7 @@ class Student
 
     public function getGenderCode(): ?string
     {
-        return $this->person?->getGender();
+        return $this->getGender();
     }
 
     public function setForname(string $forname): static
@@ -442,7 +442,7 @@ class Student
     }
 
     /**
-     * @return AppealCourse[]|Collection
+     * @return Collection<int, AppealCourse>
      */
     public function getAppealCourses(): Collection
     {

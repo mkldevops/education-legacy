@@ -162,7 +162,7 @@ class Structure
     }
 
     /**
-     * @return mixed[]
+     * @return array<int, mixed>
      */
     public function getOptions(): array
     {
@@ -170,7 +170,7 @@ class Structure
     }
 
     /**
-     * @param mixed[] $options
+     * @param array<int, mixed> $options
      */
     public function setOptions(array $options): static
     {
@@ -180,16 +180,13 @@ class Structure
     }
 
     /**
-     * @return Account[]|ArrayCollection
+     * @return Collection<int, Account>
      */
     public function getAccounts(): Collection
     {
         return $this->accounts;
     }
 
-    /**
-     * @param Account[]|ArrayCollection $accounts
-     */
     public function setAccounts(ArrayCollection $accounts): static
     {
         $this->accounts = $accounts;
@@ -197,9 +194,6 @@ class Structure
         return $this;
     }
 
-    /**
-     * Add accounts.
-     */
     public function addAccount(Account $account): self
     {
         if (!$this->accounts->contains($account)) {
@@ -215,17 +209,14 @@ class Structure
     }
 
     /**
-     * @return AccountSlip[]|ArrayCollection
+     * @return Collection<int, AccountSlip>
      */
     public function getAccountSlips(): Collection
     {
         return $this->accountSlips;
     }
 
-    /**
-     * @param AccountSlip[]|ArrayCollection $accountSlips
-     */
-    public function setAccountSlips(Collection $accountSlips): self
+    public function setAccountSlips(ArrayCollection $accountSlips): self
     {
         $this->accountSlips = $accountSlips;
 

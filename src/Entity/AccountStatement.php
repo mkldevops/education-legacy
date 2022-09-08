@@ -24,51 +24,64 @@ class AccountStatement
     use TimestampableEntity;
 
     /**
-     * @var Collection|Operation[]
+     * @var Collection<int, Operation>
      *
      * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="accountStatement")
      */
-    protected array|Collection $operations;
+    protected Collection $operations;
+
     /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $title = null;
+
     /**
      * @ORM\Column(type="datetime")
      */
     private \DateTime $begin;
+
     /**
      * @ORM\Column(type="datetime")
      */
     private \DateTime $end;
+
     /**
      * @ORM\Column(type="date", nullable=true)
      */
     private \DateTime $month;
+
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private ?float $amountCredit = 0.00;
+
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private ?float $amountDebit = 0.00;
+
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private ?float $newBalance = 0.00;
+
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private ?int $numberOperations = 0;
+
     /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $reference = null;
+
     /**
+     * @var Collection<int, Document>
+     *
      * @ORM\ManyToMany(targetEntity=Document::class, cascade={"persist"}, inversedBy="accountStatements")
      */
     private Collection $documents;
+
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="accountStatements", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)

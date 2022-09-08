@@ -135,9 +135,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSalt(): void
+    public function getSalt(): string|null
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     public function eraseCredentials(): void

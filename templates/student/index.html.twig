@@ -78,16 +78,18 @@
                             <td class="text-center">{{ student.grade.name }}</td>
                             <td class="text-center">{{ student.id }}</td>
                             <td class="text-center">
-                                {% if student.image is not empty %}
-                                    <a href="{{ asset(student.image.getWebPathThumb) }}" data-width="100" data-toggle="lightbox"><i class="fa fa-file-image-o"></i></a>
+                                {% if student.image is not empty and asset_exists(student.image) %}
+                                    <a href="{{ asset(student.image.getWebPathThumb) }}" data-width="100" data-toggle="lightbox">
+                                        <em class="fa fa-file-image-o"></em>
+                                    </a>
                                 {% endif %}
                             </td>
                             <td class="student-setting">
                                 <div>
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class="fa fa-cog"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-right dropdown-student-desactivated dropdown-table" role="menu">
-                                        <li><a href="{{ path('app_student_show', {'id': student.id}) }}"><i
-                                                        class="fas fa-file-text"></i> {{ 'list.action.view'|trans }}
+                                        <li><a href="{{ path('app_student_show', {'id': student.id}) }}">
+                                                <em class="fas fa-file-text"></em> {{ 'list.action.view'|trans }}
                                             </a></li>
                                         <li><a href="{{ path('app_student_edit', {'id': student.id}) }}"><i
                                                         class="fa fa-edit"></i> {{ 'list.action.edit'|trans }}</a></li>
