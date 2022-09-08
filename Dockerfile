@@ -18,7 +18,7 @@ RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/inst
 
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
-FROM php_base as app
+FROM php as app
 
 EXPOSE 80
 
