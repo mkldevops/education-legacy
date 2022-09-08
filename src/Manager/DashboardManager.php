@@ -9,7 +9,6 @@ use App\Repository\DocumentRepository;
 use App\Repository\FamilyRepository;
 use App\Repository\OperationRepository;
 use App\Repository\PersonRepository;
-use App\Repository\StudentRepository;
 use App\Services\AbstractFullService;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
@@ -17,11 +16,10 @@ use Symfony\Component\Yaml\Yaml;
 class DashboardManager extends AbstractFullService
 {
     public function __construct(
-        private StudentRepository $studentRepository,
-        private OperationRepository $operationRepository,
-        private PersonRepository $personRepository,
-        private FamilyRepository $familyRepository,
-        private DocumentRepository $documentRepository,
+        private readonly OperationRepository $operationRepository,
+        private readonly PersonRepository $personRepository,
+        private readonly FamilyRepository $familyRepository,
+        private readonly DocumentRepository $documentRepository,
     ) {
     }
 

@@ -14,9 +14,9 @@ use Psr\Log\LoggerInterface;
 class OperationListener
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private EntityManagerInterface $entityManager,
-        private AccountStatementRepository $accountStatementRepository,
+        private readonly LoggerInterface $logger,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AccountStatementRepository $accountStatementRepository,
     ) {
     }
 
@@ -31,7 +31,7 @@ class OperationListener
     public function retrieveAccountStatement(Operation $operation): bool
     {
         $this->logger->debug(__FUNCTION__, ['operation' => $operation]);
-        if (!$operation->getAccount()?->getIsBank()) {
+        if (false === $operation->getAccount()?->getIsBank()) {
             return false;
         }
 

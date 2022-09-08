@@ -438,7 +438,7 @@ class Student
 
     public function removeCourse(AppealCourse $courses): void
     {
-        $this->appealCourses?->removeElement($courses);
+        $this->appealCourses->removeElement($courses);
     }
 
     /**
@@ -470,7 +470,7 @@ class Student
 
     public function removeComment(StudentComment $comment): void
     {
-        $this->comments?->removeElement($comment);
+        $this->comments->removeElement($comment);
     }
 
     public function getComments(): Collection
@@ -519,6 +519,6 @@ class Student
      */
     public function since(): int
     {
-        return $this->createdAt?->diff(new DateTime())->y;
+        return $this->createdAt->diff(new DateTime())->y;
     }
 }

@@ -72,7 +72,7 @@ class OperationType extends AbstractType
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
             ])
-            ->add('amount', MoneyType::class, ['label' => 'form.amount', 'html5' => false, 'divisor' => 100])
+            ->add('amount', MoneyType::class, ['label' => 'form.amount', 'html5' => false, 'divisor' => 100, 'scale' => 2])
             ->add('reference', TextType::class, [
                 'label' => 'form.reference',
                 'required' => false,

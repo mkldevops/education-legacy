@@ -30,14 +30,17 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ClassPeriodRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private CourseRepository $courseRepository, private ClassPeriodStudentRepository $classPeriodStudentRepository)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly CourseRepository $courseRepository,
+        private readonly ClassPeriodStudentRepository $classPeriodStudentRepository
+    ) {
         parent::__construct($registry, ClassPeriod::class);
     }
 
     public function remove(ClassPeriod $classPeriod): array
     {
-        if (!$classPeriod->getCourses()?->isEmpty()) {
+        if ($classPeriod->getCourses()->isEmpty()) {
             $this->courseRepository->remove($classPeriod);
         }
 

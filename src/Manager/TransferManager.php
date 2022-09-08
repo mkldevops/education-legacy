@@ -18,28 +18,23 @@ use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TransferManager
 {
-    public const ACTION_ADD = 'add';
-    public const ACTION_EDIT = 'edit';
-
-    private ?Account $accountCredit = null;
-    private ?Account $accountDebit = null;
-    private AccountSlip $accountSlip;
-    private User|UserInterface $user;
-
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger,
-        private AccountableFetcher $fetcher,
-        private TranslatorInterface $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly AccountableFetcher $fetcher,
+        private readonly TranslatorInterface $translator,
         Security $security,
+        private ?Account $accountCredit = null,
+        private ?Account $accountDebit = null,
+        private ?AccountSlip $accountSlip = null,
+        private null|User $user = null,
     ) {
-        if (($user = $security->getUser()) instanceof User) {
-            $this->user = $user;
+        if ($security->getUser() instanceof User) {
+            $this->user = $security->getUser();
         }
     }
 
@@ -140,11 +135,6 @@ class TransferManager
         return $this->accountSlip;
     }
 
-    public function getAccountCredit(): ?Account
-    {
-        return $this->accountCredit;
-    }
-
     public function setAccountCredit(Account $accountCredit): self
     {
         $this->accountCredit = $accountCredit;
@@ -163,30 +153,9 @@ class TransferManager
         return $this;
     }
 
-    public function getAccountDebit(): ?Account
-    {
-        return $this->accountDebit;
-    }
-
-    /**
-     * Set AccountDebit.
-     */
     public function setAccountDebit(Account $accountDebit): self
     {
         $this->accountDebit = $accountDebit;
-
-        return $this;
-    }
-
-    /**
-     * Set AccountDebit.
-     *
-     * @throws Exception
-     */
-    public function setAccountDebitById(int $accountDebitId): self
-    {
-        $accountDebit = $this->fetcher->findAccount($accountDebitId);
-        $this->setAccountDebit($accountDebit);
 
         return $this;
     }
@@ -247,6 +216,10 @@ class TransferManager
         $this->logger->info(__FUNCTION__, ['type' => $type]);
 
         $operation = $this->findOperation($type, $account, $this->accountSlip->getUniqueId());
+
+        if (null === $operation) {
+            throw new AppException('Operation not found');
+        }
 
         $typeOperation = $this->fetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_SPLIT);
         $gender = $this->fetcher->findOperationGender($this->accountSlip->getGender());

@@ -8,7 +8,6 @@ use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Student;
 use App\Exception\AppException;
-use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -17,7 +16,6 @@ class StudentManager
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly StudentRepository $repository,
         private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
     ) {

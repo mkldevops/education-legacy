@@ -39,7 +39,7 @@ class Operation
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="operations")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Account $account;
+    private ?Account $account = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=AccountStatement::class, inversedBy="operations", cascade={"persist"})
@@ -307,12 +307,12 @@ class Operation
         return $this;
     }
 
-    public function getAccount(): Account
+    public function getAccount(): ?Account
     {
         return $this->account;
     }
 
-    public function setAccount(Account $account): self
+    public function setAccount(?Account $account): self
     {
         $this->account = $account;
 

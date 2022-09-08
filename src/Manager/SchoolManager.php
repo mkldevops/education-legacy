@@ -9,7 +9,6 @@ use App\Entity\User;
 use App\Exception\SchoolException;
 use App\Model\SchoolList;
 use App\Repository\SchoolRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -85,9 +84,8 @@ class SchoolManager implements SchoolManagerInterface
     {
         /** @var User $user */
         $user = $this->security->getUser();
-        $list = $user->getSchoolAccessRight() ?? new ArrayCollection();
 
-        if ($list->isEmpty()) {
+        if ($user->getSchoolAccessRight()->isEmpty()) {
             $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
             if (null !== $school) {
                 $user = $user->addSchoolAccessRight($school);
@@ -103,8 +101,8 @@ class SchoolManager implements SchoolManagerInterface
         }
 
         /** @var School $school */
-        $school = $list->current();
-        $this->session->set('school', new SchoolList($list->toArray(), $school));
+        $school = $user->getSchoolAccessRight()->current();
+        $this->session->set('school', new SchoolList($user->getSchoolAccessRight()->toArray(), $school));
 
         return true;
     }

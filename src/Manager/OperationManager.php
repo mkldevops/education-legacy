@@ -90,21 +90,4 @@ class OperationManager
     {
         return $this->repository->toValidate($this->periodManager->getPeriodsOnSession());
     }
-
-    /**
-     * @throws AppException
-     */
-    private function findEntity(string $class, int $id): ?object
-    {
-        $result = $this->entityManager
-            ->getRepository($class)
-            ->find($id)
-        ;
-
-        if (empty($result)) {
-            throw new AppException('Not found entity '.$class.' with id '.$id);
-        }
-
-        return $result;
-    }
 }
