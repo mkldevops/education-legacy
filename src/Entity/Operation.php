@@ -9,7 +9,6 @@ use App\Traits\AmountEntityTrait;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\PublisherEntityTrait;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -80,12 +79,12 @@ class Operation
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTime $date;
+    private ?\DateTime $date;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTime $datePlanned;
+    private ?\DateTime $datePlanned;
 
     /**
      * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
@@ -104,7 +103,7 @@ class Operation
 
     public function __construct()
     {
-        $this->date = new Datetime();
+        $this->date = new \DateTime();
         $this->documents = new ArrayCollection();
         $this->paymentPackageStudents = new ArrayCollection();
     }
@@ -114,7 +113,7 @@ class Operation
         return (string) $this->name;
     }
 
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
@@ -131,17 +130,17 @@ class Operation
         return $this;
     }
 
-    public function getValueDate(): null|DateTime
+    public function getValueDate(): ?DateTime
     {
         return $this->date ?? $this->datePlanned;
     }
 
-    public function getDatePlanned(): ?DateTimeInterface
+    public function getDatePlanned(): ?DateTime
     {
         return $this->datePlanned;
     }
 
-    public function setDatePlanned(?DateTimeInterface $datePlanned): self
+    public function setDatePlanned(?DateTime $datePlanned): self
     {
         $this->datePlanned = $datePlanned;
 

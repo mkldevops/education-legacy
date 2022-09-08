@@ -5,10 +5,9 @@ security:
         App\Entity\User:
             algorithm: auto
 
-
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     role_hierarchy:
-        ROLE_ADMIN: # Un admin hérite des droits d'auteur et de modérateur
+        ROLE_ADMIN:
             - ROLE_DIRECTOR
             - ROLE_ACCOUNTANT
             - ROLE_STUDENT
@@ -43,10 +42,7 @@ security:
                 target: app_admin_home
 
             lazy: true
-#            guard:
-#                authenticators:
-#                    - App\Security\AppAuthenticator
-#
+
             remember_me:
                 secret:   '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds
@@ -55,10 +51,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: '^/resetting', role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/login', roles: PUBLIC_ACCESS }
+        - { path: '^/resetting', role: PUBLIC_ACCESS }
         - { path: '^/admin', roles: ROLE_ADMIN }
-        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
         - { path: '^/profile', roles: IS_AUTHENTICATED_FULLY }
         - { path: '^/account', roles: ROLE_ACCOUNTANT }
         - { path: '^/teacher', roles: ROLE_TEACHER }
@@ -68,3 +63,4 @@ security:
         - { path: '^/member', roles: ROLE_MEMBER }
         - { path: '^/meet', roles: ROLE_MEMBER }
         - { path: '^/user', roles: ROLE_SUPER_ADMIN }
+        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }

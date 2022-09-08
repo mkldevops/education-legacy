@@ -18,7 +18,7 @@ isContainerRunning := $(shell docker version > /dev/null 2>&1 &&  docker-compose
 
 user=
 ifeq ($(isContainerRunning), 1)
-	DOCKER_EXEC := $(DOCKER) exec $(user) app
+	DOCKER_EXEC := $(DOCKER) exec -T $(user) app
 	DOCKER_TEST_EXEC := $(DOCKER) exec -T -e APP_ENV=test $(user) app
 	CONSOLE := $(DOCKER_EXEC) $(CONSOLE)
 	COMPOSER := $(DOCKER_EXEC) $(COMPOSER)
@@ -110,10 +110,10 @@ test-report: phpunit.xml.dist test-load-fixtures ## Launch main functional and u
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
 stan: ## Run PHPStan only
 	@test -d var/cache/dev || $(CONSOLE) cache:clear
-	./vendor/bin/phpstan analyse -l 2 --memory-limit 256M
+	$(DOCKER_EXEC) ./vendor/bin/phpstan analyse --no-progress --memory-limit 256M
 
 cs-fix: ## Run php-cs-fixer and fix the code.
-	./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes
+	$(DOCKER_EXEC) ./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes
 
 rector: ## Run php-cs-fixer and fix the code.
 	$(DOCKER_EXEC) ./vendor/bin/rector process src

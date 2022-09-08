@@ -16,15 +16,15 @@ use Psr\Log\LoggerInterface;
 class OperationManager
 {
     public function __construct(
-        protected EntityManagerInterface $entityManager,
-        protected LoggerInterface $logger,
-        protected OperationRepository $repository,
-        private PeriodManager $periodManager,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly OperationRepository $repository,
+        private readonly PeriodManager $periodManager,
     ) {
     }
 
     /**
-     * @return array<string, array>
+     * @return array<string, mixed>
      */
     public static function getData(Operation $operation): array
     {

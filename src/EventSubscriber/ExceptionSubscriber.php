@@ -7,18 +7,22 @@ namespace App\EventSubscriber;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Security;
 use Throwable;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private string $env,
-        private bool $debug
+        private readonly LoggerInterface $logger,
+        private readonly Security $security,
+        private readonly string $env,
+        private readonly bool $debug
     ) {
     }
 
@@ -38,6 +42,13 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         $exception = $event->getThrowable();
         $this->logger->error(__METHOD__, compact('exception'));
+
+        if ($exception instanceof AccessDeniedException && null === $this->security->getUser()) {
+            $event->setResponse(new RedirectResponse('/login'));
+
+            return;
+        }
+
         if ('dev' === $this->env && !str_contains($event->getRequest()->getPathInfo(), '/api')) {
             throw $exception;
         }
@@ -47,14 +58,11 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $data['traces'] = $exception->getTrace();
         }
 
-        $response = new JsonResponse();
-        $response->setData($data);
+        $response = new JsonResponse($data, $exception->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
 
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());
             $response->headers->add($exception->getHeaders());
-        } else {
-            $response->setStatusCode($exception->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $event->setResponse($response);

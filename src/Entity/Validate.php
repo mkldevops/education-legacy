@@ -37,12 +37,10 @@ class Validate
     private string $type = self::TYPE_MUTED;
 
     /**
-     * @return array<string, mixed[]>
+     * @return array<string, mixed>
      */
     public function getData(): array
     {
-        dump($this);
-
         return [
             'type' => $this->getType(),
             'created' => [

@@ -102,7 +102,7 @@ class StudentController extends AbstractController
         $school = $this->schoolManager->getSchool();
         $students = $studentRepository->getPaymentList($period, $school);
         $studentsWithoutPackage = $studentRepository->getListStudentsWithoutPackagePeriod($period, $school);
-        $listPayment = $studentManager->dataPayementsStudents($students, $period);
+        $listPayment = $studentManager->dataPaymentsStudents($students, $period);
 
         return $this->render('student/payment_list.html.twig', [
             'period' => $period,

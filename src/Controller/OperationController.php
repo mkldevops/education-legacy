@@ -38,8 +38,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_ACCOUNTANT')]
 class OperationController extends AbstractController
 {
-    public function __construct(protected SchoolManager $schoolManager)
-    {
+    public function __construct(
+        protected readonly SchoolManager $schoolManager
+    ) {
     }
 
     /**
@@ -80,6 +81,7 @@ class OperationController extends AbstractController
             'account' => $request->get('account'),
             'accountstatement' => $request->get('accountstatement'),
         ];
+
         $operation->setDate(new DateTime($request->get('date') ?? 'now'));
         $form = $this->createCreateForm($operation, $params);
         $form->handleRequest($request);

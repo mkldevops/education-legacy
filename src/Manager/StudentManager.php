@@ -6,10 +6,8 @@ namespace App\Manager;
 
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
-use App\Entity\Person;
 use App\Entity\Student;
 use App\Exception\AppException;
-use App\Model\ResponseModel;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -18,17 +16,17 @@ use Symfony\Component\Security\Core\Security;
 class StudentManager
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private StudentRepository $repository,
-        private Security $security,
-        private EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly StudentRepository $repository,
+        private readonly Security $security,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
     /**
-     * @return int[]
+     * @return array<string, mixed>
      */
-    public function dataPayementsStudents(array $students, Period $period): array
+    public function dataPaymentsStudents(array $students, Period $period): array
     {
         $list = self::getDataListDefault();
 
@@ -67,47 +65,6 @@ class StudentManager
         return $list;
     }
 
-    public function synchronize(int $limit): ResponseModel
-    {
-        $response = new ResponseModel();
-
-        $students = $this->repository->findBy(['person' => null]);
-
-        if (empty($students)) {
-            return $response->setSuccess(true)
-                ->setMessage('Nothing data to treat')
-            ;
-        }
-
-        foreach ($students as $student) {
-            $person = (new Person())
-                ->setAuthor($student->getAuthor())
-                ->setEnable($student->getEnable())
-                ->setAddress($student->getAddress())
-                ->setBirthday($student->getBirthday())
-                ->setBirthplace($student->getBirthplace())
-                ->setCity($student->getTown())
-                ->setEmail($student->getEmail())
-                ->setForname($student->getForname())
-                ->setName($student->getName())
-                ->setGender($student->getGender())
-                ->setImage($student->getImage())
-                ->setPhone($student->getPhone())
-                ->setZip($student->getPostcode())
-                ->setCreatedAt($student->getCreatedAt())
-            ;
-
-            $student->setPerson($person);
-            $this->entityManager->persist($person);
-            $this->entityManager->persist($student);
-        }
-        $this->entityManager->flush();
-
-        return $response->setSuccess(true)
-            ->setMessage('The synchronization had successfully')
-        ;
-    }
-
     /**
      * @throws AppException
      */
@@ -142,7 +99,7 @@ class StudentManager
     }
 
     /**
-     * @return array<string, mixed[]>
+     * @return array<string, array<string, mixed>>
      */
     private static function getDataListDefault(): array
     {
