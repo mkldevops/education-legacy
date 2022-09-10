@@ -33,8 +33,6 @@ class StudentManager
             $data['percentage'] = 0;
             $studentId = $student['id'];
 
-            579 === $studentId && dd($data);
-
             // if student is desactivated
             if (empty($data['student']['enable'])) {
                 $data['amountTotal'] = (float) $data['paymentTotal'];
