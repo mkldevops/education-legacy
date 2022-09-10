@@ -379,7 +379,7 @@ class OperationController extends AbstractController
     {
         $form = $this->createForm(OperationType::class, $operation, [
             'action' => $this->generateUrl('app_operation_update', ['id' => $operation->getId()]),
-            'method' => Request::METHOD_PUT,
+            'method' => Request::METHOD_POST,
         ]);
 
         $form->add('submit', SubmitType::class, ['label' => 'Update']);

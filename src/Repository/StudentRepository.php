@@ -140,6 +140,8 @@ class StudentRepository extends ServiceEntityRepository
             ->setParameter('period', $period)
         ;
 
+        dump($qb->getQuery()->getSQL());
+
         return $qb->getQuery()->getArrayResult();
     }
 
