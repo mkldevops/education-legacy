@@ -6,16 +6,8 @@
     {{ title }} - {{ parent() }}
 {% endblock %}
 
-{% set breadcrumbs = { ('package_student_period.breadcrumb'|trans) : path('app_package_student_period_index')}|merge(breadcrumbs|default({})) %}
-
 {% block menu_action %}
 
-    <li class="{%if 'package_student_period' == app.request.attributes.get('_route')%} active{% endif %}">
-        <a href="{{ path('app_package_student_period_index') }}">
-            <span class="fa fa-list"></span>
-            {% trans %}List{% endtrans %}
-        </a>
-    </li>
     <li class="{%if 'app_package_student_period_new' == app.request.attributes.get('_route')%} active{% endif %}">
         <a href="{{ path('app_package_student_period_new') }}">
             <span class="fa fa-plus"></span>

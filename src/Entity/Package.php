@@ -12,6 +12,7 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Table
@@ -29,7 +30,9 @@ class Package
     /**
      * @ORM\ManyToOne(targetEntity=School::class, inversedBy="packages", cascade={"persist"})
      */
+    #[Ignore]
     protected ?School $school = null;
+
     /**
      * @ORM\Column(type="float")
      */

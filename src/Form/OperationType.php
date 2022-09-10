@@ -59,7 +59,7 @@ class OperationType extends AbstractType
             ->add('date', DateType::class, [
                 'label' => 'form.date',
                 'widget' => 'single_text',
-                'empty_data' => new DateTime(),
+                'data' => new DateTime(),
             ])
             ->add('operationGender', EntityType::class, [
                 'label' => 'form.operation_gender',
