@@ -16,6 +16,7 @@ use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(fields={"package", "period", "student"})})
@@ -46,24 +47,30 @@ class PackageStudentPeriod
     /**
      * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="packagePeriods", cascade={"persist", "remove"})
      */
+    #[Ignore]
     protected ?Student $student = null;
+
     /**
      * @ORM\ManyToOne(targetEntity=Period::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Period $period = null;
+
     /**
      * @ORM\Column(type="datetime")
      */
     private ?DateTimeInterface $dateExpire;
+
     /**
      * @ORM\Column(type="float")
      */
     private float $discount = 0;
+
     /**
      * @ORM\Column(type="boolean")
      */
     private bool $paid = false;
+
     /**
      * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="packageStudentPeriod")
      */

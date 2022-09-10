@@ -9,11 +9,9 @@ use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Exception\PeriodException;
 use App\Form\PackageStudentPeriodType;
-use App\Manager\PeriodManager;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Manager\PackageStudentPeriodManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,35 +20,31 @@ use Symfony\Component\Routing\Annotation\Route;
 class PackageStudentPeriodApiController extends AbstractController
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private EntityManagerInterface $entityManager,
-        private PeriodManager $periodManager,
+        private readonly LoggerInterface $logger,
+        private readonly PackageStudentPeriodManager $packageStudentPeriodManager,
     ) {
     }
 
     /**
      * @throws AppException
-     * @throws InvalidArgumentException
      * @throws PeriodException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        $packageStudentPeriod = (new PackageStudentPeriod())
-            ->setPeriod($this->periodManager->getEntityPeriodOnSession())
-            ->setDateExpire($this->periodManager->getPeriodsOnSession()->getEnd())
-        ;
+        $packageStudentPeriod = new PackageStudentPeriod();
 
-        $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
-            ->handleRequest($request)
-        ;
+        $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)->handleRequest($request);
 
-        $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
-        $this->persistData($packageStudentPeriod, $form);
+        $this->packageStudentPeriodManager->add($packageStudentPeriod);
 
         $this->addFlash('success', 'The package of student has been added.');
 
-        return $this->json($packageStudentPeriod);
+        return $this->json([
+            'result' => true,
+            'package_student_period_id' => $packageStudentPeriod->getId(),
+        ]);
     }
 
     /**
@@ -64,22 +58,6 @@ class PackageStudentPeriodApiController extends AbstractController
             ->handleRequest($request)
         ;
 
-        $this->persistData($packageStudentPeriod, $form);
-
-        $this->addFlash('success', sprintf(
-            'The package of student %s has been updated.',
-            $packageStudentPeriod->getStudent()
-        ));
-
-        return $this->json($packageStudentPeriod);
-    }
-
-    /**
-     * @throws AppException
-     */
-    private function persistData(PackageStudentPeriod $packageStudentPeriod, FormInterface $form): void
-    {
-        $this->logger->debug(__METHOD__, ['packageStudentPeriod' => $packageStudentPeriod]);
         if (!$form->isSubmitted()) {
             throw new AppException('The form is not submitted ');
         }
@@ -88,11 +66,16 @@ class PackageStudentPeriodApiController extends AbstractController
             throw new AppException('The form is not valid '.$form->getErrors());
         }
 
-        $packageStudentPeriod
-            ->setAuthor($this->getUser())
-        ;
+        $this->packageStudentPeriodManager->edit($packageStudentPeriod);
 
-        $this->entityManager->persist($packageStudentPeriod);
-        $this->entityManager->flush();
+        $this->addFlash('success', sprintf(
+            'The package of student %s has been updated.',
+            $packageStudentPeriod->getStudent()
+        ));
+
+        return $this->json([
+            'result' => true,
+            'package_student_period_id' => $packageStudentPeriod->getId(),
+        ]);
     }
 }

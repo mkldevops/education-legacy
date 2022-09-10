@@ -47,13 +47,11 @@
                         <!-- List payment to current package -->
                         {% include 'package_student_period/payments.html.twig' with { 'payments' : packagePeriod.payments } %}
 
-                        <div class="panel-footer text-center">
-                            {% if packagePeriod.getUnpaid > 0 %}
-                                <a href="#" class="btn btn-primary btn-xs btn-payment-package" data-toggle="modal" data-target="#payment-package-form-{{ packagePeriod.id }}"> Réaliser un paiement</a>
-                            {% else %}
+                        {% if packagePeriod.getUnpaid <= 0 %}
+                            <div class="panel-footer text-center">
                                 <strong class="text-success"><span class="fa fa-ok"></span> {{ 'package_paid'|trans }}</strong>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </div>
 
