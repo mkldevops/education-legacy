@@ -28,7 +28,7 @@ COPY ./ /var/www/html
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/apache.conf /etc/apache2/conf-available/z-app.conf
 
-#RUN make install
+RUN make install
 
 RUN a2enmod rewrite remoteip && \
     a2enconf z-app
