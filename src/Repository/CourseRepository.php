@@ -58,15 +58,13 @@ class CourseRepository extends ServiceEntityRepository
     /**
      * @return Course[]
      */
-    public function getCourseOfClass(ClassPeriod $classPeriod, \DateTime $form, int $maxResult, int $offset): array
+    public function getCourseOfClass(ClassPeriod $classPeriod, \DateTimeInterface $form, int $maxResult, int $offset): array
     {
-        $form->sub(new DateInterval('P1D'));
-
         return $this->createQueryBuilder('c')
             ->where('c.classPeriod = :classPeriod')
             ->setParameter('classPeriod', $classPeriod)
             ->andWhere('c.date >= :from')
-            ->setParameter('from', $form)
+            ->setParameter('from', \DateTime::createFromInterface($form)->sub(new DateInterval('P1D')))
             ->setMaxResults($maxResult)
             ->setFirstResult($offset)
             ->getQuery()

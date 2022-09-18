@@ -7,6 +7,7 @@ namespace App\Manager;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Student;
+use App\Entity\User;
 use App\Exception\AppException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -86,7 +87,7 @@ class StudentManager
         $packageStudentPeriod->setDateExpire($packageStudentPeriod->getPeriod()?->getEnd());
         $packageStudentPeriod->setAmount($packageStudentPeriod->getPackage()?->getPrice());
 
-        if (($user = $this->security->getUser()) !== null) {
+        if (($user = $this->security->getUser()) instanceof User) {
             $packageStudentPeriod->setAuthor($user);
         }
 

@@ -229,7 +229,7 @@ class TransferManager
         $operation->setComment($this->accountSlip->getComment())
             ->setName($name)
             ->setAmount($this->accountSlip->getAmount($type))
-            ->setDate($this->accountSlip->getDate())
+            ->setDate(\DateTime::createFromInterface($this->accountSlip->getDate()))
             ->setReference($this->accountSlip->getReference())
             ->setOperationGender($gender)
             ->setAuthor($this->accountSlip->getAuthor())

@@ -179,8 +179,8 @@ class ClassSchoolController extends AbstractController
     public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager): RedirectResponse
     {
         if (Request::METHOD_POST === $request->getMethod()) {
-            /** @var int[] $students */
-            $students = $request->request->get('students', []);
+            /** @var ?int[] $students */
+            $students = $request->request->get('students', null);
             $result = $schoolManager->addStudentToClass($students, $classPeriod);
 
             if ($result) {

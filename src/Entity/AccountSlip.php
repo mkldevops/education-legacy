@@ -61,7 +61,7 @@ class AccountSlip
     /**
      * @ORM\Column(type="datetime")
      */
-    protected DateTime $date;
+    protected ?\DateTimeInterface $date = null;
 
     /**
      * @ORM\Column(type="string", length=20)
@@ -105,12 +105,12 @@ class AccountSlip
         ];
     }
 
-    public function getDate(): DateTime
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(DateTime $date): self
+    public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
 

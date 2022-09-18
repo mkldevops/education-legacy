@@ -5,23 +5,18 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\AccountStatement;
-use App\Services\AbstractFullService;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class AccountStatementListener extends AbstractFullService
+class AccountStatementListener
 {
     public function preUpdate(AccountStatement $accountStatement, LifecycleEventArgs $args): void
     {
-        $this->setEntityManager($args->getObjectManager())
-            ->calculate($accountStatement)
-        ;
+        $this->calculate($accountStatement);
     }
 
     public function prePersist(AccountStatement $accountStatement, LifecycleEventArgs $args): void
     {
-        $this->setEntityManager($args->getObjectManager())
-            ->calculate($accountStatement)
-        ;
+        $this->calculate($accountStatement);
     }
 
     private function calculate(AccountStatement $accountStatement): void

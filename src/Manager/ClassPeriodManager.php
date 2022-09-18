@@ -31,14 +31,14 @@ use Symfony\Component\Security\Core\Security;
 class ClassPeriodManager implements ClassPeriodManagerInterface
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private EntityManagerInterface $entityManager,
-        private ClassPeriodRepository $classPeriodRepository,
-        private ClassPeriodStudentRepository $classPeriodStudentRepository,
-        private CourseRepository $courseRepository,
-        private StudentRepository $studentRepository,
-        private PackageStudentPeriodRepository $packageStudentPeriodRepository,
-        private Security $security,
+        private readonly LoggerInterface $logger,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ClassPeriodRepository $classPeriodRepository,
+        private readonly ClassPeriodStudentRepository $classPeriodStudentRepository,
+        private readonly CourseRepository $courseRepository,
+        private readonly StudentRepository $studentRepository,
+        private readonly PackageStudentPeriodRepository $packageStudentPeriodRepository,
+        private readonly Security $security,
     ) {
     }
 
