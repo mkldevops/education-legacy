@@ -8,6 +8,7 @@ use App\Entity\Student;
 use App\Exception\AppException;
 use App\Form\StudentType;
 use App\Manager\SchoolManager;
+use App\Model\StudentModel;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,10 +22,10 @@ use Symfony\Component\Security\Core\Security;
 class StudentApiController extends AbstractController
 {
     public function __construct(
-        private Security $security,
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger,
-        private SchoolManager $schoolManager,
+        private readonly Security $security,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly SchoolManager $schoolManager,
     ) {
     }
 
@@ -43,7 +44,7 @@ class StudentApiController extends AbstractController
 
         $this->addFlash('success', 'The student has been added.');
 
-        return $this->json($student);
+        return $this->json(StudentModel::fromStudent($student));
     }
 
     /**
@@ -62,7 +63,7 @@ class StudentApiController extends AbstractController
 
         $this->addFlash('success', sprintf('The student %s has been updated.', $student->getNameComplete()));
 
-        return $this->json($student);
+        return $this->json(StudentModel::fromStudent($student));
     }
 
     /**

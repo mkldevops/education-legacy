@@ -15,6 +15,7 @@ stages:
     - deploy
 
 check_vulnerabilities:
+    tags : [fardus]
     stage: security
     needs : []
     script :
@@ -23,6 +24,7 @@ check_vulnerabilities:
     allow_failure: false
 
 lint:
+    tags : [fardus]
     stage: coding_standards
     needs : []
     script :
@@ -32,6 +34,7 @@ lint:
         - make doctrine-validate c="--env=test"
 
 phpstan:
+    tags : [fardus]
     needs: []
     stage: coding_standards
     script:
@@ -39,6 +42,7 @@ phpstan:
     allow_failure: false
 
 php-cs-fixer:
+    tags : [fardus]
     needs: []
     stage: coding_standards
     script:
@@ -46,6 +50,7 @@ php-cs-fixer:
     allow_failure: false
 
 phpunit:
+    tags : [fardus]
     needs: []
     services:
         - mysql:8.0
@@ -56,7 +61,6 @@ phpunit:
         MYSQL_HOST: mysql
     script:
         - symfony console debug:dotenv --env=test
-        - echo $DATABASE_URL
         - make test-report
     allow_failure: true
 
@@ -66,13 +70,14 @@ phpunit:
             junit: report.xml
 
 .deploy:
-  image : alpine
-  stage: deploy
-  before_script :
-    - apk add --no-cache openssh-client ca-certificates bash
-    - mkdir -p -m 700 ~/.ssh
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+    tags : [fardus]
+    image : alpine
+    stage: deploy
+    before_script :
+        - apk add --no-cache openssh-client ca-certificates bash
+        - mkdir -p -m 700 ~/.ssh
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
 deploy_prod:
     extends : .deploy
@@ -83,4 +88,4 @@ deploy_prod:
     script:
         - ssh fardus@$IP_PROD "cd /var/www/$REPO && git checkout master && git pull origin master --rebase && make build-up && exit"
     only:
-        - main
+        - production
