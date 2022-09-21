@@ -13,7 +13,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -22,9 +22,9 @@ class PackageStudentPeriodType extends AbstractType
     protected School $school;
 
     #[Required]
-    public function setSchoolBySession(SessionInterface $session): void
+    public function setSchoolBySession(RequestStack $requestStack): void
     {
-        $this->school = $session->get('school')->selected;
+        $this->school = $requestStack->getSession()->get('school')->selected;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

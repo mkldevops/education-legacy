@@ -15,8 +15,8 @@ use App\Manager\SchoolManager;
 class SessionFetcher implements SessionFetcherInterface
 {
     public function __construct(
-        private PeriodManager $periodManager,
-        private SchoolManager $schoolManager,
+        private readonly PeriodManager $periodManager,
+        private readonly SchoolManager $schoolManager,
     ) {
     }
 

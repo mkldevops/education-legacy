@@ -57,7 +57,7 @@ class StudentCrudController extends AbstractCrudController
         yield AssociationField::new('person')->hideOnIndex();
         yield AssociationField::new('classPeriods');
         yield AssociationField::new('packagePeriods');
-        yield AssociationField::new('courses');
+        yield AssociationField::new('appealCourses');
         yield AssociationField::new('comments')->hideOnIndex();
         yield AssociationField::new('author');
         yield DateTimeField::new('createdAt')->onlyOnDetail();
