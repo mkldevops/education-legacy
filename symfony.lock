@@ -11,17 +11,8 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
-    "clue/stdio-react": {
-        "version": "v2.5.0"
-    },
     "clue/stream-filter": {
         "version": "v1.6.0"
-    },
-    "clue/term-react": {
-        "version": "v1.3.0"
-    },
-    "clue/utf8-react": {
-        "version": "v1.2.0"
     },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.1"
@@ -164,9 +155,6 @@
     "endroid/qr-code-bundle": {
         "version": "4.0.7"
     },
-    "evenement/evenement": {
-        "version": "v3.0.1"
-    },
     "fakerphp/faker": {
         "version": "v1.19.0"
     },
@@ -241,9 +229,6 @@
     },
     "jms/metadata": {
         "version": "2.6.1"
-    },
-    "jolicode/jolinotif": {
-        "version": "v2.4.0"
     },
     "laminas/laminas-code": {
         "version": "4.5.1"
@@ -385,12 +370,6 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
-    "react/event-loop": {
-        "version": "v1.2.0"
-    },
-    "react/stream": {
-        "version": "v1.2.0"
-    },
     "rector/rector": {
         "version": "0.12.17"
     },
@@ -474,9 +453,6 @@
         "files": [
             "config/packages/sentry.yaml"
         ]
-    },
-    "spatie/phpunit-watcher": {
-        "version": "1.23.6"
     },
     "stof/doctrine-extensions-bundle": {
         "version": "1.7",
@@ -756,9 +732,6 @@
     "symfony/security-csrf": {
         "version": "v5.4.3"
     },
-    "symfony/security-guard": {
-        "version": "v5.4.3"
-    },
     "symfony/security-http": {
         "version": "v5.4.5"
     },
@@ -843,6 +816,25 @@
             "config/routes/web_profiler.yaml"
         ]
     },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.15",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "51fec8b86251b9bfc126ebc1827c9a02fa81ee81"
+        },
+        "files": [
+            "assets/app.js",
+            "assets/bootstrap.js",
+            "assets/controllers.json",
+            "assets/controllers/hello_controller.js",
+            "assets/styles/app.css",
+            "config/packages/webpack_encore.yaml",
+            "package.json",
+            "webpack.config.js"
+        ]
+    },
     "symfony/yaml": {
         "version": "v5.4.3"
     },
@@ -884,8 +876,5 @@
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v2.0.0"
-    },
-    "yosymfony/resource-watcher": {
-        "version": "v3.0.0"
     }
 }

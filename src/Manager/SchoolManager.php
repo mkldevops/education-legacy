@@ -9,19 +9,18 @@ use App\Entity\User;
 use App\Exception\SchoolException;
 use App\Model\SchoolList;
 use App\Repository\SchoolRepository;
+use App\Traits\RequestStackTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SchoolManager implements SchoolManagerInterface
 {
+    use RequestStackTrait;
+
     public function __construct(
         private readonly SchoolRepository $repository,
-        private readonly SessionInterface $session,
-        private readonly FlashBagInterface $flashBag,
         private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
@@ -64,11 +63,11 @@ class SchoolManager implements SchoolManagerInterface
      */
     public function getSchoolOnSession(): School
     {
-        if (!$this->session->has('school') || !$this->session->get('school') instanceof SchoolList) {
+        if (!$this->requestStack->getSession()->has('school') || !$this->requestStack->getSession()->get('school') instanceof SchoolList) {
             $this->setSchoolsOnSession();
         }
 
-        $schoolList = $this->session->get('school');
+        $schoolList = $this->requestStack->getSession()->get('school');
         if (!$schoolList instanceof SchoolList) {
             throw new SchoolException('Error on session school list');
         }
@@ -93,7 +92,7 @@ class SchoolManager implements SchoolManagerInterface
                 $this->entityManager->flush();
             } else {
                 $msg = $this->translator->trans('school.not_found', [], 'user');
-                $this->flashBag->add('error', $msg);
+                $this->getFlashBag()->add('error', $msg);
                 $this->logger->error(__FUNCTION__.' Not found school');
 
                 return false;
@@ -102,7 +101,7 @@ class SchoolManager implements SchoolManagerInterface
 
         /** @var School $school */
         $school = $user->getSchoolAccessRight()->current();
-        $this->session->set('school', new SchoolList($user->getSchoolAccessRight()->toArray(), $school));
+        $this->requestStack->getSession()->set('school', new SchoolList($user->getSchoolAccessRight()->toArray(), $school));
 
         return true;
     }
@@ -112,13 +111,13 @@ class SchoolManager implements SchoolManagerInterface
      */
     public function switch(School $school): void
     {
-        $schoolList = $this->session->get('school');
+        $schoolList = $this->getSession()->get('school');
         if (!$schoolList instanceof SchoolList) {
             throw new SchoolException('Error on session school list');
         }
 
         $schoolList->selected = $school;
-        $this->session->set('school', $schoolList);
-        $this->session->save();
+        $this->getSession()->set('school', $schoolList);
+        $this->getSession()->save();
     }
 }

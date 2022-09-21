@@ -135,11 +135,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSalt(): string|null
-    {
-        return null;
-    }
-
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
@@ -209,5 +204,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = $plainPassword;
 
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
     }
 }

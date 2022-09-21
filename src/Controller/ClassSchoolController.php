@@ -134,9 +134,6 @@ class ClassSchoolController extends AbstractController
         ]);
     }
 
-    /**
-     * Deletes a classSchool entity.
-     */
     #[Route(path: '/delete/{id}', name: 'app_class_school_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, ClassSchool $classSchool, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
@@ -158,9 +155,6 @@ class ClassSchoolController extends AbstractController
         ]);
     }
 
-    /**
-     * Redirect the the list URL with the search parameter.
-     */
     #[Route(path: '/search', name: 'app_class_school_search', methods: ['GET'])]
     public function search(Request $request): RedirectResponse
     {
@@ -228,11 +222,6 @@ class ClassSchoolController extends AbstractController
         ]);
     }
 
-    /**
-     * Creates a form to create a classSchool entity.
-     *
-     * @param ClassSchool $classSchool The entity
-     */
     private function createCreateForm(ClassSchool $classSchool): FormInterface
     {
         $form = $this->createForm(ClassSchoolType::class, $classSchool, [

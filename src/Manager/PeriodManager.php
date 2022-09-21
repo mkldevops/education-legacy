@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PeriodManager implements PeriodManagerInterface
 {
     public function __construct(
-        private PeriodRepository $repository,
-        private RequestStack $requestStack
+        private readonly PeriodRepository $repository,
+        private readonly RequestStack $requestStack
     ) {
     }
 

@@ -23,15 +23,15 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
 
 class OperationType extends AbstractType
 {
     public function __construct(
-        private SessionInterface $session,
-        private Security $security
+        private readonly RequestStack $requestStack,
+        private readonly Security $security
     ) {
     }
 
@@ -44,7 +44,7 @@ class OperationType extends AbstractType
                 'choice_label' => 'name',
                 'query_builder' => function (AccountRepository $er): QueryBuilder {
                     /** @var SchoolList $schoolList */
-                    $schoolList = $this->session->get('school');
+                    $schoolList = $this->requestStack->getSession()->get('school');
                     if (null === $schoolList->selected) {
                         throw new AppException('School selected not set');
                     }

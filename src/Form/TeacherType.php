@@ -13,21 +13,19 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class TeacherType.
- */
 class TeacherType extends AbstractType
 {
-    protected ?School $school = null;
-    protected ?Period $period = null;
+    protected readonly School $school;
+    protected readonly Period $period;
 
-    public function __construct(SessionInterface $session)
-    {
-        $this->period = $session->get('period')->selected;
-        $this->school = $session->get('school');
+    public function __construct(
+        RequestStack $requestStack,
+    ) {
+        $this->period = $requestStack->getSession()->get('period')->selected;
+        $this->school = $requestStack->getSession()->get('school');
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
