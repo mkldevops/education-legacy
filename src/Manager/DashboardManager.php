@@ -30,7 +30,7 @@ class DashboardManager extends AbstractFullService
     {
         $file = __DIR__.'/../../config/menu.yml';
         if (!is_file($file)) {
-            throw new AppException("No such file or directory : {$file}");
+            throw new AppException(sprintf('No such file or directory : %s', $file));
         }
 
         // extract yaml file menu
@@ -102,10 +102,10 @@ class DashboardManager extends AbstractFullService
             yield 'person' => $this->personRepository->search($search);
             yield 'family' => $this->familyRepository->search($search);
             yield 'document' => $this->documentRepository->search($search);
-        } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->logger->error(__METHOD__.' '.$exception->getMessage());
 
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
     }
 }

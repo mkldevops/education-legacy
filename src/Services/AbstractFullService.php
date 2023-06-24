@@ -26,9 +26,15 @@ abstract class AbstractFullService
     #[Required]
     public function setUserWithToken(Security $security): void
     {
-        if (($user = $security->getUser()) && $user instanceof User) {
-            $this->user = $user;
+        if (($user = $security->getUser()) === null) {
+            return;
         }
+
+        if (!$user instanceof User) {
+            return;
+        }
+
+        $this->user = $user;
     }
 
     public function getUser(): ?User

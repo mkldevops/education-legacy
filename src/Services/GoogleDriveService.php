@@ -41,10 +41,10 @@ class GoogleDriveService extends GoogleService
 
                 throw new AppException($msg);
             }
-        } catch (Exception $e) {
-            $this->logger->error(__METHOD__.' '.$e->getMessage(), ['params' => $params]);
+        } catch (Exception $exception) {
+            $this->logger->error(__METHOD__.' '.$exception->getMessage(), ['params' => $params]);
 
-            throw new AppException($e->getMessage(), $e->getCode(), $e);
+            throw new AppException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $files;

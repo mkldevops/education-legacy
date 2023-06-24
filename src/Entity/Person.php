@@ -39,7 +39,14 @@ class Person
     use SoftDeleteableEntity;
     use TimestampableEntity;
     use ZipEntityTrait;
+    /**
+     * @var string
+     */
     public const GENDER_MALE = 'male';
+
+    /**
+     * @var string
+     */
     public const GENDER_FEMALE = 'female';
 
     /**
@@ -120,12 +127,11 @@ class Person
 
     public function getAge(): ?int
     {
-        $age = null;
         if ($this->birthday instanceof DateTimeInterface) {
-            $age = $this->birthday->diff(new DateTime())->y;
+            return $this->birthday->diff(new DateTime())->y;
         }
 
-        return $age;
+        return null;
     }
 
     public function getId(): ?int

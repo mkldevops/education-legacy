@@ -8,6 +8,7 @@ services:
         env_file:
             - ./docker/.env.docker
         environment:
+            PHP_CS_FIXER_IGNORE_ENV : true
             APP_ENV : prod
             DATABASE_NAME : education_app
             DATABASE_PASSWORD : ${PROJECT_DB_PASSWORD:-db_password}
@@ -17,23 +18,23 @@ services:
             - ./docker/app.png:/var/www/html/public/img/logo-custom.png
             - ./public/uploads:/var/www/html/public/uploads
 
-    nice:
-        image: app
-        container_name: "${PROJECT_NAME:-education}-nice"
-        restart: unless-stopped
-        env_file:
-            - ./docker/.env.docker
-        depends_on:
-            - app
-        environment:
-            APP_ENV : dev
-            DATABASE_NAME : education_nice
-            DATABASE_PASSWORD : ${PROJECT_DB_PASSWORD:-db_password}
-        ports:
-            - "${PROJECT_NICE_PORT:-8802}:80"
-        volumes:
-            - ./docker/app.png:/var/www/html/public/img/logo-custom.png
-            - ./public/uploads:/var/www/html/public/uploads
+#    nice:
+#        image: app
+#        container_name: "${PROJECT_NAME:-education}-nice"
+#        restart: unless-stopped
+#        env_file:
+#            - ./docker/.env.docker
+#        depends_on:
+#            - app
+#        environment:
+#            APP_ENV : dev
+#            DATABASE_NAME : education_nice
+#            DATABASE_PASSWORD : ${PROJECT_DB_PASSWORD:-db_password}
+#        ports:
+#            - "${PROJECT_NICE_PORT:-8802}:80"
+#        volumes:
+#            - ./docker/app.png:/var/www/html/public/img/logo-custom.png
+#            - ./public/uploads:/var/www/html/public/uploads
 
     db:
         image: mysql:latest

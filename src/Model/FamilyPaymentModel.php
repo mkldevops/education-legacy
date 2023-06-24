@@ -11,7 +11,9 @@ use App\Exception\InvalidArgumentException;
 class FamilyPaymentModel
 {
     public float $toPay = 0.00;
+
     public float $toDue = 0.00;
+
     public array $payments = [];
 
     /**

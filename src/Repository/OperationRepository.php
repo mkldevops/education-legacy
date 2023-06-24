@@ -113,7 +113,7 @@ class OperationRepository extends ServiceEntityRepository
                 ->getSingleResult(Query::HYDRATE_ARRAY)
             ;
         } catch (NoResultException|NonUniqueResultException $e) {
-            throw new AppException(sprintf('%s Error on query', __FUNCTION__), (int) $e->getCode(), $e);
+            throw new AppException(sprintf('%s Error on query', __FUNCTION__), $e->getCode(), $e);
         }
 
         return (int) $result['nbOperations'];

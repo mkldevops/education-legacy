@@ -60,10 +60,10 @@ class OperationManager
 
         try {
             $operation = $this->repository->findOneBy(['uniqueId' => $uniqueId]);
-        } catch (Exception $e) {
-            $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->logger->error(__FUNCTION__.' '.$exception->getMessage());
 
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         return $operation;

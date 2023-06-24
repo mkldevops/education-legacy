@@ -52,7 +52,11 @@ class ClassPeriodStudent
 
     public function isActive(): bool
     {
-        return $this->getEnd()?->getTimestamp() < time() && $this->getEnable();
+        if ($this->getEnd()?->getTimestamp() >= time()) {
+            return false;
+        }
+
+        return $this->getEnable();
     }
 
     public function getEnd(): ?DateTimeInterface

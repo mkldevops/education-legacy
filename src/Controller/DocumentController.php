@@ -145,8 +145,8 @@ class DocumentController extends AbstractController
             $response->data = $documentRepository
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0))
             ;
-        } catch (Exception $e) {
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+        } catch (Exception $exception) {
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         return new JsonResponse($response);
@@ -174,13 +174,13 @@ class DocumentController extends AbstractController
             $entityManager->flush();
 
             return $this->json(['upload' => true, 'document' => $document->getInfos(), 'success' => true]);
-        } catch (Exception $e) {
-            $documentManager->getLogger()->error($e->getMessage(), [
-                'class' => $e::class,
-                'trace' => $e->getTraceAsString(),
+        } catch (Exception $exception) {
+            $documentManager->getLogger()->error($exception->getMessage(), [
+                'class' => $exception::class,
+                'trace' => $exception->getTraceAsString(),
             ]);
 
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
     }
 

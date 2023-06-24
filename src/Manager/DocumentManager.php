@@ -12,8 +12,19 @@ use ImagickException;
 
 class DocumentManager extends AbstractFullService
 {
+    /**
+     * @var string
+     */
     public const IMAGE = 'image';
+
+    /**
+     * @var string
+     */
     public const PNG = 'png';
+
+    /**
+     * @var string
+     */
     public const PDF = 'pdf';
 
     private static string $pathUploads = 'uploads/documents';
@@ -33,6 +44,7 @@ class DocumentManager extends AbstractFullService
             $person->setImage(null);
             $this->entityManager->persist($person);
         }
+
         $this->entityManager->flush();
 
         // Remove all documents account statement linked
@@ -174,8 +186,8 @@ class DocumentManager extends AbstractFullService
             }
 
             $img->clear();
-        } catch (ImagickException $exception) {
-            $error = $exception->getMessage();
+        } catch (ImagickException $imagickException) {
+            $error = $imagickException->getMessage();
         }
 
         return ['filepath' => $filepath, 'preview' => $preview, 'thumb' => $thumb, 'error' => $error];

@@ -45,11 +45,13 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
         if (($user = $this->security->getUser()) !== null) {
             $operation->setPublisher($user);
         }
-        if ($typeOperation = $this->typeOperationRepository->findOneBy([
+
+        if (($typeOperation = $this->typeOperationRepository->findOneBy([
             'code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT,
-        ])) {
+        ])) !== null) {
             $operation->setTypeOperation($typeOperation);
         }
+
         $operation->setName(sprintf('[%s] %s', $period->__toString(), $family->__toString()));
         $this->entityManager->persist($operation);
         $this->entityManager->flush();

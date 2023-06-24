@@ -31,32 +31,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
+    /**
+     * @var int
+     */
     public const USER_ROBOT = 0;
+
     /**
      * @ORM\ManyToMany(targetEntity=School::class)
      */
     protected Collection $schoolAccessRight;
+
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private ?string $username = null;
+
     /**
      * @ORM\Column(type="json")
      */
     private array $roles = [];
+
     /**
      * @ORM\Column(type="string")
      */
     private string $password;
+
     private ?string $plainPassword = null;
+
     /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $surname = null;
+
     /**
      * @ORM\Column(type="string", nullable=true, unique=true)
      */
     private string $email;
+
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */

@@ -54,10 +54,10 @@ class AccountOFXType extends AbstractType
                 if (!\in_array($file->getMimeType(), $types, true)) {
                     throw new AppException('Is not a file of ofx');
                 }
-            } catch (Exception $e) {
-                $form->get('file')->addError(new FormError($e->getMessage()));
+            } catch (Exception $exception) {
+                $form->get('file')->addError(new FormError($exception->getMessage()));
 
-                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+                throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
             }
         };
 

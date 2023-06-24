@@ -12,6 +12,9 @@ use Symfony\Component\Yaml\Yaml;
 
 abstract class AbstractAppFixtures extends Fixture
 {
+    /**
+     * @var string
+     */
     public const TODEFINE = 'todefine';
 
     /**

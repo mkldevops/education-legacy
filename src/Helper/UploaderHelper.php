@@ -22,7 +22,11 @@ class UploaderHelper implements RuntimeExtensionInterface
 
         // If file is not supported
         $result = ['thumb' => null, 'preview' => null];
-        if (!is_file($filepath) || !$document->isFormat(['pdf', 'image'])) {
+        if (!is_file($filepath)) {
+            return $result;
+        }
+
+        if (!$document->isFormat(['pdf', 'image'])) {
             return $result;
         }
 

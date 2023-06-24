@@ -34,9 +34,24 @@ class Document
     use SchoolEntityTrait;
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
+    /**
+     * @var string
+     */
     public const DIR_FILE = 'original';
+
+    /**
+     * @var string
+     */
     public const DIR_PREVIEW = 'previews';
+
+    /**
+     * @var string
+     */
     public const DIR_THUMB = 'thumbs';
+
+    /**
+     * @var string
+     */
     public const EXT_PNG = 'png';
 
     /**

@@ -31,14 +31,17 @@ class Teacher
      * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="teachers", cascade={"persist", "merge"})
      */
     protected Collection $courses;
+
     /**
      * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist", "merge", "remove"})
      */
     private ?Person $person = null;
+
     /**
      * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
      */
     private ?Grade $grade = null;
+
     /**
      * @ORM\ManyToMany(targetEntity=ClassPeriod::class, inversedBy="teachers", cascade={"persist", "merge"})
      */

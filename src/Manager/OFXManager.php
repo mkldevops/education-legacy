@@ -24,12 +24,25 @@ use Symfony\Component\Security\Core\Security;
 
 class OFXManager
 {
+    /**
+     * @var string
+     */
     public const STATUS_ALREADY = 'already';
+
+    /**
+     * @var string
+     */
     public const STATUS_ADD_OPERATION = 'add_operation';
+
+    /**
+     * @var string
+     */
     public const STATUS_ADD_TRANSFER = 'add_transfer';
 
     private Account $account;
+
     private ?Account $accountTransfer = null;
+
     private array $logs = [];
 
     public function __construct(
@@ -76,6 +89,7 @@ class OFXManager
 
                 $this->transactionToOperation($transaction);
             }
+
             $count += \count($bank->statement->transactions);
         }
 
@@ -171,13 +185,11 @@ class OFXManager
     {
         $text = trim($transaction->name).' '.trim($transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
-
-        $reference = '';
         if (preg_match('#(?<reference>\d+)#', $text, $matches)) {
-            $reference = $matches['reference'];
+            return $matches['reference'];
         }
 
-        return $reference;
+        return '';
     }
 
     /**
@@ -202,7 +214,7 @@ class OFXManager
                 ->setOperationGender($gender)
             ;
 
-            if ($user = $this->security->getUser()) {
+            if (($user = $this->security->getUser()) !== null) {
                 $operation->setAuthor($user)
                     ->setPublisher($user)
                 ;
@@ -213,10 +225,10 @@ class OFXManager
                 $this->entityManager->flush();
                 $this->logger->info(__FUNCTION__.' Operation is saved');
                 $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
-            } catch (Exception $e) {
-                $this->logger->error(__FUNCTION__.' '.$e->getMessage());
+            } catch (Exception $exception) {
+                $this->logger->error(__FUNCTION__.' '.$exception->getMessage());
 
-                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+                throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
             }
         }
     }

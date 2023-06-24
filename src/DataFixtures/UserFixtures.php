@@ -11,6 +11,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends AbstractAppFixtures
 {
+    /**
+     * @var string
+     */
     public const EMAIL = 'h.fahari@gmail.com';
 
     public function __construct(

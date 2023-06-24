@@ -72,6 +72,7 @@ class AdminController extends AbstractController
     {
         $response = new Response();
         $response->setSharedMaxAge(60);
+
         $menus = DashboardManager::generateItemsOfMenu($request->get('route'));
 
         /** @var Person $person */

@@ -113,15 +113,12 @@ class ClassSchool
 
     public function current(Period $period): ?ClassPeriod
     {
-        $current = null;
         foreach ($this->classPeriods as $classPeriod) {
             if ($classPeriod->getPeriod()->getId() === $period->getId()) {
-                $current = $classPeriod;
-
-                break;
+                return $classPeriod;
             }
         }
 
-        return $current;
+        return null;
     }
 }

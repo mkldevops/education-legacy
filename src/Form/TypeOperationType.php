@@ -37,7 +37,7 @@ class TypeOperationType extends AbstractType
             ->add('parent', EntityType::class, [
                 'required' => false,
                 'placeholder' => 'Aucun',
-                'label' => 'Type d\'opération parent',
+                'label' => "Type d'opération parent",
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
                 'query_builder' => fn (TypeOperationRepository $er) => $er->getParents(),

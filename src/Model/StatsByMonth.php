@@ -17,7 +17,9 @@ class StatsByMonth
      * @var DataStats[]
      */
     private array $row = [];
+
     private DataStats $global;
+
     private array $data = [];
 
     public function __construct()

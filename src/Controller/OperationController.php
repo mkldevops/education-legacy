@@ -53,6 +53,7 @@ class OperationController extends AbstractController
         if ($page < 1) {
             $this->redirectToRoute('app_operation_index', ['page' => 1]);
         }
+
         $period = $periodManager->getPeriodsOnSession();
         $school = $this->schoolManager->getSchool();
         $formSearch = $this->createFormBuilder()
@@ -134,10 +135,10 @@ class OperationController extends AbstractController
 
                 return $this->redirect($this->generateUrl('app_operation_show', ['id' => $operation->getId()]));
             }
-        } catch (Exception $e) {
-            $this->addFlash('danger', 'The Operation haven\'t been created. because : '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->addFlash('danger', "The Operation haven't been created. because : ".$exception->getMessage());
 
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         return $this->render('operation/new.html.twig', [
@@ -221,6 +222,7 @@ class OperationController extends AbstractController
         if (!$this->hasStructure($operation)) {
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
+
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $paymentPackageStudents = $operation->getPaymentPackageStudents();
 
@@ -228,13 +230,14 @@ class OperationController extends AbstractController
                 foreach ($paymentPackageStudents as $payment) {
                     $entityManager->remove($payment);
                 }
+
                 $entityManager->flush();
             }
 
             $entityManager->remove($operation);
             $entityManager->flush();
 
-            $this->addFlash('success', 'L\'operation '.$operation->getId().' à été correctement supprimée');
+            $this->addFlash('success', "L'operation ".$operation->getId().' à été correctement supprimée');
 
             return $this->redirect($this->generateUrl('app_operation_index'));
         }
@@ -269,8 +272,8 @@ class OperationController extends AbstractController
 
             $entityManager->persist($operation);
             $entityManager->flush();
-        } catch (Exception $e) {
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+        } catch (Exception $exception) {
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         return new JsonResponse($response);
@@ -334,8 +337,8 @@ class OperationController extends AbstractController
                 ],
                 'operation'
             );
-        } catch (Exception $e) {
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+        } catch (Exception $exception) {
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         return new JsonResponse($response);
@@ -366,7 +369,7 @@ class OperationController extends AbstractController
 
         if (!$operation->hasStructure($this->schoolManager->getSchool()->getStructure())) {
             $this->addFlash('danger', sprintf(
-                'Vous n\'avez pas accès l\'opération numero %s avec cette structure',
+                "Vous n'avez pas accès l'opération numero %s avec cette structure",
                 $operation->getId()
             ));
             $result = false;

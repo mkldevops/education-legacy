@@ -21,11 +21,34 @@ class OperationGender
     use NameEntityTrait;
     use TimestampableEntity;
 
+    /**
+     * @var string
+     */
     public const CODE_CB = 'cb';
+
+    /**
+     * @var string
+     */
     public const CODE_PRLVT = 'prelevement';
+
+    /**
+     * @var string
+     */
     public const CODE_REMISE = 'remise_cheque';
+
+    /**
+     * @var string
+     */
     public const CODE_VIR = 'virement';
+
+    /**
+     * @var string
+     */
     public const CODE_VRSMT = 'versement';
+
+    /**
+     * @var string
+     */
     public const CODE_CHEQUE = 'cheque';
 
     /**

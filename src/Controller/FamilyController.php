@@ -86,6 +86,7 @@ class FamilyController extends AbstractController
         ]);
         $packageStudentPeriod = new PackageStudentPeriod();
         $packageStudentPeriod->setPeriod($periodManager->getEntityPeriodOnSession());
+
         $formPackage = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod, [
             'action' => $this->generateUrl('app_api_package_student_period_create'),
         ]);

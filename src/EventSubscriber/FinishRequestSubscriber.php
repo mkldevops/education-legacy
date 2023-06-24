@@ -40,7 +40,11 @@ class FinishRequestSubscriber implements EventSubscriberInterface
      */
     public function onKernelFinishRequest(FinishRequestEvent $event = null): void
     {
-        if ($this->checked || null === $this->security->getUser()) {
+        if ($this->checked) {
+            return;
+        }
+
+        if (null === $this->security->getUser()) {
             return;
         }
 
@@ -51,8 +55,8 @@ class FinishRequestSubscriber implements EventSubscriberInterface
         foreach ($methods as $method) {
             try {
                 \call_user_func([$this->basicDataChecker, $method->getName()]);
-            } catch (UnexpectedResultException $exception) {
-                $this->getFlashBag()->add('danger', $exception->getMessage());
+            } catch (UnexpectedResultException $unexpectedResultException) {
+                $this->getFlashBag()->add('danger', $unexpectedResultException->getMessage());
 
                 continue;
             }

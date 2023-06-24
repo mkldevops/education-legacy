@@ -90,6 +90,7 @@ class AccountStatementController extends AbstractController
     {
         $accountStatement = new AccountStatement();
         $accountStatement->setAccount($account);
+
         $form = $this->createCreateForm($accountStatement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -118,6 +119,7 @@ class AccountStatementController extends AbstractController
     {
         $accountStatement = new AccountStatement();
         $accountStatement->setAccount($account);
+
         $form = $this->createCreateForm($accountStatement);
 
         return $this->render('account_statement/new.html.twig', [

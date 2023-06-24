@@ -28,7 +28,7 @@ class DocumentFetcher implements DocumentFetcherInterface
 
         $document = $this->documentRepository->find($id);
 
-        if (null === $document) {
+        if (!$document instanceof \App\Entity\Document) {
             throw new NotFoundDataException('Not found document with id '.$id);
         }
 

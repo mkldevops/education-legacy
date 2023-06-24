@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TeacherType extends AbstractType
 {
     protected readonly School $school;
+
     protected readonly Period $period;
 
     public function __construct(

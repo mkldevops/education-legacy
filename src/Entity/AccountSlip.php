@@ -36,11 +36,34 @@ class AccountSlip
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
+    /**
+     * @var string
+     */
     public const GENDER_BANK_TRANSFER = 'virement';
+
+    /**
+     * @var string
+     */
     public const GENDER_PAYMENT_SPECIES = 'versement';
+
+    /**
+     * @var string
+     */
     public const GENDER_REBATE_CHECK = 'remise_cheque';
+
+    /**
+     * @var string
+     */
     public const GENDER_CASH_WITHDRAWAL = 'cash_withdrawal';
+
+    /**
+     * @var string
+     */
     public const TYPE_DEBIT = 'debit';
+
+    /**
+     * @var string
+     */
     public const TYPE_CREDIT = 'credit';
 
     /**

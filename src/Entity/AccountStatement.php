@@ -37,18 +37,24 @@ class AccountStatement
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime|\DateTimeImmutable
      */
-    private \DateTime $begin;
+    private \DateTimeInterface $begin;
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime|\DateTimeImmutable
      */
-    private \DateTime $end;
+    private \DateTimeInterface $end;
 
     /**
      * @ORM\Column(type="date", nullable=true)
+     *
+     * @var \DateTime|\DateTimeImmutable
      */
-    private \DateTime $month;
+    private \DateTimeInterface $month;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -111,24 +117,36 @@ class AccountStatement
         return $this;
     }
 
-    public function getBegin(): \DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable
+     */
+    public function getBegin(): \DateTimeInterface
     {
         return $this->begin;
     }
 
-    public function setBegin(\DateTime $begin): self
+    /**
+     * @param \DateTime|\DateTimeImmutable $begin
+     */
+    public function setBegin(\DateTimeInterface $begin): self
     {
         $this->begin = $begin;
 
         return $this;
     }
 
-    public function getEnd(): \DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable
+     */
+    public function getEnd(): \DateTimeInterface
     {
         return $this->end;
     }
 
-    public function setEnd(\DateTime $end): self
+    /**
+     * @param \DateTime|\DateTimeImmutable $end
+     */
+    public function setEnd(\DateTimeInterface $end): self
     {
         $this->end = $end;
 
@@ -190,7 +208,7 @@ class AccountStatement
     public function calcAmount(): self
     {
         foreach ($this->operations as $operation) {
-            $this->addAmount((float) $operation->getAmount());
+            $this->addAmount($operation->getAmount());
         }
 
         return $this;
@@ -288,12 +306,18 @@ class AccountStatement
         return $this;
     }
 
-    public function getMonth(): \DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable
+     */
+    public function getMonth(): \DateTimeInterface
     {
         return $this->month;
     }
 
-    public function setMonth(\DateTime $month): self
+    /**
+     * @param \DateTime|\DateTimeImmutable $month
+     */
+    public function setMonth(\DateTimeInterface $month): self
     {
         $this->month = $month;
 

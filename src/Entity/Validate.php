@@ -19,11 +19,34 @@ class Validate
     use IdEntityTrait;
     use TimestampableEntityTrait;
 
+    /**
+     * @var string
+     */
     public const TYPE_MUTED = 'muted';
+
+    /**
+     * @var string
+     */
     public const TYPE_PRIMARY = 'primary';
+
+    /**
+     * @var string
+     */
     public const TYPE_INFO = 'info';
+
+    /**
+     * @var string
+     */
     public const TYPE_SUCCESS = 'success';
+
+    /**
+     * @var string
+     */
     public const TYPE_WARNING = 'warning';
+
+    /**
+     * @var string
+     */
     public const TYPE_DANGER = 'danger';
 
     /**

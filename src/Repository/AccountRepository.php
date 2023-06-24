@@ -33,8 +33,11 @@ class AccountRepository extends ServiceEntityRepository
             ->getAccounts($school, $principalOnly, $listAccountId)
             ->getArrayResult()
         ;
+        if (empty($result)) {
+            return [];
+        }
 
-        if (empty($result) || !\is_array($result)) {
+        if (!\is_array($result)) {
             return [];
         }
 

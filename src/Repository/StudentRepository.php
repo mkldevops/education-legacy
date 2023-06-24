@@ -171,8 +171,8 @@ class StudentRepository extends ServiceEntityRepository
             $result = $qb->getQuery()
                 ->getSingleResult(AbstractQuery::HYDRATE_ARRAY)
             ;
-        } catch (ORMException $e) {
-            throw new AppException(sprintf('%s Query failed', __FUNCTION__), previous: $e);
+        } catch (ORMException $ormException) {
+            throw new AppException(sprintf('%s Query failed', __FUNCTION__), previous: $ormException);
         }
 
         return $result;

@@ -46,10 +46,10 @@ class StatisticsManager
                 ;
 
                 $stats->addData($dataStats);
-            } catch (Exception $e) {
-                $this->logger->error(__METHOD__.' '.$e->getMessage(), compact($operation));
+            } catch (Exception $exception) {
+                $this->logger->error(__METHOD__.' '.$exception->getMessage(), compact($operation));
 
-                throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+                throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
             }
         }
 

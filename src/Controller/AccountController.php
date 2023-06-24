@@ -107,6 +107,7 @@ class AccountController extends AbstractController
         if ($account->getStructure()?->getId() !== $schoolManager->getEntitySchool()->getStructure()?->getId()) {
             throw $this->createNotFoundException('Unable to find Account entity.');
         }
+
         $data = ['account' => $account];
         $data['info'] = $operationRepository->getDataOperationsToAccount($account);
         // Check data to accountStatement

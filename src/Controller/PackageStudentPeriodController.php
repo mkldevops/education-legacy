@@ -83,7 +83,7 @@ class PackageStudentPeriodController extends AbstractController
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'The PackageStudentPeriod has been updated.');
 

@@ -121,11 +121,13 @@ class TransferManager
         if (null === $this->accountDebit) {
             throw new AppException('Account of debit is not defined');
         }
+
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit);
 
         if (null === $this->accountCredit) {
             throw new AppException('Account of credit is not defined');
         }
+
         $this->setOperation(AccountSlip::TYPE_CREDIT, $this->accountCredit);
 
         if (null === $this->accountSlip) {
@@ -171,6 +173,7 @@ class TransferManager
         ) {
             throw new AppException('Not found account of accountslip credit');
         }
+
         $this->setAccountCredit($account);
         $this->setOperation(AccountSlip::TYPE_DEBIT, $account);
 
@@ -180,6 +183,7 @@ class TransferManager
         ) {
             throw new AppException('Not found account of accountslip credit');
         }
+
         $this->setAccountDebit($account);
         $this->setOperation(AccountSlip::TYPE_CREDIT, $account);
 
@@ -217,7 +221,7 @@ class TransferManager
 
         $operation = $this->findOperation($type, $account, $this->accountSlip->getUniqueId());
 
-        if (null === $operation) {
+        if (!$operation instanceof \App\Entity\Operation) {
             throw new AppException('Operation not found');
         }
 

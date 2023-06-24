@@ -49,7 +49,7 @@ class PackageRepository extends ServiceEntityRepository
 
     public function getQueryBuilder(string $search, School $school = null): QueryBuilder
     {
-        $search = "%{$search}%";
+        $search = sprintf('%%%s%%', $search);
         $qb = $this->createQueryBuilder('e')
             ->where('e.name LIKE :search')
             ->orWhere('e.description LIKE :search')

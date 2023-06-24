@@ -46,7 +46,7 @@ class CourseController extends AbstractController
                 $status = (int) $listStudentStatus[$studentId]['status'];
             } else {
                 $name = $appealCourse->getStudent()->getNameComplete();
-                $response->error[] = sprintf('%s n\'est pas dans la liste', $name);
+                $response->error[] = sprintf("%s n'est pas dans la liste", $name);
             }
 
             if (null !== $status && $status !== $appealCourse->getStatus()) {
@@ -54,6 +54,7 @@ class CourseController extends AbstractController
                 $entityManager->persist($appealCourse);
             }
         }
+
         $entityManager->flush();
 
         return $this->json($response);

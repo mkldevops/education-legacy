@@ -52,11 +52,11 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $this->logger->debug(__FUNCTION__, ['classPeriod' => $classPeriod]);
 
             return $classPeriod;
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException $nonUniqueResultException) {
             $msg = 'Not found class period with name : '.$name;
-            $this->logger->error($msg, compact('name', 'period', 'school'));
+            $this->logger->error($msg, ['name' => $name, 'period' => $period, 'school' => $school]);
 
-            throw new AppException($msg, (int) $e->getCode(), $e);
+            throw new AppException($msg, $nonUniqueResultException->getCode(), $nonUniqueResultException);
         }
     }
 
@@ -166,7 +166,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                         ->setComment('Change for new class '.$classPeriod->getClassSchool()->getName())
                     ;
                 } else {
-                    $this->logger->debug("don't have a current ClassPeriodStudent", compact('student'));
+                    $this->logger->debug("don't have a current ClassPeriodStudent", ['student' => $student]);
                 }
 
                 $this->persistClassPeriodStudent($classPeriod, $student);

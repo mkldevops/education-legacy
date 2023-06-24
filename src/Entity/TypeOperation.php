@@ -29,21 +29,46 @@ class TypeOperation
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
+    /**
+     * @var string
+     */
     public const TYPE_AMOUNT_NEGATIVE = 'negative';
+
+    /**
+     * @var string
+     */
     public const TYPE_AMOUNT_POSITIVE = 'positive';
+
+    /**
+     * @var string
+     */
     public const TYPE_AMOUNT_MIXTE = 'mixte';
 
+    /**
+     * @var string
+     */
     public const TYPE_CODE_PAYMENT_PACKAGE_STUDENT = 'PPS';
+
+    /**
+     * @var string
+     */
     public const TYPE_CODE_SPLIT = 'SPLIT';
+
+    /**
+     * @var string
+     */
     public const TYPE_CODE_TO_DEFINE = 'TO_DEFINE';
+
     /**
      * @ORM\OneToMany(targetEntity=TypeOperation::class, mappedBy="parent")
      */
     protected Collection $typeOperations;
+
     /**
      * @ORM\ManyToOne(targetEntity=TypeOperation::class, inversedBy="typeOperations")
      */
     private ?TypeOperation $parent = null;
+
     /**
      * @ORM\Column(type="string")
      */

@@ -78,13 +78,17 @@ class Operation
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @var null|\DateTime|\DateTimeImmutable
      */
-    private ?\DateTime $date;
+    private ?\DateTimeInterface $date;
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @var null|\DateTime|\DateTimeImmutable
      */
-    private ?\DateTime $datePlanned;
+    private ?\DateTimeInterface $datePlanned;
 
     /**
      * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
@@ -113,12 +117,18 @@ class Operation
         return (string) $this->name;
     }
 
-    public function getDate(): ?DateTime
+    /**
+     * @return null|\DateTime|\DateTimeImmutable
+     */
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(DateTime $date, bool $force = false): self
+    /**
+     * @param \DateTime|\DateTimeImmutable $date
+     */
+    public function setDate(\DateTimeInterface $date, bool $force = false): self
     {
         $this->date = $date;
         $this->datePlanned = $date;
@@ -130,17 +140,26 @@ class Operation
         return $this;
     }
 
-    public function getValueDate(): ?DateTime
+    /**
+     * @return null|\DateTime|\DateTimeImmutable
+     */
+    public function getValueDate(): ?\DateTimeInterface
     {
         return $this->date ?? $this->datePlanned;
     }
 
-    public function getDatePlanned(): ?DateTime
+    /**
+     * @return null|\DateTime|\DateTimeImmutable
+     */
+    public function getDatePlanned(): ?\DateTimeInterface
     {
         return $this->datePlanned;
     }
 
-    public function setDatePlanned(?DateTime $datePlanned): self
+    /**
+     * @param null|\DateTime|\DateTimeImmutable $datePlanned
+     */
+    public function setDatePlanned(?\DateTimeInterface $datePlanned): self
     {
         $this->datePlanned = $datePlanned;
 

@@ -17,11 +17,20 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class DiplomaService
 {
+    /**
+     * @var string
+     */
     private const FONT_MILLENIA = 'millenia.ttf';
+
+    /**
+     * @var string
+     */
     private const FONT_SIGNATARA = 'signatra.otf';
 
     private File $file;
+
     private string $pathFont;
+
     private string $pathUploads;
 
     public function __construct(
@@ -76,6 +85,7 @@ class DiplomaService
 
         $draw->setFontSize(250);
         $draw->setFont($this->pathFont.\DIRECTORY_SEPARATOR.self::FONT_SIGNATARA);
+
         $x = $image->getImageWidth() / 5.5;
         $y = $image->getImageHeight() / 1.11;
 

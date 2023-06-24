@@ -13,6 +13,7 @@ use Google_Service_Calendar;
 class GoogleCalendarService extends GoogleService
 {
     protected ?DateTimeInterface $timeMin;
+
     protected ?DateTimeInterface $timeMax;
 
     /**
@@ -32,8 +33,8 @@ class GoogleCalendarService extends GoogleService
     {
         try {
             $service = new Google_Service_Calendar($this->getClient());
-        } catch (Exception $e) {
-            throw new AppException($e->getMessage(), (int) $e->getCode(), $e);
+        } catch (Exception $exception) {
+            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         // Print the next 10 events on the user's calendar.

@@ -38,7 +38,7 @@ class FamilyManager implements FamilyManagerInterface
         $students = array_map(static fn (Person $person): ?Student => $person->getStudent(), $persons);
 
         $packages = $this->packageStudentPeriodRepository->findBy(['student' => $students, 'period' => $period]);
-        $this->logger->debug(__METHOD__, compact('packages'));
+        $this->logger->debug(__METHOD__, ['packages' => $packages]);
 
         return $packages;
     }

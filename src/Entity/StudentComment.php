@@ -23,11 +23,30 @@ class StudentComment
     use StudentEntityTrait;
     use TimestampableEntity;
 
+    /**
+     * @var string
+     */
     public const COMMENT_APPRECIATION = 'success';
+
+    /**
+     * @var string
+     */
     public const COMMENT_INFORMATION = 'info';
+
+    /**
+     * @var string
+     */
     public const COMMENT_WARNING = 'warning';
+
+    /**
+     * @var string
+     */
     public const COMMENT_ALERT = 'danger';
-    public ?\DateTime $created = null;
+
+    /**
+     * @var null|\DateTime|\DateTimeImmutable
+     */
+    public ?\DateTimeInterface $created = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="comments", cascade={"persist", "remove"})
@@ -38,10 +57,12 @@ class StudentComment
      * @ORM\Column(type="string")
      */
     private ?string $title;
+
     /**
      * @ORM\Column(type="text")
      */
     private string $text;
+
     /**
      * @ORM\Column(type="string", length=20)
      */

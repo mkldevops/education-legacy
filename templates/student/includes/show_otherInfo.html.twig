@@ -41,7 +41,7 @@
                             {% if family.persons|length > 1 %}
                                 <dt>{{ 'show.other_info.family.children.label'|trans }}</dt>
                                 {% for person in family.persons %}
-                                    {% if person.student.id != student.id  %}
+                                    {% if person.student is not null and person.student.id is same as(student.id) %}
                                         <dd>
                                             {% if person.student is not empty %}
                                                 <a href="{{ path('app_student_show', { id : person.student.id }) }}">{{ person.student }}</a>

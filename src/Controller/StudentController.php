@@ -143,6 +143,7 @@ class StudentController extends AbstractController
                 '%url%' => $this->generateUrl('app_package_new'),
             ], 'school'));
         }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $studentManager->addPackage($student, $packageStudentPeriod);
             $this->addFlash('success', sprintf(
@@ -155,9 +156,10 @@ class StudentController extends AbstractController
                 'id' => $student->getId(),
             ]));
         }
+
         if ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash('warning', sprintf(
-                'l\'élève n\'a pas été enregistré <br /> : %s',
+                "l'élève n'a pas été enregistré <br /> : %s",
                 print_r($form->getErrors(), true)
             ));
         }
@@ -344,7 +346,7 @@ class StudentController extends AbstractController
     {
         $image = $repository->find($request->get('document'));
 
-        if (null === $image) {
+        if (!$image instanceof \App\Entity\Document) {
             throw new AppException('Not found document');
         }
 
@@ -393,6 +395,7 @@ class StudentController extends AbstractController
             if (($user = $this->getUser()) instanceof User) {
                 $studentComment->setAuthor($user);
             }
+
             $studentComment->setStudent($student);
             $studentComment->setEnable(true);
 

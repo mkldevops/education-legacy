@@ -164,7 +164,7 @@ class AccountSlipController extends AbstractController
                     $transferManager->setAccountDebit($editForm->get('accountDebit')->getData());
                 }
 
-                if ($structure = $schoolManager->getEntitySchool()->getStructure()) {
+                if (($structure = $schoolManager->getEntitySchool()->getStructure()) !== null) {
                     $accountSlip->setStructure($structure);
                 }
 
@@ -176,8 +176,8 @@ class AccountSlipController extends AbstractController
                 $this->addFlash('success', 'The AccountSlip has been updated.');
 
                 return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
-            } catch (AppException $e) {
-                $this->addFlash('danger', 'The AccountSlip has not updated : '.$e->getMessage());
+            } catch (AppException $appException) {
+                $this->addFlash('danger', 'The AccountSlip has not updated : '.$appException->getMessage());
             }
         }
 

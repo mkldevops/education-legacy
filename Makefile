@@ -116,7 +116,9 @@ rector: ## Run php-cs-fixer and fix the code.
 	$(DOCKER_EXEC) ./vendor/bin/rector process src
 
 cs-dry: ## Run php-cs-fixer and fix the code.
-	./vendor/bin/php-cs-fixer fix src --dry-run --allow-risky=yes
+	$(DOCKER_EXEC) fix src --dry-run --allow-risky=yes
+
+analyze: stan cs-fix rector ## Run php-cs-fixer and fix the code.
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
 config: docker-compose.yaml ## build services to image
@@ -172,3 +174,23 @@ login:
 pipeline-build: login
 	@docker build --target php -t $(REGISTRY_IMAGE):pipeline ./
 	@docker push $(REGISTRY_IMAGE):pipeline
+
+## —— Git ———————————————————————————————————
+git-clean-branches: ## Clean merged branches
+	git remote prune origin
+	(git branch --merged | egrep -v "(^\*|main|master|dev)" | xargs git branch -d) || true
+
+git-rebase: ## Rebase current branch
+	git pull --rebase origin main
+
+message ?= \#$(shell git branch --show-current | sed -E 's/^([0-9]+)-([^-]+)-(.+)/\2: #\1 \3/' | sed "s/-/ /g")
+auto-commit: ## Auto commit
+	git add .
+	@git commit -m "${message}" || true
+
+current_branch=$(shell git rev-parse --abbrev-ref HEAD)
+push: ## Push current branch
+	git push origin "$(current_branch)" --force-with-lease
+
+
+commit: git-clean-branches analyze auto-commit git-rebase push ## Commit and push

@@ -27,11 +27,34 @@ class AppealCourse
     use StudentEntityTrait;
     use TimestampableEntity;
 
+    /**
+     * @var int
+     */
     public const STATUS_NOTHING = 0;
+
+    /**
+     * @var int
+     */
     public const STATUS_PRESENT = 1;
+
+    /**
+     * @var int
+     */
     public const STATUS_ABSENT = 2;
+
+    /**
+     * @var int
+     */
     public const STATUS_ABSENT_JUSTIFIED = 3;
+
+    /**
+     * @var int
+     */
     public const STATUS_LAG = 4;
+
+    /**
+     * @var int
+     */
     public const STATUS_LAG_UNACCEPTED = 5;
 
     /**

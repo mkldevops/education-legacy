@@ -23,6 +23,9 @@ class Account
     use NameEntityTrait;
     use TimestampableEntity;
 
+    /**
+     * @var int
+     */
     public const DEFAULT_INTERVAL_STATEMENT = 5;
 
     /**

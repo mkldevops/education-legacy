@@ -22,9 +22,24 @@ use App\Services\AbstractFullService;
  */
 class PhoneManager extends AbstractFullService
 {
+    /**
+     * @var string
+     */
     public const PERSON = 'person';
+
+    /**
+     * @var string
+     */
     public const FATHER = 'father';
+
+    /**
+     * @var string
+     */
     public const MOTHER = 'mother';
+
+    /**
+     * @var string
+     */
     public const LEGAL_GUARDIAN = 'legalGuardian';
 
     /**

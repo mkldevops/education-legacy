@@ -214,6 +214,7 @@ class ClassSchoolController extends AbstractController
 
             $aListStudent[$age][] = $student;
         }
+
         ksort($aListStudent);
 
         return $this->render('class_period/students.html.twig', [

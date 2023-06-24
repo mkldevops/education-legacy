@@ -41,7 +41,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[IsGranted('ROLE_TEACHER')]
 class ClassPeriodController extends AbstractController
 {
+    /**
+     * @var int
+     */
     private const NB_LINES_MIN = 30;
+
+    /**
+     * @var int
+     */
     private const NB_DATES = 17;
 
     public function __construct(
@@ -229,7 +236,7 @@ class ClassPeriodController extends AbstractController
 
             $this->addFlash('info', 'La Classe '.$classSchool->getName().' a bien ajouté à la periode '.$period->getName());
         } else {
-            $this->addFlash('error', 'La Classe '.$classSchool->getName().' n\'a pas été ajouté à la periode '.$period->getName().', celle-ci esxiste ');
+            $this->addFlash('error', 'La Classe '.$classSchool->getName()." n'a pas été ajouté à la periode ".$period->getName().', celle-ci esxiste ');
         }
 
         return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
@@ -322,7 +329,7 @@ class ClassPeriodController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('info', sprintf(
-                'L\'élève %s à été supprimé de la classe %s',
+                "L'élève %s à été supprimé de la classe %s",
                 $student->getNameComplete(),
                 $classPeriod->getName()
             ));

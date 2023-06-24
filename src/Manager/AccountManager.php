@@ -60,22 +60,20 @@ class AccountManager
             ->getArrayResult()
         ;
 
-        if (!empty($result)) {
-            foreach ($result as $stats) {
-                $id = $stats['id'];
-                $stats['isValid'] = false;
+        foreach ($result as $stats) {
+            $id = $stats['id'];
+            $stats['isValid'] = false;
 
-                $accountStatement = $accountStatements[$id];
+            $accountStatement = $accountStatements[$id];
 
-                if ($accountStatement->getNumberOperations() === (int) $stats['numberOperations']
-                    && $accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
-                    && $accountStatement->getAmountDebit() === round((float) $stats['sumDebit'], 2)
-                ) {
-                    $stats['isValid'] = true;
-                }
-
-                $accountStatements[$id]->stats = $stats;
+            if ($accountStatement->getNumberOperations() === (int) $stats['numberOperations']
+                && $accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
+                && $accountStatement->getAmountDebit() === round((float) $stats['sumDebit'], 2)
+            ) {
+                $stats['isValid'] = true;
             }
+
+            $accountStatements[$id]->stats = $stats;
         }
 
         $nbOperations = $this->operationRepository->getNumberWithoutAccountStatement($account);
