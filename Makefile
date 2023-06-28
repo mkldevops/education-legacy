@@ -29,10 +29,10 @@ help: ## Outputs this help screen
 	@grep -E '(^[a-zA-Z0-9_-]+:.*?## .*$$)|(^## )' Makefile | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
 ## —— Composer 🧙‍♂️ ————————————————————————————————————————————————————————————
-install: composer.lock ## Install vendors according to the current composer.lock file
+composer-install: composer.lock ## Install vendors according to the current composer.lock file
 	$(COMPOSER) install -n
 
-update: composer.json ## Update vendors according to the composer.json file
+composer-update: composer.json ## Update vendors according to the composer.json file
 	$(COMPOSER) update -w
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
@@ -103,7 +103,6 @@ test-all: phpunit.xml.dist test-load-fixtures ## Launch main functional and unit
 test-report: phpunit.xml.dist test-load-fixtures ## Launch main functional and unit tests with report
 	$(DOCKER_TEST_EXEC) ./vendor/bin/simple-phpunit --coverage-text --colors=never --log-junit report.xml $c
 
-
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
 stan: ## Run PHPStan only
 	@test -d var/cache/dev || $(CONSOLE) cache:clear
@@ -168,12 +167,13 @@ prune: ## clean all containers unused
 	$(DOCKER) system prune -a
 
 login:
-	@docker login $(REGISTRY) -u $(USER) -p $(TOKEN)
+	docker login $(REGISTRY) -u $(USER) -p $(TOKEN)
+
 ## —— Deployments ————————————————————————————————————————————————————————————————
 
-pipeline-build: login
-	@docker build --target php -t $(REGISTRY_IMAGE):pipeline ./
-	@docker push $(REGISTRY_IMAGE):pipeline
+docker-build-base: login
+	@docker build --target php-base -t $(REGISTRY_IMAGE):php8.2-base ./
+	@docker push $(REGISTRY_IMAGE):php8.2-base
 
 ## —— Git ———————————————————————————————————
 git-clean-branches: ## Clean merged branches
@@ -191,6 +191,5 @@ auto-commit: ## Auto commit
 current_branch=$(shell git rev-parse --abbrev-ref HEAD)
 push: ## Push current branch
 	git push origin "$(current_branch)" --force-with-lease
-
 
 commit: git-clean-branches analyze auto-commit git-rebase push ## Commit and push

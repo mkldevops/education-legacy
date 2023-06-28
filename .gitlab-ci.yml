@@ -1,4 +1,4 @@
-image: $CI_REGISTRY_IMAGE:pipeline
+image: $CI_REGISTRY_IMAGE:php8.2-base
 
 before_script:
     - symfony composer install --no-scripts
@@ -9,52 +9,41 @@ cache:
         - vendor
 
 stages:
-    - security
-    - coding_standards
-    - tests
+    - checks
+    - build
     - deploy
 
-check_vulnerabilities:
-    tags : [fardus]
-    stage: security
-    needs : []
+checks:vulnerabilities:
+    stage: checks
     script :
         - symfony check:security
         - symfony check:requirements
     allow_failure: false
 
-lint:
-    tags : [fardus]
-    stage: coding_standards
-    needs : []
+checks:lint:
+    stage: checks
     script :
         - symfony console lint:yaml config --parse-tags
         - symfony console lint:twig templates --env=prod
         - symfony console lint:container --no-debug
         - make doctrine-validate c="--env=test"
 
-phpstan:
-    tags : [fardus]
-    needs: []
-    stage: coding_standards
+checks:phpstan:
+    stage: checks
     script:
         - make stan
     allow_failure: false
 
-php-cs-fixer:
-    tags : [fardus]
-    needs: []
-    stage: coding_standards
+checks:php-cs-fixer:
+    stage: checks
     script:
         - make cs-dry
     allow_failure: false
 
-phpunit:
-    tags : [fardus]
-    needs: []
+checks:phpunit:
     services:
         - mysql:8.0
-    stage: tests
+    stage: checks
     variables:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: app
@@ -69,8 +58,25 @@ phpunit:
         reports:
             junit: report.xml
 
+build:app:
+    stage: deploy
+    image: docker:stable
+    services:
+        - docker:dind
+    variables:
+        DOCKER_HOST: tcp://docker:2375
+        DOCKER_DRIVER: overlay2
+    before_script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    script:
+        - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG .
+        - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    # rules if is tag
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: always
+
 .deploy:
-    tags : [fardus]
     image : alpine
     stage: deploy
     before_script :
@@ -79,13 +85,14 @@ phpunit:
         - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
         - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
-deploy_prod:
+deploy:prod:
     extends : .deploy
     stage: deploy
     environment:
         name: prod
         url: https://education.msadawaheri.fr
     script:
-        - ssh fardus@$IP_PROD "cd /var/www/$REPO && git checkout master && git pull origin master --rebase && make build-up && exit"
-    only:
-        - production
+        - ssh $USER_NAME@$SERVER_NAME "cd j $CI_PROJECT_NAME && git fetch && git checkout $CI_COMMIT_TAG && make build-up && exit"
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: always

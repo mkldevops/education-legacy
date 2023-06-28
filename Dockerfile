@@ -1,4 +1,4 @@
-FROM php:8.1-apache as php
+FROM php:8.2-apache as php-base
 
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 RUN mkdir -p -m 777 /opt/apache/sessiontmp5/
@@ -18,7 +18,7 @@ RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/inst
 
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
-FROM php as app
+FROM registry.gitlab.com/msadawaheri-projects/education:php8.2-base as app
 
 EXPOSE 80
 
