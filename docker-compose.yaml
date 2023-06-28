@@ -1,8 +1,7 @@
 version: "3.9"
 services:
     app:
-        build: .
-        image: app
+        image: registry.gitlab.com/msadawaheri-projects/education/app:latest
         container_name: "${PROJECT_NAME:-education}-app"
         restart: unless-stopped
         env_file:

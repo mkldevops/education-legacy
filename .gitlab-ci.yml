@@ -1,4 +1,4 @@
-image: $CI_REGISTRY_IMAGE:php8.2-base
+image: $CI_REGISTRY_IMAGE/php:8.2-base
 
 before_script:
     - symfony composer install --no-scripts
@@ -69,8 +69,10 @@ build:app:
     before_script:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     script:
-        - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG .
-        - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+        - docker build --pull 
+            -t $CI_REGISTRY_IMAGE/app:$CI_COMMIT_TAG 
+            -t $CI_REGISTRY_IMAGE/app:latest .
+        - docker push -a $CI_REGISTRY_IMAGE/app
     # rules if is tag
     rules:
         - if: $CI_COMMIT_TAG

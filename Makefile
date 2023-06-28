@@ -172,8 +172,8 @@ login:
 ## —— Deployments ————————————————————————————————————————————————————————————————
 
 docker-build-base: login
-	@docker build --target php-base -t $(REGISTRY_IMAGE):php8.2-base ./
-	@docker push $(REGISTRY_IMAGE):php8.2-base
+	@docker build --target php-base -t $(REGISTRY_IMAGE)/php:8.2-base ./
+	@docker push $(REGISTRY_IMAGE)/php:8.2-base
 
 ## —— Git ———————————————————————————————————
 git-clean-branches: ## Clean merged branches
