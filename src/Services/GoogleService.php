@@ -2,32 +2,26 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 10/08/18
- * Time: 10:31.
- */
-
 namespace App\Services;
 
 use App\Exception\AppException;
-use Exception;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-/**
- * Description of class GoogleCalendarManager.
- *
- * @author  fahari
- */
-class GoogleService extends AbstractService
+class GoogleService
 {
-    protected \Google_Client $client;
-
-    protected string $pathCredentiels;
-
-    protected string $pathTokens;
-
     protected string $authCode;
+
+    public function __construct(
+        public readonly LoggerInterface $logger,
+        private readonly \Google_Client $client,
+        #[Autowire('%kernel.project_dir%/var/tokens')]
+        private readonly string $pathTokens,
+    ) {
+        if (!file_exists($this->pathTokens)) {
+            mkdir($this->pathTokens, 0o775, true);
+        }
+    }
 
     /**
      * Returns an authorized API client.
@@ -53,23 +47,12 @@ class GoogleService extends AbstractService
     }
 
     /**
-     * @throws \Google_Exception
-     */
-    #[\Symfony\Contracts\Service\Attribute\Required]
-    public function setClient(\Google_Client $client): static
-    {
-        $this->client = $client;
-        $this->init();
-
-        return $this;
-    }
-
-    /**
      * getAccessToken.
      *
      * @return string[]
      *
      * @throws AppException
+     * @throws \JsonException
      */
     public function getAccessToken(string $credentialsPath): array
     {
@@ -112,33 +95,6 @@ class GoogleService extends AbstractService
         ]);
 
         $this->client->setAccessType('offline');
-    }
-
-    public function getPathCredentiels(): string
-    {
-        return $this->pathCredentiels;
-    }
-
-    public function setPathCredentiels(string $pathCredentiels): self
-    {
-        $this->pathCredentiels = $pathCredentiels;
-
-        return $this;
-    }
-
-    public function getPathTokens(): string
-    {
-        return $this->pathTokens;
-    }
-
-    public function setPathTokens(string $pathTokens): self
-    {
-        $this->pathTokens = $pathTokens;
-        if (!file_exists($this->pathTokens)) {
-            mkdir($this->pathTokens, 0o775, true);
-        }
-
-        return $this;
     }
 
     public function getAuthCode(): string

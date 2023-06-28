@@ -21,6 +21,10 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
 FROM registry.gitlab.com/msadawaheri-projects/education/php:8.2-base as app
 
+ARG APP_VERSION=local
+
+ENV APP_VERSION=$APP_VERSION
+
 WORKDIR /var/www/html/
 COPY --link . .
 

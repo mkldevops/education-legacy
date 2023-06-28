@@ -8,6 +8,7 @@ use App\Entity\Period;
 use App\Entity\School;
 use App\Repository\PeriodRepository;
 use App\Repository\StudentRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\File;
 
 class DiplomaService
@@ -24,13 +25,13 @@ class DiplomaService
 
     private File $file;
 
-    private string $pathFont;
-
     private string $pathUploads;
 
     public function __construct(
         private readonly PeriodRepository $periodRepository,
-        private readonly StudentRepository $studentRepository
+        private readonly StudentRepository $studentRepository,
+        #[Autowire('%kernel.project_dir%/public/fonts')]
+        private string $pathFont,
     ) {
     }
 

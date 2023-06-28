@@ -7,9 +7,12 @@ namespace App\EventListener;
 use App\Entity\AccountStatement;
 use App\Entity\Operation;
 use App\Repository\AccountStatementRepository;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
+#[AsEntityListener(event: 'preUpdate', method: 'preUpdate', entity: Operation::class, priority: 1)]
+#[AsEntityListener(event: 'prePersist', method: 'prePersist', entity: Operation::class, priority: 1)]
 class OperationListener
 {
     public function __construct(

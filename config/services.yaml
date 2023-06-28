@@ -31,32 +31,9 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-
-    App\Services\GoogleService:
-        autowire: false
-        autoconfigure: false
-        public: false
-        calls:
-            - [setPathTokens, ['%kernel.project_dir%/var/tokens']]
-            - [setClient, ['@Google_Client']]
-
-    App\Services\GoogleCalendarService:
-        autowire: false
-        autoconfigure: false
-        public: false
-        class: App\Services\GoogleCalendarService
-        parent: App\Services\GoogleService
-
-    App\EventListener\OperationListener:
-        tags:
-            - { name: 'doctrine.orm.entity_listener', event: prePersist, entity: App\Entity\Operation }
-            - { name: 'doctrine.orm.entity_listener', event: preUpdate, entity: App\Entity\Operation }
 
     App\Services\DiplomaService:
         calls:
-            - [setPathFont, ['%kernel.project_dir%/public/fonts']]
             - [setFileFromPath, ['%kernel.project_dir%/public/img/diploma-2019.jpeg']]
             - [setPathUploads, ['%kernel.project_dir%/public/diplomas']]
 
