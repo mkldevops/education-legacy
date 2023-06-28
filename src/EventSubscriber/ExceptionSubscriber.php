@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -13,8 +14,6 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\Security;
-use Throwable;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -36,7 +35,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function processException(ExceptionEvent $event): void
     {

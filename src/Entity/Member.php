@@ -15,6 +15,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 /**
  * @ORM\Table(name="`person_member`")
+ *
  * @ORM\Entity(repositoryClass=MemberRepository::class)
  */
 class Member

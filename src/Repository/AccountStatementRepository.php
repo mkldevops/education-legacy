@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\AccountStatement;
-use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,7 +17,7 @@ class AccountStatementRepository extends ServiceEntityRepository
         parent::__construct($registry, AccountStatement::class);
     }
 
-    public function findByDate(Account $account, DateTimeInterface $dateTime): ?AccountStatement
+    public function findByDate(Account $account, \DateTimeInterface $dateTime): ?AccountStatement
     {
         try {
             $result = $this->createQueryBuilder('a')

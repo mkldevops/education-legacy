@@ -9,11 +9,9 @@ use App\Repository\StudentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -59,12 +57,12 @@ class Student
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $dateRegistration = null;
+    private ?\DateTimeInterface $dateRegistration = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTimeInterface $dateDesactivated = null;
+    private ?\DateTimeInterface $dateDesactivated = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
@@ -102,7 +100,7 @@ class Student
     public function __construct()
     {
         $this->setPerson(new Person())
-            ->setDateRegistration(new DateTime())
+            ->setDateRegistration(new \DateTime())
         ;
 
         $this->classPeriods = new ArrayCollection();
@@ -123,7 +121,7 @@ class Student
         $this->setDateDesactivated(null);
 
         if (!$this->enable) {
-            $this->setDateDesactivated(new DateTime());
+            $this->setDateDesactivated(new \DateTime());
         }
 
         return $this;
@@ -173,14 +171,14 @@ class Student
         return $this->person?->getForname();
     }
 
-    public function setBirthday(DateTimeInterface $birthday): static
+    public function setBirthday(\DateTimeInterface $birthday): static
     {
         $this->person?->setBirthday($birthday);
 
         return $this;
     }
 
-    public function getBirthday(): ?DateTimeInterface
+    public function getBirthday(): ?\DateTimeInterface
     {
         return $this->person?->getBirthday();
     }
@@ -413,16 +411,16 @@ class Student
         return $this->packagePeriods;
     }
 
-    public function getDateDesactivated(): ?DateTimeInterface
+    public function getDateDesactivated(): ?\DateTimeInterface
     {
         if (!$this->enable && empty($this->dateDesactivated)) {
-            $this->dateDesactivated = new DateTime();
+            $this->dateDesactivated = new \DateTime();
         }
 
         return $this->dateDesactivated;
     }
 
-    public function setDateDesactivated(DateTimeInterface $dateDesactivated = null): static
+    public function setDateDesactivated(\DateTimeInterface $dateDesactivated = null): static
     {
         $this->dateDesactivated = $dateDesactivated;
 
@@ -449,12 +447,12 @@ class Student
         return $this->appealCourses;
     }
 
-    public function getDateRegistration(): ?DateTimeInterface
+    public function getDateRegistration(): ?\DateTimeInterface
     {
         return $this->dateRegistration;
     }
 
-    public function setDateRegistration(DateTimeInterface $dateRegistration = null): static
+    public function setDateRegistration(\DateTimeInterface $dateRegistration = null): static
     {
         $this->dateRegistration = $dateRegistration;
 
@@ -515,10 +513,10 @@ class Student
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function since(): int
     {
-        return $this->createdAt->diff(new DateTime())->y;
+        return $this->createdAt->diff(new \DateTime())->y;
     }
 }

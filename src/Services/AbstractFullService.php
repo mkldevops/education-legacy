@@ -11,7 +11,7 @@ use App\Traits\PeriodManagerTrait;
 use Fardus\Traits\Symfony\Manager\EntityManagerTrait;
 use Fardus\Traits\Symfony\Manager\LoggerTrait;
 use Fardus\Traits\Symfony\Manager\TranslatorTrait;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractFullService

@@ -11,7 +11,7 @@ use App\Entity\User;
 use App\Exception\AppException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class StudentManager
 {

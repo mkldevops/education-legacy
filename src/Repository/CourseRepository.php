@@ -8,7 +8,6 @@ use App\Entity\ClassPeriod;
 use App\Entity\Course;
 use App\Entity\Period;
 use App\Entity\School;
-use DateInterval;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -64,7 +63,7 @@ class CourseRepository extends ServiceEntityRepository
             ->where('c.classPeriod = :classPeriod')
             ->setParameter('classPeriod', $classPeriod)
             ->andWhere('c.date >= :from')
-            ->setParameter('from', \DateTime::createFromInterface($form)->sub(new DateInterval('P1D')))
+            ->setParameter('from', \DateTime::createFromInterface($form)->sub(new \DateInterval('P1D')))
             ->setMaxResults($maxResult)
             ->setFirstResult($offset)
             ->getQuery()

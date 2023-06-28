@@ -16,14 +16,13 @@ use App\Entity\Account;
 use App\Entity\AccountSlip;
 use App\Entity\OperationGender;
 use App\Entity\Structure;
-use DateTimeInterface;
 
 /**
  * Class TransferModel.
  */
 class TransferModel
 {
-    private ?DateTimeInterface $date = null;
+    private ?\DateTimeInterface $date = null;
 
     private ?OperationGender $gender = null;
 
@@ -151,7 +150,7 @@ class TransferModel
     /**
      * Get Date.
      */
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
@@ -159,7 +158,7 @@ class TransferModel
     /**
      * Set Date.
      */
-    public function setDate(DateTimeInterface $date): self
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
 

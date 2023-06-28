@@ -90,6 +90,7 @@ class AccountStatement
 
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="accountStatements", cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private Account $account;

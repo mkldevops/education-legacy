@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Helper;
 
 use App\Entity\Document;
-use Imagick;
-use ImagickException;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class UploaderHelper implements RuntimeExtensionInterface
@@ -14,7 +12,7 @@ class UploaderHelper implements RuntimeExtensionInterface
     /**
      * @return array<string, bool>|array<string, null>
      *
-     * @throws ImagickException
+     * @throws \ImagickException
      */
     public static function generateImages(Document $document): array
     {
@@ -30,7 +28,7 @@ class UploaderHelper implements RuntimeExtensionInterface
             return $result;
         }
 
-        $img = new Imagick($filepath);
+        $img = new \Imagick($filepath);
 
         if ($document->isFormat('pdf')) {
             $img->setIteratorIndex(0);
@@ -38,7 +36,7 @@ class UploaderHelper implements RuntimeExtensionInterface
 
         // If file is image, so to compress
         if ($document->isFormat('image')) {
-            $img->setCompression(Imagick::COMPRESSION_LZW);
+            $img->setCompression(\Imagick::COMPRESSION_LZW);
             $img->setCompressionQuality(80);
             $img->stripImage();
             $img->writeImage();

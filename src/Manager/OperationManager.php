@@ -9,7 +9,6 @@ use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Repository\OperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OfxParser\Entities\Transaction;
 use Psr\Log\LoggerInterface;
 
@@ -60,7 +59,7 @@ class OperationManager
 
         try {
             $operation = $this->repository->findOneBy(['uniqueId' => $uniqueId]);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->error(__FUNCTION__.' '.$exception->getMessage());
 
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);

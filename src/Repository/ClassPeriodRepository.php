@@ -9,7 +9,6 @@ use App\Entity\ClassPeriodStudent;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Entity\Student;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -105,7 +104,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->andWhere('s.enable = true')
             ->andWhere('cps.end >= :now')
             ->setParameter('classPeriod', $classPeriod->getId())
-            ->setParameter('now', new DateTime())
+            ->setParameter('now', new \DateTime())
             ->orderBy('p.name', 'ASC')
         ;
 

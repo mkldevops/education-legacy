@@ -13,14 +13,13 @@ use App\Exception\AppException;
 use App\Fetcher\AccountableFetcher;
 use App\Model\TransferModel;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use OfxParser\Entities\BankAccount;
 use OfxParser\Entities\Transaction;
 use OfxParser\Ofx;
 use OfxParser\Parser;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Security\Core\Security;
 
 class OFXManager
 {
@@ -98,7 +97,7 @@ class OFXManager
 
     /**
      * @throws AppException
-     * @throws Exception
+     * @throws \Exception
      */
     public function extractOfxToFile(File $fileUpload): Ofx
     {
@@ -225,7 +224,7 @@ class OFXManager
                 $this->entityManager->flush();
                 $this->logger->info(__FUNCTION__.' Operation is saved');
                 $this->logs[] = ['operation' => $operation, 'status' => self::STATUS_ADD_OPERATION];
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $this->logger->error(__FUNCTION__.' '.$exception->getMessage());
 
                 throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);

@@ -17,6 +17,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AppealCourseRepository::class)
+ *
  * @ORM\Table(uniqueConstraints={@UniqueConstraint(columns={"student_id", "course_id"})})
  */
 class AppealCourse

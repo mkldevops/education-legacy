@@ -12,7 +12,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
@@ -23,6 +22,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AccountSlipRepository::class)
+ *
  * @UniqueEntity(fields={"structure", "gender", "reference"})
  */
 class AccountSlip
@@ -108,7 +108,7 @@ class AccountSlip
 
     public function __construct()
     {
-        $this->setDate(new DateTime())
+        $this->setDate(new \DateTime())
             ->setEnable(true)
             ->documents = new ArrayCollection();
     }
@@ -203,7 +203,7 @@ class AccountSlip
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getOperation(string $type): ?Operation
     {

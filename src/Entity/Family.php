@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=FamilyRepository::class)
+ *
  * @ORM\HasLifecycleCallbacks
  */
 class Family
@@ -44,18 +45,21 @@ class Family
 
     /**
      * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
+     *
      * @ORM\JoinColumn(unique=true)
      */
     private ?Person $father = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
+     *
      * @ORM\JoinColumn(unique=true)
      */
     private ?Person $mother = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
+     *
      * @ORM\JoinColumn(unique=true)
      */
     private ?Person $legalGuardian = null;
@@ -67,6 +71,7 @@ class Family
 
     /**
      * @Assert\Range(min="1", max="12")
+     *
      * @ORM\Column(type="integer")
      */
     private int $numberChildren = 1;

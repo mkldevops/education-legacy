@@ -8,7 +8,6 @@ use App\Repository\MeetRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\PublisherEntityTrait;
 use App\Traits\SchoolEntityTrait;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
@@ -34,7 +33,7 @@ class Meet
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $date;
+    private \DateTimeInterface $date;
 
     /**
      * @ORM\Column(type="string")
@@ -63,12 +62,12 @@ class Meet
         return $this;
     }
 
-    public function getDate(): DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date): self
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
 

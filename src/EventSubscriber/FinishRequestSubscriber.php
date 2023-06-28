@@ -10,9 +10,9 @@ use App\Exception\PeriodException;
 use App\Exception\UnexpectedResultException;
 use App\Fetcher\SessionFetcherInterface;
 use App\Traits\RequestStackTrait;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
-use Symfony\Component\Security\Core\Security;
 
 class FinishRequestSubscriber implements EventSubscriberInterface
 {

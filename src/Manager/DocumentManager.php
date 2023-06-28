@@ -7,8 +7,6 @@ namespace App\Manager;
 use App\Entity\Document;
 use App\Exception\FileNotFoundException;
 use App\Services\AbstractFullService;
-use Imagick;
-use ImagickException;
 
 class DocumentManager extends AbstractFullService
 {
@@ -141,7 +139,7 @@ class DocumentManager extends AbstractFullService
         $thumb = null;
 
         try {
-            $img = new Imagick($filepath);
+            $img = new \Imagick($filepath);
 
             if ($document->isFormat(self::PDF)) {
                 $img->setIteratorIndex(0);
@@ -149,7 +147,7 @@ class DocumentManager extends AbstractFullService
 
             // If file is image, so to compress
             if ($document->isFormat(self::IMAGE)) {
-                $img->setCompression(Imagick::COMPRESSION_LZW);
+                $img->setCompression(\Imagick::COMPRESSION_LZW);
                 $img->setCompressionQuality(80);
                 $img->stripImage();
                 $img->writeImage();
@@ -186,7 +184,7 @@ class DocumentManager extends AbstractFullService
             }
 
             $img->clear();
-        } catch (ImagickException $imagickException) {
+        } catch (\ImagickException $imagickException) {
             $error = $imagickException->getMessage();
         }
 

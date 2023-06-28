@@ -13,7 +13,6 @@ use App\Manager\SchoolManager;
 use App\Repository\DocumentRepository;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -145,7 +144,7 @@ class DocumentController extends AbstractController
             $response->data = $documentRepository
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0))
             ;
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
@@ -174,7 +173,7 @@ class DocumentController extends AbstractController
             $entityManager->flush();
 
             return $this->json(['upload' => true, 'document' => $document->getInfos(), 'success' => true]);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $documentManager->getLogger()->error($exception->getMessage(), [
                 'class' => $exception::class,
                 'trace' => $exception->getTraceAsString(),

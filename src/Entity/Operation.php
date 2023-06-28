@@ -21,6 +21,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Table(indexes={@ORM\Index(columns={"account_id"}), @ORM\Index(columns={"date", "date_planned"})})
+ *
  * @ORM\Entity(repositoryClass=OperationRepository::class)
  */
 class Operation
@@ -37,6 +38,7 @@ class Operation
 
     /**
      * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="operations")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Account $account = null;

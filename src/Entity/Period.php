@@ -7,8 +7,6 @@ namespace App\Entity;
 use App\Repository\PeriodRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,12 +38,12 @@ class Period
     /**
      * @ORM\Column(type="datetime")
      */
-    protected ?DateTimeInterface $begin = null;
+    protected ?\DateTimeInterface $begin = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    protected ?DateTimeInterface $end;
+    protected ?\DateTimeInterface $end;
 
     /**
      * @ORM\ManyToOne(targetEntity=Diploma::class, inversedBy="periods")
@@ -74,30 +72,30 @@ class Period
         return $this->id;
     }
 
-    public function getBegin(): ?DateTimeInterface
+    public function getBegin(): ?\DateTimeInterface
     {
         return $this->begin;
     }
 
     /**
-     * @param DateTime|DateTimeImmutable $begin
+     * @param \DateTime|\DateTimeImmutable $begin
      */
-    public function setBegin(DateTimeInterface $begin): self
+    public function setBegin(\DateTimeInterface $begin): self
     {
         $this->begin = $begin;
 
         return $this;
     }
 
-    public function getEnd(): ?DateTimeInterface
+    public function getEnd(): ?\DateTimeInterface
     {
         return $this->end;
     }
 
     /**
-     * @param DateTime|DateTimeImmutable $end
+     * @param \DateTime|\DateTimeImmutable $end
      */
-    public function setEnd(DateTimeInterface $end): self
+    public function setEnd(\DateTimeInterface $end): self
     {
         $this->end = $end;
 
@@ -125,7 +123,7 @@ class Period
 
     public function getPercent(): float
     {
-        $diffNow = $this->begin?->diff(new DateTime());
+        $diffNow = $this->begin?->diff(new \DateTime());
         $diffPeriod = $this->begin?->diff($this->end);
         $percent = (int) $diffNow?->format('%R%a') / (int) $diffPeriod?->format('%R%a') * 100;
 

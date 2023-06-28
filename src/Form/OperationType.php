@@ -15,9 +15,9 @@ use App\Model\SchoolList;
 use App\Repository\AccountRepository;
 use App\Repository\OperationGenderRepository;
 use App\Repository\UserRepository;
-use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -25,7 +25,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Security;
 
 class OperationType extends AbstractType
 {
@@ -59,7 +58,7 @@ class OperationType extends AbstractType
             ->add('date', DateType::class, [
                 'label' => 'form.date',
                 'widget' => 'single_text',
-                'data' => new DateTime(),
+                'data' => new \DateTime(),
             ])
             ->add('operationGender', EntityType::class, [
                 'label' => 'form.operation_gender',

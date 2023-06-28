@@ -8,7 +8,6 @@ use App\Entity\Person;
 use App\Exception\AppException;
 use App\Manager\PhoneManager;
 use App\Model\ResponseModel;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +23,7 @@ class PersonApiController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     #[Route(path: '/update-phones/{id}', name: 'app_api_person_update_phone', methods: ['POST', 'PUT'])]
     public function updatePhone(Request $request, Person $person, PhoneManager $manager): JsonResponse

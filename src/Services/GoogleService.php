@@ -13,11 +13,6 @@ namespace App\Services;
 
 use App\Exception\AppException;
 use Exception;
-use Google_Client;
-use Google_Exception;
-use Google_Service_Calendar;
-use Google_Service_Drive;
-use Google_Service_Script;
 
 /**
  * Description of class GoogleCalendarManager.
@@ -26,7 +21,7 @@ use Google_Service_Script;
  */
 class GoogleService extends AbstractService
 {
-    protected Google_Client $client;
+    protected \Google_Client $client;
 
     protected string $pathCredentiels;
 
@@ -37,11 +32,11 @@ class GoogleService extends AbstractService
     /**
      * Returns an authorized API client.
      *
-     * @return Google_Client the authorized client object
+     * @return \Google_Client the authorized client object
      *
-     * @throws Exception
+     * @throws \Exception
      */
-    public function getClient(): Google_Client
+    public function getClient(): \Google_Client
     {
         // Load previously authorized credentials from a file.
         $credentialsPath = $this->pathTokens.\DIRECTORY_SEPARATOR.'token.json';
@@ -60,9 +55,9 @@ class GoogleService extends AbstractService
     /**
      * @required
      *
-     * @throws Google_Exception
+     * @throws \Google_Exception
      */
-    public function setClient(Google_Client $client): static
+    public function setClient(\Google_Client $client): static
     {
         $this->client = $client;
         $this->init();
@@ -112,9 +107,9 @@ class GoogleService extends AbstractService
     {
         $this->client->setApplicationName('Google API PHP Education');
         $this->client->setScopes([
-            Google_Service_Calendar::CALENDAR,
-            Google_Service_Drive::DRIVE,
-            Google_Service_Script::WWW_GOOGLE_COM_M8_FEEDS,
+            \Google_Service_Calendar::CALENDAR,
+            \Google_Service_Drive::DRIVE,
+            \Google_Service_Script::WWW_GOOGLE_COM_M8_FEEDS,
         ]);
 
         $this->client->setAccessType('offline');

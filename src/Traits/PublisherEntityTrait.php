@@ -12,6 +12,7 @@ trait PublisherEntityTrait
 {
     /**
      * @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=true)
      */
     protected null|User|UserInterface $publisher;

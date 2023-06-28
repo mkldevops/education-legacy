@@ -6,7 +6,6 @@ namespace App\Form;
 
 use App\Entity\Account;
 use App\Exception\AppException;
-use Exception;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -54,7 +53,7 @@ class AccountOFXType extends AbstractType
                 if (!\in_array($file->getMimeType(), $types, true)) {
                     throw new AppException('Is not a file of ofx');
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $form->get('file')->addError(new FormError($exception->getMessage()));
 
                 throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);

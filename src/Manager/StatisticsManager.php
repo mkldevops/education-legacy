@@ -8,8 +8,6 @@ use App\Exception\AppException;
 use App\Model\DataStats;
 use App\Model\StatsByMonth;
 use App\Repository\OperationRepository;
-use DateTime;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 class StatisticsManager
@@ -39,14 +37,14 @@ class StatisticsManager
                 $dataStats = (new DataStats())
                     ->setRowId($operation['idTypeOperation'])
                     ->setRowLabel($operation['nameTypeOperation'])
-                    ->setColumnLabel((new DateTime($operation['groupDate']))->format('M Y'))
+                    ->setColumnLabel((new \DateTime($operation['groupDate']))->format('M Y'))
                     ->setColumnId($operation['groupDate'])
                     ->setCount((int) $operation['numberOperations'])
                     ->setSum((float) $operation['sumCredit'] + (float) $operation['sumDebit'])
                 ;
 
                 $stats->addData($dataStats);
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $this->logger->error(__METHOD__.' '.$exception->getMessage(), compact($operation));
 
                 throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);

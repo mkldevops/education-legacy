@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use App\Traits\AuthorEntityTrait;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -72,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     #[Ignore]
-    private ?DateTimeInterface $lastLogin = null;
+    private ?\DateTimeInterface $lastLogin = null;
 
     public function __construct()
     {
@@ -163,12 +162,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLastLogin(): ?DateTimeInterface
+    public function getLastLogin(): ?\DateTimeInterface
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(DateTimeInterface $lastLogin): self
+    public function setLastLogin(\DateTimeInterface $lastLogin): self
     {
         $this->lastLogin = $lastLogin;
 

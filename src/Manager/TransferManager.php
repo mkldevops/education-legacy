@@ -15,9 +15,8 @@ use App\Fetcher\AccountableFetcher;
 use App\Model\TransferModel;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TransferManager
@@ -145,7 +144,7 @@ class TransferManager
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function setAccountCreditById(int $accountCreditId): self
     {
@@ -252,7 +251,7 @@ class TransferManager
 
     /**
      * @throws AppException
-     * @throws Exception
+     * @throws \Exception
      */
     private function findOperation(string $type, Account $account, string $uniqueId = null): ?Operation
     {

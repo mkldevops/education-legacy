@@ -5,23 +5,19 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exception\AppException;
-use DateTime;
-use DateTimeInterface;
-use Exception;
-use Google_Service_Calendar;
 
 class GoogleCalendarService extends GoogleService
 {
-    protected ?DateTimeInterface $timeMin;
+    protected ?\DateTimeInterface $timeMin;
 
-    protected ?DateTimeInterface $timeMax;
+    protected ?\DateTimeInterface $timeMax;
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function __construct()
     {
-        $this->timeMin = new DateTime();
+        $this->timeMin = new \DateTime();
     }
 
     /**
@@ -32,8 +28,8 @@ class GoogleCalendarService extends GoogleService
     public function getEvents(?string $query = null, int $maxResults = 1000): array
     {
         try {
-            $service = new Google_Service_Calendar($this->getClient());
-        } catch (Exception $exception) {
+            $service = new \Google_Service_Calendar($this->getClient());
+        } catch (\Exception $exception) {
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
@@ -60,14 +56,14 @@ class GoogleCalendarService extends GoogleService
         return $results->getItems();
     }
 
-    public function setTimeMin(DateTimeInterface $timeMin): self
+    public function setTimeMin(\DateTimeInterface $timeMin): self
     {
         $this->timeMin = $timeMin;
 
         return $this;
     }
 
-    public function setTimeMax(DateTimeInterface $timeMax): self
+    public function setTimeMax(\DateTimeInterface $timeMax): self
     {
         $this->timeMax = $timeMax;
 

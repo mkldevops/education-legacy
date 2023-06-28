@@ -19,19 +19,17 @@ use App\Repository\AccountRepository;
 use App\Repository\AccountStatementRepository;
 use App\Repository\OperationRepository;
 use App\Services\ResponseRequest;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/operation')]
@@ -72,7 +70,7 @@ class OperationController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     #[Route(path: '/new', name: 'app_operation_new', methods: ['GET'])]
     public function new(Request $request): Response
@@ -83,7 +81,7 @@ class OperationController extends AbstractController
             'accountstatement' => $request->get('accountstatement'),
         ];
 
-        $operation->setDate(new DateTime($request->get('date') ?? 'now'));
+        $operation->setDate(new \DateTime($request->get('date') ?? 'now'));
         $form = $this->createCreateForm($operation, $params);
         $form->handleRequest($request);
 
@@ -135,7 +133,7 @@ class OperationController extends AbstractController
 
                 return $this->redirect($this->generateUrl('app_operation_show', ['id' => $operation->getId()]));
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $this->addFlash('danger', "The Operation haven't been created. because : ".$exception->getMessage());
 
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
@@ -272,7 +270,7 @@ class OperationController extends AbstractController
 
             $entityManager->persist($operation);
             $entityManager->flush();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
@@ -307,7 +305,7 @@ class OperationController extends AbstractController
             }
 
             if ($operationDate = $request->get('operation_date')) {
-                $operation->setDate(DateTime::createFromFormat('d/m/Y', $operationDate), true);
+                $operation->setDate(\DateTime::createFromFormat('d/m/Y', $operationDate), true);
                 $response->data['operation_date'] = $operation->getDate()?->format('d/m/Y');
             }
 
@@ -337,7 +335,7 @@ class OperationController extends AbstractController
                 ],
                 'operation'
             );
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 

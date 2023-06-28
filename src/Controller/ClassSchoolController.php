@@ -15,9 +15,7 @@ use App\Manager\SchoolManager;
 use App\Repository\ClassSchoolRepository;
 use App\Repository\PeriodRepository;
 use App\Repository\StudentRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -167,7 +165,7 @@ class ClassSchoolController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     #[Route(path: '/view-class-period/{id}', name: 'app_class_school_view_class_period', methods: ['POST', 'GET'])]
     public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager): RedirectResponse
@@ -196,7 +194,7 @@ class ClassSchoolController extends AbstractController
 
     /**
      * @throws InvalidArgumentException
-     * @throws Exception
+     * @throws \Exception
      */
     #[Route(path: '/without-student', name: 'app_class_school_without_student', options: ['expose' => true], methods: ['POST'])]
     public function withOutStudent(StudentRepository $studentRepository, SchoolManager $schoolManager, PeriodManager $periodManager): Response
@@ -204,9 +202,9 @@ class ClassSchoolController extends AbstractController
         $students = $studentRepository->getListStudentsWithoutClassPeriod($periodManager->getPeriodsOnSession(), $schoolManager->getSchool());
         $aListStudent = [];
         foreach ($students as $student) {
-            /** @var DateTime $birthday */
+            /** @var \DateTime $birthday */
             $birthday = $student['birthday'];
-            $age = $birthday->diff(new DateTime())->y;
+            $age = $birthday->diff(new \DateTime())->y;
 
             if (!\array_key_exists($age, $aListStudent)) {
                 $aListStudent[$age] = [];

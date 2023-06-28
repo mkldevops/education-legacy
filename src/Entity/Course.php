@@ -6,8 +6,6 @@ namespace App\Entity;
 
 use App\Repository\CourseRepository;
 use App\Traits\AuthorEntityTrait;
-use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,7 +43,7 @@ class Course
     /**
      * @ORM\Column(type="date")
      */
-    private DateTimeInterface $date;
+    private \DateTimeInterface $date;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -55,12 +53,12 @@ class Course
     /**
      * @ORM\Column(type="time")
      */
-    private DateTimeInterface $hourBegin;
+    private \DateTimeInterface $hourBegin;
 
     /**
      * @ORM\Column(type="time")
      */
-    private DateTimeInterface $hourEnd;
+    private \DateTimeInterface $hourEnd;
 
     /**
      * @ORM\ManyToMany(targetEntity=Teacher::class, mappedBy="courses", cascade={"persist"})
@@ -71,7 +69,7 @@ class Course
     {
         $this->setStudents(new ArrayCollection())
             ->setTeachers(new ArrayCollection())
-            ->setDate(new DateTime())
+            ->setDate(new \DateTime())
         ;
     }
 
@@ -103,12 +101,12 @@ class Course
         return $this;
     }
 
-    public function getDate(): DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date): self
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -127,24 +125,24 @@ class Course
         return $this;
     }
 
-    public function getHourBegin(): DateTimeInterface
+    public function getHourBegin(): \DateTimeInterface
     {
         return $this->hourBegin;
     }
 
-    public function setHourBegin(DateTimeInterface $hourBegin): static
+    public function setHourBegin(\DateTimeInterface $hourBegin): static
     {
         $this->hourBegin = $hourBegin;
 
         return $this;
     }
 
-    public function getHourEnd(): DateTimeInterface
+    public function getHourEnd(): \DateTimeInterface
     {
         return $this->hourEnd;
     }
 
-    public function setHourEnd(DateTimeInterface $hourEnd): static
+    public function setHourEnd(\DateTimeInterface $hourEnd): static
     {
         $this->hourEnd = $hourEnd;
 

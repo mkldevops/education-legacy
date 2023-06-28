@@ -6,7 +6,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Grade;
 use App\Exception\AppException;
-use DateTime;
 use Doctrine\Persistence\ObjectManager;
 
 class GradeFixtures extends AbstractAppFixtures
@@ -21,7 +20,7 @@ class GradeFixtures extends AbstractAppFixtures
                 ->setId($id)
                 ->setName($data['name'])
                 ->setDescription($data['description'])
-                ->setCreatedAt(new DateTime())
+                ->setCreatedAt(new \DateTime())
                 ->setEnable(true)
             ;
 

@@ -9,7 +9,6 @@ use App\Manager\PhoneManager;
 use App\Repository\PersonRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -51,6 +50,7 @@ class Person
 
     /**
      * @Assert\NotBlank
+     *
      * @ORM\Column(type="string")
      */
     protected ?string $forname = null;
@@ -63,7 +63,7 @@ class Person
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    protected ?DateTimeInterface $birthday = null;
+    protected ?\DateTimeInterface $birthday = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -77,6 +77,7 @@ class Person
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=true)
      */
     protected ?User $user = null;
@@ -98,14 +99,18 @@ class Person
 
     /**
      * @ORM\ManyToOne(targetEntity=Document::class, inversedBy="persons", cascade={"remove"})
+     *
      * @ORM\JoinColumn(nullable=true)
+     *
      * @Assert\Valid
      */
     protected ?Document $image = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="persons", cascade={"remove"})
+     *
      * @ORM\JoinColumn(nullable=true)
+     *
      * @Assert\Valid
      */
     protected ?Family $family = null;
@@ -127,8 +132,8 @@ class Person
 
     public function getAge(): ?int
     {
-        if ($this->birthday instanceof DateTimeInterface) {
-            return $this->birthday->diff(new DateTime())->y;
+        if ($this->birthday instanceof \DateTimeInterface) {
+            return $this->birthday->diff(new \DateTime())->y;
         }
 
         return null;
@@ -219,12 +224,12 @@ class Person
         return PhoneManager::getAllPhones($this);
     }
 
-    public function getBirthday(): ?DateTimeInterface
+    public function getBirthday(): ?\DateTimeInterface
     {
         return $this->birthday;
     }
 
-    public function setBirthday(?DateTimeInterface $birthday = null): self
+    public function setBirthday(?\DateTimeInterface $birthday = null): self
     {
         $this->birthday = $birthday;
 

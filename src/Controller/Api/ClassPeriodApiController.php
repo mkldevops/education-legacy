@@ -11,7 +11,6 @@ use App\Exception\InvalidArgumentException;
 use App\Fetcher\SessionFetcher;
 use App\Manager\ClassPeriodManager;
 use Doctrine\ORM\ORMException;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +28,7 @@ class ClassPeriodApiController extends AbstractController
      * Get student WithOut Class School to Period selected.
      *
      * @throws InvalidArgumentException
-     * @throws Exception
+     * @throws \Exception
      */
     public function studentWithOut(ClassPeriodManager $manager): JsonResponse
     {

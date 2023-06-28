@@ -19,7 +19,6 @@ use App\Entity\School;
 use App\Exception\AppException;
 use App\Services\AbstractFullService;
 use App\Services\GoogleCalendarService;
-use DateTime;
 use Symfony\Contracts\Service\Attribute\Required;
 
 class CourseManager extends AbstractFullService
@@ -119,8 +118,8 @@ class CourseManager extends AbstractFullService
                 continue;
             }
 
-            $begin = new DateTime($courseEvent->getStart()->getDateTime());
-            $end = new DateTime($courseEvent->getEnd()->getDateTime());
+            $begin = new \DateTime($courseEvent->getStart()->getDateTime());
+            $end = new \DateTime($courseEvent->getEnd()->getDateTime());
 
             $course
                 ->setIdEvent($courseEvent->getId())
@@ -131,7 +130,7 @@ class CourseManager extends AbstractFullService
                 ->setDate($begin)
                 ->setHourBegin($begin)
                 ->setHourEnd($end)
-                ->setCreatedAt(new DateTime($courseEvent->getCreated()))
+                ->setCreatedAt(new \DateTime($courseEvent->getCreated()))
                 ->setAuthor($this->getUser())
             ;
 

@@ -15,7 +15,6 @@ use App\Repository\AccountRepository;
 use App\Repository\OperationRepository;
 use App\Services\GoogleDriveService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -191,7 +190,7 @@ class AccountController extends AbstractController
      * @IsGranted("ROLE_SUPER_ADMIN")
      *
      * @throws AppException
-     * @throws Exception
+     * @throws \Exception
      */
     #[Route(path: '/ofx/{id}', name: 'app_account_ofx')]
     public function ofx(Request $request, Account $account, OFXManager $manager, GoogleDriveService $googleDriveService): Response

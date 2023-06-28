@@ -11,7 +11,6 @@ use App\Manager\CourseManager;
 use App\Manager\PeriodManager;
 use App\Manager\SchoolManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -25,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CourseController extends AbstractController
 {
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     #[Route(path: '/save-appeal/{id}', name: 'app_course_save_appeal', methods: ['POST'])]
     public function saveAppeal(Request $request, Course $course, EntityManagerInterface $entityManager): JsonResponse

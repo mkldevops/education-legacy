@@ -18,15 +18,12 @@ use App\Repository\ClassPeriodStudentRepository;
 use App\Repository\CourseRepository;
 use App\Repository\PackageStudentPeriodRepository;
 use App\Repository\StudentRepository;
-use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
-use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class ClassPeriodManager implements ClassPeriodManagerInterface
 {
@@ -93,7 +90,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
     /**
      * @return Course[]
      */
-    public function getCourses(ClassPeriod $classPeriod, int $page, int $maxResult, DateTimeInterface $from): array
+    public function getCourses(ClassPeriod $classPeriod, int $page, int $maxResult, \DateTimeInterface $from): array
     {
         $offset = ($page - 1) * $maxResult;
         $courses = $this->courseRepository->getCourseOfClass($classPeriod, $from, $maxResult, $offset);
@@ -107,7 +104,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         return $courses;
     }
 
-    public function getNbCourses(ClassPeriod $classPeriod, DateTimeInterface $from): ?int
+    public function getNbCourses(ClassPeriod $classPeriod, \DateTimeInterface $from): ?int
     {
         $courses = null;
 
@@ -157,7 +154,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                 if ($classPeriodStudent instanceof ClassPeriodStudent) {
                     $end = $classPeriodStudent->getClassPeriod()?->getPeriod()?->getEnd();
                     if (null === $end || $end->getTimestamp() > time()) {
-                        $end = new DateTime();
+                        $end = new \DateTime();
                     }
 
                     $classPeriodStudent->setEnd($end)
@@ -183,7 +180,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
     /**
      * @return array<int, array<string, mixed>>
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function getListStudentWithout(Period $period, School $school): array
     {
@@ -191,10 +188,10 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
         $students = [];
         foreach ($result as $student) {
-            /** @var DateTime $birthday */
+            /** @var \DateTime $birthday */
             $birthday = $student['birthday'];
 
-            /** @var DateTime $registration */
+            /** @var \DateTime $registration */
             $registration = $student['dateRegistration'];
 
             $students[] = [
@@ -203,7 +200,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
                 'id' => $student['id'],
                 'name' => $student['name'],
                 'forname' => $student['forname'],
-                'age' => $birthday->diff(new DateTime())->y,
+                'age' => $birthday->diff(new \DateTime())->y,
                 'gender' => $student['gender'],
                 'dateRegistration' => $registration->format('d/m/Y'),
             ];
@@ -214,13 +211,13 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
     /**
      * @throws ORMException
-     * @throws Exception
+     * @throws \Exception
      */
     private function persistClassPeriodStudent(ClassPeriod $classPeriod, Student $student): void
     {
         $classPeriodStudent = new ClassPeriodStudent();
 
-        $begin = new DateTime();
+        $begin = new \DateTime();
 
         // On vérifie si la date debut de la periode n'est pas encore passé
         $timestamp = $classPeriod->getPeriod()->getBegin()?->getTimestamp();

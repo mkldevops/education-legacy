@@ -18,7 +18,6 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use ImagickException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -67,6 +66,7 @@ class Document
      * Mime Type file.
      *
      * @ORM\Column(type="string", length=30, nullable=true)
+     *
      * @Assert\NotBlank
      */
     private ?string $mime = null;
@@ -140,7 +140,7 @@ class Document
     }
 
     /**
-     * @throws ImagickException
+     * @throws \ImagickException
      * @throws AppException
      */
     public function getWebPathThumb(): ?string
@@ -149,7 +149,7 @@ class Document
     }
 
     /**
-     * @throws ImagickException
+     * @throws \ImagickException
      * @throws AppException
      */
     public function getWebPath(string $dir = self::DIR_FILE): ?string
@@ -287,7 +287,7 @@ class Document
     }
 
     /**
-     * @throws ImagickException
+     * @throws \ImagickException
      * @throws AppException
      */
     public function getWebPathPreview(): ?string
@@ -396,7 +396,7 @@ class Document
      * @return array<string, int>|array<string, null>|array<string, string>
      *
      * @throws AppException
-     * @throws ImagickException
+     * @throws \ImagickException
      */
     public function getInfos(): array
     {

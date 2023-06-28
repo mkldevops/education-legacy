@@ -14,8 +14,8 @@ use App\Repository\PackageStudentPeriodRepository;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Security\Core\Security;
 
 class FamilyManager implements FamilyManagerInterface
 {

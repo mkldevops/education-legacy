@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Entity\Document;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use ImagickException;
 
 /**
  * @method null|Document find($id, $lockMode = null, $lockVersion = null)
@@ -27,7 +26,7 @@ class DocumentRepository extends ServiceEntityRepository
      *
      * @return array<int, array<string, mixed[]>>
      *
-     * @throws ImagickException
+     * @throws \ImagickException
      */
     public function last(array $exists, int $firstResult = 0, int $maxResult = 5): array
     {

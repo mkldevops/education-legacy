@@ -8,7 +8,6 @@ use App\Entity\AppealCourse;
 use App\Entity\ClassPeriod;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use stdClass;
 
 /**
  * SaleProductRepository.
@@ -31,7 +30,7 @@ class AppealCourseRepository extends ServiceEntityRepository
     /**
      * Get list Students.
      */
-    public function getAppealToClassPeriod(ClassPeriod $classPeriod, array $listStatus): stdClass
+    public function getAppealToClassPeriod(ClassPeriod $classPeriod, array $listStatus): object
     {
         $oQuery = $this->createQueryBuilder('apc')
             ->select('apc')
@@ -48,12 +47,14 @@ class AppealCourseRepository extends ServiceEntityRepository
             ->getQuery()
         ;
 
-        $appeals = (object) [
-            'courses' => [],
-            'students' => [],
-        ];
+        $appeals = new class() {
+            /** @var array<object> */
+            public array $courses = [];
+            /** @var array<object> */
+            public array $students = [];
+        };
 
-        $datas = $oQuery->getArrayResult();
+        $data = $oQuery->getArrayResult();
 
         foreach ($listStatus as $key => $status) {
             $status['count'] = 0;
@@ -61,9 +62,9 @@ class AppealCourseRepository extends ServiceEntityRepository
             $listStatus[$key] = $status;
         }
 
-        foreach ($datas as $value) {
-            $courseId = $value['course']['id'];
-            $studentId = $value['student']['id'];
+        foreach ($data as $value) {
+            $courseId = (int) $value['course']['id'];
+            $studentId = (int) $value['student']['id'];
             $statusId = $value['status'];
 
             $value['student']['nameComplete'] = strtoupper($value['student']['person']['name']).' '.ucfirst($value['student']['person']['forname']);
@@ -71,10 +72,11 @@ class AppealCourseRepository extends ServiceEntityRepository
             $value['status'] = $listStatus[$value['status']];
 
             if (!\array_key_exists($courseId, $appeals->courses)) {
-                $appeals->courses[$courseId] = (object) [
-                    'course' => $value['course'],
-                    'students' => [],
-                ];
+                $appeals->courses[$courseId] = new class() {
+                    public ?array $course = null;
+                    /** @var array<object> */
+                    public array $students = [];
+                };
             }
 
             if (!\array_key_exists($studentId, $appeals->students)) {

@@ -12,7 +12,7 @@ use App\Repository\SchoolRepository;
 use App\Traits\RequestStackTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SchoolManager implements SchoolManagerInterface

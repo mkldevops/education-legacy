@@ -8,11 +8,6 @@ use App\Entity\Period;
 use App\Entity\School;
 use App\Repository\PeriodRepository;
 use App\Repository\StudentRepository;
-use Imagick;
-use ImagickDraw;
-use ImagickDrawException;
-use ImagickException;
-use ImagickPixel;
 use Symfony\Component\HttpFoundation\File\File;
 
 class DiplomaService
@@ -40,8 +35,8 @@ class DiplomaService
     }
 
     /**
-     * @throws ImagickException
-     * @throws ImagickDrawException
+     * @throws \ImagickException
+     * @throws \ImagickDrawException
      */
     public function generate(School $school, Period $period = null, int $limit = 1): bool
     {
@@ -59,24 +54,24 @@ class DiplomaService
     }
 
     /**
-     * @throws ImagickException
-     * @throws ImagickDrawException
+     * @throws \ImagickException
+     * @throws \ImagickDrawException
      */
-    public function getDiplomaStudent(string $student, string|int $id = null): Imagick
+    public function getDiplomaStudent(string $student, string|int $id = null): \Imagick
     {
         $id = $id ?: substr(md5($student), 0, 4);
 
-        $image = new Imagick($this->file->getRealPath());
+        $image = new \Imagick($this->file->getRealPath());
 
-        $draw = new ImagickDraw();
+        $draw = new \ImagickDraw();
         $draw->setFont($this->pathFont.\DIRECTORY_SEPARATOR.self::FONT_MILLENIA);
         $draw->setFontSize(200);
         $draw->setFontWeight(900);
-        $draw->setFillColor(new ImagickPixel('#444'));
-        $draw->setStrokeColor(new ImagickPixel('#f95000'));
+        $draw->setFillColor(new \ImagickPixel('#444'));
+        $draw->setStrokeColor(new \ImagickPixel('#f95000'));
         $draw->setStrokeWidth(1);
-        $draw->setTextAlignment(Imagick::ALIGN_CENTER);
-        $draw->setGravity(Imagick::GRAVITY_NORTHEAST);
+        $draw->setTextAlignment(\Imagick::ALIGN_CENTER);
+        $draw->setGravity(\Imagick::GRAVITY_NORTHEAST);
 
         $x = $image->getImageWidth() / 2;
         $y = $image->getImageHeight() / 1.50;

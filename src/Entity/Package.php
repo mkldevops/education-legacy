@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Table
+ *
  * @ORM\Entity(repositoryClass=PackageRepository::class)
  */
 class Package

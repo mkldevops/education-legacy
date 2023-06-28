@@ -6,7 +6,6 @@ namespace App\DataFixtures;
 
 use App\Exception\AppException;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use ReflectionClass;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 
@@ -46,7 +45,7 @@ abstract class AbstractAppFixtures extends Fixture
 
     private static function getPath(): string
     {
-        $name = (new ReflectionClass(static::class))->getShortName();
+        $name = (new \ReflectionClass(static::class))->getShortName();
 
         return str_replace('.php', '', sprintf('%s/data/%s.yaml', __DIR__, $name));
     }

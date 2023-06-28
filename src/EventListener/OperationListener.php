@@ -8,7 +8,6 @@ use App\Entity\AccountStatement;
 use App\Entity\Operation;
 use App\Repository\AccountStatementRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Psr\Log\LoggerInterface;
 
 class OperationListener
@@ -21,7 +20,7 @@ class OperationListener
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function preUpdate(Operation $operation): bool
     {
@@ -70,7 +69,7 @@ class OperationListener
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function prePersist(Operation $operation): bool
     {

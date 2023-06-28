@@ -9,7 +9,7 @@ use App\Fetcher\SessionFetcherInterface;
 use App\Repository\PackageStudentPeriodRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class PackageStudentPeriodManager
 {

@@ -8,7 +8,6 @@ use App\Repository\PackageStudentPeriodRepository;
 use App\Traits\AmountEntityTrait;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\StudentEntityTrait;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +19,9 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(fields={"package", "period", "student"})})
+ *
  * @ORM\Entity(repositoryClass=PackageStudentPeriodRepository::class)
+ *
  * @UniqueEntity(fields={"package", "period", "student"}, groups={"registration"})
  */
 class PackageStudentPeriod
@@ -59,6 +60,7 @@ class PackageStudentPeriod
 
     /**
      * @ORM\ManyToOne(targetEntity=Package::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     public ?Package $package = null;
@@ -71,6 +73,7 @@ class PackageStudentPeriod
 
     /**
      * @ORM\ManyToOne(targetEntity=Period::class)
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Period $period = null;
@@ -78,7 +81,7 @@ class PackageStudentPeriod
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $dateExpire;
+    private ?\DateTimeInterface $dateExpire;
 
     /**
      * @ORM\Column(type="float")
@@ -129,12 +132,12 @@ class PackageStudentPeriod
         return $this;
     }
 
-    public function getDateExpire(): ?DateTimeInterface
+    public function getDateExpire(): ?\DateTimeInterface
     {
         return $this->dateExpire;
     }
 
-    public function setDateExpire(DateTimeInterface $dateExpire): self
+    public function setDateExpire(\DateTimeInterface $dateExpire): self
     {
         $this->dateExpire = $dateExpire;
 

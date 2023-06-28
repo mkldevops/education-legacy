@@ -10,7 +10,6 @@ use App\Repository\FamilyRepository;
 use App\Repository\OperationRepository;
 use App\Repository\PersonRepository;
 use App\Services\AbstractFullService;
-use Exception;
 use Symfony\Component\Yaml\Yaml;
 
 class DashboardManager extends AbstractFullService
@@ -102,7 +101,7 @@ class DashboardManager extends AbstractFullService
             yield 'person' => $this->personRepository->search($search);
             yield 'family' => $this->familyRepository->search($search);
             yield 'document' => $this->documentRepository->search($search);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->error(__METHOD__.' '.$exception->getMessage());
 
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);

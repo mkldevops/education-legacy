@@ -7,9 +7,8 @@ namespace App\Manager;
 use App\Entity\ClassPeriod;
 use App\Entity\ClassPeriodStudent;
 use App\Repository\StudentRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class ClassSchoolManager
 {
@@ -28,7 +27,7 @@ class ClassSchoolManager
 
         $students = $this->studentRepository->findBy(['id' => array_keys($students)]);
 
-        $begin = new DateTime();
+        $begin = new \DateTime();
         if ($classPeriod->getPeriod()->getBegin()?->getTimestamp() > time()) {
             $begin = $classPeriod->getPeriod()->getBegin();
         }

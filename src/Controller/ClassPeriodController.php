@@ -19,13 +19,9 @@ use App\Manager\Interfaces\ClassPeriodManagerInterface;
 use App\Repository\AppealCourseRepository;
 use App\Repository\ClassPeriodRepository;
 use App\Repository\ClassSchoolRepository;
-use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Exception;
-use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -100,7 +96,7 @@ class ClassPeriodController extends AbstractController
     }
 
     /**
-     * @throws LogicException
+     * @throws \LogicException
      */
     #[Route(path: '/create', name: 'app_class_period_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
@@ -142,8 +138,8 @@ class ClassPeriodController extends AbstractController
 
     /**
      * @throws InvalidArgumentException
-     * @throws LogicException
-     * @throws Exception
+     * @throws \LogicException
+     * @throws \Exception
      */
     #[Route(path: '/show/{id}', name: 'app_class_period_show', options: ['expose' => true], methods: ['GET'])]
     public function show(ClassPeriod $classPeriod, AppealCourseRepository $appealCourseRepository): Response
@@ -284,9 +280,9 @@ class ClassPeriodController extends AbstractController
         ClassPeriod $classPeriod,
         ClassPeriodManager $manager,
         int $page = 1,
-        DateTimeInterface $from = null
+        \DateTimeInterface $from = null
     ): Response {
-        $from ??= new DateTime();
+        $from ??= new \DateTime();
         $students = $manager->getStudentsInClassPeriod($classPeriod);
         $courses = $manager->getCourses($classPeriod, $page, self::NB_DATES, $from);
         $nbCourses = $manager->getNbCourses($classPeriod, $from) ?? self::NB_DATES;
@@ -311,7 +307,7 @@ class ClassPeriodController extends AbstractController
     }
 
     /**
-     * @throws LogicException
+     * @throws \LogicException
      */
     #[Route('/delete-student/{id}/{student}', name: 'app_class_period_delete_student', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]

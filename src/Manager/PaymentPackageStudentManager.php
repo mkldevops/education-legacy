@@ -18,7 +18,7 @@ use App\Repository\StudentRepository;
 use App\Repository\TypeOperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterface
 {

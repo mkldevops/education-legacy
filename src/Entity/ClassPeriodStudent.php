@@ -7,7 +7,6 @@ namespace App\Entity;
 use App\Repository\ClassPeriodStudentRepository;
 use App\Traits\AuthorEntityTrait;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
@@ -25,12 +24,14 @@ class ClassPeriodStudent
 
     /**
      * @ORM\Id
+     *
      * @ORM\ManyToOne(targetEntity=ClassPeriod::class, inversedBy="students")
      */
     private ?ClassPeriod $classPeriod = null;
 
     /**
      * @ORM\Id
+     *
      * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="classPeriods")
      */
     private Student $student;
@@ -38,12 +39,12 @@ class ClassPeriodStudent
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTimeInterface $begin;
+    private \DateTimeInterface $begin;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $end = null;
+    private ?\DateTimeInterface $end = null;
 
     public function __toString(): string
     {
@@ -59,24 +60,24 @@ class ClassPeriodStudent
         return $this->getEnable();
     }
 
-    public function getEnd(): ?DateTimeInterface
+    public function getEnd(): ?\DateTimeInterface
     {
         return $this->end;
     }
 
-    public function setEnd(?DateTimeInterface $end): self
+    public function setEnd(?\DateTimeInterface $end): self
     {
         $this->end = $end;
 
         return $this;
     }
 
-    public function getBegin(): DateTimeInterface
+    public function getBegin(): \DateTimeInterface
     {
         return $this->begin;
     }
 
-    public function setBegin(DateTimeInterface $begin): static
+    public function setBegin(\DateTimeInterface $begin): static
     {
         $this->begin = $begin;
 

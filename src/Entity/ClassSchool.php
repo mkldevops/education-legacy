@@ -39,12 +39,14 @@ class ClassSchool
 
     /**
      * @Assert\Range(min="3", max="30")
+     *
      * @ORM\Column(type="integer")
      */
     private int $ageMinimum = 3;
 
     /**
      * @Assert\Range(min="3", max="30")
+     *
      * @ORM\Column(type="integer")
      */
     private int $ageMaximum = 3;
