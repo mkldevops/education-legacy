@@ -10,11 +10,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 trait PublisherEntityTrait
 {
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
-     *
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: true)]
     protected null|User|UserInterface $publisher;
 
     public function getPublisher(): null|User|UserInterface

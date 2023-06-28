@@ -19,9 +19,7 @@ use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Fardus\Traits\Symfony\Entity\ZipEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=SchoolRepository::class)
- */
+#[ORM\Entity(repositoryClass: SchoolRepository::class)]
 class School implements \Stringable
 {
     use AddressEntityTrait;
@@ -35,24 +33,16 @@ class School implements \Stringable
     use TimestampableEntityTrait;
     use ZipEntityTrait;
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": 0})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     protected bool $principal = false;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Member::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $director = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Package::class, mappedBy="school")
-     */
+    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'school')]
     protected Collection $packages;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Structure::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Structure::class, cascade: ['persist'])]
     protected ?Structure $structure = null;
 
     public function __construct()

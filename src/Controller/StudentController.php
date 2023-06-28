@@ -169,10 +169,8 @@ class StudentController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("ROLE_TEACHER")
-     */
     #[Route(path: '/new', name: 'app_student_new', methods: ['GET'])]
+    #[IsGranted('ROLE_TEACHER')]
     public function new(): Response
     {
         $student = new Student();

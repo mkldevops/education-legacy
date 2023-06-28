@@ -64,7 +64,7 @@ class OperationType extends AbstractType
                 'label' => 'form.operation_gender',
                 'class' => OperationGender::class,
                 'choice_label' => 'name',
-                'query_builder' => static fn(OperationGenderRepository $er) => $er->getAvailable(),
+                'query_builder' => static fn (OperationGenderRepository $er) => $er->getAvailable(),
             ])
             ->add('typeOperation', EntityType::class, [
                 'label' => 'form.type_operation',
@@ -85,7 +85,7 @@ class OperationType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'nameComplete',
                 'preferred_choices' => [$this->security->getUser()],
-                'query_builder' => static fn(UserRepository $er): QueryBuilder => $er->getAvailable(),
+                'query_builder' => static fn (UserRepository $er): QueryBuilder => $er->getAvailable(),
             ])
         ;
     }

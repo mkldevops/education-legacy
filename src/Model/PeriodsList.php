@@ -25,7 +25,7 @@ class PeriodsList
 
     public ?Period $current = null;
 
-    public function __construct(public ?array $list, public ?\App\Entity\Period $selected, Period $current = null)
+    public function __construct(public ?array $list, public ?Period $selected, Period $current = null)
     {
         $this->current = $current ?? $selected;
     }

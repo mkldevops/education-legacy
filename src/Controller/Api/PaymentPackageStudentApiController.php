@@ -40,7 +40,7 @@ class PaymentPackageStudentApiController extends AbstractController
             'payments' => $familyPayment->payments,
         ], context: [
             'ignore' => [],
-            'circular_reference_handler' => static fn($object) => $object->__toString(),
+            'circular_reference_handler' => static fn ($object) => $object->__toString(),
         ]);
     }
 }

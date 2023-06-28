@@ -14,11 +14,8 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-/**
- * @ORM\Table
- *
- * @ORM\Entity(repositoryClass=PackageRepository::class)
- */
+#[ORM\Table]
+#[ORM\Entity(repositoryClass: PackageRepository::class)]
 class Package implements \Stringable
 {
     use DescriptionEntityTrait;
@@ -28,15 +25,11 @@ class Package implements \Stringable
     use SchoolAccessorTrait;
     use TimestampableEntity;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=School::class, inversedBy="packages", cascade={"persist"})
-     */
     #[Ignore]
+    #[ORM\ManyToOne(targetEntity: School::class, inversedBy: 'packages', cascade: ['persist'])]
     protected ?School $school = null;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $price = 0.00;
 
     public function __construct()

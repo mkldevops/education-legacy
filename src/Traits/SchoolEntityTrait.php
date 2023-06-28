@@ -12,8 +12,6 @@ trait SchoolEntityTrait
 {
     use SchoolAccessorTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=School::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: School::class, cascade: ['persist'])]
     protected ?School $school = null;
 }

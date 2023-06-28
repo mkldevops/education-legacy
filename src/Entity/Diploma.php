@@ -21,10 +21,9 @@ use Vich\UploaderBundle\Entity\File as VichFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * @ORM\Entity(repositoryClass=DiplomaRepository::class)
- *
  * @Vich\Uploadable
  */
+#[ORM\Entity(repositoryClass: DiplomaRepository::class)]
 class Diploma
 {
     use AuthorEntityTrait;
@@ -34,9 +33,7 @@ class Diploma
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Period::class, mappedBy="diploma")
-     */
+    #[ORM\OneToMany(targetEntity: Period::class, mappedBy: 'diploma')]
     private Collection $periods;
 
     /**
@@ -51,14 +48,10 @@ class Diploma
      */
     private ?File $imageFile = null;
 
-    /**
-     * @ORM\Embedded(class=VichFile::class)
-     */
+    #[ORM\Embedded(class: VichFile::class)]
     private ?EmbeddedFile $image = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Document::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Document::class)]
     private ?Document $document = null;
 
     public function __construct()
@@ -114,7 +107,7 @@ class Diploma
      *
      * @throws \Exception
      */
-    public function setImageFile(\Symfony\Component\HttpFoundation\File\File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile = null): void
+    public function setImageFile(File|UploadedFile $imageFile = null): void
     {
         $this->imageFile = $imageFile;
 

@@ -13,9 +13,7 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=AccountRepository::class)
- */
+#[ORM\Entity(repositoryClass: AccountRepository::class)]
 class Account implements \Stringable
 {
     use EnableEntityTrait;
@@ -28,59 +26,37 @@ class Account implements \Stringable
      */
     final public const DEFAULT_INTERVAL_STATEMENT = 5;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Structure::class, inversedBy="accounts")
-     */
+    #[ORM\ManyToOne(targetEntity: Structure::class, inversedBy: 'accounts')]
     private ?Structure $structure = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="account")
-     */
+    #[ORM\OneToMany(targetEntity: Operation::class, mappedBy: 'account')]
     private Collection $operations;
 
-    /**
-     * @ORM\OneToMany(targetEntity=AccountStatement::class, mappedBy="account")
-     */
+    #[ORM\OneToMany(targetEntity: AccountStatement::class, mappedBy: 'account')]
     private Collection $accountStatements;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $principal = false;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $isBank = false;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $enableAccountStatement = false;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $bankName = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $bankAddress = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $bankIban = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $bankBic = null;
 
-    /**
-     * @ORM\Column(type="integer", options={"default": "5"})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 5])]
     private int $intervalOperationsAccountStatement = self::DEFAULT_INTERVAL_STATEMENT;
 
     public function __construct()

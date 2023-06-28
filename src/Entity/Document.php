@@ -21,9 +21,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=DocumentRepository::class)
- */
+#[ORM\Entity(repositoryClass: DocumentRepository::class)]
 class Document implements \Stringable
 {
     use AuthorEntityTrait;
@@ -53,9 +51,7 @@ class Document implements \Stringable
      */
     final public const EXT_PNG = 'png';
 
-    /**
-     * @Assert\File(maxSize="60000000")
-     */
+    #[Assert\File(maxSize: 60_000_000)]
     private ?UploadedFile $file = null;
 
     private ?string $fileName = null;
@@ -64,54 +60,42 @@ class Document implements \Stringable
 
     /**
      * Mime Type file.
-     *
-     * @ORM\Column(type="string", length=30, nullable=true)
-     *
-     * @Assert\NotBlank
      */
+    #[ORM\Column(type: 'string', length: 30, nullable: true)]
+    #[Assert\NotBlank]
     private ?string $mime = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $path = null;
 
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
+    #[ORM\Column(type: 'string', length: 10)]
     private ?string $extension = null;
 
     /**
      * @var Collection<int, Person>
-     *
-     * @ORM\OneToMany(targetEntity=Person::class, mappedBy="image", cascade={"remove"})
      */
+    #[ORM\OneToMany(targetEntity: Person::class, mappedBy: 'image', cascade: ['remove'])]
     private Collection $persons;
 
     /**
      * @var Collection<int, Operation>
-     *
-     * @ORM\ManyToMany(targetEntity=Operation::class, mappedBy="documents", cascade={"remove"})
      */
+    #[ORM\ManyToMany(targetEntity: Operation::class, mappedBy: 'documents', cascade: ['remove'])]
     private Collection $operations;
 
     /**
      * @var Collection<int, AccountStatement>
-     *
-     * @ORM\ManyToMany(targetEntity=AccountStatement::class, mappedBy="documents", cascade={"remove"})
      */
+    #[ORM\ManyToMany(targetEntity: AccountStatement::class, mappedBy: 'documents', cascade: ['remove'])]
     private Collection $accountStatements;
 
     /**
      * @var Collection<int, AccountSlip>
-     *
-     * @ORM\ManyToMany(targetEntity=AccountSlip::class, mappedBy="documents", cascade={"remove"})
      */
+    #[ORM\ManyToMany(targetEntity: AccountSlip::class, mappedBy: 'documents', cascade: ['remove'])]
     private Collection $accountSlips;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $size = null;
 
     public function __construct()

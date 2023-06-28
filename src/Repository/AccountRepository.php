@@ -33,7 +33,7 @@ class AccountRepository extends ServiceEntityRepository
             ->getAccounts($school, $principalOnly, $listAccountId)
             ->getArrayResult()
         ;
-        if ($result === []) {
+        if ([] === $result) {
             return [];
         }
 
@@ -86,7 +86,7 @@ class AccountRepository extends ServiceEntityRepository
             ;
         }
 
-        if ($listAccountId !== []) {
+        if ([] !== $listAccountId) {
             $query
                 ->andWhere('acc.id in (:accounts)')
                 ->setParameter('accounts', $listAccountId)

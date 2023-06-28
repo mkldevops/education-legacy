@@ -16,9 +16,7 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=PeriodRepository::class)
- */
+#[ORM\Entity(repositoryClass: PeriodRepository::class)]
 class Period implements \Stringable
 {
     use AuthorEntityTrait;
@@ -29,24 +27,16 @@ class Period implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ClassPeriod::class, mappedBy="period")
-     */
+    #[ORM\OneToMany(targetEntity: ClassPeriod::class, mappedBy: 'period')]
     protected Collection $classPeriods;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     protected ?\DateTimeInterface $begin = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     protected ?\DateTimeInterface $end = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Diploma::class, inversedBy="periods")
-     */
+    #[ORM\ManyToOne(targetEntity: Diploma::class, inversedBy: 'periods')]
     private ?Diploma $diploma = null;
 
     public function __construct()

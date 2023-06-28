@@ -22,9 +22,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=PersonRepository::class)
- */
+#[ORM\Entity(repositoryClass: PersonRepository::class)]
 class Person implements \Stringable
 {
     use AddressEntityTrait;
@@ -47,71 +45,43 @@ class Person implements \Stringable
      */
     final public const GENDER_FEMALE = 'female';
 
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(type="string")
-     */
+    #[Assert\NotBlank]
+    #[ORM\Column(type: 'string')]
     protected ?string $forname = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $phone = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     protected ?\DateTimeInterface $birthday = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $birthplace = null;
 
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
+    #[ORM\Column(type: 'string', length: 10)]
     protected ?string $gender = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist"})
-     *
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: true)]
     protected ?User $user = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Member::class, cascade={"persist"}, mappedBy="person")
-     */
+    #[ORM\OneToOne(targetEntity: Member::class, cascade: ['persist'], mappedBy: 'person')]
     protected ?Member $member = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Student::class, cascade={"persist"}, mappedBy="person")
-     */
+    #[ORM\OneToOne(targetEntity: Student::class, cascade: ['persist'], mappedBy: 'person')]
     protected ?Student $student = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=School::class, cascade={"persist", "merge", "remove"})
-     */
+    #[ORM\ManyToMany(targetEntity: School::class, cascade: ['persist', 'merge', 'remove'])]
     protected Collection $schools;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Document::class, inversedBy="persons", cascade={"remove"})
-     *
-     * @ORM\JoinColumn(nullable=true)
-     *
-     * @Assert\Valid
-     */
+    #[ORM\ManyToOne(targetEntity: Document::class, inversedBy: 'persons', cascade: ['remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Assert\Valid]
     protected ?Document $image = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Family::class, inversedBy="persons", cascade={"remove"})
-     *
-     * @ORM\JoinColumn(nullable=true)
-     *
-     * @Assert\Valid
-     */
+    #[ORM\ManyToOne(targetEntity: Family::class, inversedBy: 'persons', cascade: ['remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Assert\Valid]
     protected ?Family $family = null;
 
     public function __construct()

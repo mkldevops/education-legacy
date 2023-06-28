@@ -15,11 +15,9 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=AppealCourseRepository::class)
- *
- * @ORM\Table(uniqueConstraints={@UniqueConstraint(columns={"student_id", "course_id"})})
- */
+#[ORM\Table]
+#[UniqueConstraint(columns: ['student_id', 'course_id'])]
+#[ORM\Entity(repositoryClass: AppealCourseRepository::class)]
 class AppealCourse implements \Stringable
 {
     use CommentEntityTrait;
@@ -58,19 +56,13 @@ class AppealCourse implements \Stringable
      */
     final public const STATUS_LAG_UNACCEPTED = 5;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="appealCourses", cascade={"persist", "remove"})
-     */
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'appealCourses', cascade: ['persist', 'remove'])]
     protected ?Student $student = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Course::class, cascade={"persist", "remove"}, inversedBy="students")
-     */
+    #[ORM\ManyToOne(targetEntity: Course::class, cascade: ['persist', 'remove'], inversedBy: 'students')]
     private Course $course;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private int $status = self::STATUS_NOTHING;
 
     public function __toString(): string

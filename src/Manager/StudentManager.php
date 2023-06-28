@@ -79,7 +79,7 @@ class StudentManager
             ])
         ;
 
-        if ($hasPackage !== []) {
+        if ([] !== $hasPackage) {
             throw new AppException('The package is already affected to student');
         }
 

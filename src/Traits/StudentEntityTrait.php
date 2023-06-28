@@ -9,9 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait StudentEntityTrait
 {
-    /**
-     * @ORM\ManyToOne(targetEntity=Student::class, cascade={"persist", "remove"})
-     */
+    #[ORM\ManyToOne(targetEntity: Student::class, cascade: ['persist', 'remove'])]
     protected ?Student $student = null;
 
     public function getStudent(): ?Student

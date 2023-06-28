@@ -25,10 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_ACCOUNTANT")
- */
 #[Route(path: '/account')]
+#[IsGranted('ROLE_ACCOUNTANT')]
 class AccountController extends AbstractController
 {
     public function __construct(private readonly TranslatorInterface $translator)
@@ -55,11 +53,10 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     *
      * @throws AppException
      */
     #[Route(path: '/create', name: 'app_account_create')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): RedirectResponse|Response
     {
         $account = new Account();
@@ -82,10 +79,8 @@ class AccountController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
     #[Route(path: '/new', name: 'app_account_new')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function new(): Response
     {
         $account = new Account();
@@ -125,10 +120,9 @@ class AccountController extends AbstractController
 
     /**
      * Displays a form to edit an existing Account entity.
-     *
-     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/edit/{id}', name: 'app_account_edit')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function edit(Account $account): Response
     {
         $editForm = $this->createEditForm($account);
@@ -139,10 +133,8 @@ class AccountController extends AbstractController
         ]);
     }
 
-    /**
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
     #[Route(path: '/update/{id}', name: 'app_account_update')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function update(Request $request, Account $account, EntityManagerInterface $entityManager): Response
     {
         $editForm = $this->createEditForm($account);
@@ -163,10 +155,9 @@ class AccountController extends AbstractController
 
     /**
      * Deletes a Account entity.
-     *
-     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     #[Route(path: '/delete/{id}', name: 'app_account_delete')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function delete(Request $request, Account $account, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($account->getId());
@@ -187,12 +178,11 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     *
      * @throws AppException
      * @throws \Exception
      */
     #[Route(path: '/ofx/{id}', name: 'app_account_ofx')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function ofx(Request $request, Account $account, OFXManager $manager, GoogleDriveService $googleDriveService): Response
     {
         $files = $googleDriveService

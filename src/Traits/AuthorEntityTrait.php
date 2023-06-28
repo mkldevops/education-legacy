@@ -10,9 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 trait AuthorEntityTrait
 {
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
     protected null|User|UserInterface $author = null;
 
     public function getAuthor(): null|User

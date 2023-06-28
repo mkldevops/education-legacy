@@ -18,9 +18,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use AuthorEntityTrait;
@@ -35,42 +33,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      */
     final public const USER_ROBOT = 0;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=School::class)
-     */
+    #[ORM\ManyToMany(targetEntity: School::class)]
     protected Collection $schoolAccessRight;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $username = null;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private string $password;
 
     private ?string $plainPassword = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $surname = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true, unique=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true, unique: true)]
     private string $email;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
     #[Ignore]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastLogin = null;
 
     public function __construct()

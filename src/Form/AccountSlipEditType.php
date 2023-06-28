@@ -19,13 +19,14 @@ class AccountSlipEditType extends AccountSlipType
     {
         parent::buildForm($builder, $options);
 
-        $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event) : void {
+        $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event): void {
             /** @var AccountSlip $accountSlip */
             $accountSlip = $event->getData();
             $form = $event->getForm();
             if ($accountSlip->hasOperationDebit()) {
                 $form->remove('accountDebit');
             }
+
             if ($accountSlip->hasOperationCredit()) {
                 $form->remove('accountCredit');
             }

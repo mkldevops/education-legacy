@@ -13,9 +13,7 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=AccountStatementRepository::class)
- */
+#[ORM\Entity(repositoryClass: AccountStatementRepository::class)]
 class AccountStatement implements \Stringable
 {
     use AuthorEntityTrait;
@@ -25,74 +23,54 @@ class AccountStatement implements \Stringable
 
     /**
      * @var Collection<int, Operation>
-     *
-     * @ORM\OneToMany(targetEntity=Operation::class, mappedBy="accountStatement")
      */
+    #[ORM\OneToMany(targetEntity: Operation::class, mappedBy: 'accountStatement')]
     protected Collection $operations;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $title = null;
 
     /**
-     * @ORM\Column(type="datetime")
-     *
      * @var \DateTime|\DateTimeImmutable
      */
+    #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $begin;
 
     /**
-     * @ORM\Column(type="datetime")
-     *
      * @var \DateTime|\DateTimeImmutable
      */
+    #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $end;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
-     *
      * @var \DateTime|\DateTimeImmutable
      */
+    #[ORM\Column(type: 'date', nullable: true)]
     private \DateTimeInterface $month;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $amountCredit = 0.00;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $amountDebit = 0.00;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $newBalance = 0.00;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $numberOperations = 0;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $reference = null;
 
     /**
      * @var Collection<int, Document>
-     *
-     * @ORM\ManyToMany(targetEntity=Document::class, cascade={"persist"}, inversedBy="accountStatements")
      */
+    #[ORM\ManyToMany(targetEntity: Document::class, cascade: ['persist'], inversedBy: 'accountStatements')]
     private Collection $documents;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="accountStatements", cascade={"persist"})
-     *
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Account::class, inversedBy: 'accountStatements', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false)]
     private Account $account;
 
     public function __construct()

@@ -8,9 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait AmountEntityTrait
 {
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     protected float $amount = 0.00;
 
     public function getAmount(): float

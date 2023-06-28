@@ -11,9 +11,7 @@ use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 
-/**
- * @ORM\Entity(repositoryClass=ClassPeriodStudentRepository::class)
- */
+#[ORM\Entity(repositoryClass: ClassPeriodStudentRepository::class)]
 class ClassPeriodStudent implements \Stringable
 {
     use AuthorEntityTrait;
@@ -21,28 +19,18 @@ class ClassPeriodStudent implements \Stringable
     use EnableEntityTrait;
     use TimestampableEntityTrait;
 
-    /**
-     * @ORM\Id
-     *
-     * @ORM\ManyToOne(targetEntity=ClassPeriod::class, inversedBy="students")
-     */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: ClassPeriod::class, inversedBy: 'students')]
     private ?ClassPeriod $classPeriod = null;
 
-    /**
-     * @ORM\Id
-     *
-     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="classPeriods")
-     */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'classPeriods')]
     private Student $student;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $begin;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $end = null;
 
     public function __toString(): string

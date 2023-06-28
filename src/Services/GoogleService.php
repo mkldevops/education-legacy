@@ -53,10 +53,9 @@ class GoogleService extends AbstractService
     }
 
     /**
-     * @required
-     *
      * @throws \Google_Exception
      */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setClient(\Google_Client $client): static
     {
         $this->client = $client;
@@ -85,7 +84,7 @@ class GoogleService extends AbstractService
             $this->logger->info(__METHOD__, ['credentialsPath' => $credentialsPath, 'authUrl' => $authUrl, 'accessToken' => $accessToken]);
 
             // Check to see if there was an error.
-            if ($accessToken === [] || \array_key_exists('error', $accessToken)) {
+            if ([] === $accessToken || \array_key_exists('error', $accessToken)) {
                 $msg = sprintf("Obtain your authCode with :\n \"%s\"", $authUrl);
 
                 throw new AppException(sprintf("%s  \n %s", $msg, json_encode(['accessToken' => $accessToken], JSON_THROW_ON_ERROR)));

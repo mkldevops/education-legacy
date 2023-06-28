@@ -136,7 +136,7 @@ class AccountStatementController extends AbstractController
             ->getArrayResult()
         ;
 
-        $stats = $stats === [] ? [
+        $stats = [] === $stats ? [
             'numberOperations' => 0,
             'sumCredit' => 0,
             'sumDebit' => 0,
@@ -254,7 +254,7 @@ class AccountStatementController extends AbstractController
     ): JsonResponse {
         $response = ResponseRequest::responseDefault();
         $operations = $operationRepository->getAvailableToAccountStatement($accountStatement);
-        if ($operations !== []) {
+        if ([] !== $operations) {
             foreach ($operations as $value) {
                 $value['date'] = $value['date']->format('d/m/Y');
                 $value['amount'] = number_format($value['amount'], 2, ',', ' ');

@@ -18,11 +18,10 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Table(indexes={@ORM\Index(columns={"account_id"}), @ORM\Index(columns={"date", "date_planned"})})
- *
- * @ORM\Entity(repositoryClass=OperationRepository::class)
- */
+#[ORM\Table]
+#[ORM\Index(columns: ['account_id'])]
+#[ORM\Index(columns: ['date', 'date_planned'])]
+#[ORM\Entity(repositoryClass: OperationRepository::class)]
 class Operation implements \Stringable
 {
     use AmountEntityTrait;
@@ -35,75 +34,50 @@ class Operation implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="operations")
-     *
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Account::class, inversedBy: 'operations')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Account $account = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=AccountStatement::class, inversedBy="operations", cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: AccountStatement::class, inversedBy: 'operations', cascade: ['persist'])]
     private ?AccountStatement $accountStatement = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=TypeOperation::class)
-     */
+    #[ORM\ManyToOne(targetEntity: TypeOperation::class)]
     private ?TypeOperation $typeOperation = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Validate::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Validate::class, cascade: ['persist'])]
     private ?Validate $validate = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Document::class, inversedBy="operations", cascade={"remove"})
-     */
+    #[ORM\ManyToMany(targetEntity: Document::class, inversedBy: 'operations', cascade: ['remove'])]
     private Collection $documents;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $reference = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true, unique=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true, unique: true)]
     private ?string $uniqueId = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=OperationGender::class)
-     */
+    #[ORM\ManyToOne(targetEntity: OperationGender::class)]
     private ?OperationGender $operationGender = null;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
-     *
      * @var null|\DateTime|\DateTimeImmutable
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $date;
 
     /**
-     * @ORM\Column(type="datetime")
-     *
      * @var null|\DateTime|\DateTimeImmutable
      */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $datePlanned = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
-     */
+    #[ORM\OneToMany(targetEntity: PaymentPackageStudent::class, mappedBy: 'operation', cascade: ['remove'])]
     private Collection $paymentPackageStudents;
 
-    /**
-     * @ORM\OneToOne(targetEntity=AccountSlip::class, mappedBy="operationDebit", cascade={"persist"})
-     */
+    #[ORM\OneToOne(targetEntity: AccountSlip::class, mappedBy: 'operationDebit', cascade: ['persist'])]
     private ?AccountSlip $slipsDebit = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=AccountSlip::class, mappedBy="operationCredit", cascade={"persist"})
-     */
+    #[ORM\OneToOne(targetEntity: AccountSlip::class, mappedBy: 'operationCredit', cascade: ['persist'])]
     private ?AccountSlip $slipsCredit = null;
 
     public function __construct()

@@ -16,9 +16,7 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=StudentRepository::class)
- */
+#[ORM\Entity(repositoryClass: StudentRepository::class)]
 class Student implements \Stringable
 {
     use AuthorEntityTrait;
@@ -28,72 +26,52 @@ class Student implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Person::class, inversedBy="student", cascade={"persist"})
-     */
+    #[ORM\OneToOne(targetEntity: Person::class, inversedBy: 'student', cascade: ['persist'])]
     private ?Person $person = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $lastSchool = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $personAuthorized = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $remarksHealth = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     */
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $letAlone = false;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateRegistration = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $dateDesactivated = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Grade::class, cascade: ['persist'])]
     private ?Grade $grade = null;
 
     /**
      * @var ClassPeriodStudent[]|Collection
-     *
-     * @ORM\OneToMany(targetEntity=ClassPeriodStudent::class, mappedBy="student", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: ClassPeriodStudent::class, mappedBy: 'student', cascade: ['persist'])]
     private array|Collection $classPeriods;
 
     /**
      * @var Collection|PackageStudentPeriod[]
-     *
-     * @ORM\OneToMany(targetEntity=PackageStudentPeriod::class, mappedBy="student", cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: PackageStudentPeriod::class, mappedBy: 'student', cascade: ['persist'])]
     private array|Collection $packagePeriods;
 
     /**
      * @var Collection<int, AppealCourse>
-     *
-     * @ORM\OneToMany(targetEntity=AppealCourse::class, mappedBy="student")
      */
+    #[ORM\OneToMany(targetEntity: AppealCourse::class, mappedBy: 'student')]
     private Collection $appealCourses;
 
     /**
      * @var Collection|StudentComment[]
-     *
-     * @ORM\OneToMany(targetEntity=StudentComment::class, mappedBy="student")
      */
+    #[ORM\OneToMany(targetEntity: StudentComment::class, mappedBy: 'student')]
     private array|Collection $comments;
 
     public function __construct()

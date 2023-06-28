@@ -15,9 +15,7 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=TeacherRepository::class)
- */
+#[ORM\Entity(repositoryClass: TeacherRepository::class)]
 class Teacher implements \Stringable
 {
     use AuthorEntityTrait;
@@ -27,25 +25,17 @@ class Teacher implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Course::class, inversedBy="teachers", cascade={"persist", "merge"})
-     */
+    #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'teachers', cascade: ['persist', 'merge'])]
     protected Collection $courses;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist", "merge", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'merge', 'remove'])]
     private ?Person $person = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Grade::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Grade::class, cascade: ['persist'])]
     private ?Grade $grade = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=ClassPeriod::class, inversedBy="teachers", cascade={"persist", "merge"})
-     */
-    private Collection $classPeriods;
+    #[ORM\ManyToMany(targetEntity: ClassPeriod::class, inversedBy: 'teachers', cascade: ['persist', 'merge'])]
+    private readonly Collection $classPeriods;
 
     public function __construct()
     {

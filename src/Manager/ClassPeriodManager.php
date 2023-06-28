@@ -95,7 +95,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         $offset = ($page - 1) * $maxResult;
         $courses = $this->courseRepository->getCourseOfClass($classPeriod, $from, $maxResult, $offset);
 
-        if ($courses === []) {
+        if ([] === $courses) {
             $courses = array_fill(0, 17, []);
         }
 
@@ -139,10 +139,10 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             throw new AppException('The current period is not available for update classPeriod');
         }
 
-        if ($studentsId !== []) {
+        if ([] !== $studentsId) {
             $students = $this->studentRepository->findBy(['id' => $studentsId]);
 
-            if ($students === []) {
+            if ([] === $students) {
                 throw new AppException('Not found student id : '.implode(',', $studentsId));
             }
 

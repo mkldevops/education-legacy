@@ -13,11 +13,8 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
-/**
- * @ORM\Table(name="`person_member`")
- *
- * @ORM\Entity(repositoryClass=MemberRepository::class)
- */
+#[ORM\Table(name: '`person_member`')]
+#[ORM\Entity(repositoryClass: MemberRepository::class)]
 class Member implements \Stringable
 {
     use AuthorEntityTrait;
@@ -27,19 +24,13 @@ class Member implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     protected ?string $positionName = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist", "merge", "remove"}, inversedBy="member")
-     */
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'merge', 'remove'], inversedBy: 'member')]
     protected ?Person $person = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Structure::class, cascade={"persist"}, inversedBy="members")
-     */
+    #[ORM\ManyToOne(targetEntity: Structure::class, cascade: ['persist'], inversedBy: 'members')]
     protected ?Structure $structure = null;
 
     public function __toString(): string

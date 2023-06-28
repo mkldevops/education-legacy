@@ -13,9 +13,7 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=MeetRepository::class)
- */
+#[ORM\Entity(repositoryClass: MeetRepository::class)]
 class Meet implements \Stringable
 {
     use AuthorEntityTrait;
@@ -25,24 +23,16 @@ class Meet implements \Stringable
     use SchoolEntityTrait;
     use TimestampableEntity;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $date;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $subject = null;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private ?string $text = null;
 
     public function __toString(): string

@@ -18,9 +18,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=ClassSchoolRepository::class)
- */
+#[ORM\Entity(repositoryClass: ClassSchoolRepository::class)]
 class ClassSchool implements \Stringable
 {
     use AuthorEntityTrait;
@@ -32,23 +30,15 @@ class ClassSchool implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ClassPeriod::class, mappedBy="classSchool")
-     */
+    #[ORM\OneToMany(targetEntity: ClassPeriod::class, mappedBy: 'classSchool')]
     private Collection $classPeriods;
 
-    /**
-     * @Assert\Range(min="3", max="30")
-     *
-     * @ORM\Column(type="integer")
-     */
+    #[Assert\Range(min: 3, max: 30)]
+    #[ORM\Column(type: 'integer')]
     private int $ageMinimum = 3;
 
-    /**
-     * @Assert\Range(min="3", max="30")
-     *
-     * @ORM\Column(type="integer")
-     */
+    #[Assert\Range(min: 3, max: 30)]
+    #[ORM\Column(type: 'integer')]
     private int $ageMaximum = 3;
 
     public function __construct()

@@ -213,14 +213,12 @@ class ClassPeriodController extends AbstractController
         ]));
     }
 
-    /**
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
     #[Route(path: '/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function add(ClassSchool $classSchool, Period $period, EntityManagerInterface $entityManager): RedirectResponse
     {
         $classPeriod = $this->classPeriodRepository->findBy(['classSchool' => $classSchool, 'period' => $period]);
-        if ($classPeriod === []) {
+        if ([] === $classPeriod) {
             $classPeriod = new ClassPeriod();
             $classPeriod->setAuthor($this->getUser())
                 ->setClassSchool($classSchool)
@@ -268,14 +266,12 @@ class ClassPeriodController extends AbstractController
         ]);
     }
 
-    /**
-     * @ParamConverter("from", options={"format": "Y-m-d"})
-     */
     #[Route(
         '/print-appeal-student/{id}/{page}/{from}',
         name: 'app_class_period_print_appeal_student',
         methods: ['GET']
     )]
+    #[ParamConverter('from', options: ['format' => 'Y-m-d'])]
     public function printAppealStudent(
         ClassPeriod $classPeriod,
         ClassPeriodManager $manager,

@@ -53,7 +53,7 @@ class PersonStudentType extends PersonSimpleType
                 'class' => Family::class,
                 'required' => false,
                 'label' => 'form.family.label',
-                'query_builder' => static fn(FamilyRepository $er): QueryBuilder => $er->createQueryBuilder('f')
+                'query_builder' => static fn (FamilyRepository $er): QueryBuilder => $er->createQueryBuilder('f')
                     ->where('f.enable = 1'),
             ])
         ;

@@ -17,13 +17,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-/**
- * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(fields={"package", "period", "student"})})
- *
- * @ORM\Entity(repositoryClass=PackageStudentPeriodRepository::class)
- *
- * @UniqueEntity(fields={"package", "period", "student"}, groups={"registration"})
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(fields: ['package', 'period', 'student'])]
+#[ORM\Entity(repositoryClass: PackageStudentPeriodRepository::class)]
+#[UniqueEntity(fields: ['package', 'period', 'student'], groups: ['registration'])]
 class PackageStudentPeriod implements \Stringable
 {
     use AmountEntityTrait;
@@ -58,44 +55,28 @@ class PackageStudentPeriod implements \Stringable
      */
     final public const DIFF_UNPAID_PERCENT = 20;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Package::class)
-     *
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Package::class)]
+    #[ORM\JoinColumn(nullable: false)]
     public ?Package $package = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="packagePeriods", cascade={"persist", "remove"})
-     */
     #[Ignore]
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'packagePeriods', cascade: ['persist', 'remove'])]
     protected ?Student $student = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Period::class)
-     *
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Period::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Period $period = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateExpire = null;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private float $discount = 0;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $paid = false;
 
-    /**
-     * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="packageStudentPeriod")
-     */
+    #[ORM\OneToMany(targetEntity: PaymentPackageStudent::class, mappedBy: 'packageStudentPeriod')]
     private Collection $payments;
 
     public function __construct()

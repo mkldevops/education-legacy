@@ -12,9 +12,7 @@ trait PeriodManagerTrait
 {
     protected PeriodManager $periodManager;
 
-    /**
-     * @required
-     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setPeriodManager(PeriodManager $periodManager): void
     {
         $this->periodManager = $periodManager;

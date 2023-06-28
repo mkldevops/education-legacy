@@ -16,9 +16,7 @@ use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=TypeOperationRepository::class)
- */
+#[ORM\Entity(repositoryClass: TypeOperationRepository::class)]
 class TypeOperation implements \Stringable
 {
     use AuthorEntityTrait;
@@ -59,34 +57,22 @@ class TypeOperation implements \Stringable
      */
     final public const TYPE_CODE_TO_DEFINE = 'TO_DEFINE';
 
-    /**
-     * @ORM\OneToMany(targetEntity=TypeOperation::class, mappedBy="parent")
-     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     protected Collection $typeOperations;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=TypeOperation::class, inversedBy="typeOperations")
-     */
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'typeOperations')]
     private ?TypeOperation $parent = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $shortName = null;
 
-    /**
-     * @ORM\Column(type="string", length=10, unique=true, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 10, unique: true, nullable: true)]
     private ?string $code = null;
 
-    /**
-     * @ORM\Column(type="string", length=10, options={"default": "mixte"})
-     */
+    #[ORM\Column(type: 'string', length: 10, options: ['default' => 'mixte'])]
     private string $typeAmount = self::TYPE_AMOUNT_MIXTE;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $isInternalTransfert = false;
 
     public function __construct()

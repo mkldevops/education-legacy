@@ -10,9 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 
-/**
- * @ORM\Entity(repositoryClass=ValidateRepository::class)
- */
+#[ORM\Entity(repositoryClass: ValidateRepository::class)]
 class Validate
 {
     use AuthorEntityTrait;
@@ -49,14 +47,10 @@ class Validate
      */
     final public const TYPE_DANGER = 'danger';
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $message = null;
 
-    /**
-     * @ORM\Column(type="string", length=10)
-     */
+    #[ORM\Column(type: 'string', length: 10)]
     private string $type = self::TYPE_MUTED;
 
     /**

@@ -11,9 +11,7 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=OperationGenderRepository::class)
- */
+#[ORM\Entity(repositoryClass: OperationGenderRepository::class)]
 class OperationGender implements \Stringable
 {
     use EnableEntityTrait;
@@ -51,9 +49,7 @@ class OperationGender implements \Stringable
      */
     final public const CODE_CHEQUE = 'cheque';
 
-    /**
-     * @ORM\Column(type="string", length=30, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 30, unique: true)]
     private ?string $code = null;
 
     public function __construct()

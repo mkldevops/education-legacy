@@ -40,7 +40,7 @@ class TypeOperationType extends AbstractType
                 'label' => "Type d'opération parent",
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
-                'query_builder' => static fn(TypeOperationRepository $er) => $er->getParents(),
+                'query_builder' => static fn (TypeOperationRepository $er) => $er->getParents(),
             ])
             ->add('description')
             ->add('isInternalTransfert')

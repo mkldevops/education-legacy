@@ -12,9 +12,7 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=GradeRepository::class)
- */
+#[ORM\Entity(repositoryClass: GradeRepository::class)]
 class Grade implements \Stringable
 {
     use DescriptionEntityTrait;

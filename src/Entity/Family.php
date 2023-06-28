@@ -20,11 +20,8 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=FamilyRepository::class)
- *
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: FamilyRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Family implements \Stringable
 {
     use AddressEntityTrait;
@@ -38,57 +35,35 @@ class Family implements \Stringable
     use TimestampableEntity;
     use ZipEntityTrait;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $name = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
-     *
-     * @ORM\JoinColumn(unique=true)
-     */
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(unique: true)]
     private ?Person $father = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
-     *
-     * @ORM\JoinColumn(unique=true)
-     */
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(unique: true)]
     private ?Person $mother = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Person::class, cascade={"persist"})
-     *
-     * @ORM\JoinColumn(unique=true)
-     */
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(unique: true)]
     private ?Person $legalGuardian = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $language = null;
 
-    /**
-     * @Assert\Range(min="1", max="12")
-     *
-     * @ORM\Column(type="integer")
-     */
+    #[Assert\Range(min: 1, max: 12)]
+    #[ORM\Column(type: 'integer')]
     private int $numberChildren = 1;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $personAuthorized = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $personEmergency = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Person::class, mappedBy="family", cascade={"remove"})
-     */
+    #[ORM\OneToMany(targetEntity: Person::class, mappedBy: 'family', cascade: ['remove'])]
     private Collection $persons;
 
     public function __construct()
@@ -163,9 +138,7 @@ class Family implements \Stringable
         return $this->persons;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
+    #[ORM\PrePersist]
     public function setNameValue(): void
     {
         $this->name = $this->getNameComplete();

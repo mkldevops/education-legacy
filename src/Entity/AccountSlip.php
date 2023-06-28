@@ -19,11 +19,8 @@ use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass=AccountSlipRepository::class)
- *
- * @UniqueEntity(fields={"structure", "gender", "reference"})
- */
+#[ORM\Entity(repositoryClass: AccountSlipRepository::class)]
+#[UniqueEntity(fields: ['structure', 'gender', 'reference'])]
 class AccountSlip implements \Stringable
 {
     use AmountEntityTrait;
@@ -65,44 +62,28 @@ class AccountSlip implements \Stringable
      */
     final public const TYPE_CREDIT = 'credit';
 
-    /**
-     * @ORM\OneToOne(targetEntity=Operation::class, inversedBy="slipsCredit", cascade={"persist"})
-     */
+    #[ORM\OneToOne(targetEntity: Operation::class, inversedBy: 'slipsCredit', cascade: ['persist'])]
     protected ?Operation $operationCredit = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Operation::class, inversedBy="slipsDebit", cascade={"persist"})
-     */
+    #[ORM\OneToOne(targetEntity: Operation::class, inversedBy: 'slipsDebit', cascade: ['persist'])]
     protected ?Operation $operationDebit = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Document::class, cascade={"persist"}, inversedBy="accountSlips")
-     */
+    #[ORM\ManyToMany(targetEntity: Document::class, cascade: ['persist'], inversedBy: 'accountSlips')]
     protected Collection $documents;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     protected ?\DateTimeInterface $date = null;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     protected string $gender;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 40, nullable: false)]
     protected string $reference;
 
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 100, nullable: true, unique: true)]
     protected ?string $uniqueId = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Structure::class, cascade={"persist"}, inversedBy="accountSlips")
-     */
+    #[ORM\ManyToOne(targetEntity: Structure::class, cascade: ['persist'], inversedBy: 'accountSlips')]
     protected Structure $structure;
 
     public function __construct()

@@ -21,7 +21,7 @@ class ClassSchoolManager
 
     public function addStudentToClass(array $students, ClassPeriod $classPeriod): bool
     {
-        if ($students === []) {
+        if ([] === $students) {
             return false;
         }
 

@@ -12,9 +12,7 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=StudentCommentRepository::class)
- */
+#[ORM\Entity(repositoryClass: StudentCommentRepository::class)]
 class StudentComment implements \Stringable
 {
     use AuthorEntityTrait;
@@ -48,24 +46,16 @@ class StudentComment implements \Stringable
      */
     public ?\DateTimeInterface $created = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="comments", cascade={"persist", "remove"})
-     */
+    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'comments', cascade: ['persist', 'remove'])]
     protected ?Student $student = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $title = null;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private string $text;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private string $type;
 
     public function __construct()

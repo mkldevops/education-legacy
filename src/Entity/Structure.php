@@ -17,9 +17,7 @@ use Fardus\Traits\Symfony\Entity\ZipEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\StructureRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\StructureRepository::class)]
 class Structure implements \Stringable
 {
     use AddressEntityTrait;
@@ -32,44 +30,28 @@ class Structure implements \Stringable
     use TimestampableEntity;
     use ZipEntityTrait;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $logo = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Member::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $president = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Member::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $treasurer = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Member::class, cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $secretary = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Member::class, mappedBy="structure")
-     */
+    #[ORM\OneToMany(targetEntity: Member::class, mappedBy: 'structure')]
     protected Collection $members;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: 'json')]
     protected array $options = [];
 
-    /**
-     * @ORM\OneToMany(targetEntity=Account::class, mappedBy="structure")
-     */
+    #[ORM\OneToMany(targetEntity: Account::class, mappedBy: 'structure')]
     protected Collection $accounts;
 
-    /**
-     * @ORM\OneToMany(targetEntity=AccountSlip::class, mappedBy="structure")
-     */
+    #[ORM\OneToMany(targetEntity: AccountSlip::class, mappedBy: 'structure')]
     protected Collection $accountSlips;
 
     public function __construct()

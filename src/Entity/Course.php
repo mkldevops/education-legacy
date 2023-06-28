@@ -14,9 +14,7 @@ use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
 use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=CourseRepository::class)
- */
+#[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course implements \Stringable
 {
     use AuthorEntityTrait;
@@ -25,44 +23,28 @@ class Course implements \Stringable
     use IdEntityTrait;
     use TimestampableEntity;
 
-    /**
-     * @ORM\OneToMany(targetEntity=AppealCourse::class, mappedBy="course")
-     */
+    #[ORM\OneToMany(targetEntity: AppealCourse::class, mappedBy: 'course')]
     protected Collection $students;
 
-    /**
-     * @ORM\Column(type="string", unique=true, nullable=true, options={"default": NULL})
-     */
+    #[ORM\Column(type: 'string', unique: true, nullable: true, options: ['default' => null])]
     private string $idEvent;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ClassPeriod::class, inversedBy="courses", cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: ClassPeriod::class, inversedBy: 'courses', cascade: ['persist'])]
     private ClassPeriod $classPeriod;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private \DateTimeInterface $date;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $text = null;
 
-    /**
-     * @ORM\Column(type="time")
-     */
+    #[ORM\Column(type: 'time')]
     private \DateTimeInterface $hourBegin;
 
-    /**
-     * @ORM\Column(type="time")
-     */
+    #[ORM\Column(type: 'time')]
     private \DateTimeInterface $hourEnd;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Teacher::class, mappedBy="courses", cascade={"persist"})
-     */
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'courses', cascade: ['persist'])]
     private Collection $teachers;
 
     public function __construct()
@@ -179,7 +161,7 @@ class Course implements \Stringable
     /**
      * @param Collection|Teacher[] $teachers
      */
-    public function setTeachers(\Doctrine\Common\Collections\Collection|array $teachers): self
+    public function setTeachers(Collection|array $teachers): self
     {
         $this->teachers = $teachers;
 
@@ -211,7 +193,7 @@ class Course implements \Stringable
     /**
      * @param AppealCourse[]|Collection $students
      */
-    public function setStudents(array|\Doctrine\Common\Collections\Collection $students): self
+    public function setStudents(array|Collection $students): self
     {
         $this->students = $students;
 

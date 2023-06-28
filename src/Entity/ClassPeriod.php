@@ -15,12 +15,9 @@ use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity(repositoryClass=ClassPeriodRepository::class)
- *
- * @UniqueEntity(fields={"classSchool"}, groups={"classPeriod"})
- * @UniqueEntity(fields={"period"}, groups={"classPeriod"})
- */
+#[ORM\Entity(repositoryClass: ClassPeriodRepository::class)]
+#[UniqueEntity(fields: ['classSchool'], groups: ['classPeriod'])]
+#[UniqueEntity(fields: ['period'], groups: ['classPeriod'])]
 class ClassPeriod implements \Stringable
 {
     use AuthorEntityTrait;
@@ -29,33 +26,21 @@ class ClassPeriod implements \Stringable
     use IdEntityTrait;
     use TimestampableEntity;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ClassSchool::class, cascade={"persist"}, inversedBy="classPeriods")
-     *
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: ClassSchool::class, cascade: ['persist'], inversedBy: 'classPeriods')]
+    #[ORM\JoinColumn(nullable: false)]
     private ClassSchool $classSchool;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Period::class, cascade={"persist"}, inversedBy="classPeriods")
-     *
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Period::class, cascade: ['persist'], inversedBy: 'classPeriods')]
+    #[ORM\JoinColumn(nullable: false)]
     private Period $period;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ClassPeriodStudent::class, mappedBy="classPeriod", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: ClassPeriodStudent::class, mappedBy: 'classPeriod', cascade: ['persist'])]
     private Collection $students;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Teacher::class, mappedBy="classPeriods", cascade={"persist"})
-     */
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classPeriods', cascade: ['persist'])]
     private Collection $teachers;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Course::class, mappedBy="classPeriod", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: Course::class, mappedBy: 'classPeriod', cascade: ['persist'])]
     private Collection $courses;
 
     public function __construct()
