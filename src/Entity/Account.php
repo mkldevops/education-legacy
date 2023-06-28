@@ -16,7 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
  */
-class Account
+class Account implements \Stringable
 {
     use EnableEntityTrait;
     use IdEntityTrait;
@@ -26,7 +26,7 @@ class Account
     /**
      * @var int
      */
-    public const DEFAULT_INTERVAL_STATEMENT = 5;
+    final public const DEFAULT_INTERVAL_STATEMENT = 5;
 
     /**
      * @ORM\ManyToOne(targetEntity=Structure::class, inversedBy="accounts")

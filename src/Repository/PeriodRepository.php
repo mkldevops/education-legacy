@@ -30,7 +30,8 @@ class PeriodRepository extends ServiceEntityRepository
             ->where('per.begin <= :begin')
             ->andWhere('per.enable = 1')
             ->setParameter('begin', $period->getBegin())
-            ->getQuery()->getResult();
+            ->getQuery()->getResult()
+        ;
     }
 
     public function getCurrentPeriod(): Period

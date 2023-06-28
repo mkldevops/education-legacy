@@ -16,7 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=AccountStatementRepository::class)
  */
-class AccountStatement
+class AccountStatement implements \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -126,10 +126,7 @@ class AccountStatement
         return $this->begin;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $begin
-     */
-    public function setBegin(\DateTimeInterface $begin): self
+    public function setBegin(\DateTime|\DateTimeImmutable $begin): self
     {
         $this->begin = $begin;
 
@@ -144,10 +141,7 @@ class AccountStatement
         return $this->end;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $end
-     */
-    public function setEnd(\DateTimeInterface $end): self
+    public function setEnd(\DateTime|\DateTimeImmutable $end): self
     {
         $this->end = $end;
 
@@ -259,7 +253,7 @@ class AccountStatement
 
     public function setAmountDebit(float $amountDebit): self
     {
-        $this->amountDebit = 0 - abs($amountDebit);
+        $this->amountDebit = -abs($amountDebit);
 
         return $this;
     }
@@ -315,10 +309,7 @@ class AccountStatement
         return $this->month;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $month
-     */
-    public function setMonth(\DateTimeInterface $month): self
+    public function setMonth(\DateTime|\DateTimeImmutable $month): self
     {
         $this->month = $month;
 

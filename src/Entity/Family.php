@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\HasLifecycleCallbacks
  */
-class Family
+class Family implements \Stringable
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
@@ -79,12 +79,12 @@ class Family
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $personAuthorized;
+    private ?string $personAuthorized = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $personEmergency;
+    private ?string $personEmergency = null;
 
     /**
      * @ORM\OneToMany(targetEntity=Person::class, mappedBy="family", cascade={"remove"})
@@ -113,15 +113,15 @@ class Family
     public function getNameComplete(): string
     {
         $persons = [];
-        if (null !== $this->mother) {
+        if ($this->mother instanceof \App\Entity\Person) {
             $persons[] = (string) $this->mother;
         }
 
-        if (null !== $this->father) {
+        if ($this->father instanceof \App\Entity\Person) {
             $persons[] = (string) $this->father;
         }
 
-        if (null !== $this->legalGuardian && \count($persons) < 2) {
+        if ($this->legalGuardian instanceof \App\Entity\Person && \count($persons) < 2) {
             $persons[] = (string) $this->getLegalGuardian();
         }
 
@@ -151,7 +151,7 @@ class Family
     {
         $this->legalGuardian = $legalGuardian;
 
-        if (null !== $this->legalGuardian && !$this->legalGuardian->hasGender()) {
+        if ($this->legalGuardian instanceof \App\Entity\Person && !$this->legalGuardian->hasGender()) {
             $this->legalGuardian->setGender(Person::GENDER_FEMALE);
         }
 
@@ -180,7 +180,7 @@ class Family
     {
         $this->father = $father;
 
-        if (null !== $this->father && !$this->father->hasGender()) {
+        if ($this->father instanceof \App\Entity\Person && !$this->father->hasGender()) {
             $this->father->setGender(Person::GENDER_MALE);
         }
 
@@ -196,7 +196,7 @@ class Family
     {
         $this->mother = $mother;
 
-        if (null !== $this->mother && !$this->mother->hasGender()) {
+        if ($this->mother instanceof \App\Entity\Person && !$this->mother->hasGender()) {
             $this->mother->setGender(Person::GENDER_FEMALE);
         }
 

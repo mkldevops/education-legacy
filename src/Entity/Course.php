@@ -17,7 +17,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=CourseRepository::class)
  */
-class Course
+class Course implements \Stringable
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;
@@ -179,7 +179,7 @@ class Course
     /**
      * @param Collection|Teacher[] $teachers
      */
-    public function setTeachers(Collection $teachers): self
+    public function setTeachers(\Doctrine\Common\Collections\Collection|array $teachers): self
     {
         $this->teachers = $teachers;
 
@@ -211,7 +211,7 @@ class Course
     /**
      * @param AppealCourse[]|Collection $students
      */
-    public function setStudents(Collection $students): self
+    public function setStudents(array|\Doctrine\Common\Collections\Collection $students): self
     {
         $this->students = $students;
 

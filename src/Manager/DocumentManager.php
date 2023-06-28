@@ -13,17 +13,17 @@ class DocumentManager extends AbstractFullService
     /**
      * @var string
      */
-    public const IMAGE = 'image';
+    final public const IMAGE = 'image';
 
     /**
      * @var string
      */
-    public const PNG = 'png';
+    final public const PNG = 'png';
 
     /**
      * @var string
      */
-    public const PDF = 'pdf';
+    final public const PDF = 'pdf';
 
     private static string $pathUploads = 'uploads/documents';
 
@@ -71,11 +71,11 @@ class DocumentManager extends AbstractFullService
             'errors' => false,
         ];
 
-        if (null === $document->getFile()) {
+        if (!$document->getFile() instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
             throw new FileNotFoundException('No file uploaded');
         }
 
-        $document->setFileName(sha1(uniqid((string) mt_rand(), true)))
+        $document->setFileName(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)))
             ->setExtension($document->getFile()->guessClientExtension())
         ;
 

@@ -20,7 +20,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  *
  * @ORM\Table(uniqueConstraints={@UniqueConstraint(columns={"student_id", "course_id"})})
  */
-class AppealCourse
+class AppealCourse implements \Stringable
 {
     use CommentEntityTrait;
     use EnableEntityTrait;
@@ -31,32 +31,32 @@ class AppealCourse
     /**
      * @var int
      */
-    public const STATUS_NOTHING = 0;
+    final public const STATUS_NOTHING = 0;
 
     /**
      * @var int
      */
-    public const STATUS_PRESENT = 1;
+    final public const STATUS_PRESENT = 1;
 
     /**
      * @var int
      */
-    public const STATUS_ABSENT = 2;
+    final public const STATUS_ABSENT = 2;
 
     /**
      * @var int
      */
-    public const STATUS_ABSENT_JUSTIFIED = 3;
+    final public const STATUS_ABSENT_JUSTIFIED = 3;
 
     /**
      * @var int
      */
-    public const STATUS_LAG = 4;
+    final public const STATUS_LAG = 4;
 
     /**
      * @var int
      */
-    public const STATUS_LAG_UNACCEPTED = 5;
+    final public const STATUS_LAG_UNACCEPTED = 5;
 
     /**
      * @ORM\ManyToOne(targetEntity=Student::class, inversedBy="appealCourses", cascade={"persist", "remove"})

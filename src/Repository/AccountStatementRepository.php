@@ -28,7 +28,7 @@ class AccountStatementRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getOneOrNullResult()
             ;
-        } catch (NonUniqueResultException $nonUniqueResultException) {
+        } catch (NonUniqueResultException) {
             $result = null;
         }
 

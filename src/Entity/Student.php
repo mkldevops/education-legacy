@@ -8,7 +8,6 @@ use App\Exception\AppException;
 use App\Repository\StudentRepository;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\SchoolEntityTrait;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +19,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=StudentRepository::class)
  */
-class Student
+class Student implements \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;

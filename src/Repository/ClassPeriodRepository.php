@@ -108,7 +108,7 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->orderBy('p.name', 'ASC')
         ;
 
-        if (null !== $student) {
+        if ($student instanceof \App\Entity\Student) {
             $qb->andWhere('cps.student = :student')
                 ->setParameter('student', $student->getId())
             ;

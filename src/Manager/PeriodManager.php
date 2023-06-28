@@ -66,7 +66,7 @@ class PeriodManager implements PeriodManagerInterface
     {
         $list = $this->repository->findBy(['enable' => true]);
 
-        if (empty($list)) {
+        if ($list === []) {
             throw new PeriodException('Nothing period available');
         }
 

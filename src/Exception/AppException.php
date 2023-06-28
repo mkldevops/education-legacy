@@ -6,7 +6,7 @@ namespace App\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class AppException extends \Exception implements MainErrorInterface
+class AppException extends \Exception implements MainErrorInterface, \Stringable
 {
     public function __construct(
         string $message = '',

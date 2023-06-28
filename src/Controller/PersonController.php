@@ -223,7 +223,7 @@ class PersonController extends AbstractController
 
         return $this->redirect($this->generateUrl('app_person_index', [
             'page' => 1,
-            'search' => urlencode($all['form']['q']),
+            'search' => urlencode((string) $all['form']['q']),
         ]));
     }
 

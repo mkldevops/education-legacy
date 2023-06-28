@@ -15,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=StudentCommentRepository::class)
  */
-class StudentComment
+class StudentComment implements \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -26,22 +26,22 @@ class StudentComment
     /**
      * @var string
      */
-    public const COMMENT_APPRECIATION = 'success';
+    final public const COMMENT_APPRECIATION = 'success';
 
     /**
      * @var string
      */
-    public const COMMENT_INFORMATION = 'info';
+    final public const COMMENT_INFORMATION = 'info';
 
     /**
      * @var string
      */
-    public const COMMENT_WARNING = 'warning';
+    final public const COMMENT_WARNING = 'warning';
 
     /**
      * @var string
      */
-    public const COMMENT_ALERT = 'danger';
+    final public const COMMENT_ALERT = 'danger';
 
     /**
      * @var null|\DateTime|\DateTimeImmutable
@@ -56,7 +56,7 @@ class StudentComment
     /**
      * @ORM\Column(type="string")
      */
-    private ?string $title;
+    private ?string $title = null;
 
     /**
      * @ORM\Column(type="text")

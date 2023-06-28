@@ -26,7 +26,7 @@ abstract class AbstractFullService
     #[Required]
     public function setUserWithToken(Security $security): void
     {
-        if (($user = $security->getUser()) === null) {
+        if (!($user = $security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return;
         }
 

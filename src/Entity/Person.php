@@ -8,7 +8,6 @@ use App\Exception\AppException;
 use App\Manager\PhoneManager;
 use App\Repository\PersonRepository;
 use App\Traits\AuthorEntityTrait;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=PersonRepository::class)
  */
-class Person
+class Person implements \Stringable
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
@@ -41,12 +40,12 @@ class Person
     /**
      * @var string
      */
-    public const GENDER_MALE = 'male';
+    final public const GENDER_MALE = 'male';
 
     /**
      * @var string
      */
-    public const GENDER_FEMALE = 'female';
+    final public const GENDER_FEMALE = 'female';
 
     /**
      * @Assert\NotBlank
@@ -258,7 +257,7 @@ class Person
         $gender = $this->gender;
 
         if (\in_array($gender, ['feminin', 'masculin'], true)) {
-            $gender = 'masculin' === $gender ? self::GENDER_MALE : self::GENDER_FEMALE;
+            return 'masculin' === $gender ? self::GENDER_MALE : self::GENDER_FEMALE;
         }
 
         return $gender;

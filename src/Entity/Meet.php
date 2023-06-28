@@ -16,7 +16,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=MeetRepository::class)
  */
-class Meet
+class Meet implements \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -38,12 +38,12 @@ class Meet
     /**
      * @ORM\Column(type="string")
      */
-    private ?string $subject;
+    private ?string $subject = null;
 
     /**
      * @ORM\Column(type="text")
      */
-    private ?string $text;
+    private ?string $text = null;
 
     public function __toString(): string
     {

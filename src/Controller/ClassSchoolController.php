@@ -160,7 +160,7 @@ class ClassSchoolController extends AbstractController
 
         return $this->redirect($this->generateUrl('app_class_school_index', [
             'page' => 1,
-            'search' => urlencode($all['form']['q']),
+            'search' => urlencode((string) $all['form']['q']),
         ]));
     }
 

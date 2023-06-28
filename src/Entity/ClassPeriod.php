@@ -21,7 +21,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity(fields={"classSchool"}, groups={"classPeriod"})
  * @UniqueEntity(fields={"period"}, groups={"classPeriod"})
  */
-class ClassPeriod
+class ClassPeriod implements \Stringable
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;

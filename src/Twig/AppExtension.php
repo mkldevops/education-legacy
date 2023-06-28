@@ -15,7 +15,7 @@ class AppExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('asset_exists', fn (\App\Entity\Document $document): bool => (new \App\Helper\UploaderHelper())->assetExists($document)),
+            new TwigFunction('asset_exists', static fn(\App\Entity\Document $document): bool => (new \App\Helper\UploaderHelper())->assetExists($document)),
         ];
     }
 }

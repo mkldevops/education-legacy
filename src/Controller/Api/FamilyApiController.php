@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api/family', options: ['expose' => true])]
 class FamilyApiController extends AbstractController
 {
-    public function __construct(private LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger)
     {
     }
 

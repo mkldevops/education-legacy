@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\ClassPeriod;
-use App\Entity\Student;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Fetcher\SessionFetcher;
@@ -20,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ClassPeriodApiController extends AbstractController
 {
     public function __construct(
-        private SessionFetcher $sessionFetcher
+        private readonly SessionFetcher $sessionFetcher
     ) {
     }
 

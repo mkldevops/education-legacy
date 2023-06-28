@@ -50,7 +50,7 @@ class AccountSlipType extends AbstractType
         /**
          * @param FormEvent $event
          */
-        $accountsFieldValidator = function (FormEvent $event): void {
+        $accountsFieldValidator = static function (FormEvent $event) : void {
             $form = $event->getForm();
             if ($form->has('accountCredit')) {
                 $accountCredit = $form->get('accountCredit')->getData();

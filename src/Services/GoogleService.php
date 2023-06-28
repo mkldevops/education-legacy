@@ -46,7 +46,7 @@ class GoogleService extends AbstractService
         // Refresh the token if it's expired.
         if ($this->client->isAccessTokenExpired()) {
             $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
-            file_put_contents($credentialsPath, json_encode($this->client->getAccessToken()));
+            file_put_contents($credentialsPath, json_encode($this->client->getAccessToken(), JSON_THROW_ON_ERROR));
         }
 
         return $this->client;
@@ -75,7 +75,7 @@ class GoogleService extends AbstractService
     public function getAccessToken(string $credentialsPath): array
     {
         if (file_exists($credentialsPath)) {
-            $accessToken = json_decode((string) file_get_contents($credentialsPath), true);
+            $accessToken = json_decode((string) file_get_contents($credentialsPath), true, 512, JSON_THROW_ON_ERROR);
         } else {
             // Request authorization from the user.
             $authUrl = $this->client->createAuthUrl();
@@ -85,10 +85,10 @@ class GoogleService extends AbstractService
             $this->logger->info(__METHOD__, ['credentialsPath' => $credentialsPath, 'authUrl' => $authUrl, 'accessToken' => $accessToken]);
 
             // Check to see if there was an error.
-            if (empty($accessToken) || \array_key_exists('error', $accessToken)) {
+            if ($accessToken === [] || \array_key_exists('error', $accessToken)) {
                 $msg = sprintf("Obtain your authCode with :\n \"%s\"", $authUrl);
 
-                throw new AppException(sprintf("%s  \n %s", $msg, json_encode(['accessToken' => $accessToken])));
+                throw new AppException(sprintf("%s  \n %s", $msg, json_encode(['accessToken' => $accessToken], JSON_THROW_ON_ERROR)));
             }
 
             // Store the credentials to disk.
@@ -96,7 +96,7 @@ class GoogleService extends AbstractService
                 mkdir(\dirname($credentialsPath), 0o700, true);
             }
 
-            file_put_contents($credentialsPath, json_encode($accessToken));
+            file_put_contents($credentialsPath, json_encode($accessToken, JSON_THROW_ON_ERROR));
             $this->logger->info('Credentials saved to '.$credentialsPath);
         }
 

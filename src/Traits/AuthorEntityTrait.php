@@ -22,7 +22,7 @@ trait AuthorEntityTrait
 
     public function setAuthor(null|User|UserInterface $author): self
     {
-        if (null !== $author) {
+        if ($author instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             $this->author = $author;
         }
 

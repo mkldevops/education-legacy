@@ -22,32 +22,32 @@ class Validate
     /**
      * @var string
      */
-    public const TYPE_MUTED = 'muted';
+    final public const TYPE_MUTED = 'muted';
 
     /**
      * @var string
      */
-    public const TYPE_PRIMARY = 'primary';
+    final public const TYPE_PRIMARY = 'primary';
 
     /**
      * @var string
      */
-    public const TYPE_INFO = 'info';
+    final public const TYPE_INFO = 'info';
 
     /**
      * @var string
      */
-    public const TYPE_SUCCESS = 'success';
+    final public const TYPE_SUCCESS = 'success';
 
     /**
      * @var string
      */
-    public const TYPE_WARNING = 'warning';
+    final public const TYPE_WARNING = 'warning';
 
     /**
      * @var string
      */
-    public const TYPE_DANGER = 'danger';
+    final public const TYPE_DANGER = 'danger';
 
     /**
      * @ORM\Column(type="string")

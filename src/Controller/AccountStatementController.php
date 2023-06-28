@@ -30,8 +30,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccountStatementController extends AbstractController
 {
     public function __construct(
-        private OperationRepository $operationRepository,
-        private EntityManagerInterface $entityManager,
+        private readonly OperationRepository $operationRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -136,7 +136,7 @@ class AccountStatementController extends AbstractController
             ->getArrayResult()
         ;
 
-        $stats = empty($stats) ? [
+        $stats = $stats === [] ? [
             'numberOperations' => 0,
             'sumCredit' => 0,
             'sumDebit' => 0,
@@ -214,7 +214,7 @@ class AccountStatementController extends AbstractController
 
         return $this->redirect($this->generateUrl('app_account_statement_index', [
             'page' => 1,
-            'search' => urlencode($all['form']['q']),
+            'search' => urlencode((string) $all['form']['q']),
         ]));
     }
 
@@ -254,7 +254,7 @@ class AccountStatementController extends AbstractController
     ): JsonResponse {
         $response = ResponseRequest::responseDefault();
         $operations = $operationRepository->getAvailableToAccountStatement($accountStatement);
-        if (!empty($operations)) {
+        if ($operations !== []) {
             foreach ($operations as $value) {
                 $value['date'] = $value['date']->format('d/m/Y');
                 $value['amount'] = number_format($value['amount'], 2, ',', ' ');

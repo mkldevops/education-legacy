@@ -71,7 +71,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             $id = $studentPeriod->getStudent()->getId();
             $package = $this->packageStudentPeriodRepository->getCurrentPackageStudent($id, $classPeriod->getPeriod());
 
-            if (null !== $package) {
+            if ($package instanceof \App\Entity\PackageStudentPeriod) {
                 $packageStudents[$id] = $package;
             }
         }
@@ -95,7 +95,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         $offset = ($page - 1) * $maxResult;
         $courses = $this->courseRepository->getCourseOfClass($classPeriod, $from, $maxResult, $offset);
 
-        if (empty($courses)) {
+        if ($courses === []) {
             $courses = array_fill(0, 17, []);
         }
 
@@ -139,10 +139,10 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             throw new AppException('The current period is not available for update classPeriod');
         }
 
-        if (!empty($studentsId)) {
+        if ($studentsId !== []) {
             $students = $this->studentRepository->findBy(['id' => $studentsId]);
 
-            if (empty($students)) {
+            if ($students === []) {
                 throw new AppException('Not found student id : '.implode(',', $studentsId));
             }
 
@@ -153,7 +153,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
                 if ($classPeriodStudent instanceof ClassPeriodStudent) {
                     $end = $classPeriodStudent->getClassPeriod()?->getPeriod()?->getEnd();
-                    if (null === $end || $end->getTimestamp() > time()) {
+                    if (!$end instanceof \DateTimeInterface || $end->getTimestamp() > time()) {
                         $end = new \DateTime();
                     }
 

@@ -47,7 +47,7 @@ class OperationRepository extends ServiceEntityRepository
             ->setParameter('structure', $school->getStructure()?->getId())
         ;
 
-        if (null !== $typeOperation) {
+        if ($typeOperation instanceof \App\Entity\TypeOperation) {
             $qb->andWhere('ope.typeOperation = :typeOperation')
                 ->setParameter('typeOperation', $typeOperation)
             ;

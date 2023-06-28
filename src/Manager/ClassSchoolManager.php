@@ -13,15 +13,15 @@ use Symfony\Bundle\SecurityBundle\Security;
 class ClassSchoolManager
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private StudentRepository $studentRepository,
-        private Security $security,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StudentRepository $studentRepository,
+        private readonly Security $security,
     ) {
     }
 
     public function addStudentToClass(array $students, ClassPeriod $classPeriod): bool
     {
-        if (empty($students)) {
+        if ($students === []) {
             return false;
         }
 

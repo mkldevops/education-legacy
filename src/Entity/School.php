@@ -22,7 +22,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 /**
  * @ORM\Entity(repositoryClass=SchoolRepository::class)
  */
-class School
+class School implements \Stringable
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;

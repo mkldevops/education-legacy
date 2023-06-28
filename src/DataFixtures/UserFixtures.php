@@ -14,10 +14,10 @@ class UserFixtures extends AbstractAppFixtures
     /**
      * @var string
      */
-    public const EMAIL = 'h.fahari@gmail.com';
+    final public const EMAIL = 'h.fahari@gmail.com';
 
     public function __construct(
-        private UserPasswordHasherInterface $hasher
+        private readonly UserPasswordHasherInterface $hasher
     ) {
     }
 

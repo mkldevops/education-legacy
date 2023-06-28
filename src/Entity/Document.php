@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=DocumentRepository::class)
  */
-class Document
+class Document implements \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -36,22 +36,22 @@ class Document
     /**
      * @var string
      */
-    public const DIR_FILE = 'original';
+    final public const DIR_FILE = 'original';
 
     /**
      * @var string
      */
-    public const DIR_PREVIEW = 'previews';
+    final public const DIR_PREVIEW = 'previews';
 
     /**
      * @var string
      */
-    public const DIR_THUMB = 'thumbs';
+    final public const DIR_THUMB = 'thumbs';
 
     /**
      * @var string
      */
-    public const EXT_PNG = 'png';
+    final public const EXT_PNG = 'png';
 
     /**
      * @Assert\File(maxSize="60000000")
@@ -179,7 +179,7 @@ class Document
         $path = $this->path;
 
         if (self::DIR_FILE !== $dir) {
-            $path = self::getPathPNG($path);
+            return self::getPathPNG($path);
         }
 
         return $path;
@@ -234,7 +234,7 @@ class Document
     public static function getUploadDir(string $dir = self::DIR_FILE): string
     {
         if (!\in_array($dir, [self::DIR_FILE, self::DIR_THUMB, self::DIR_PREVIEW], true)) {
-            $dir = self::DIR_FILE;
+            return self::DIR_FILE;
         }
 
         // get rid of the __DIR__ so it doesn't screw up
@@ -251,7 +251,7 @@ class Document
         }
 
         foreach ($formats as $format) {
-            $str = strpos((string) $this->getMime(), $format);
+            $str = strpos((string) $this->getMime(), (string) $format);
             $result = (false !== $str);
 
             if ($result) {

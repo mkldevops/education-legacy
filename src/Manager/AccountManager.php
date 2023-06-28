@@ -15,8 +15,8 @@ class AccountManager
     protected Account $account;
 
     public function __construct(
-        private AccountStatementRepository $accountStatementRepository,
-        private OperationRepository $operationRepository,
+        private readonly AccountStatementRepository $accountStatementRepository,
+        private readonly OperationRepository $operationRepository,
     ) {
     }
 

@@ -14,7 +14,7 @@ abstract class AbstractAppFixtures extends Fixture
     /**
      * @var string
      */
-    public const TODEFINE = 'todefine';
+    final public const TODEFINE = 'todefine';
 
     /**
      * @throws AppException

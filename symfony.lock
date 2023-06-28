@@ -838,9 +838,6 @@
     "symfony/yaml": {
         "version": "v5.4.3"
     },
-    "symplify/easy-coding-standard": {
-        "version": "9.4.70"
-    },
     "theofidry/alice-data-fixtures": {
         "version": "1.5",
         "recipe": {

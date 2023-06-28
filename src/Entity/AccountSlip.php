@@ -8,7 +8,6 @@ use App\Exception\AppException;
 use App\Repository\AccountSlipRepository;
 use App\Traits\AmountEntityTrait;
 use App\Traits\AuthorEntityTrait;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,7 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @UniqueEntity(fields={"structure", "gender", "reference"})
  */
-class AccountSlip
+class AccountSlip implements \Stringable
 {
     use AmountEntityTrait;
     use AuthorEntityTrait;
@@ -39,32 +38,32 @@ class AccountSlip
     /**
      * @var string
      */
-    public const GENDER_BANK_TRANSFER = 'virement';
+    final public const GENDER_BANK_TRANSFER = 'virement';
 
     /**
      * @var string
      */
-    public const GENDER_PAYMENT_SPECIES = 'versement';
+    final public const GENDER_PAYMENT_SPECIES = 'versement';
 
     /**
      * @var string
      */
-    public const GENDER_REBATE_CHECK = 'remise_cheque';
+    final public const GENDER_REBATE_CHECK = 'remise_cheque';
 
     /**
      * @var string
      */
-    public const GENDER_CASH_WITHDRAWAL = 'cash_withdrawal';
+    final public const GENDER_CASH_WITHDRAWAL = 'cash_withdrawal';
 
     /**
      * @var string
      */
-    public const TYPE_DEBIT = 'debit';
+    final public const TYPE_DEBIT = 'debit';
 
     /**
      * @var string
      */
-    public const TYPE_CREDIT = 'credit';
+    final public const TYPE_CREDIT = 'credit';
 
     /**
      * @ORM\OneToOne(targetEntity=Operation::class, inversedBy="slipsCredit", cascade={"persist"})
@@ -110,7 +109,8 @@ class AccountSlip
     {
         $this->setDate(new \DateTime())
             ->setEnable(true)
-            ->documents = new ArrayCollection();
+            ->documents = new ArrayCollection()
+        ;
     }
 
     public function __toString(): string
@@ -213,7 +213,7 @@ class AccountSlip
 
         $operation = $this->getOperationCredit();
         if (self::TYPE_DEBIT === $type) {
-            $operation = $this->getOperationDebit();
+            return $this->getOperationDebit();
         }
 
         return $operation;
@@ -230,7 +230,7 @@ class AccountSlip
 
         $result = $this->hasOperationCredit();
         if (self::TYPE_DEBIT === $type) {
-            $result = $this->hasOperationDebit();
+            return $this->hasOperationDebit();
         }
 
         return $result;

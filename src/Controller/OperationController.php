@@ -117,12 +117,12 @@ class OperationController extends AbstractController
 
                 if ($accountRequest = $request->get('account')) {
                     $account = $accountRepository->findOneBy(['id' => $accountRequest]);
-                    if (null !== $account) {
+                    if ($account instanceof \App\Entity\Account) {
                         $operation->setAccount($account);
                     }
                 }
 
-                if (($user = $security->getUser()) !== null) {
+                if (($user = $security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
                     $operation->setPublisher($user);
                 }
 
@@ -300,7 +300,7 @@ class OperationController extends AbstractController
         $response = ResponseRequest::responseDefault();
 
         try {
-            if (null !== $operation->getValidate()) {
+            if ($operation->getValidate() instanceof \App\Entity\Validate) {
                 throw new AppException('This operation is already validated');
             }
 
@@ -317,7 +317,7 @@ class OperationController extends AbstractController
                 'operation'
             ));
 
-            if (($user = $security->getUser()) !== null) {
+            if (($user = $security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
                 $validate->setAuthor($user);
             }
 

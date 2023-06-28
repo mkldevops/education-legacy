@@ -14,7 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=OperationGenderRepository::class)
  */
-class OperationGender
+class OperationGender implements \Stringable
 {
     use EnableEntityTrait;
     use IdEntityTrait;
@@ -24,32 +24,32 @@ class OperationGender
     /**
      * @var string
      */
-    public const CODE_CB = 'cb';
+    final public const CODE_CB = 'cb';
 
     /**
      * @var string
      */
-    public const CODE_PRLVT = 'prelevement';
+    final public const CODE_PRLVT = 'prelevement';
 
     /**
      * @var string
      */
-    public const CODE_REMISE = 'remise_cheque';
+    final public const CODE_REMISE = 'remise_cheque';
 
     /**
      * @var string
      */
-    public const CODE_VIR = 'virement';
+    final public const CODE_VIR = 'virement';
 
     /**
      * @var string
      */
-    public const CODE_VRSMT = 'versement';
+    final public const CODE_VRSMT = 'versement';
 
     /**
      * @var string
      */
-    public const CODE_CHEQUE = 'cheque';
+    final public const CODE_CHEQUE = 'cheque';
 
     /**
      * @ORM\Column(type="string", length=30, unique=true)
@@ -63,7 +63,7 @@ class OperationGender
 
     public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     public function getCode(): ?string

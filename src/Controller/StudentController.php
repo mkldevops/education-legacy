@@ -46,10 +46,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class StudentController extends AbstractController
 {
     public function __construct(
-        private SchoolManager $schoolManager,
-        private PeriodManager $periodManager,
-        private TranslatorInterface $translator,
-        private LoggerInterface $logger
+        private readonly SchoolManager $schoolManager,
+        private readonly PeriodManager $periodManager,
+        private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -363,17 +363,10 @@ class StudentController extends AbstractController
     public function setPhone(Student $student, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $response = ResponseRequest::responseDefault();
-        switch ($request->get('action')) {
-            case 'delete':
-                $student->removePhone($request->get('key'));
-
-                break;
-            case 'add':
-            default:
-                $student->addPhone($request->get('student_phone'));
-
-                break;
-        }
+        match ($request->get('action')) {
+            'delete' => $student->removePhone($request->get('key')),
+            default => $student->addPhone($request->get('student_phone')),
+        };
 
         $response->data['listPhones'] = $student->getListPhones();
 

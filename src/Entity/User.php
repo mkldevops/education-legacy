@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var int
      */
-    public const USER_ROBOT = 0;
+    final public const USER_ROBOT = 0;
 
     /**
      * @ORM\ManyToMany(targetEntity=School::class)

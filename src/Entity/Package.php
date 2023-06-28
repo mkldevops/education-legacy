@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
  *
  * @ORM\Entity(repositoryClass=PackageRepository::class)
  */
-class Package
+class Package implements \Stringable
 {
     use DescriptionEntityTrait;
     use EnableEntityTrait;

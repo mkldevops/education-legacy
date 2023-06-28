@@ -29,8 +29,8 @@ class DiplomaService
     private string $pathUploads;
 
     public function __construct(
-        private PeriodRepository $periodRepository,
-        private StudentRepository $studentRepository
+        private readonly PeriodRepository $periodRepository,
+        private readonly StudentRepository $studentRepository
     ) {
     }
 
@@ -40,7 +40,7 @@ class DiplomaService
      */
     public function generate(School $school, Period $period = null, int $limit = 1): bool
     {
-        if (null === $period) {
+        if (!$period instanceof \App\Entity\Period) {
             $period = $this->periodRepository->getCurrentPeriod();
         }
 

@@ -48,8 +48,8 @@ class ClassPeriodController extends AbstractController
     private const NB_DATES = 17;
 
     public function __construct(
-        private ClassSchoolRepository $classSchoolRepository,
-        private ClassPeriodRepository $classPeriodRepository,
+        private readonly ClassSchoolRepository $classSchoolRepository,
+        private readonly ClassPeriodRepository $classPeriodRepository,
     ) {
     }
 
@@ -209,7 +209,7 @@ class ClassPeriodController extends AbstractController
 
         return $this->redirect($this->generateUrl('app_class_period_index', [
             'page' => 1,
-            'search' => urlencode($all['form']['q']),
+            'search' => urlencode((string) $all['form']['q']),
         ]));
     }
 
@@ -220,7 +220,7 @@ class ClassPeriodController extends AbstractController
     public function add(ClassSchool $classSchool, Period $period, EntityManagerInterface $entityManager): RedirectResponse
     {
         $classPeriod = $this->classPeriodRepository->findBy(['classSchool' => $classSchool, 'period' => $period]);
-        if (empty($classPeriod)) {
+        if ($classPeriod === []) {
             $classPeriod = new ClassPeriod();
             $classPeriod->setAuthor($this->getUser())
                 ->setClassSchool($classSchool)

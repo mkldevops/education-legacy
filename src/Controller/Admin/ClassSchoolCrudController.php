@@ -17,7 +17,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class ClassSchoolCrudController extends AbstractCrudController
 {
-    public function __construct(private Security $security)
+    public function __construct(private readonly Security $security)
     {
     }
 

@@ -35,9 +35,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class AccountSlipController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private AccountSlipRepository $accountSlipRepository,
-        private TranslatorInterface $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AccountSlipRepository $accountSlipRepository,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -164,7 +164,7 @@ class AccountSlipController extends AbstractController
                     $transferManager->setAccountDebit($editForm->get('accountDebit')->getData());
                 }
 
-                if (($structure = $schoolManager->getEntitySchool()->getStructure()) !== null) {
+                if (($structure = $schoolManager->getEntitySchool()->getStructure()) instanceof \App\Entity\Structure) {
                     $accountSlip->setStructure($structure);
                 }
 
@@ -215,7 +215,7 @@ class AccountSlipController extends AbstractController
 
         return $this->redirect($this->generateUrl('app_account_slip_index', [
             'page' => 1,
-            'search' => urlencode($all['form']['q']),
+            'search' => urlencode((string) $all['form']['q']),
         ]));
     }
 

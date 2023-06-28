@@ -26,17 +26,17 @@ class OFXManager
     /**
      * @var string
      */
-    public const STATUS_ALREADY = 'already';
+    final public const STATUS_ALREADY = 'already';
 
     /**
      * @var string
      */
-    public const STATUS_ADD_OPERATION = 'add_operation';
+    final public const STATUS_ADD_OPERATION = 'add_operation';
 
     /**
      * @var string
      */
-    public const STATUS_ADD_TRANSFER = 'add_transfer';
+    final public const STATUS_ADD_TRANSFER = 'add_transfer';
 
     private Account $account;
 
@@ -45,12 +45,12 @@ class OFXManager
     private array $logs = [];
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger,
-        private OperationManager $operationManager,
-        private TransferManager $transferManager,
-        private AccountableFetcher $accountableFetcher,
-        private Security $security,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly OperationManager $operationManager,
+        private readonly TransferManager $transferManager,
+        private readonly AccountableFetcher $accountableFetcher,
+        private readonly Security $security,
     ) {
     }
 
@@ -74,7 +74,7 @@ class OFXManager
                     ->findOperationByUniqueId($transaction->uniqueId)
                 ;
 
-                if (null !== $operation) {
+                if ($operation instanceof \App\Entity\Operation) {
                     $operation->setAmount($transaction->amount);
                     $this->entityManager->persist($operation);
                     $this->entityManager->flush();
@@ -89,7 +89,7 @@ class OFXManager
                 $this->transactionToOperation($transaction);
             }
 
-            $count += \count($bank->statement->transactions);
+            $count += is_countable($bank->statement->transactions) ? \count($bank->statement->transactions) : 0;
         }
 
         return \count($this->logs) === $count;
@@ -160,7 +160,7 @@ class OFXManager
         ];
 
         $pattern = '#(?<gender>'.implode('|', array_keys($listLabels)).')#i';
-        if (!preg_match($pattern, strtolower($transaction->name), $matches)) {
+        if (!preg_match($pattern, strtolower((string) $transaction->name), $matches)) {
             $this->logger->error(__FUNCTION__.' Not found gender on ofx type : "'.$transaction->name.'"');
 
             return null;
@@ -182,7 +182,7 @@ class OFXManager
 
     protected static function getReference(Transaction $transaction): string
     {
-        $text = trim($transaction->name).' '.trim($transaction->memo);
+        $text = trim((string) $transaction->name).' '.trim((string) $transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
         if (preg_match('#(?<reference>\d+)#', $text, $matches)) {
             return $matches['reference'];
@@ -196,7 +196,7 @@ class OFXManager
      */
     private function transactionToOperation(Transaction $transaction): void
     {
-        $transaction->memo = trim($transaction->memo);
+        $transaction->memo = trim((string) $transaction->memo);
         $gender = $this->getGenderByOFX($transaction);
         $reference = self::getReference($transaction);
 
@@ -213,7 +213,7 @@ class OFXManager
                 ->setOperationGender($gender)
             ;
 
-            if (($user = $this->security->getUser()) !== null) {
+            if (($user = $this->security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
                 $operation->setAuthor($user)
                     ->setPublisher($user)
                 ;

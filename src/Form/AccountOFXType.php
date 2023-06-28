@@ -40,9 +40,8 @@ class AccountOFXType extends AbstractType
             ])
         ;
 
-        $accountsFieldValidator = function (FormEvent $event): void {
+        $accountsFieldValidator = static function (FormEvent $event) : void {
             $form = $event->getForm();
-
             try {
                 $file = $form->get('file')->getData();
                 if (!$file instanceof File) {

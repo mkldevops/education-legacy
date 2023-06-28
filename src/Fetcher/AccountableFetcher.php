@@ -19,10 +19,10 @@ use Psr\Log\LoggerInterface;
 class AccountableFetcher
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger,
-        private AccountSlipRepository $accountSlipRepository,
-        private AccountRepository $accountRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly AccountSlipRepository $accountSlipRepository,
+        private readonly AccountRepository $accountRepository,
     ) {
     }
 

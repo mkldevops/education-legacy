@@ -108,7 +108,7 @@ class CourseManager extends AbstractFullService
                 $course = new Course();
             }
 
-            $name = preg_replace('#(\w+) (\w+)( .*+)?#', '$2', $courseEvent->getSummary());
+            $name = preg_replace('#(\w+) (\w+)( .*+)?#', '$2', (string) $courseEvent->getSummary());
             $classPeriod = $this->classPeriodManager->findClassPeriod($name, $period, $school);
 
             if (!$classPeriod instanceof ClassPeriod) {

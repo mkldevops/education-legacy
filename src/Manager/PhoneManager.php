@@ -25,22 +25,22 @@ class PhoneManager extends AbstractFullService
     /**
      * @var string
      */
-    public const PERSON = 'person';
+    final public const PERSON = 'person';
 
     /**
      * @var string
      */
-    public const FATHER = 'father';
+    final public const FATHER = 'father';
 
     /**
      * @var string
      */
-    public const MOTHER = 'mother';
+    final public const MOTHER = 'mother';
 
     /**
      * @var string
      */
-    public const LEGAL_GUARDIAN = 'legalGuardian';
+    final public const LEGAL_GUARDIAN = 'legalGuardian';
 
     /**
      * Get All Phones.

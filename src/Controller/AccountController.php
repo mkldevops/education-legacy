@@ -31,7 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/account')]
 class AccountController extends AbstractController
 {
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 

@@ -58,7 +58,7 @@ class PackageRepository extends ServiceEntityRepository
             ->setParameter('search', $search)
         ;
 
-        if (null !== $school) {
+        if ($school instanceof \App\Entity\School) {
             $qb->andWhere('e.school = :school')
                 ->setParameter('school', $school)
             ;

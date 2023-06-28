@@ -86,7 +86,7 @@ class TransferManager
             $this->accountSlip->getGender()
         );
 
-        if (null !== $result) {
+        if ($result instanceof \App\Entity\AccountSlip) {
             $msg = $this->translator->trans(
                 'error.already_exists_ref',
                 ['%reference%' => $this->accountSlip->getReference()],
@@ -117,19 +117,19 @@ class TransferManager
     public function createByForm(): AccountSlip
     {
         $this->create();
-        if (null === $this->accountDebit) {
+        if (!$this->accountDebit instanceof \App\Entity\Account) {
             throw new AppException('Account of debit is not defined');
         }
 
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit);
 
-        if (null === $this->accountCredit) {
+        if (!$this->accountCredit instanceof \App\Entity\Account) {
             throw new AppException('Account of credit is not defined');
         }
 
         $this->setOperation(AccountSlip::TYPE_CREDIT, $this->accountCredit);
 
-        if (null === $this->accountSlip) {
+        if (!$this->accountSlip instanceof \App\Entity\AccountSlip) {
             throw new AppException('AccountSlip not added correctly');
         }
 
@@ -197,7 +197,7 @@ class TransferManager
      */
     public function getAccountSlip(): AccountSlip
     {
-        if (null === $this->accountSlip) {
+        if (!$this->accountSlip instanceof \App\Entity\AccountSlip) {
             throw new AppException('AccountSlip not defined');
         }
 

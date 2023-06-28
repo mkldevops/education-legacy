@@ -10,7 +10,7 @@ class GoogleCalendarService extends GoogleService
 {
     protected ?\DateTimeInterface $timeMin;
 
-    protected ?\DateTimeInterface $timeMax;
+    protected ?\DateTimeInterface $timeMax = null;
 
     /**
      * @throws \Exception
@@ -43,7 +43,7 @@ class GoogleCalendarService extends GoogleService
             'timeMin' => $this->timeMin?->format('c'),
         ];
 
-        if (null !== $this->timeMax) {
+        if ($this->timeMax instanceof \DateTimeInterface) {
             $optParams['timeMax'] = $this->timeMax->format('c');
         }
 

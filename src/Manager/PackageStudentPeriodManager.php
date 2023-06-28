@@ -31,7 +31,7 @@ class PackageStudentPeriodManager
             'package' => $packageStudentPeriod->getPackage(),
         ]);
 
-        if (null !== $result) {
+        if ($result instanceof \App\Entity\PackageStudentPeriod) {
             return $result;
         }
 

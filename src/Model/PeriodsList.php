@@ -11,25 +11,22 @@ class PeriodsList
     /**
      * @var string
      */
-    public const PERIOD_SELECTED = 'selected';
+    final public const PERIOD_SELECTED = 'selected';
 
     /**
      * @var string
      */
-    public const PERIOD_CURRENT = 'current';
+    final public const PERIOD_CURRENT = 'current';
 
     /**
      * @var string
      */
-    public const PERIOD_LIST = 'list';
+    final public const PERIOD_LIST = 'list';
 
     public ?Period $current = null;
 
-    public ?Period $selected = null;
-
-    public function __construct(public ?array $list, Period $selected, Period $current = null)
+    public function __construct(public ?array $list, public ?\App\Entity\Period $selected, Period $current = null)
     {
-        $this->selected = $selected;
         $this->current = $current ?? $selected;
     }
 }

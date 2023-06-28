@@ -12,7 +12,7 @@ use App\Repository\DocumentRepository;
 class DocumentFetcher implements DocumentFetcherInterface
 {
     public function __construct(
-        private DocumentRepository $documentRepository,
+        private readonly DocumentRepository $documentRepository,
     ) {
     }
 

@@ -17,10 +17,10 @@ use Symfony\Component\Security\Http\SecurityEvents;
 class LoginSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private AuthorizationCheckerInterface $authorizationChecker,
-        private PeriodManager $periodManager,
-        private SchoolManager $schoolManager,
+        private readonly LoggerInterface $logger,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly PeriodManager $periodManager,
+        private readonly SchoolManager $schoolManager,
         private ?User $user = null,
     ) {
     }

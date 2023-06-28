@@ -20,11 +20,11 @@ use Symfony\Component\Form\FormInterface;
 class FamilyManager implements FamilyManagerInterface
 {
     public function __construct(
-        private PersonRepository $personRepository,
-        private PackageStudentPeriodRepository $packageStudentPeriodRepository,
-        private EntityManagerInterface $entityManager,
-        private Security $security,
-        private LoggerInterface $logger,
+        private readonly PersonRepository $personRepository,
+        private readonly PackageStudentPeriodRepository $packageStudentPeriodRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly Security $security,
+        private readonly LoggerInterface $logger,
     ) {
     }
 

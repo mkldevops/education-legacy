@@ -44,7 +44,7 @@ class FinishRequestSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (null === $this->security->getUser()) {
+        if (!$this->security->getUser() instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return;
         }
 

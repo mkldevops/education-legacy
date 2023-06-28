@@ -15,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=PaymentPackageStudentRepository::class)
  */
-class PaymentPackageStudent
+class PaymentPackageStudent implements \Stringable
 {
     use AmountEntityTrait;
     use CommentEntityTrait;

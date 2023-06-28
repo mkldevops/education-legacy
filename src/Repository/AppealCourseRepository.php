@@ -50,6 +50,7 @@ class AppealCourseRepository extends ServiceEntityRepository
         $appeals = new class() {
             /** @var array<object> */
             public array $courses = [];
+
             /** @var array<object> */
             public array $students = [];
         };
@@ -67,13 +68,14 @@ class AppealCourseRepository extends ServiceEntityRepository
             $studentId = (int) $value['student']['id'];
             $statusId = $value['status'];
 
-            $value['student']['nameComplete'] = strtoupper($value['student']['person']['name']).' '.ucfirst($value['student']['person']['forname']);
+            $value['student']['nameComplete'] = strtoupper((string) $value['student']['person']['name']).' '.ucfirst((string) $value['student']['person']['forname']);
             $value['course']['dateStr'] = $value['course']['date']->format('d/m');
             $value['status'] = $listStatus[$value['status']];
 
             if (!\array_key_exists($courseId, $appeals->courses)) {
                 $appeals->courses[$courseId] = new class() {
                     public ?array $course = null;
+
                     /** @var array<object> */
                     public array $students = [];
                 };

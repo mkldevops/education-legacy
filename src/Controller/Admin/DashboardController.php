@@ -31,7 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(
-        private AdminUrlGenerator $adminUrlGenerator
+        private readonly AdminUrlGenerator $adminUrlGenerator
     ) {
     }
 
@@ -55,15 +55,15 @@ class DashboardController extends AbstractDashboardController
             ->update(
                 Crud::PAGE_INDEX,
                 Action::DETAIL,
-                fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
+                static fn(Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::DELETE,
-                fn (Action $action) => $action->setIcon('fa fa-trash')->setLabel(false)
+                static fn(Action $action) => $action->setIcon('fa fa-trash')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::EDIT,
-                fn (Action $action) => $action->setIcon('fa fa-edit')->setLabel(false)
+                static fn(Action $action) => $action->setIcon('fa fa-edit')->setLabel(false)
             )
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')

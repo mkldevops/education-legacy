@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Repository\ClassPeriodStudentRepository;
 use App\Traits\AuthorEntityTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
 use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
@@ -15,7 +14,7 @@ use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 /**
  * @ORM\Entity(repositoryClass=ClassPeriodStudentRepository::class)
  */
-class ClassPeriodStudent
+class ClassPeriodStudent implements \Stringable
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;

@@ -33,7 +33,7 @@ composer-install: composer.lock ## Install vendors according to the current comp
 	$(COMPOSER) install -n
 
 composer-update: composer.json ## Update vendors according to the composer.json file
-	$(COMPOSER) update -w
+	$(COMPOSER) update -W
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 
@@ -183,10 +183,10 @@ git-clean-branches: ## Clean merged branches
 git-rebase: ## Rebase current branch
 	git pull --rebase origin main
 
-message ?= \#$(shell git branch --show-current | sed -E 's/^([0-9]+)-([^-]+)-(.+)/\2: #\1 \3/' | sed "s/-/ /g")
+m ?= \#$(shell git branch --show-current | sed -E 's/^([0-9]+)-([^-]+)-(.+)/\2: #\1 \3/' | sed "s/-/ /g")
 auto-commit: ## Auto commit
 	git add .
-	@git commit -m "${message}" || true
+	@git commit -m "$(m)" || true
 
 current_branch=$(shell git rev-parse --abbrev-ref HEAD)
 push: ## Push current branch

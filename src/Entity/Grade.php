@@ -15,7 +15,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=GradeRepository::class)
  */
-class Grade
+class Grade implements \Stringable
 {
     use DescriptionEntityTrait;
     use EnableEntityTrait;

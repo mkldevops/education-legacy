@@ -70,7 +70,7 @@ class CourseController extends AbstractController
 
         try {
             $courseManager->getGoogleCalendar()->getClient();
-        } catch (AppException|\Exception $e) {
+        } catch (AppException|\Exception) {
             $this->addFlash('warning', 'Your Token is not defined');
 
             return $this->redirectToRoute('app_google_auth');

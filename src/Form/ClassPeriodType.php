@@ -28,15 +28,12 @@ class ClassPeriodType extends AbstractType
         $builder
             ->add('classSchool', EntityType::class, [
                 'class' => ClassSchool::class,
-                'query_builder' => fn (ClassSchoolRepository $er) => $er->getQBAvailables(),
+                'query_builder' => static fn(ClassSchoolRepository $er) => $er->getQBAvailables(),
             ])
             ->add('period', EntityType::class, [
                 'class' => Period::class,
-                'query_builder' => function (EntityRepository $er): QueryBuilder {
-                    return $er->createQueryBuilder('p')
-                        ->orderBy('p.begin', 'DESC')
-                    ;
-                },
+                'query_builder' => static fn(EntityRepository $er): QueryBuilder => $er->createQueryBuilder('p')
+                    ->orderBy('p.begin', 'DESC'),
             ])
             ->add('comment')
             ->add('status')

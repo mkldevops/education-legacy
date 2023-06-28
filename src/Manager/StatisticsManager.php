@@ -13,10 +13,10 @@ use Psr\Log\LoggerInterface;
 class StatisticsManager
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private OperationRepository $repository,
-        private PeriodManager $periodManager,
-        private SchoolManager $schoolManager,
+        private readonly LoggerInterface $logger,
+        private readonly OperationRepository $repository,
+        private readonly PeriodManager $periodManager,
+        private readonly SchoolManager $schoolManager,
     ) {
     }
 

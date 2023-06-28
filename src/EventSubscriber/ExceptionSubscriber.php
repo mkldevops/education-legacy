@@ -42,7 +42,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
         $this->logger->error(__METHOD__, ['exception' => $exception]);
 
-        if ($exception instanceof AccessDeniedException && null === $this->security->getUser()) {
+        if ($exception instanceof AccessDeniedException && !$this->security->getUser() instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             $event->setResponse(new RedirectResponse('/login'));
 
             return;

@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Repository\PeriodRepository;
 use App\Traits\AuthorEntityTrait;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +19,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 /**
  * @ORM\Entity(repositoryClass=PeriodRepository::class)
  */
-class Period
+class Period implements \Stringable
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;
@@ -43,12 +42,12 @@ class Period
     /**
      * @ORM\Column(type="datetime")
      */
-    protected ?\DateTimeInterface $end;
+    protected ?\DateTimeInterface $end = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Diploma::class, inversedBy="periods")
      */
-    private ?Diploma $diploma;
+    private ?Diploma $diploma = null;
 
     public function __construct()
     {
@@ -77,10 +76,7 @@ class Period
         return $this->begin;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $begin
-     */
-    public function setBegin(\DateTimeInterface $begin): self
+    public function setBegin(\DateTime|\DateTimeImmutable $begin): self
     {
         $this->begin = $begin;
 
@@ -92,10 +88,7 @@ class Period
         return $this->end;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $end
-     */
-    public function setEnd(\DateTimeInterface $end): self
+    public function setEnd(\DateTime|\DateTimeImmutable $end): self
     {
         $this->end = $end;
 

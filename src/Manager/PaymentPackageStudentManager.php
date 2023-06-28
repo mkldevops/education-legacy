@@ -23,12 +23,12 @@ use Symfony\Bundle\SecurityBundle\Security;
 class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterface
 {
     public function __construct(
-        private LoggerInterface $logger,
-        private PackageStudentPeriodRepository $packageStudentPeriodRepository,
-        private StudentRepository $studentRepository,
-        private TypeOperationRepository $typeOperationRepository,
-        private EntityManagerInterface $entityManager,
-        private Security $security,
+        private readonly LoggerInterface $logger,
+        private readonly PackageStudentPeriodRepository $packageStudentPeriodRepository,
+        private readonly StudentRepository $studentRepository,
+        private readonly TypeOperationRepository $typeOperationRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly Security $security,
     ) {
     }
 
@@ -42,13 +42,13 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
         $packages = $this->packageStudentPeriodRepository->findBy(['period' => $period, 'student' => $students]);
         $familyPaymentModel = $this->persistPayments(family: $family, packages: $packages, operation: $operation);
 
-        if (($user = $this->security->getUser()) !== null) {
+        if (($user = $this->security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             $operation->setPublisher($user);
         }
 
         if (($typeOperation = $this->typeOperationRepository->findOneBy([
             'code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT,
-        ])) !== null) {
+        ])) instanceof \App\Entity\TypeOperation) {
             $operation->setTypeOperation($typeOperation);
         }
 

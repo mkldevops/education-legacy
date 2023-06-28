@@ -20,7 +20,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\StructureRepository")
  */
-class Structure
+class Structure implements \Stringable
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
@@ -149,7 +149,7 @@ class Structure
 
     public function addMember(?Member $member): static
     {
-        if (null !== $member && !$this->members->contains($member)) {
+        if ($member instanceof \App\Entity\Member && !$this->members->contains($member)) {
             $this->members[] = $member;
         }
 

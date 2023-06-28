@@ -18,7 +18,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
  *
  * @ORM\Entity(repositoryClass=MemberRepository::class)
  */
-class Member
+class Member implements \Stringable
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;

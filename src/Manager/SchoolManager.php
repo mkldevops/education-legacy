@@ -86,7 +86,7 @@ class SchoolManager implements SchoolManagerInterface
 
         if ($user->getSchoolAccessRight()->isEmpty()) {
             $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
-            if (null !== $school) {
+            if ($school instanceof \App\Entity\School) {
                 $user = $user->addSchoolAccessRight($school);
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();

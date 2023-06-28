@@ -15,9 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FamilyType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('father', PersonSimpleType::class, [
@@ -61,9 +58,6 @@ class FamilyType extends AbstractType
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -72,9 +66,6 @@ class FamilyType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'app_family';

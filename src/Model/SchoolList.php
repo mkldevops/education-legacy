@@ -11,12 +11,12 @@ class SchoolList
     /**
      * @var string
      */
-    public const SCHOOL_SELECTED = 'selected';
+    final public const SCHOOL_SELECTED = 'selected';
 
     /**
      * @var string
      */
-    public const SCHOOL_LIST = 'list';
+    final public const SCHOOL_LIST = 'list';
 
     public function __construct(public ?array $list, public ?School $selected)
     {

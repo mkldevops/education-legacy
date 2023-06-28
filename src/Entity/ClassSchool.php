@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=ClassSchoolRepository::class)
  */
-class ClassSchool
+class ClassSchool implements \Stringable
 {
     use AuthorEntityTrait;
     use DescriptionEntityTrait;
@@ -54,7 +54,8 @@ class ClassSchool
     public function __construct()
     {
         $this->setEnable(true)
-            ->classPeriods = new ArrayCollection();
+            ->classPeriods = new ArrayCollection()
+        ;
     }
 
     public function __toString(): string

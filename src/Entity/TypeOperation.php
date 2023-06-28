@@ -19,7 +19,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 /**
  * @ORM\Entity(repositoryClass=TypeOperationRepository::class)
  */
-class TypeOperation
+class TypeOperation implements \Stringable
 {
     use AuthorEntityTrait;
     use DescriptionEntityTrait;
@@ -32,32 +32,32 @@ class TypeOperation
     /**
      * @var string
      */
-    public const TYPE_AMOUNT_NEGATIVE = 'negative';
+    final public const TYPE_AMOUNT_NEGATIVE = 'negative';
 
     /**
      * @var string
      */
-    public const TYPE_AMOUNT_POSITIVE = 'positive';
+    final public const TYPE_AMOUNT_POSITIVE = 'positive';
 
     /**
      * @var string
      */
-    public const TYPE_AMOUNT_MIXTE = 'mixte';
+    final public const TYPE_AMOUNT_MIXTE = 'mixte';
 
     /**
      * @var string
      */
-    public const TYPE_CODE_PAYMENT_PACKAGE_STUDENT = 'PPS';
+    final public const TYPE_CODE_PAYMENT_PACKAGE_STUDENT = 'PPS';
 
     /**
      * @var string
      */
-    public const TYPE_CODE_SPLIT = 'SPLIT';
+    final public const TYPE_CODE_SPLIT = 'SPLIT';
 
     /**
      * @var string
      */
-    public const TYPE_CODE_TO_DEFINE = 'TO_DEFINE';
+    final public const TYPE_CODE_TO_DEFINE = 'TO_DEFINE';
 
     /**
      * @ORM\OneToMany(targetEntity=TypeOperation::class, mappedBy="parent")

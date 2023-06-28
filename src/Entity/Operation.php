@@ -8,7 +8,6 @@ use App\Repository\OperationRepository;
 use App\Traits\AmountEntityTrait;
 use App\Traits\AuthorEntityTrait;
 use App\Traits\PublisherEntityTrait;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +23,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
  *
  * @ORM\Entity(repositoryClass=OperationRepository::class)
  */
-class Operation
+class Operation implements \Stringable
 {
     use AmountEntityTrait;
     use AuthorEntityTrait;
@@ -51,12 +50,12 @@ class Operation
     /**
      * @ORM\ManyToOne(targetEntity=TypeOperation::class)
      */
-    private ?TypeOperation $typeOperation;
+    private ?TypeOperation $typeOperation = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Validate::class, cascade={"persist"})
      */
-    private ?Validate $validate;
+    private ?Validate $validate = null;
 
     /**
      * @ORM\ManyToMany(targetEntity=Document::class, inversedBy="operations", cascade={"remove"})
@@ -66,7 +65,7 @@ class Operation
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $reference;
+    private ?string $reference = null;
 
     /**
      * @ORM\Column(type="string", nullable=true, unique=true)
@@ -90,7 +89,7 @@ class Operation
      *
      * @var null|\DateTime|\DateTimeImmutable
      */
-    private ?\DateTimeInterface $datePlanned;
+    private ?\DateTimeInterface $datePlanned = null;
 
     /**
      * @ORM\OneToMany(targetEntity=PaymentPackageStudent::class, mappedBy="operation", cascade={"remove"})
@@ -100,12 +99,12 @@ class Operation
     /**
      * @ORM\OneToOne(targetEntity=AccountSlip::class, mappedBy="operationDebit", cascade={"persist"})
      */
-    private ?AccountSlip $slipsDebit;
+    private ?AccountSlip $slipsDebit = null;
 
     /**
      * @ORM\OneToOne(targetEntity=AccountSlip::class, mappedBy="operationCredit", cascade={"persist"})
      */
-    private ?AccountSlip $slipsCredit;
+    private ?AccountSlip $slipsCredit = null;
 
     public function __construct()
     {
@@ -127,10 +126,7 @@ class Operation
         return $this->date;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $date
-     */
-    public function setDate(\DateTimeInterface $date, bool $force = false): self
+    public function setDate(\DateTime|\DateTimeImmutable $date, bool $force = false): self
     {
         $this->date = $date;
         $this->datePlanned = $date;
@@ -158,10 +154,7 @@ class Operation
         return $this->datePlanned;
     }
 
-    /**
-     * @param null|\DateTime|\DateTimeImmutable $datePlanned
-     */
-    public function setDatePlanned(?\DateTimeInterface $datePlanned): self
+    public function setDatePlanned(null|\DateTime|\DateTimeImmutable $datePlanned): self
     {
         $this->datePlanned = $datePlanned;
 

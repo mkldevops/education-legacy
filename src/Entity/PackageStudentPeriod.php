@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
  *
  * @UniqueEntity(fields={"package", "period", "student"}, groups={"registration"})
  */
-class PackageStudentPeriod
+class PackageStudentPeriod implements \Stringable
 {
     use AmountEntityTrait;
     use AuthorEntityTrait;
@@ -36,27 +36,27 @@ class PackageStudentPeriod
     /**
      * @var string
      */
-    public const STATUS_PAYMENT_INFO = 'info';
+    final public const STATUS_PAYMENT_INFO = 'info';
 
     /**
      * @var string
      */
-    public const STATUS_PAYMENT_SUCCESS = 'success';
+    final public const STATUS_PAYMENT_SUCCESS = 'success';
 
     /**
      * @var string
      */
-    public const STATUS_PAYMENT_WARNING = 'warning';
+    final public const STATUS_PAYMENT_WARNING = 'warning';
 
     /**
      * @var string
      */
-    public const STATUS_PAYMENT_DANGER = 'danger';
+    final public const STATUS_PAYMENT_DANGER = 'danger';
 
     /**
      * @var int
      */
-    public const DIFF_UNPAID_PERCENT = 20;
+    final public const DIFF_UNPAID_PERCENT = 20;
 
     /**
      * @ORM\ManyToOne(targetEntity=Package::class)
@@ -81,7 +81,7 @@ class PackageStudentPeriod
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $dateExpire;
+    private ?\DateTimeInterface $dateExpire = null;
 
     /**
      * @ORM\Column(type="float")

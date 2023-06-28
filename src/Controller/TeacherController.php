@@ -180,7 +180,7 @@ class TeacherController extends AbstractController
 
         return $this->redirect($this->generateUrl('app_teacher_index', [
             'page' => 1,
-            'search' => urlencode($all['form']['q']),
+            'search' => urlencode((string) $all['form']['q']),
         ]));
     }
 

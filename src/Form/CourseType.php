@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CourseType extends AbstractType
 {
     public function __construct(
-        private SessionFetcher $sessionFetcher,
+        private readonly SessionFetcher $sessionFetcher,
         RequestStack $requestStack,
         protected ?int $classPeriodId = null,
     ) {
