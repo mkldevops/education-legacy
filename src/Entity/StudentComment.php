@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\StudentCommentRepository;
-use App\Traits\AuthorEntityTrait;
-use App\Traits\StudentEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\StudentEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: StudentCommentRepository::class)]

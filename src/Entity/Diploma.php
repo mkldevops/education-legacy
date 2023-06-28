@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\DiplomaRepository;
-use App\Traits\AuthorEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\NameEntityTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntityTrait;
-use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -20,9 +20,7 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Entity\File as VichFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @Vich\Uploadable
- */
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: DiplomaRepository::class)]
 class Diploma
 {
@@ -33,19 +31,10 @@ class Diploma
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    #[ORM\OneToMany(targetEntity: Period::class, mappedBy: 'diploma')]
+    #[ORM\OneToMany(mappedBy: 'diploma', targetEntity: Period::class)]
     private Collection $periods;
 
-    /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     *
-     * @Vich\UploadableField(
-     *     mapping="document_diploma",
-     *     fileNameProperty="document.name",
-     *     size="document.size",
-     *     mimeType="document.mime"
-     * )
-     */
+    #[Vich\UploadableField(mapping: 'document_diploma', fileNameProperty: 'document.name', size: 'document.size', mimeType: 'document.mime')]
     private ?File $imageFile = null;
 
     #[ORM\Embedded(class: VichFile::class)]
@@ -61,7 +50,7 @@ class Diploma
     }
 
     /**
-     * @return Collection|Period[]
+     * @return Collection<int, Period>
      */
     public function getPeriods(): Collection
     {
@@ -103,18 +92,16 @@ class Diploma
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
      *
-     * @param File|UploadedFile $imageFile
-     *
      * @throws \Exception
      */
     public function setImageFile(File|UploadedFile $imageFile = null): void
     {
         $this->imageFile = $imageFile;
 
-        if ($imageFile instanceof \Symfony\Component\HttpFoundation\File\File) {
+        if ($imageFile instanceof File) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->updatedAt = new \DateTime();
         }
     }
 

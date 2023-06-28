@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\MeetRepository;
-use App\Traits\AuthorEntityTrait;
-use App\Traits\PublisherEntityTrait;
-use App\Traits\SchoolEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\PublisherEntityTrait;
+use App\Trait\SchoolEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MeetRepository::class)]

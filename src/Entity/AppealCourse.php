@@ -7,12 +7,12 @@ namespace App\Entity;
 use App\Exception\AppException;
 use App\Manager\CourseManager;
 use App\Repository\AppealCourseRepository;
-use App\Traits\StudentEntityTrait;
+use App\Trait\CommentEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\StudentEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Table]

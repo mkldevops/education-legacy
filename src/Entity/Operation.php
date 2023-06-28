@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\OperationRepository;
-use App\Traits\AmountEntityTrait;
-use App\Traits\AuthorEntityTrait;
-use App\Traits\PublisherEntityTrait;
+use App\Trait\AmountEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\CommentEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\NameEntityTrait;
+use App\Trait\PublisherEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Traits;
+namespace App\Trait;
 
 use App\Entity\Student;
 use Doctrine\ORM\Mapping as ORM;

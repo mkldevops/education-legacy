@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\MemberRepository;
-use App\Traits\AuthorEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\NameEntityTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntityTrait;
-use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Table(name: '`person_member`')]

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PackageRepository;
-use App\Traits\Accessor\SchoolAccessorTrait;
+use App\Trait\Accessor\SchoolAccessorTrait;
+use App\Trait\DescriptionEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\NameEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\DescriptionEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntityTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Ignore;
 

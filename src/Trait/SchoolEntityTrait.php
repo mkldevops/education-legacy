@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Traits;
+namespace App\Trait;
 
 use App\Entity\School;
-use App\Traits\Accessor\SchoolAccessorTrait;
+use App\Trait\Accessor\SchoolAccessorTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 trait SchoolEntityTrait

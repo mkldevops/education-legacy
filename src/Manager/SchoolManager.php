@@ -9,7 +9,7 @@ use App\Entity\User;
 use App\Exception\SchoolException;
 use App\Model\SchoolList;
 use App\Repository\SchoolRepository;
-use App\Traits\RequestStackTrait;
+use App\Trait\RequestStackTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;

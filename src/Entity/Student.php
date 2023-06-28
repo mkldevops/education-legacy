@@ -6,13 +6,13 @@ namespace App\Entity;
 
 use App\Exception\AppException;
 use App\Repository\StudentRepository;
-use App\Traits\AuthorEntityTrait;
-use App\Traits\SchoolEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\SchoolEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 

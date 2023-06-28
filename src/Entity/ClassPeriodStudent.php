@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ClassPeriodStudentRepository;
-use App\Traits\AuthorEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\CommentEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 
 #[ORM\Entity(repositoryClass: ClassPeriodStudentRepository::class)]
 class ClassPeriodStudent implements \Stringable

@@ -9,7 +9,7 @@ use App\Exception\InvalidArgumentException;
 use App\Exception\PeriodException;
 use App\Exception\UnexpectedResultException;
 use App\Fetcher\SessionFetcherInterface;
-use App\Traits\RequestStackTrait;
+use App\Trait\RequestStackTrait;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;

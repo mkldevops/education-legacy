@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ValidateRepository;
-use App\Traits\AuthorEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\TimestampableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
 
 #[ORM\Entity(repositoryClass: ValidateRepository::class)]
 class Validate

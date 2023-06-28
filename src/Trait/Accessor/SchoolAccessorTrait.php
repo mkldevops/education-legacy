@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Traits\Accessor;
+namespace App\Trait\Accessor;
 
 use App\Entity\School;
 

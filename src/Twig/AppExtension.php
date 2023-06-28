@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 use App\Entity\Document;
 use App\Helper\UploaderHelper;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {

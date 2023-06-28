@@ -7,7 +7,7 @@ namespace App\Services;
 use App\Entity\School;
 use App\Entity\User;
 use App\Exception\SchoolException;
-use App\Traits\PeriodManagerTrait;
+use App\Trait\PeriodManagerTrait;
 use Fardus\Traits\Symfony\Manager\EntityManagerTrait;
 use Fardus\Traits\Symfony\Manager\LoggerTrait;
 use Fardus\Traits\Symfony\Manager\TranslatorTrait;

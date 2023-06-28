@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\SchoolRepository;
-use App\Traits\AuthorEntityTrait;
+use App\Trait\AddressEntityTrait;
+use App\Trait\AuthorEntityTrait;
+use App\Trait\CityEntityTrait;
+use App\Trait\CommentEntityTrait;
+use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
+use App\Trait\NameEntityTrait;
+use App\Trait\TimestampableEntityTrait;
+use App\Trait\ZipEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Fardus\Traits\Symfony\Entity\AddressEntityTrait;
-use Fardus\Traits\Symfony\Entity\CityEntityTrait;
-use Fardus\Traits\Symfony\Entity\CommentEntityTrait;
-use Fardus\Traits\Symfony\Entity\EnableEntityTrait;
-use Fardus\Traits\Symfony\Entity\IdEntityTrait;
-use Fardus\Traits\Symfony\Entity\NameEntityTrait;
-use Fardus\Traits\Symfony\Entity\TimestampableEntityTrait;
-use Fardus\Traits\Symfony\Entity\ZipEntityTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: SchoolRepository::class)]
@@ -39,7 +39,7 @@ class School implements \Stringable
     #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $director = null;
 
-    #[ORM\OneToMany(targetEntity: Package::class, mappedBy: 'school')]
+    #[ORM\OneToMany(mappedBy: 'school', targetEntity: Package::class)]
     protected Collection $packages;
 
     #[ORM\ManyToOne(targetEntity: Structure::class, cascade: ['persist'])]

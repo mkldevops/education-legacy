@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Traits;
+namespace App\Trait;
 
 use App\Entity\Period;
 use App\Exception\PeriodException;
 use App\Manager\PeriodManager;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait PeriodManagerTrait
 {
     protected PeriodManager $periodManager;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setPeriodManager(PeriodManager $periodManager): void
     {
         $this->periodManager = $periodManager;
