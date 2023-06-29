@@ -55,22 +55,22 @@ class DashboardController extends AbstractDashboardController
             ->update(
                 Crud::PAGE_INDEX,
                 Action::DETAIL,
-                static fn (Action $action) => $action->setIcon('fa fa-file-alt')->setLabel(false)
+                static fn (Action $action): \EasyCorp\Bundle\EasyAdminBundle\Config\Action => $action->setIcon('fa fa-file-alt')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::DELETE,
-                static fn (Action $action) => $action->setIcon('fa fa-trash')->setLabel(false)
+                static fn (Action $action): \EasyCorp\Bundle\EasyAdminBundle\Config\Action => $action->setIcon('fa fa-trash')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::EDIT,
-                static fn (Action $action) => $action->setIcon('fa fa-edit')->setLabel(false)
+                static fn (Action $action): \EasyCorp\Bundle\EasyAdminBundle\Config\Action => $action->setIcon('fa fa-edit')->setLabel(false)
             )
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
         ;
     }
 
-    public function configureMenuItems(): iterable
+    public function configureMenuItems(): \Iterator
     {
         $submenu1 = [
             MenuItem::linkToCrud('ClassSchool', '', ClassSchool::class),

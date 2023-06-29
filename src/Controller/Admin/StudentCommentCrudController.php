@@ -30,7 +30,7 @@ class StudentCommentCrudController extends AbstractCrudController
         ;
     }
 
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): \Iterator
     {
         yield TextField::new('title');
         yield TextareaField::new('text');

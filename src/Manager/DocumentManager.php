@@ -65,7 +65,7 @@ final class DocumentManager
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{move: \Symfony\Component\HttpFoundation\File\File, preview: null|bool|string, thumb: null|bool|string, errors: array<string, int|string>|false}
      *
      * @throws FileNotFoundException
      * @throws \Exception

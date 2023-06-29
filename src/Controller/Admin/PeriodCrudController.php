@@ -30,7 +30,7 @@ class PeriodCrudController extends AbstractCrudController
         ;
     }
 
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): \Iterator
     {
         yield IntegerField::new('id', 'ID');
         yield DateTimeField::new('begin');

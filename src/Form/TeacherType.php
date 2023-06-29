@@ -46,7 +46,7 @@ class TeacherType extends AbstractType
                 'class' => ClassPeriod::class,
                 'choice_label' => 'name',
                 'multiple' => 'true',
-                'query_builder' => static fn (ClassPeriodRepository $cpr) => $cpr->getClassPeriodsQueryBuilder($period, $school),
+                'query_builder' => static fn (ClassPeriodRepository $cpr): \Doctrine\ORM\QueryBuilder => $cpr->getClassPeriodsQueryBuilder($period, $school),
                 'attr' => ['data-toggle' => 'multiselect'],
                 'required' => false,
                 'label' => 'form.label.class_periods',

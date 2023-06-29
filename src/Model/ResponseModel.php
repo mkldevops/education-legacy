@@ -46,7 +46,7 @@ class ResponseModel
     }
 
     /**
-     * @return array<string, bool>|array<string, mixed[]>|array<string, string>
+     * @return array{success: bool, data: mixed[], message: string}
      */
     public function getResult(): array
     {

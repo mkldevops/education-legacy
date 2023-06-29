@@ -30,7 +30,10 @@ class ClassSchool implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
-    #[ORM\OneToMany(targetEntity: ClassPeriod::class, mappedBy: 'classSchool')]
+    /**
+     * @var Collection<int, ClassPeriod>
+     */
+    #[ORM\OneToMany(mappedBy: 'classSchool', targetEntity: ClassPeriod::class)]
     private Collection $classPeriods;
 
     #[Assert\Range(min: 3, max: 30)]
@@ -67,17 +70,13 @@ class ClassSchool implements \Stringable
 
     public function getClassPeriods(): ArrayCollection
     {
-        $classPeriods = new ArrayCollection();
+        $tmp = [];
 
-        if (!empty($this->classPeriods)) {
-            foreach ($this->classPeriods as $classPeriod) {
-                // @var ClassPeriod $classPeriod
+        $this->classPeriods->map(
+            static fn (ClassPeriod $classPeriod): ClassPeriod => $tmp[$classPeriod->getPeriod()->getId()] = $classPeriod
+        );
 
-                $classPeriods[$classPeriod->getPeriod()->getId()] = $classPeriod;
-            }
-        }
-
-        return $classPeriods;
+        return new ArrayCollection($tmp);
     }
 
     public function getAgeMinimum(): int

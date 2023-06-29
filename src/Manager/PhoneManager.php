@@ -37,6 +37,8 @@ final readonly class PhoneManager
 
     /**
      * Get All Phones.
+     *
+     * @return array{person: int[]|mixed[][]|null[], father?: int[]|mixed[][]|null[], mother?: int[]|mixed[][]|null[], legalGuardian?: int[]|mixed[][]|null[]}
      */
     public static function getAllPhones(Person $person): array
     {
@@ -44,16 +46,16 @@ final readonly class PhoneManager
             self::PERSON => self::getPhones($person),
         ];
 
-        if (!empty($person->getFamily())) {
-            if (!empty($person->getFamily()->getFather())) {
+        if ($person->getFamily() instanceof \App\Entity\Family) {
+            if ($person->getFamily()->getFather() instanceof \App\Entity\Person) {
                 $phones[self::FATHER] = self::getPhones($person->getFamily()->getFather());
             }
 
-            if (!empty($person->getFamily()->getMother())) {
+            if ($person->getFamily()->getMother() instanceof \App\Entity\Person) {
                 $phones[self::MOTHER] = self::getPhones($person->getFamily()->getMother());
             }
 
-            if (!empty($person->getFamily()->getLegalGuardian())) {
+            if ($person->getFamily()->getLegalGuardian() instanceof \App\Entity\Person) {
                 $phones[self::LEGAL_GUARDIAN] = self::getPhones($person->getFamily()->getLegalGuardian());
             }
         }
@@ -62,7 +64,7 @@ final readonly class PhoneManager
     }
 
     /**
-     * @return array<string, array>|array<string, int>|null[]
+     * @return array{id: null|int, phones: string[]}
      */
     public static function getPhones(Person $person): array
     {

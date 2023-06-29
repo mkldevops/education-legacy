@@ -54,7 +54,7 @@ class Validate
     private string $type = self::TYPE_MUTED;
 
     /**
-     * @return array<string, mixed>
+     * @return array{type: string, created: array{time: int, string: string}, author: array{id: null|int, name: null|string}, message: null|string}
      */
     public function getData(): array
     {

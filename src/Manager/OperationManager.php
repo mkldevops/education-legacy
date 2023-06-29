@@ -23,7 +23,7 @@ class OperationManager
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{typeOperation: array{id: null|int, name: null|string}, date: null|int, datePlanned: null|int, amount: float}
      */
     public static function getData(Operation $operation): array
     {

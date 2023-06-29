@@ -267,7 +267,7 @@ class TransferManager
                 ->findOneBy(['uniqueId' => $uniqueId, 'account' => $account])
             ;
 
-            if (!empty($operationUnique)) {
+            if ($operationUnique instanceof \App\Entity\Operation) {
                 $operation = $operationUnique;
             }
         }

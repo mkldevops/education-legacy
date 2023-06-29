@@ -99,6 +99,9 @@ class AccountSlip implements \Stringable
         return $this->getName().' - '.$this->getDate()->format('d M Y');
     }
 
+    /**
+     * @return array{virement: string, versement: string, remise_cheque: string, cash_withdrawal: string}
+     */
     public static function getGenders(): array
     {
         return [
@@ -151,12 +154,12 @@ class AccountSlip implements \Stringable
 
     public function hasOperationCredit(): bool
     {
-        return !empty($this->operationCredit);
+        return $this->operationCredit instanceof \App\Entity\Operation;
     }
 
     public function hasOperationDebit(): bool
     {
-        return !empty($this->operationDebit);
+        return $this->operationDebit instanceof \App\Entity\Operation;
     }
 
     public function getOperationDebit(): ?Operation

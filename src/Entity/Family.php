@@ -100,18 +100,16 @@ class Family implements \Stringable
             $persons[] = (string) $this->getLegalGuardian();
         }
 
-        if (!empty($this->persons)) {
-            if (\count($persons) < 2 && !empty($this->persons->get(0))) {
-                $persons[] = sprintf('[%s]', (string) $this->persons->first());
-            }
+        if (\count($persons) < 2 && !empty($this->persons->get(0))) {
+            $persons[] = sprintf('[%s]', (string) $this->persons->first());
+        }
 
-            if (\count($persons) < 2 && !empty($this->persons->get(1))) {
-                $persons[] = sprintf('[%s]', (string) $this->persons->get(1));
-            }
+        if (\count($persons) < 2 && !empty($this->persons->get(1))) {
+            $persons[] = sprintf('[%s]', (string) $this->persons->get(1));
+        }
 
-            if (\count($this->getPersons()) > 2) {
-                $persons[] = '...';
-            }
+        if (\count($this->getPersons()) > 2) {
+            $persons[] = '...';
         }
 
         return implode(', ', $persons);

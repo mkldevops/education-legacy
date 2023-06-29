@@ -173,7 +173,7 @@ class OFXManager
             ->findOneBy(['code' => $genderCode])
         ;
 
-        if (empty($gender)) {
+        if (!$gender instanceof \App\Entity\OperationGender) {
             $this->logger->error(__FUNCTION__.' Nothing found gender with code : '.$genderCode);
         }
 

@@ -27,8 +27,6 @@ class PackageStudentPeriodRepository extends ServiceEntityRepository
     /**
      * Get Current Package to Student.
      *
-     * @return PackageStudentPeriod
-     *
      * @throws NonUniqueResultException
      */
     public function getCurrentPackageStudent(int $sIdStudent, Period $period): ?PackageStudentPeriod

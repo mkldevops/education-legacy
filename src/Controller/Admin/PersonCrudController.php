@@ -29,7 +29,7 @@ class PersonCrudController extends AbstractCrudController
         ;
     }
 
-    public function configureFields(string $pageName = null): iterable
+    public function configureFields(string $pageName = null): \Iterator
     {
         yield IntegerField::new('id', 'ID');
         yield TextField::new('forname');

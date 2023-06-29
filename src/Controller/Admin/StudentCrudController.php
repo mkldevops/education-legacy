@@ -39,7 +39,7 @@ class StudentCrudController extends AbstractCrudController
         ;
     }
 
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): \Iterator
     {
         yield IntegerField::new('id', 'ID');
         yield TextField::new('person.name');

@@ -390,7 +390,7 @@ class Student implements \Stringable
 
     public function getDateDesactivated(): ?\DateTimeInterface
     {
-        if (!$this->enable && empty($this->dateDesactivated)) {
+        if (!$this->enable && !$this->dateDesactivated instanceof \DateTimeInterface) {
             $this->dateDesactivated = new \DateTime();
         }
 

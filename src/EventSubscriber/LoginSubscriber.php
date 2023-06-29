@@ -65,7 +65,7 @@ class LoginSubscriber implements EventSubscriberInterface
     {
         $this->logger->debug(__FUNCTION__);
 
-        if (empty($this->user)) {
+        if (!$this->user instanceof \App\Entity\User) {
             throw new AppException('user is not class object');
         }
 

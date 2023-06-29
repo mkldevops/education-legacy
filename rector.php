@@ -27,6 +27,7 @@ return static function (RectorConfig $rectorConfig): void {
         DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
         SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
         SensiolabsSetList::FRAMEWORK_EXTRA_61,
+        SetList::TYPE_DECLARATION,
         LevelSetList::UP_TO_PHP_82,
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,

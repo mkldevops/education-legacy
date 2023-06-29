@@ -377,7 +377,7 @@ class Document implements \Stringable
     /**
      * Get information to document.
      *
-     * @return array<string, int>|array<string, null>|array<string, string>
+     * @return array{path: null|string, pathThumb: null|string, pathPreview: null|string, name: null|string, id: null|int, title: string}
      *
      * @throws AppException
      * @throws \ImagickException

@@ -31,7 +31,7 @@ class PackageCrudController extends AbstractCrudController
         ;
     }
 
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName): \Iterator
     {
         yield TextField::new('name');
         yield TextareaField::new('description');

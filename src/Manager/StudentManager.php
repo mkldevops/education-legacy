@@ -23,7 +23,7 @@ class StudentManager
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{students: mixed[], total: array{percentage: int|float, totalPreviousWithoutDiscount: int, discount: float|int, totalPreview: int, totalPaid: int, totalReminderPaid: int, type: array<int|string, int>&mixed[]}}
      */
     public function dataPaymentsStudents(array $students, Period $period): array
     {
@@ -98,7 +98,7 @@ class StudentManager
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array{students: never[], total: array{percentage: int, totalPreviousWithoutDiscount: int, discount: int, totalPreview: int, totalPaid: int, totalReminderPaid: int, type: array{danger: int, warning: int, info: int, success: int}}}
      */
     private static function getDataListDefault(): array
     {
