@@ -13,17 +13,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class StudentManager
+readonly class StudentManager
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly Security $security,
-        private readonly EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
+        private Security $security,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
     /**
-     * @return array{students: mixed[], total: array{percentage: int|float, totalPreviousWithoutDiscount: int, discount: float|int, totalPreview: int, totalPaid: int, totalReminderPaid: int, type: array<int|string, int>&mixed[]}}
+     * @return array{students: array, total: array{percentage: float|int, totalPreviousWithoutDiscount: int, discount: float|int, totalPreview: int, totalPaid: int, totalReminderPaid: int, type: array&array<int|string, int>}}
      */
     public function dataPaymentsStudents(array $students, Period $period): array
     {
