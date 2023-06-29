@@ -37,7 +37,7 @@ checks:phpstan:
     variables: 
         APP_ENV: dev
     script:
-        - make cc
+        - make cc c="--env=dev"
         - make stan
     allow_failure: false
 

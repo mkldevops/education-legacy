@@ -37,8 +37,8 @@ composer-update: composer.json ## Update vendors according to the composer.json 
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 
-cc: ## Clear the cache. DID YOU CLEAR YOUR CACHE????
-	$(CONSOLE) c:c
+cc: ## Clear the cache.
+	$(CONSOLE) cache:clear $(c)
 
 warmup: ## Warmup the cache
 	$(CONSOLE) cache:warmup
@@ -192,4 +192,4 @@ current_branch=$(shell git rev-parse --abbrev-ref HEAD)
 push: ## Push current branch
 	git push origin "$(current_branch)" --force-with-lease
 
-commit: git-clean-branches analyze auto-commit git-rebase push ## Commit and push
+commit: analyze auto-commit git-rebase push ## Commit and push
