@@ -34,6 +34,8 @@ checks:lint:
 
 checks:phpstan:
     stage: checks
+    variables: 
+        APP_ENV: dev
     script:
         - make cc
         - make stan
