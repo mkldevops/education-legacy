@@ -10,15 +10,17 @@ use App\Repository\FamilyRepository;
 use App\Repository\OperationRepository;
 use App\Repository\PersonRepository;
 use App\Services\AbstractFullService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class DashboardManager extends AbstractFullService
+class DashboardManager
 {
     public function __construct(
         private readonly OperationRepository $operationRepository,
         private readonly PersonRepository $personRepository,
         private readonly FamilyRepository $familyRepository,
         private readonly DocumentRepository $documentRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 

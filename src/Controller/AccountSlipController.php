@@ -320,11 +320,11 @@ class AccountSlipController extends AbstractController
         ;
     }
 
-    private function createDeleteForm($id): FormInterface
+    private function createDeleteForm(int $id): FormInterface
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_account_slip_delete', ['id' => $id]))
-            ->setMethod('DELETE')
+            ->setMethod(Request::METHOD_DELETE)
             ->add('submit', SubmitType::class, ['label' => $this->translator->trans('Delete', [], 'account_slip')])
             ->getForm()
         ;

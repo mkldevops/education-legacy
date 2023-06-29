@@ -2,13 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 10/08/18
- * Time: 14:40.
- */
-
 namespace App\Manager;
 
 use App\Entity\AppealCourse;
@@ -17,22 +10,31 @@ use App\Entity\Course;
 use App\Entity\Period;
 use App\Entity\School;
 use App\Exception\AppException;
+use App\Repository\CourseRepository;
 use App\Services\AbstractFullService;
 use App\Services\GoogleCalendarService;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Service\Attribute\Required;
 
-class CourseManager extends AbstractFullService
+final readonly class CourseManager
 {
-    private GoogleCalendarService $googleCalendar;
-
-    private ClassPeriodManager $classPeriodManager;
+    public function __construct(
+        private GoogleCalendarService $googleCalendar,
+        private ClassPeriodManager $classPeriodManager,
+        private CourseRepository $courseRepository,
+        private LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
+        private Security $security,
+    )
+    {
+    }
 
     /**
-     * @param null|mixed $status
-     *
      * @throws AppException
      */
-    public static function getListStatus($status = null): array
+    public static function getListStatus(?int $status = null): array
     {
         $list = [
             AppealCourse::STATUS_NOTHING => [
@@ -98,9 +100,7 @@ class CourseManager extends AbstractFullService
         $this->logger->debug(__METHOD__, ['courseEvents' => $courseEvents]);
 
         foreach ($courseEvents as $courseEvent) {
-            $course = $this->getEntityManager()
-                ->getRepository(Course::class)
-                ->findOneBy(['idEvent' => $courseEvent->getId()])
+            $course = $this->courseRepository->findOneBy(['idEvent' => $courseEvent->getId()])
             ;
 
             if (!$course instanceof Course) {
@@ -131,11 +131,11 @@ class CourseManager extends AbstractFullService
                 ->setHourBegin($begin)
                 ->setHourEnd($end)
                 ->setCreatedAt(new \DateTime($courseEvent->getCreated()))
-                ->setAuthor($this->getUser())
+                ->setAuthor($this->security->getUser())
             ;
 
-            $this->getEntityManager()->persist($course);
-            $this->getEntityManager()->flush();
+            $this->entityManager->persist($course);
+            $this->entityManager->flush();
         }
 
         return \count($courseEvents);
@@ -144,26 +144,5 @@ class CourseManager extends AbstractFullService
     public function getGoogleCalendar(): GoogleCalendarService
     {
         return $this->googleCalendar;
-    }
-
-    #[Required]
-    public function setGoogleCalendar(GoogleCalendarService $googleCalendar): self
-    {
-        $this->googleCalendar = $googleCalendar;
-
-        return $this;
-    }
-
-    public function getClassPeriodManager(): ClassPeriodManager
-    {
-        return $this->classPeriodManager;
-    }
-
-    #[Required]
-    public function setClassPeriodManager(ClassPeriodManager $classPeriodManager): self
-    {
-        $this->classPeriodManager = $classPeriodManager;
-
-        return $this;
     }
 }

@@ -13,6 +13,7 @@ use App\Manager\SchoolManager;
 use App\Repository\DocumentRepository;
 use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -25,6 +26,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/document')]
 class DocumentController extends AbstractController
 {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    )
+    {
+    }
+
     /**
      * @throws FileNotFoundException
      */
@@ -174,7 +181,7 @@ class DocumentController extends AbstractController
 
             return $this->json(['upload' => true, 'document' => $document->getInfos(), 'success' => true]);
         } catch (\Exception $exception) {
-            $documentManager->getLogger()->error($exception->getMessage(), [
+            $this->logger->error($exception->getMessage(), [
                 'class' => $exception::class,
                 'trace' => $exception->getTraceAsString(),
             ]);

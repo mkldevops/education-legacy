@@ -31,10 +31,6 @@ class ClassPeriodStudentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get Current ClassPeriodStudent.
-     *
-     * @return ClassPeriodStudent
-     *
      * @throws NonUniqueResultException
      */
     public function getCurrentClassPeriodStudent(Student $student, Period $period): ?ClassPeriodStudent
@@ -50,7 +46,7 @@ class ClassPeriodStudentRepository extends ServiceEntityRepository
         ;
     }
 
-    public function remove(ClassPeriod $classPeriod)
+    public function remove(ClassPeriod $classPeriod): mixed
     {
         return $this->createQueryBuilder('c')
             ->delete()

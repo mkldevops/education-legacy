@@ -7,8 +7,10 @@ namespace App\Manager;
 use App\Entity\Document;
 use App\Exception\FileNotFoundException;
 use App\Services\AbstractFullService;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
-class DocumentManager extends AbstractFullService
+final class DocumentManager
 {
     /**
      * @var string
@@ -26,6 +28,13 @@ class DocumentManager extends AbstractFullService
     final public const PDF = 'pdf';
 
     private static string $pathUploads = 'uploads/documents';
+
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+    )
+    {
+    }
 
     public function removesWithLinks(Document $document): bool
     {
@@ -61,6 +70,7 @@ class DocumentManager extends AbstractFullService
      * @return array<string, mixed>
      *
      * @throws FileNotFoundException
+     * @throws \Exception
      */
     public function upload(Document $document): array
     {

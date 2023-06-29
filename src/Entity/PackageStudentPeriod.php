@@ -60,7 +60,7 @@ class PackageStudentPeriod implements \Stringable
     public ?Package $package = null;
 
     #[Ignore]
-    #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'packagePeriods', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: Student::class, cascade: ['persist', 'remove'], inversedBy: 'packagePeriods')]
     protected ?Student $student = null;
 
     #[ORM\ManyToOne(targetEntity: Period::class)]
@@ -76,7 +76,7 @@ class PackageStudentPeriod implements \Stringable
     #[ORM\Column(type: 'boolean')]
     private bool $paid = false;
 
-    #[ORM\OneToMany(targetEntity: PaymentPackageStudent::class, mappedBy: 'packageStudentPeriod')]
+    #[ORM\OneToMany(mappedBy: 'packageStudentPeriod', targetEntity: PaymentPackageStudent::class)]
     private Collection $payments;
 
     public function __construct()
@@ -145,7 +145,7 @@ class PackageStudentPeriod implements \Stringable
         return self::getStatusPaymentsStatic($this->getPercentPayments(), $this->period);
     }
 
-    public static function getStatusPaymentsStatic($percentPayment, Period $period): string
+    public static function getStatusPaymentsStatic(float $percentPayment, Period $period): string
     {
         $status = self::STATUS_PAYMENT_INFO;
 

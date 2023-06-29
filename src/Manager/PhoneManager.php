@@ -2,25 +2,14 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fahari
- * Date: 10/08/18
- * Time: 14:40.
- */
-
 namespace App\Manager;
 
 use App\Entity\Person;
 use App\Exception\AppException;
 use App\Services\AbstractFullService;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * Description of class CourseManager.
- *
- * @author  fahari
- */
-class PhoneManager extends AbstractFullService
+final readonly class PhoneManager
 {
     /**
      * @var string
@@ -41,6 +30,12 @@ class PhoneManager extends AbstractFullService
      * @var string
      */
     final public const LEGAL_GUARDIAN = 'legalGuardian';
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+    )
+    {
+    }
 
     /**
      * Get All Phones.
@@ -69,7 +64,7 @@ class PhoneManager extends AbstractFullService
     }
 
     /**
-     * @return array<string, int>|array<string, mixed[]>|null[]
+     * @return array<string, int>|array<string, array>|null[]
      */
     public static function getPhones(Person $person): array
     {
@@ -107,8 +102,8 @@ class PhoneManager extends AbstractFullService
 
         $person->addPhone($value);
 
-        $this->getEntityManager()->persist($person);
-        $this->getEntityManager()->flush();
+        $this->entityManager->persist($person);
+        $this->entityManager->flush();
 
         return base64_encode(self::purgePhone($value));
     }
@@ -120,8 +115,8 @@ class PhoneManager extends AbstractFullService
     {
         $person->removePhone($key);
 
-        $this->getEntityManager()->persist($person);
-        $this->getEntityManager()->flush();
+        $this->entityManager->persist($person);
+        $this->entityManager->flush();
 
         return true;
     }
