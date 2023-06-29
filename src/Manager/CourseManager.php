@@ -11,12 +11,10 @@ use App\Entity\Period;
 use App\Entity\School;
 use App\Exception\AppException;
 use App\Repository\CourseRepository;
-use App\Services\AbstractFullService;
 use App\Services\GoogleCalendarService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Contracts\Service\Attribute\Required;
 
 final readonly class CourseManager
 {
@@ -27,8 +25,7 @@ final readonly class CourseManager
         private LoggerInterface $logger,
         private EntityManagerInterface $entityManager,
         private Security $security,
-    )
-    {
+    ) {
     }
 
     /**
@@ -100,8 +97,7 @@ final readonly class CourseManager
         $this->logger->debug(__METHOD__, ['courseEvents' => $courseEvents]);
 
         foreach ($courseEvents as $courseEvent) {
-            $course = $this->courseRepository->findOneBy(['idEvent' => $courseEvent->getId()])
-            ;
+            $course = $this->courseRepository->findOneBy(['idEvent' => $courseEvent->getId()]);
 
             if (!$course instanceof Course) {
                 $this->logger->debug(__FUNCTION__.' new instance of course', ['course' => $course]);

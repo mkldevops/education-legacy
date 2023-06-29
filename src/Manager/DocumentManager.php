@@ -6,7 +6,6 @@ namespace App\Manager;
 
 use App\Entity\Document;
 use App\Exception\FileNotFoundException;
-use App\Services\AbstractFullService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -15,25 +14,24 @@ final class DocumentManager
     /**
      * @var string
      */
-    final public const IMAGE = 'image';
+    public const IMAGE = 'image';
 
     /**
      * @var string
      */
-    final public const PNG = 'png';
+    public const PNG = 'png';
 
     /**
      * @var string
      */
-    final public const PDF = 'pdf';
+    public const PDF = 'pdf';
 
     private static string $pathUploads = 'uploads/documents';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
-    )
-    {
+    ) {
     }
 
     public function removesWithLinks(Document $document): bool

@@ -6,7 +6,6 @@ namespace App\Manager;
 
 use App\Entity\Person;
 use App\Exception\AppException;
-use App\Services\AbstractFullService;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class PhoneManager
@@ -14,27 +13,26 @@ final readonly class PhoneManager
     /**
      * @var string
      */
-    final public const PERSON = 'person';
+    public const PERSON = 'person';
 
     /**
      * @var string
      */
-    final public const FATHER = 'father';
+    public const FATHER = 'father';
 
     /**
      * @var string
      */
-    final public const MOTHER = 'mother';
+    public const MOTHER = 'mother';
 
     /**
      * @var string
      */
-    final public const LEGAL_GUARDIAN = 'legalGuardian';
+    public const LEGAL_GUARDIAN = 'legalGuardian';
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
     }
 
     /**
@@ -64,7 +62,7 @@ final readonly class PhoneManager
     }
 
     /**
-     * @return array<string, int>|array<string, array>|null[]
+     * @return array<string, array>|array<string, int>|null[]
      */
     public static function getPhones(Person $person): array
     {
