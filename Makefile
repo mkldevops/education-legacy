@@ -115,7 +115,7 @@ rector: ## Run php-cs-fixer and fix the code.
 	$(DOCKER_EXEC) ./vendor/bin/rector process src
 
 cs-dry: ## Run php-cs-fixer and fix the code.
-	$(DOCKER_EXEC) fix src --dry-run --allow-risky=yes
+	$(DOCKER_EXEC) ./vendor/bin/php-cs-fixer fix src --dry-run --allow-risky=yes
 
 analyze: stan cs-fix rector ## Run php-cs-fixer and fix the code.
 

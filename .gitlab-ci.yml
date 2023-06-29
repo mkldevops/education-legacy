@@ -1,3 +1,7 @@
+include:
+    # https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates
+    -   template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml
+
 image: $CI_REGISTRY_IMAGE/php:8.2-base
 
 before_script:
@@ -31,6 +35,7 @@ checks:lint:
 checks:phpstan:
     stage: checks
     script:
+        - make cc
         - make stan
     allow_failure: false
 
