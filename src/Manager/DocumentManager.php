@@ -8,6 +8,8 @@ use App\Entity\Document;
 use App\Exception\FileNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class DocumentManager
 {
@@ -65,7 +67,7 @@ final class DocumentManager
     }
 
     /**
-     * @return array{move: \Symfony\Component\HttpFoundation\File\File, preview: null|bool|string, thumb: null|bool|string, errors: array<string, int|string>|false}
+     * @return array{move: File, preview: null|bool|string, thumb: null|bool|string, errors: array<string, int|string>|false}
      *
      * @throws FileNotFoundException
      * @throws \Exception
@@ -79,7 +81,7 @@ final class DocumentManager
             'errors' => false,
         ];
 
-        if (!$document->getFile() instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+        if (!$document->getFile() instanceof UploadedFile) {
             throw new FileNotFoundException('No file uploaded');
         }
 

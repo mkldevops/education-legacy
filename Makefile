@@ -5,7 +5,7 @@ ifneq ("$(wildcard .env.local)","")
 endif
 
 # Setup ————————————————————————————————————————————————————————————————————————
-DOCKER				:= @docker-compose --env-file=docker/.env.docker
+DOCKER				:= @docker compose --env-file=docker/.env.docker
 DOCKER_EXEC			:=
 DOCKER_TEST_EXEC	:= APP_ENV=test
 CONSOLE 			:= symfony console
