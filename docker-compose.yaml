@@ -7,7 +7,7 @@ services:
         env_file:
             - ./docker/.env.docker
         environment:
-            PHP_CS_FIXER_IGNORE_ENV : true
+            PHP_CS_FIXER_IGNORE_ENV : 1
             APP_ENV : prod
             DATABASE_NAME : education_app
             DATABASE_PASSWORD : ${PROJECT_DB_PASSWORD:-db_password}
