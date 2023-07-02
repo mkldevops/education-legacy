@@ -8,6 +8,7 @@ use App\Repository\ClassPeriodStudentRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CommentEntityTrait;
 use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
 use App\Trait\TimestampableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,13 +18,12 @@ class ClassPeriodStudent implements \Stringable
     use AuthorEntityTrait;
     use CommentEntityTrait;
     use EnableEntityTrait;
+    use IdEntityTrait;
     use TimestampableEntityTrait;
 
-    #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: ClassPeriod::class, inversedBy: 'students')]
     private ?ClassPeriod $classPeriod = null;
 
-    #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'classPeriods')]
     private Student $student;
 

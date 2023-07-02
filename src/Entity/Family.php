@@ -38,15 +38,15 @@ class Family implements \Stringable
     #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $name = null;
 
-    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist'])]
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\JoinColumn(unique: true)]
     private ?Person $father = null;
 
-    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist'])]
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\JoinColumn(unique: true)]
     private ?Person $mother = null;
 
-    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist'])]
+    #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\JoinColumn(unique: true)]
     private ?Person $legalGuardian = null;
 
@@ -63,7 +63,8 @@ class Family implements \Stringable
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $personEmergency = null;
 
-    #[ORM\OneToMany(targetEntity: Person::class, mappedBy: 'family', cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'family', targetEntity: Person::class, cascade: ['remove', 'persist'], orphanRemoval: true)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $persons;
 
     public function __construct()

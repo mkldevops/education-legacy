@@ -27,38 +27,22 @@ class Period implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    #[ORM\OneToMany(targetEntity: ClassPeriod::class, mappedBy: 'period')]
-    protected Collection $classPeriods;
-
-    #[ORM\Column(type: 'datetime')]
-    protected ?\DateTimeInterface $begin = null;
-
-    #[ORM\Column(type: 'datetime')]
-    protected ?\DateTimeInterface $end = null;
-
     #[ORM\ManyToOne(targetEntity: Diploma::class, inversedBy: 'periods')]
     private ?Diploma $diploma = null;
 
-    public function __construct()
-    {
-        $this->classPeriods = new ArrayCollection();
+    public function __construct(
+        #[ORM\Column(type: 'datetime')]
+        protected ?\DateTimeInterface $begin = new \DateTime(),
+        #[ORM\Column(type: 'datetime')]
+        protected ?\DateTimeInterface $end = new \DateTime(),
+        #[ORM\OneToMany(mappedBy: 'period', targetEntity: ClassPeriod::class)]
+        protected Collection $classPeriods = new ArrayCollection()
+    ) {
     }
 
     public function __toString(): string
     {
         return (string) $this->getName();
-    }
-
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getBegin(): ?\DateTimeInterface
@@ -110,7 +94,7 @@ class Period implements \Stringable
         $diffPeriod = $this->begin?->diff($this->end);
         $percent = (int) $diffNow?->format('%R%a') / (int) $diffPeriod?->format('%R%a') * 100;
 
-        return $percent > 100 ? 100 : $percent;
+        return min($percent, 100);
     }
 
     public function getDiploma(): ?Diploma

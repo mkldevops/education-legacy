@@ -31,7 +31,7 @@ class PersonCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName = null): \Iterator
     {
-        yield IntegerField::new('id', 'ID');
+        yield IntegerField::new('id', 'ID')->hideOnForm();
         yield TextField::new('forname');
         yield TextField::new('phone');
         yield TextField::new('email')->hideOnIndex();
@@ -43,15 +43,15 @@ class PersonCrudController extends AbstractCrudController
         yield TextField::new('city');
         yield TextField::new('name');
         yield Field::new('enable');
-        yield DateTimeField::new('createdAt')->onlyOnDetail();
-        yield DateTimeField::new('updatedAt')->onlyOnDetail();
-        yield DateTimeField::new('deletedAt')->onlyOnDetail();
         yield AssociationField::new('user');
         yield AssociationField::new('member');
         yield AssociationField::new('student');
-        yield AssociationField::new('schools');
+        yield AssociationField::new('schools')->onlyOnDetail();
         yield AssociationField::new('image')->hideOnIndex();
         yield AssociationField::new('family');
         yield AssociationField::new('author')->hideOnIndex();
+        yield DateTimeField::new('createdAt')->onlyOnDetail();
+        yield DateTimeField::new('updatedAt')->onlyOnDetail();
+        yield DateTimeField::new('deletedAt')->onlyOnDetail();
     }
 }

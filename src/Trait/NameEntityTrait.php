@@ -13,7 +13,7 @@ trait NameEntityTrait
     #[Groups(['name', 'name:write'])]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     protected ?string $name = null;
 
     public function getName(): ?string

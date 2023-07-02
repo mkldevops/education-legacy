@@ -11,14 +11,14 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-#[AsEntityListener(event: 'preUpdate', method: 'preUpdate', entity: Operation::class, priority: 1)]
-#[AsEntityListener(event: 'prePersist', method: 'prePersist', entity: Operation::class, priority: 1)]
-class OperationListener
+#[AsEntityListener(event: 'preUpdate', method: 'preUpdate', entity: Operation::class)]
+#[AsEntityListener(event: 'prePersist', method: 'prePersist', entity: Operation::class)]
+readonly class OperationListener
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly AccountStatementRepository $accountStatementRepository,
+        private LoggerInterface $logger,
+        private EntityManagerInterface $entityManager,
+        private AccountStatementRepository $accountStatementRepository,
     ) {
     }
 

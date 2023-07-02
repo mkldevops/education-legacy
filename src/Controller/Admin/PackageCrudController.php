@@ -33,12 +33,12 @@ class PackageCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): \Iterator
     {
+        yield IntegerField::new('id', 'ID')->hideOnForm();
         yield TextField::new('name');
         yield TextareaField::new('description');
         yield NumberField::new('price');
         yield BooleanField::new('enable');
         yield AssociationField::new('school');
-        yield IntegerField::new('id', 'ID');
         yield DateTimeField::new('createdAt')->hideOnForm();
         yield DateTimeField::new('updatedAt')->hideOnForm();
     }

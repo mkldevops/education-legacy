@@ -8,6 +8,7 @@ use App\Entity\ClassPeriod;
 use App\Entity\ClassSchool;
 use App\Entity\Course;
 use App\Entity\Document;
+use App\Entity\Family;
 use App\Entity\Grade;
 use App\Entity\Meet;
 use App\Entity\Member;
@@ -16,6 +17,7 @@ use App\Entity\Package;
 use App\Entity\Period;
 use App\Entity\Person;
 use App\Entity\School;
+use App\Entity\Student;
 use App\Entity\TypeOperation;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -55,15 +57,15 @@ class DashboardController extends AbstractDashboardController
             ->update(
                 Crud::PAGE_INDEX,
                 Action::DETAIL,
-                static fn (Action $action): \EasyCorp\Bundle\EasyAdminBundle\Config\Action => $action->setIcon('fa fa-file-alt')->setLabel(false)
+                static fn (Action $action): Action => $action->setIcon('fa fa-file-alt')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::DELETE,
-                static fn (Action $action): \EasyCorp\Bundle\EasyAdminBundle\Config\Action => $action->setIcon('fa fa-trash')->setLabel(false)
+                static fn (Action $action): Action => $action->setIcon('fa fa-trash')->setLabel(false)
             )->update(
                 Crud::PAGE_INDEX,
                 Action::EDIT,
-                static fn (Action $action): \EasyCorp\Bundle\EasyAdminBundle\Config\Action => $action->setIcon('fa fa-edit')->setLabel(false)
+                static fn (Action $action): Action => $action->setIcon('fa fa-edit')->setLabel(false)
             )
             ->setPermission(Action::NEW, 'ROLE_ADMIN')
             ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN')
@@ -80,6 +82,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoRoute('Dashboard', 'fas fa-folder-open', 'app_admin_home');
 
         yield MenuItem::section('Education', 'fas fa-folder-open');
+        yield MenuItem::linkToCrud('Student', 'fas fa-folder-open', Student::class);
+        yield MenuItem::linkToCrud('Family', 'fas fa-folder-open', Family::class);
         yield MenuItem::linkToCrud('Course', 'fas fa-folder-open', Course::class);
         yield MenuItem::linkToCrud('Grade', 'fas fa-folder-open', Grade::class);
         yield MenuItem::linkToCrud('Package', 'fas fa-folder-open', Package::class);
