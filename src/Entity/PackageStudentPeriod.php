@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\PackageStudentPeriodRepository;
 use App\Trait\AmountEntityTrait;
 use App\Trait\AuthorEntityTrait;
@@ -12,16 +14,16 @@ use App\Trait\IdEntityTrait;
 use App\Trait\StudentEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-#[ORM\Table]
 #[ORM\UniqueConstraint(fields: ['package', 'period', 'student'])]
 #[ORM\Entity(repositoryClass: PackageStudentPeriodRepository::class)]
 #[UniqueEntity(fields: ['package', 'period', 'student'], groups: ['registration'])]
-class PackageStudentPeriod implements \Stringable
+class PackageStudentPeriod implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AmountEntityTrait;
     use AuthorEntityTrait;
@@ -67,15 +69,18 @@ class PackageStudentPeriod implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Period $period = null;
 
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $dateExpire = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateTime = null;
 
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column(type: Types::FLOAT)]
     private float $discount = 0;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $paid = false;
 
+    /**
+     * @var Collection<int, PaymentPackageStudent>
+     */
     #[ORM\OneToMany(mappedBy: 'packageStudentPeriod', targetEntity: PaymentPackageStudent::class)]
     private Collection $payments;
 
@@ -115,12 +120,12 @@ class PackageStudentPeriod implements \Stringable
 
     public function getDateExpire(): ?\DateTimeInterface
     {
-        return $this->dateExpire;
+        return $this->dateTime;
     }
 
     public function setDateExpire(\DateTimeInterface $dateExpire): self
     {
-        $this->dateExpire = $dateExpire;
+        $this->dateTime = $dateExpire;
 
         return $this;
     }
@@ -194,16 +199,16 @@ class PackageStudentPeriod implements \Stringable
         return $this->paid ? 'non' : 'oui';
     }
 
-    public function addPayment(PaymentPackageStudent $payments): static
+    public function addPayment(PaymentPackageStudent $paymentPackageStudent): static
     {
-        $this->payments[] = $payments;
+        $this->payments[] = $paymentPackageStudent;
 
         return $this;
     }
 
-    public function removePayment(PaymentPackageStudent $payments): void
+    public function removePayment(PaymentPackageStudent $paymentPackageStudent): void
     {
-        $this->payments->removeElement($payments);
+        $this->payments->removeElement($paymentPackageStudent);
     }
 
     public function getPayments(): Collection

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\PeriodRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CommentEntityTrait;
@@ -13,11 +15,12 @@ use App\Trait\NameEntityTrait;
 use App\Trait\TimestampableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: PeriodRepository::class)]
-class Period implements \Stringable
+class Period implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;
@@ -27,18 +30,18 @@ class Period implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    #[ORM\ManyToOne(targetEntity: Diploma::class, inversedBy: 'periods')]
-    private ?Diploma $diploma = null;
-
     public function __construct(
-        #[ORM\Column(type: 'datetime')]
+        #[ORM\Column(type: Types::DATETIME_MUTABLE)]
         protected ?\DateTimeInterface $begin = new \DateTime(),
-        #[ORM\Column(type: 'datetime')]
+        #[ORM\Column(type: Types::DATETIME_MUTABLE)]
         protected ?\DateTimeInterface $end = new \DateTime(),
+
+        /**
+         * @var Collection<int, ClassPeriod>
+         */
         #[ORM\OneToMany(mappedBy: 'period', targetEntity: ClassPeriod::class)]
         protected Collection $classPeriods = new ArrayCollection()
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {
@@ -69,16 +72,16 @@ class Period implements \Stringable
         return $this;
     }
 
-    public function addClassPeriod(ClassPeriod $classPeriods): self
+    public function addClassPeriod(ClassPeriod $classPeriod): self
     {
-        $this->classPeriods[] = $classPeriods;
+        $this->classPeriods[] = $classPeriod;
 
         return $this;
     }
 
-    public function removeClassPeriod(ClassPeriod $classPeriods): self
+    public function removeClassPeriod(ClassPeriod $classPeriod): self
     {
-        $this->classPeriods->removeElement($classPeriods);
+        $this->classPeriods->removeElement($classPeriod);
 
         return $this;
     }
@@ -95,17 +98,5 @@ class Period implements \Stringable
         $percent = (int) $diffNow?->format('%R%a') / (int) $diffPeriod?->format('%R%a') * 100;
 
         return min($percent, 100);
-    }
-
-    public function getDiploma(): ?Diploma
-    {
-        return $this->diploma;
-    }
-
-    public function setDiploma(?Diploma $diploma): self
-    {
-        $this->diploma = $diploma;
-
-        return $this;
     }
 }

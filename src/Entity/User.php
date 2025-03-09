@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\UserRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\EnableEntityTrait;
+use App\Trait\IdEntityTrait;
 use App\Trait\NameEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -18,11 +22,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityInterface, AuthorEntityInterface
 {
-    use \App\Trait\IdEntityTrait;
     use AuthorEntityTrait;
     use EnableEntityTrait;
+    use IdEntityTrait;
     use NameEntityTrait;
     use SoftDeleteableEntity;
     use TimestampableEntity;
@@ -32,29 +36,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      */
     final public const USER_ROBOT = 0;
 
+    /**
+     * @var Collection<int, School>
+     */
     #[ORM\ManyToMany(targetEntity: School::class)]
     protected Collection $schoolAccessRight;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
     private ?string $username = null;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private string $password;
 
     private ?string $plainPassword = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $surname = null;
 
-    #[ORM\Column(type: 'string', nullable: true, unique: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true, unique: true)]
     private string $email;
 
     #[Ignore]
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $lastLogin = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateTime = null;
 
     public function __construct()
     {
@@ -68,7 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function getNameComplete(): string
     {
-        return sprintf('%s %s', strtoupper((string) $this->name), ucfirst((string) $this->surname));
+        return \sprintf('%s %s', strtoupper((string) $this->name), ucfirst((string) $this->surname));
     }
 
     public function getSurname(): ?string
@@ -147,12 +154,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function getLastLogin(): ?\DateTimeInterface
     {
-        return $this->lastLogin;
+        return $this->dateTime;
     }
 
     public function setLastLogin(\DateTimeInterface $lastLogin): self
     {
-        $this->lastLogin = $lastLogin;
+        $this->dateTime = $lastLogin;
 
         return $this;
     }
@@ -162,19 +169,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this->schoolAccessRight;
     }
 
-    public function addSchoolAccessRight(School $schoolAccessRight): self
+    public function addSchoolAccessRight(School $school): self
     {
-        if (!$this->schoolAccessRight->contains($schoolAccessRight)) {
-            $this->schoolAccessRight[] = $schoolAccessRight;
+        if (!$this->schoolAccessRight->contains($school)) {
+            $this->schoolAccessRight[] = $school;
         }
 
         return $this;
     }
 
-    public function removeSchoolAccessRight(School $schoolAccessRight): self
+    public function removeSchoolAccessRight(School $school): self
     {
-        if ($this->schoolAccessRight->contains($schoolAccessRight)) {
-            $this->schoolAccessRight->removeElement($schoolAccessRight);
+        if ($this->schoolAccessRight->contains($school)) {
+            $this->schoolAccessRight->removeElement($school);
         }
 
         return $this;

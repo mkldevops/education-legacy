@@ -23,18 +23,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/document')]
 class DocumentController extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws FileNotFoundException
      */
-    #[Route(path: '/create', name: 'app_document_create', methods: ['POST'])]
+    #[Route(path: '/document/create', name: 'app_document_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, DocumentManager $documentManager): RedirectResponse|Response
     {
         $document = new Document();
@@ -51,7 +49,7 @@ class DocumentController extends AbstractController
                 'The Document has been created.'
             );
 
-            return $this->redirect($this->generateUrl('app_document_show', ['id' => $document->getId()]));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
         return $this->render('document/new.html.twig', [
@@ -60,7 +58,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', name: 'app_document_new', methods: ['GET'])]
+    #[Route(path: '/document/new', name: 'app_document_new', methods: ['GET'])]
     public function new(): Response
     {
         $document = new Document();
@@ -72,7 +70,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/show/{id}', name: 'app_document_show', methods: ['GET'])]
+    #[Route(path: '/document/show/{id}', name: 'app_document_show', methods: ['GET'])]
     public function show(Document $document): Response
     {
         return $this->render('document/show.html.twig', [
@@ -80,7 +78,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_document_edit', methods: ['GET'])]
+    #[Route(path: '/document/edit/{id}', name: 'app_document_edit', methods: ['GET'])]
     public function edit(Document $document): Response
     {
         $editForm = $this->createEditForm($document);
@@ -91,7 +89,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_document_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/document/update/{id}', name: 'app_document_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Document $document, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($document);
@@ -101,7 +99,7 @@ class DocumentController extends AbstractController
 
             $this->addFlash('success', 'The Document has been updated.');
 
-            return $this->redirect($this->generateUrl('app_document_show', ['id' => $document->getId()]));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
         return $this->render('document/edit.html.twig', [
@@ -110,7 +108,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_document_delete', methods: ['DELETE', 'GET'])]
+    #[Route(path: '/document/delete/{id}', name: 'app_document_delete', methods: ['DELETE', 'GET'])]
     public function delete(Request $request, Document $document, DocumentManager $documentManager): Response
     {
         $deleteForm = $this->createDeleteForm($document->getId());
@@ -141,32 +139,31 @@ class DocumentController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/last', name: 'app_document_last', options: ['expose' => true], methods: ['POST', 'GET'])]
+    #[Route(path: '/document/last', name: 'app_document_last', options: ['expose' => true], methods: ['POST', 'GET'])]
     public function last(Request $request, DocumentRepository $documentRepository): JsonResponse
     {
-        $response = ResponseRequest::responseDefault();
+        $responseModel = ResponseRequest::responseDefault();
 
         try {
-            $response->data = $documentRepository
+            $responseModel->data = $documentRepository
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0))
             ;
         } catch (\Exception $exception) {
             throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
-        return new JsonResponse($response);
+        return new JsonResponse($responseModel);
     }
 
     /**
      * @throws AppException
      */
-    #[Route(path: '/upload', name: 'app_document_upload', methods: ['POST'])]
+    #[Route(path: '/document/upload', name: 'app_document_upload', methods: ['POST'])]
     public function upload(Request $request, DocumentManager $documentManager, EntityManagerInterface $entityManager, SchoolManager $schoolManager): JsonResponse
     {
         try {
             $document = (new Document())
                 ->setSchool($schoolManager->getEntitySchool())
-                ->setAuthor($this->getUser())
                 ->setEnable(true)
                 ->setFile($request->files->get('file'))
                 ->setName($request->get('name'))

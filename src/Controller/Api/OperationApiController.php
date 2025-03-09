@@ -13,10 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route(path: '/api/operation', options: ['expose' => 'true'])]
 class OperationApiController extends AbstractController
 {
-    #[Route(path: '/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/api/operation/update/{id}', name: 'app_api_operation_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Operation $operation, OperationManager $operationManager, SerializerInterface $serializer): JsonResponse
     {
         $operation = $serializer->deserialize($request->getContent(), Operation::class, 'json', [

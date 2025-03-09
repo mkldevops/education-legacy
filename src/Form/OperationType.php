@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Account;
 use App\Entity\Operation;
 use App\Entity\OperationGender;
+use App\Entity\School;
 use App\Entity\TypeOperation;
 use App\Entity\User;
 use App\Exception\AppException;
@@ -31,24 +32,23 @@ class OperationType extends AbstractType
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly Security $security
-    ) {
-    }
+    ) {}
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('account', EntityType::class, [
                 'label' => 'form.account',
                 'class' => Account::class,
                 'choice_label' => 'name',
-                'query_builder' => function (AccountRepository $er): QueryBuilder {
+                'query_builder' => function (AccountRepository $accountRepository): QueryBuilder {
                     /** @var SchoolList $schoolList */
                     $schoolList = $this->requestStack->getSession()->get('school');
-                    if (!$schoolList->selected instanceof \App\Entity\School) {
+                    if (!$schoolList->school instanceof School) {
                         throw new AppException('School selected not set');
                     }
 
-                    return $er->getAccountsQB($schoolList->selected, false);
+                    return $accountRepository->getAccountsQB($schoolList->school, false);
                 },
             ])
             ->add('name', TextType::class, [
@@ -64,7 +64,7 @@ class OperationType extends AbstractType
                 'label' => 'form.operation_gender',
                 'class' => OperationGender::class,
                 'choice_label' => 'name',
-                'query_builder' => static fn (OperationGenderRepository $er): \Doctrine\ORM\QueryBuilder => $er->getAvailable(),
+                'query_builder' => static fn (OperationGenderRepository $operationGenderRepository): QueryBuilder => $operationGenderRepository->getAvailable(),
             ])
             ->add('typeOperation', EntityType::class, [
                 'label' => 'form.type_operation',
@@ -85,14 +85,14 @@ class OperationType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'nameComplete',
                 'preferred_choices' => [$this->security->getUser()],
-                'query_builder' => static fn (UserRepository $er): QueryBuilder => $er->getAvailable(),
+                'query_builder' => static fn (UserRepository $userRepository): QueryBuilder => $userRepository->getAvailable(),
             ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Operation::class,
             'translation_domain' => 'operation',
         ]);

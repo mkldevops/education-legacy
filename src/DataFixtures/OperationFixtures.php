@@ -20,36 +20,32 @@ class OperationFixtures extends AbstractAppFixtures implements DependentFixtureI
      * @throws AppException
      * @throws \Exception
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
-        $faker = Factory::create();
+        $generator = Factory::create();
 
-        /** @var Account $account */
-        $account = $this->getReference(AccountFixtures::getKey(random_int(1, 2)));
+        $account = $this->getReference(AccountFixtures::getKey(random_int(1, 2)), Account::class);
 
-        /** @var OperationGender $operationGender */
-        $operationGender = $this->getReference(OperationGenderFixtures::getKey(random_int(1, 9)));
+        $operationGender = $this->getReference(OperationGenderFixtures::getKey(random_int(1, 9)), OperationGender::class);
 
-        /** @var TypeOperation $typeOperation */
-        $typeOperation = $this->getReference(TypeOperationFixtures::getKey(random_int(0, 19)));
+        $typeOperation = $this->getReference(TypeOperationFixtures::getKey(random_int(0, 19)), TypeOperation::class);
 
-        /** @var User $user */
-        $user = $this->getReference(UserFixtures::getKey(0));
+        $user = $this->getReference(UserFixtures::getKey(0), User::class);
 
         for ($i = 1; $i <= 10; ++$i) {
             $entity = (new Operation())
                 ->setAccount($account)
-                ->setName($faker->title())
-                ->setAmount($faker->randomFloat())
-                ->setDate($faker->dateTime())
-                ->setReference($faker->text(10))
+                ->setName($generator->title())
+                ->setAmount($generator->randomFloat())
+                ->setDate($generator->dateTime())
+                ->setReference($generator->text(10))
                 ->setOperationGender($operationGender)
                 ->setTypeOperation($typeOperation)
                 ->setAuthor($user)
             ;
 
-            $manager->persist($entity);
-            $manager->flush();
+            $objectManager->persist($entity);
+            $objectManager->flush();
         }
     }
 

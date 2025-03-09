@@ -9,15 +9,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|School find($id, $lockMode = null, $lockVersion = null)
- * @method null|School findOneBy(array $criteria, array $orderBy = null)
- * @method School[]    findAll()
- * @method School[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<School>
  */
 class SchoolRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, School::class);
+        parent::__construct($managerRegistry, School::class);
     }
 }

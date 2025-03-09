@@ -18,7 +18,5 @@ class SchoolList
      */
     final public const SCHOOL_LIST = 'list';
 
-    public function __construct(public ?array $list, public ?School $selected)
-    {
-    }
+    public function __construct(public ?array $list, public ?School $school) {}
 }

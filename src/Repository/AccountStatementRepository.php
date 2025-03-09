@@ -10,11 +10,14 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<AccountStatement>
+ */
 class AccountStatementRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, AccountStatement::class);
+        parent::__construct($managerRegistry, AccountStatement::class);
     }
 
     public function findByDate(Account $account, \DateTimeInterface $dateTime): ?AccountStatement

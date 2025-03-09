@@ -8,6 +8,7 @@ use App\Entity\Package;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\School;
 use App\Repository\PackageRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -27,13 +28,13 @@ class PackageStudentPeriodType extends AbstractType
         $this->school = $requestStack->getSession()->get('school')->selected;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('package', EntityType::class, [
                 'class' => Package::class,
                 'choice_label' => 'NameWithPrice',
-                'query_builder' => fn (PackageRepository $er): \Doctrine\ORM\QueryBuilder => $er->getAvailable($this->school),
+                'query_builder' => fn (PackageRepository $packageRepository): QueryBuilder => $packageRepository->getAvailable($this->school),
             ])
             ->add('student')
             ->add('discount', MoneyType::class)
@@ -41,9 +42,9 @@ class PackageStudentPeriodType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => PackageStudentPeriod::class,
             'translation_domain' => 'package_period_student',
         ]);

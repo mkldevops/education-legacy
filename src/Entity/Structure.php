@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
+use App\Repository\StructureRepository;
 use App\Trait\AddressEntityTrait;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CityEntityTrait;
@@ -13,24 +16,25 @@ use App\Trait\NameEntityTrait;
 use App\Trait\ZipEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: \App\Repository\StructureRepository::class)]
-class Structure implements \Stringable
+#[ORM\Entity(repositoryClass: StructureRepository::class)]
+class Structure implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
     use CityEntityTrait;
     use EnableEntityTrait;
-    use IdentityTrait;
+    use IdEntityTrait;
     use NameEntityTrait;
     use SoftDeleteableEntity;
     use TimestampableEntity;
     use ZipEntityTrait;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $logo = null;
 
     #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
@@ -42,20 +46,30 @@ class Structure implements \Stringable
     #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $secretary = null;
 
+    /**
+     * @var Collection<int, Member>
+     */
     #[ORM\OneToMany(targetEntity: Member::class, mappedBy: 'structure')]
     protected Collection $members;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: Types::JSON)]
     protected array $options = [];
 
+    /**
+     * @var Collection<int, Account>
+     */
     #[ORM\OneToMany(targetEntity: Account::class, mappedBy: 'structure')]
     protected Collection $accounts;
 
+    /**
+     * @var Collection<int, AccountSlip>
+     */
     #[ORM\OneToMany(targetEntity: AccountSlip::class, mappedBy: 'structure')]
     protected Collection $accountSlips;
 
     public function __construct()
     {
+        $this->members = new ArrayCollection();
         $this->enable = true;
         $this->accounts = new ArrayCollection();
         $this->accountSlips = new ArrayCollection();
@@ -83,9 +97,9 @@ class Structure implements \Stringable
         return $this->president;
     }
 
-    public function setPresident(Member $president): static
+    public function setPresident(Member $member): static
     {
-        $this->president = $president;
+        $this->president = $member;
 
         return $this;
     }
@@ -95,9 +109,9 @@ class Structure implements \Stringable
         return $this->treasurer;
     }
 
-    public function setTreasurer(Member $treasurer): self
+    public function setTreasurer(Member $member): self
     {
-        $this->treasurer = $treasurer;
+        $this->treasurer = $member;
 
         return $this;
     }
@@ -110,9 +124,9 @@ class Structure implements \Stringable
     /**
      * Set secretary.
      */
-    public function setSecretary(Member $secretary): static
+    public function setSecretary(Member $member): static
     {
-        $this->secretary = $secretary;
+        $this->secretary = $member;
 
         return $this;
     }
@@ -131,7 +145,7 @@ class Structure implements \Stringable
 
     public function addMember(?Member $member): static
     {
-        if ($member instanceof \App\Entity\Member && !$this->members->contains($member)) {
+        if ($member instanceof Member && !$this->members->contains($member)) {
             $this->members[] = $member;
         }
 
@@ -185,9 +199,9 @@ class Structure implements \Stringable
         return $this;
     }
 
-    public function removeAccount(Account $accounts): void
+    public function removeAccount(Account $account): void
     {
-        $this->accounts->removeElement($accounts);
+        $this->accounts->removeElement($account);
     }
 
     /**

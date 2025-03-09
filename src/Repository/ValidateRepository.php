@@ -9,15 +9,12 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Validate find($id, $lockMode = null, $lockVersion = null)
- * @method null|Validate findOneBy(array $criteria, array $orderBy = null)
- * @method Validate[]    findAll()
- * @method Validate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Validate>
  */
 class ValidateRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Validate::class);
+        parent::__construct($managerRegistry, Validate::class);
     }
 }

@@ -14,8 +14,7 @@ class ResponseModel
         public string $message = '',
         public array $data = [],
         public ?array $errors = null,
-    ) {
-    }
+    ) {}
 
     public static function responseDefault(array $data = []): self
     {

@@ -1,15 +1,17 @@
 parameters:
-    level: 6
+    level: 5
     paths:
         - src
         - tests
 
     symfony:
-        container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
     ignoreErrors:
+        -
+            identifier: doctrine.columnType
+        -
+            identifier: doctrine.associationType
         - '/Call to method getStatusCode\(\) on an unknown class Symfony\\Component\\HttpKernel\\Response\./'
         - '/Call to method getContent\(\) on an unknown class Symfony\\Component\\HttpKernel\\Response\./'
     reportUnmatchedIgnoredErrors: false
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
     inferPrivatePropertyTypeFromConstructor: true

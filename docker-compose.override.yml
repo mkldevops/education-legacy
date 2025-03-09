@@ -1,7 +1,0 @@
-services:
-  app:
-    build: .
-    environment:
-      APP_ENV : dev
-    volumes:
-      - "./:/var/www/html"

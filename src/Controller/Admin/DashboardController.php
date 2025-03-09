@@ -10,7 +10,6 @@ use App\Entity\Course;
 use App\Entity\Document;
 use App\Entity\Family;
 use App\Entity\Grade;
-use App\Entity\Meet;
 use App\Entity\Member;
 use App\Entity\OperationGender;
 use App\Entity\Package;
@@ -34,8 +33,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private readonly AdminUrlGenerator $adminUrlGenerator
-    ) {
-    }
+    ) {}
 
     #[Route('/admin')]
     public function index(): Response
@@ -102,6 +100,5 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('User', 'fas fa-folder-open', User::class);
         yield MenuItem::linkToCrud('Person', 'fas fa-folder-open', Person::class);
         yield MenuItem::linkToCrud('Member', 'fas fa-folder-open', Member::class);
-        yield MenuItem::linkToCrud('Réunions', 'fas fa-folder-open', Meet::class);
     }
 }

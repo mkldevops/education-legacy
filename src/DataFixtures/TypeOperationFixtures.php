@@ -8,23 +8,17 @@ use App\Entity\TypeOperation;
 use App\Exception\AppException;
 use Doctrine\Persistence\ObjectManager;
 
-/**
- * Class TypesOperations.
- *
- * @author  fardus
- */
 class TypeOperationFixtures extends AbstractAppFixtures
 {
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         foreach (self::getData() as $item) {
             $parent = null;
             if (!empty($item['PARENT'])) {
-                /** @var TypeOperation $parent */
-                $parent = $this->getReference(self::getKey($item['PARENT']));
+                $parent = $this->getReference(self::getKey($item['PARENT']), TypeOperation::class);
             }
 
             $entity = (new TypeOperation())
@@ -39,8 +33,8 @@ class TypeOperationFixtures extends AbstractAppFixtures
                 ->setParent($parent)
             ;
 
-            $manager->persist($entity);
-            $manager->flush();
+            $objectManager->persist($entity);
+            $objectManager->flush();
 
             $this->addReference(self::getKey((int) $item['ID']), $entity);
         }

@@ -13,9 +13,7 @@ use App\Manager\OFXManager;
 use App\Manager\SchoolManager;
 use App\Repository\AccountRepository;
 use App\Repository\OperationRepository;
-use App\Services\GoogleDriveService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -23,24 +21,22 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/account')]
 #[IsGranted('ROLE_ACCOUNTANT')]
 class AccountController extends AbstractController
 {
-    public function __construct(private readonly TranslatorInterface $translator)
-    {
-    }
+    public function __construct(private readonly TranslatorInterface $translator) {}
 
     /**
      * @throws AppException
      */
-    #[Route(path: '/{page}', name: 'app_account_index', methods: ['GET'])]
-    public function index(AccountRepository $repository, SchoolManager $schoolManager, int $page = 1): Response
+    #[Route(path: '/account/{page}', name: 'app_account_index', methods: ['GET'])]
+    public function index(AccountRepository $accountRepository, SchoolManager $schoolManager, int $page = 1): Response
     {
         $count = 20;
-        $entities = $repository
+        $entities = $accountRepository
             ->getAccounts($schoolManager->getSchool(), false)
             ->getResult()
         ;
@@ -55,7 +51,7 @@ class AccountController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/create', name: 'app_account_create')]
+    #[Route(path: '/account/create', name: 'app_account_create')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): RedirectResponse|Response
     {
@@ -70,7 +66,7 @@ class AccountController extends AbstractController
 
             $this->addFlash('success', 'The Account has been created.');
 
-            return $this->redirect($this->generateUrl('app_account_show', ['id' => $account->getId()]));
+            return $this->redirectToRoute('app_account_show', ['id' => $account->getId()]);
         }
 
         return $this->render('account/new.html.twig', [
@@ -79,7 +75,7 @@ class AccountController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', name: 'app_account_new')]
+    #[Route(path: '/account/new', name: 'app_account_new')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function new(): Response
     {
@@ -95,7 +91,7 @@ class AccountController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/show/{id}', name: 'app_account_show')]
+    #[Route(path: '/account/show/{id}', name: 'app_account_show')]
     public function show(AccountManager $accountManager, Account $account, SchoolManager $schoolManager, OperationRepository $operationRepository): Response
     {
         if ($account->getStructure()?->getId() !== $schoolManager->getEntitySchool()->getStructure()?->getId()) {
@@ -110,7 +106,7 @@ class AccountController extends AbstractController
         return $this->render('account/show.html.twig', $data);
     }
 
-    #[Route(path: '/operations/{id}', name: 'app_account_operations')]
+    #[Route(path: '/account/operations/{id}', name: 'app_account_operations')]
     public function operations(Account $account): Response
     {
         return $this->render('account/operations.html.twig', [
@@ -121,7 +117,7 @@ class AccountController extends AbstractController
     /**
      * Displays a form to edit an existing Account entity.
      */
-    #[Route(path: '/edit/{id}', name: 'app_account_edit')]
+    #[Route(path: '/account/edit/{id}', name: 'app_account_edit')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function edit(Account $account): Response
     {
@@ -133,7 +129,7 @@ class AccountController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_account_update')]
+    #[Route(path: '/account/update/{id}', name: 'app_account_update')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function update(Request $request, Account $account, EntityManagerInterface $entityManager): Response
     {
@@ -144,7 +140,7 @@ class AccountController extends AbstractController
 
             $this->addFlash('success', 'The Account has been updated.');
 
-            return $this->redirect($this->generateUrl('app_account_show', ['id' => $account->getId()]));
+            return $this->redirectToRoute('app_account_show', ['id' => $account->getId()]);
         }
 
         return $this->render('account/edit.html.twig', [
@@ -156,7 +152,7 @@ class AccountController extends AbstractController
     /**
      * Deletes a Account entity.
      */
-    #[Route(path: '/delete/{id}', name: 'app_account_delete')]
+    #[Route(path: '/account/delete/{id}', name: 'app_account_delete')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function delete(Request $request, Account $account, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
@@ -168,7 +164,7 @@ class AccountController extends AbstractController
 
             $this->addFlash('success', 'The Account has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_account_index'));
+            return $this->redirectToRoute('app_account_index');
         }
 
         return $this->render('account/delete.html.twig', [
@@ -181,27 +177,20 @@ class AccountController extends AbstractController
      * @throws AppException
      * @throws \Exception
      */
-    #[Route(path: '/ofx/{id}', name: 'app_account_ofx')]
+    #[Route(path: '/account/ofx/{id}', name: 'app_account_ofx')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function ofx(Request $request, Account $account, OFXManager $manager, GoogleDriveService $googleDriveService): Response
+    public function ofx(Request $request, Account $account, OFXManager $ofxManager): Response
     {
-        $files = $googleDriveService
-            ->getListFiles([
-                'q' => "title contains 'ofx'",
-                'spaces' => 'drive',
-                'pageSize' => 20,
-            ])
-        ;
         $logsOperations = [];
         $form = $this->createOFXForm($account)
             ->handleRequest($request)
         ;
         if ($form->isSubmitted() && $form->get('file')->isValid()) {
-            $manager->setAccount($account)
+            $ofxManager->setAccount($account)
                 ->setAccountTransfer($form->get('accountTransfer')->getData())
             ;
-            $result = $manager->ofx($form->get('file')->getData());
-            $logsOperations = $manager->getLogs();
+            $result = $ofxManager->ofx($form->get('file')->getData());
+            $logsOperations = $ofxManager->getLogs();
             if ($result) {
                 $this->addFlash('success', $this->translator->trans('account.ofx.treatment.ok', [], 'account'));
             } else {
@@ -211,7 +200,6 @@ class AccountController extends AbstractController
 
         return $this->render('account/ofx.html.twig', [
             'account' => $account,
-            'files' => $files,
             'logsOperations' => $logsOperations,
             'delete_form' => $form->createView(),
         ]);

@@ -19,16 +19,13 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Operation find($id, $lockMode = null, $lockVersion = null)
- * @method null|Operation findOneBy(array $criteria, array $orderBy = null)
- * @method Operation[]    findAll()
- * @method Operation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Operation>
  */
 class OperationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Operation::class);
+        parent::__construct($managerRegistry, Operation::class);
     }
 
     /**
@@ -36,9 +33,9 @@ class OperationRepository extends ServiceEntityRepository
      *
      * @return Operation[]
      */
-    public function getListOperations(Period $period, School $school, TypeOperation $typeOperation = null): array
+    public function getListOperations(Period $period, School $school, ?TypeOperation $typeOperation = null): array
     {
-        $qb = $this->createQueryBuilder('ope', 'ope.id')
+        $queryBuilder = $this->createQueryBuilder('ope', 'ope.id')
             ->innerJoin('ope.account', 'acc')
             ->where('ope.date BETWEEN :begin AND :end')
             ->andWhere('acc.structure = :structure')
@@ -47,17 +44,20 @@ class OperationRepository extends ServiceEntityRepository
             ->setParameter('structure', $school->getStructure()?->getId())
         ;
 
-        if ($typeOperation instanceof \App\Entity\TypeOperation) {
-            $qb->andWhere('ope.typeOperation = :typeOperation')
+        if ($typeOperation instanceof TypeOperation) {
+            $queryBuilder->andWhere('ope.typeOperation = :typeOperation')
                 ->setParameter('typeOperation', $typeOperation)
             ;
         }
 
-        return $qb->getQuery()
+        return $queryBuilder->getQuery()
             ->getResult()
         ;
     }
 
+    /**
+     * @return Operation[]
+     */
     public function getAvailableToAccountStatement(AccountStatement $accountStatement): array
     {
         $begin = $accountStatement->getBegin();
@@ -112,13 +112,16 @@ class OperationRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleResult(Query::HYDRATE_ARRAY)
             ;
-        } catch (NoResultException|NonUniqueResultException $e) {
-            throw new AppException(sprintf('%s Error on query', __FUNCTION__), $e->getCode(), $e);
+        } catch (NonUniqueResultException|NoResultException $e) {
+            throw new AppException(\sprintf('%s Error on query', __FUNCTION__), $e->getCode(), $e);
         }
 
         return (int) $result['nbOperations'];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getStatsByMonthly(Period $period, School $school): array
     {
         $query = $this->createQueryBuilder('ope')
@@ -144,6 +147,9 @@ class OperationRepository extends ServiceEntityRepository
         return $query->getArrayResult();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDataOperationsToAccount(Account $account): array
     {
         $result = $this->createQueryBuilder('ope')
@@ -163,6 +169,9 @@ class OperationRepository extends ServiceEntityRepository
         return current($result);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getLastOperation(School $school, int $maxResult = 10): array
     {
         return $this->createQueryBuilder('ope')
@@ -188,7 +197,7 @@ class OperationRepository extends ServiceEntityRepository
      */
     public function search(string $search): array
     {
-        $qb = $this->createQueryBuilder('p')
+        $queryBuilder = $this->createQueryBuilder('p')
             ->where('REGEXP(p.name, :search) = 1')
             ->orWhere('p.uniqueId = :search')
             ->orWhere('REGEXP(p.reference, :search) = 1')
@@ -198,12 +207,12 @@ class OperationRepository extends ServiceEntityRepository
         ;
 
         if (is_numeric($search)) {
-            $qb->orWhere('REGEXP(p.amount, :amount) = 1')
+            $queryBuilder->orWhere('REGEXP(p.amount, :amount) = 1')
                 ->setParameter('amount', (float) str_replace(',', '.', $search))
             ;
         }
 
-        return $qb->getQuery()
+        return $queryBuilder->getQuery()
             ->getResult()
         ;
     }

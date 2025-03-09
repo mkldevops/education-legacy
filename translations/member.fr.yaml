@@ -1,15 +1,15 @@
-title.new: 'Nouveau membre'
+title.new: "Nouveau membre"
 title.edit: 'Modifier le membre "%name%"'
-title.form.edit: 'Formulaire d''ajout de membre'
-title.form.new: 'Formulaire d''ajout de membre'
-title.form.delete: 'Formulaire de supression de membre'
+title.form.edit: "Formulaire d'ajout de membre"
+title.form.new: "Formulaire d'ajout de membre"
+title.form.delete: "Formulaire de supression de membre"
 title.delete: 'Supprimer le membre "%name%"'
-title.index: 'Liste des membres'
+title.index: "Liste des membres"
 title.show: 'Fiche du membre "%name%"'
 title.header.info: 'Information du personnel de "%name%"'
-title.header.info_member: 'Information Membre'
+title.header.info_member: "Information Membre"
 member: Membre
-new.title: 'Nouveau membre'
+new.title: "Nouveau membre"
 Id: __Id
 Name: __Name
 Forname: __Forname
@@ -17,7 +17,6 @@ Gender: __Gender
 Function: __Function
 Edit: __Edit
 Delete: __Delete
-title.header.info_meet: __title.header.info_meet
 title.header.info_membership: __title.header.info_membership
-'Member recorded by': '__Member recorded by'
+"Member recorded by": "__Member recorded by"
 to: __to

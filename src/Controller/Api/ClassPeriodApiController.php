@@ -15,13 +15,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api/class-period')]
 class ClassPeriodApiController extends AbstractController
 {
     public function __construct(
         private readonly SessionFetcher $sessionFetcher
-    ) {
-    }
+    ) {}
 
     /**
      * Get student WithOut Class School to Period selected.
@@ -29,9 +27,9 @@ class ClassPeriodApiController extends AbstractController
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    public function studentWithOut(ClassPeriodManager $manager): JsonResponse
+    public function studentWithOut(ClassPeriodManager $classPeriodManager): JsonResponse
     {
-        $students = $manager->getListStudentWithout($this->sessionFetcher->getPeriodOnSession(), $this->sessionFetcher->getSchoolOnSession());
+        $students = $classPeriodManager->getListStudentWithout($this->sessionFetcher->getPeriodOnSession(), $this->sessionFetcher->getSchoolOnSession());
 
         return $this->json(['data' => ['students' => $students]]);
     }
@@ -41,15 +39,15 @@ class ClassPeriodApiController extends AbstractController
      * @throws ORMException
      */
     #[Route(
-        path: '/update-student/{id}',
+        path: '/api/class-period/update-student/{id}',
         name: 'app_api_class_period_update_student',
         options: ['expose' => true],
         methods: ['POST']
     )]
-    public function updateStudent(Request $request, ClassPeriodManager $manager, ClassPeriod $classPeriod): JsonResponse
+    public function updateStudent(Request $request, ClassPeriodManager $classPeriodManager, ClassPeriod $classPeriod): JsonResponse
     {
         $students = $request->get('students');
-        $success = $manager->treatListStudent($students, $this->sessionFetcher->getPeriodOnSession(), $classPeriod);
+        $success = $classPeriodManager->treatListStudent($students, $this->sessionFetcher->getPeriodOnSession(), $classPeriod);
 
         return $this->json([
             'name' => $classPeriod->getClassSchool()->getName(),

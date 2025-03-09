@@ -17,14 +17,13 @@ class UserFixtures extends AbstractAppFixtures
     final public const EMAIL = 'h.fahari@gmail.com';
 
     public function __construct(
-        private readonly UserPasswordHasherInterface $hasher
-    ) {
-    }
+        private readonly UserPasswordHasherInterface $userPasswordHasher
+    ) {}
 
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         foreach (self::getData() as $i => $item) {
             // On crée l'utilisateur
@@ -34,7 +33,7 @@ class UserFixtures extends AbstractAppFixtures
                 ->setEmail($item['email'])
                 ->setName($item['name'])
                 ->setSurname($item['surname'])
-                ->setPassword($this->hasher->hashPassword($entity, $item['password']))
+                ->setPassword($this->userPasswordHasher->hashPassword($entity, $item['password']))
                 ->setEnable((bool) $item['enable'])
             ;
 
@@ -44,8 +43,8 @@ class UserFixtures extends AbstractAppFixtures
                 }
             }
 
-            $manager->persist($entity);
-            $manager->flush();
+            $objectManager->persist($entity);
+            $objectManager->flush();
 
             $this->addReference(self::getKey($i), $entity);
         }

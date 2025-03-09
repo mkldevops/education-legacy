@@ -15,14 +15,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AccountSlipEditType extends AccountSlipType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        parent::buildForm($builder, $options);
+        parent::buildForm($formBuilder, $options);
 
-        $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event): void {
+        $formBuilder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $formEvent): void {
             /** @var AccountSlip $accountSlip */
-            $accountSlip = $event->getData();
-            $form = $event->getForm();
+            $accountSlip = $formEvent->getData();
+            $form = $formEvent->getForm();
             if ($accountSlip->hasOperationDebit()) {
                 $form->remove('accountDebit');
             }
@@ -33,9 +33,9 @@ class AccountSlipEditType extends AccountSlipType
         });
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => AccountSlip::class,
             'translation_domain' => 'account_slip',
         ]);

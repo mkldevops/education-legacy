@@ -14,10 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/package-student-period')]
 class PackageStudentPeriodController extends AbstractController
 {
-    #[Route(path: '/create', name: 'app_package_student_period_create', methods: ['POST'])]
+    #[Route(path: '/package-student-period/create', name: 'app_package_student_period_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -29,10 +28,7 @@ class PackageStudentPeriodController extends AbstractController
 
             $this->addFlash('success', 'The package has been added to student.');
 
-            return $this->redirect($this->generateUrl(
-                'app_package_student_period_show',
-                ['id' => $packageStudentPeriod->getId()]
-            ));
+            return $this->redirectToRoute('app_package_student_period_show', ['id' => $packageStudentPeriod->getId()]);
         }
 
         return $this->render('package_student_period/new.html.twig', [
@@ -41,7 +37,7 @@ class PackageStudentPeriodController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', name: 'app_package_student_period_new', methods: ['GET'])]
+    #[Route(path: '/package-student-period/new', name: 'app_package_student_period_new', methods: ['GET'])]
     public function new(): Response
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -56,7 +52,7 @@ class PackageStudentPeriodController extends AbstractController
     /**
      * Finds and displays a PackageStudentPeriod entity.
      */
-    #[Route(path: '/show/{id}', name: 'app_package_student_period_show', methods: ['GET'])]
+    #[Route(path: '/package-student-period/show/{id}', name: 'app_package_student_period_show', methods: ['GET'])]
     public function show(PackageStudentPeriod $packageStudentPeriod): Response
     {
         return $this->render('package_student_period/show.html.twig', [
@@ -67,7 +63,7 @@ class PackageStudentPeriodController extends AbstractController
     /**
      * Displays a form to edit an existing PackageStudentPeriod entity.
      */
-    #[Route(path: '/edit/{id}', name: 'app_package_student_period_edit', methods: ['GET'])]
+    #[Route(path: '/package-student-period/edit/{id}', name: 'app_package_student_period_edit', methods: ['GET'])]
     public function edit(PackageStudentPeriod $packageStudentPeriod): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
@@ -78,7 +74,7 @@ class PackageStudentPeriodController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_package_student_period_update', methods: ['PUT', 'POST'])]
+    #[Route(path: '/package-student-period/update/{id}', name: 'app_package_student_period_update', methods: ['PUT', 'POST'])]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod, EntityManagerInterface $entityManager): Response
     {
         $editForm = $this->createEditForm($packageStudentPeriod);
@@ -87,7 +83,7 @@ class PackageStudentPeriodController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'The PackageStudentPeriod has been updated.');
 
-            return $this->redirect($this->generateUrl('app_package_student_period_show', ['id' => $packageStudentPeriod->getId()]));
+            return $this->redirectToRoute('app_package_student_period_show', ['id' => $packageStudentPeriod->getId()]);
         }
 
         return $this->render('package_student_period/edit.html.twig', [
@@ -96,7 +92,7 @@ class PackageStudentPeriodController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_package_student_period_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/package-student-period/delete/{id}', name: 'app_package_student_period_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, PackageStudentPeriod $packageStudentPeriod, EntityManagerInterface $entityManager): Response
     {
         $deleteForm = $this->createDeleteForm($packageStudentPeriod->getId());
@@ -108,7 +104,7 @@ class PackageStudentPeriodController extends AbstractController
 
             $this->addFlash('success', 'The PackageStudentPeriod has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_admin_home'));
+            return $this->redirectToRoute('app_admin_home');
         }
 
         return $this->render('package_student_period/delete.html.twig', [

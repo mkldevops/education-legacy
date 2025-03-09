@@ -38,7 +38,6 @@ class PeriodCrudController extends AbstractCrudController
         yield TextField::new('name');
         yield TextareaField::new('comment');
         yield AssociationField::new('classPeriods')->hideOnForm();
-        yield AssociationField::new('diploma')->hideOnForm();
         yield AssociationField::new('author')->hideOnForm();
         yield Field::new('enable');
         yield DateTimeField::new('createdAt')->hideOnForm();

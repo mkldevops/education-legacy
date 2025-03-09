@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\FamilyRepository;
 use App\Trait\AddressEntityTrait;
 use App\Trait\AuthorEntityTrait;
@@ -14,6 +16,7 @@ use App\Trait\IdEntityTrait;
 use App\Trait\ZipEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Accessors\NameAccessorsTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -22,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FamilyRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class Family implements \Stringable
+class Family implements EntityInterface, AuthorEntityInterface
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
@@ -35,7 +38,7 @@ class Family implements \Stringable
     use TimestampableEntity;
     use ZipEntityTrait;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $name = null;
 
     #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -50,19 +53,22 @@ class Family implements \Stringable
     #[ORM\JoinColumn(unique: true)]
     private ?Person $legalGuardian = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $language = null;
 
     #[Assert\Range(min: 1, max: 12)]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $numberChildren = 1;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $personAuthorized = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $personEmergency = null;
 
+    /**
+     * @var Collection<int, Person>
+     */
     #[ORM\OneToMany(mappedBy: 'family', targetEntity: Person::class, cascade: ['remove', 'persist'], orphanRemoval: true)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Collection $persons;
@@ -74,7 +80,7 @@ class Family implements \Stringable
 
     public function __toString(): string
     {
-        return sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
+        return \sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
     }
 
     public function setGenders(): self
@@ -89,24 +95,24 @@ class Family implements \Stringable
     public function getNameComplete(): string
     {
         $persons = [];
-        if ($this->mother instanceof \App\Entity\Person) {
+        if ($this->mother instanceof Person) {
             $persons[] = (string) $this->mother;
         }
 
-        if ($this->father instanceof \App\Entity\Person) {
+        if ($this->father instanceof Person) {
             $persons[] = (string) $this->father;
         }
 
-        if ($this->legalGuardian instanceof \App\Entity\Person && \count($persons) < 2) {
+        if ($this->legalGuardian instanceof Person && \count($persons) < 2) {
             $persons[] = (string) $this->getLegalGuardian();
         }
 
         if (\count($persons) < 2 && !empty($this->persons->get(0))) {
-            $persons[] = sprintf('[%s]', (string) $this->persons->first());
+            $persons[] = \sprintf('[%s]', (string) $this->persons->first());
         }
 
         if (\count($persons) < 2 && !empty($this->persons->get(1))) {
-            $persons[] = sprintf('[%s]', (string) $this->persons->get(1));
+            $persons[] = \sprintf('[%s]', (string) $this->persons->get(1));
         }
 
         if (\count($this->getPersons()) > 2) {
@@ -121,11 +127,11 @@ class Family implements \Stringable
         return $this->legalGuardian;
     }
 
-    public function setLegalGuardian(Person $legalGuardian = null): self
+    public function setLegalGuardian(?Person $person = null): self
     {
-        $this->legalGuardian = $legalGuardian;
+        $this->legalGuardian = $person;
 
-        if ($this->legalGuardian instanceof \App\Entity\Person && !$this->legalGuardian->hasGender()) {
+        if ($this->legalGuardian instanceof Person && !$this->legalGuardian->hasGender()) {
             $this->legalGuardian->setGender(Person::GENDER_FEMALE);
         }
 
@@ -148,11 +154,11 @@ class Family implements \Stringable
         return $this->father;
     }
 
-    public function setFather(Person $father = null): self
+    public function setFather(?Person $person = null): self
     {
-        $this->father = $father;
+        $this->father = $person;
 
-        if ($this->father instanceof \App\Entity\Person && !$this->father->hasGender()) {
+        if ($this->father instanceof Person && !$this->father->hasGender()) {
             $this->father->setGender(Person::GENDER_MALE);
         }
 
@@ -164,11 +170,11 @@ class Family implements \Stringable
         return $this->mother;
     }
 
-    public function setMother(Person $mother = null): static
+    public function setMother(?Person $person = null): static
     {
-        $this->mother = $mother;
+        $this->mother = $person;
 
-        if ($this->mother instanceof \App\Entity\Person && !$this->mother->hasGender()) {
+        if ($this->mother instanceof Person && !$this->mother->hasGender()) {
             $this->mother->setGender(Person::GENDER_FEMALE);
         }
 

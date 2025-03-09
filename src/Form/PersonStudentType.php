@@ -20,11 +20,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PersonStudentType extends PersonSimpleType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        parent::buildForm($builder, $options);
+        parent::buildForm($formBuilder, $options);
 
-        $builder
+        $formBuilder
             ->add('gender', ChoiceType::class, [
                 'choices' => ['form.gender.choices.male' => Person::GENDER_MALE, 'form.gender.choices.female' => Person::GENDER_FEMALE],
                 'label' => 'form.gender.label',
@@ -53,15 +53,15 @@ class PersonStudentType extends PersonSimpleType
                 'class' => Family::class,
                 'required' => false,
                 'label' => 'form.family.label',
-                'query_builder' => static fn (FamilyRepository $er): QueryBuilder => $er->createQueryBuilder('f')
+                'query_builder' => static fn (FamilyRepository $familyRepository): QueryBuilder => $familyRepository->createQueryBuilder('f')
                     ->where('f.enable = 1'),
             ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Person::class,
             'pathRedirect' => null,
             'translation_domain' => 'person',

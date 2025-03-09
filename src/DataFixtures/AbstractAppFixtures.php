@@ -19,13 +19,13 @@ abstract class AbstractAppFixtures extends Fixture
     /**
      * @throws AppException
      */
-    public static function getKey(string|int $key): string
+    public static function getKey(int|string $key): string
     {
         if (!\array_key_exists($key, self::getData())) {
-            throw new AppException(sprintf('Not found key "%s" in %s', $key, self::getPath()));
+            throw new AppException(\sprintf('Not found key "%s" in %s', $key, self::getPath()));
         }
 
-        return sprintf('%s_%s', static::class, $key);
+        return \sprintf('%s_%s', static::class, $key);
     }
 
     /**
@@ -35,18 +35,18 @@ abstract class AbstractAppFixtures extends Fixture
     {
         $pathFile = self::getPath();
         if (!file_exists($pathFile)) {
-            throw new AppException(sprintf('Not found data fixtures %s', $pathFile));
+            throw new AppException(\sprintf('Not found data fixtures %s', $pathFile));
         }
 
-        $yaml = new Parser();
+        $parser = new Parser();
 
-        return $yaml->parseFile($pathFile, Yaml::PARSE_CONSTANT) ?? [];
+        return $parser->parseFile($pathFile, Yaml::PARSE_CONSTANT) ?? [];
     }
 
     private static function getPath(): string
     {
         $name = (new \ReflectionClass(static::class))->getShortName();
 
-        return str_replace('.php', '', sprintf('%s/data/%s.yaml', __DIR__, $name));
+        return str_replace('.php', '', \sprintf('%s/data/%s.yaml', __DIR__, $name));
     }
 }

@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\ValidateRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\TimestampableEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ValidateRepository::class)]
-class Validate
+class Validate implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use IdEntityTrait;
@@ -47,11 +50,16 @@ class Validate
      */
     final public const TYPE_DANGER = 'danger';
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $message = null;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: Types::STRING, length: 10)]
     private string $type = self::TYPE_MUTED;
+
+    public function __toString(): string
+    {
+        return $this->getMessage();
+    }
 
     /**
      * @return array{type: string, created: array{time: int, string: string}, author: array{id: null|int, name: null|string}, message: null|string}
@@ -79,7 +87,7 @@ class Validate
 
     public function setType(?string $type): self
     {
-        if (!empty($type) && !empty(self::getListType($type))) {
+        if (null !== $type && '' !== $type && '0' !== $type && [] !== self::getListType($type)) {
             $this->type = $type;
         }
 
@@ -97,7 +105,7 @@ class Validate
             self::TYPE_DANGER => ['label' => 'danger'],
         ];
 
-        if (!empty($type)) {
+        if (null !== $type && '' !== $type && '0' !== $type) {
             if (\array_key_exists($type, $list)) {
                 return $list[$type];
             }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\EntityInterface;
 use App\Repository\PaymentPackageStudentRepository;
 use App\Trait\AmountEntityTrait;
 use App\Trait\CommentEntityTrait;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PaymentPackageStudentRepository::class)]
-class PaymentPackageStudent implements \Stringable
+class PaymentPackageStudent implements \Stringable, EntityInterface
 {
     use AmountEntityTrait;
     use CommentEntityTrait;

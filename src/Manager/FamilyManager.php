@@ -8,6 +8,7 @@ use App\Entity\Family;
 use App\Entity\Period;
 use App\Entity\Person;
 use App\Entity\Student;
+use App\Entity\User;
 use App\Exception\AppException;
 use App\Manager\Interfaces\FamilyManagerInterface;
 use App\Repository\PackageStudentPeriodRepository;
@@ -25,8 +26,7 @@ class FamilyManager implements FamilyManagerInterface
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     public function getPersons(Family $family, Period $period): array
     {
@@ -62,7 +62,7 @@ class FamilyManager implements FamilyManagerInterface
             ->setName($family->__toString())
             ->setGenders()
             ->setEnable(true)
-            ->setAuthor($this->security->getUser())
+            ->setAuthor($this->security->getUser() instanceof User ? $this->security->getUser() : null)
         ;
         $this->entityManager->persist($family);
         $this->entityManager->flush();

@@ -16,9 +16,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PersonType extends PersonSimpleType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('name', null, [
                 'label' => 'form.name.label',
             ])
@@ -59,9 +59,9 @@ class PersonType extends PersonSimpleType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Person::class,
             'pathRedirect' => null,
             'translation_domain' => 'person',

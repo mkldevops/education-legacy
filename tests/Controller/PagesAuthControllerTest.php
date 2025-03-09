@@ -18,6 +18,9 @@ class PagesAuthControllerTest extends AppWebTestCase
         static::assertResponseIsSuccessful();
     }
 
+    /**
+     * @return iterable<array-key, string[]>
+     */
     public static function providers(): iterable
     {
         yield ['/'];

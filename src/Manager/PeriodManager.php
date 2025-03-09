@@ -15,14 +15,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PeriodManager implements PeriodManagerInterface
 {
     public function __construct(
-        private readonly PeriodRepository $repository,
+        private readonly PeriodRepository $periodRepository,
         private readonly RequestStack $requestStack
-    ) {
-    }
+    ) {}
 
     public function findCurrentPeriod(): Period
     {
-        return $this->repository->getCurrentPeriod();
+        return $this->periodRepository->getCurrentPeriod();
     }
 
     /**
@@ -34,9 +33,9 @@ class PeriodManager implements PeriodManagerInterface
             throw new PeriodException('Period id cannot be null');
         }
 
-        $period = $this->repository->find($id);
+        $period = $this->periodRepository->find($id);
         if (!$period instanceof Period) {
-            throw new PeriodException(sprintf('Not found Period %d', $id));
+            throw new PeriodException(\sprintf('Not found Period %d', $id));
         }
 
         return $period;
@@ -64,14 +63,14 @@ class PeriodManager implements PeriodManagerInterface
      */
     public function setPeriodsOnSession(): void
     {
-        $list = $this->repository->findBy(['enable' => true]);
+        $list = $this->periodRepository->findBy(['enable' => true]);
 
         if ([] === $list) {
             throw new PeriodException('Nothing period available');
         }
 
-        $current = $this->repository->getCurrentPeriod();
-        $this->requestStack->getSession()->set('period', new PeriodsList($list, $current, $current));
+        $period = $this->periodRepository->getCurrentPeriod();
+        $this->requestStack->getSession()->set('period', new PeriodsList($list, $period, $period));
     }
 
     /** AppException.

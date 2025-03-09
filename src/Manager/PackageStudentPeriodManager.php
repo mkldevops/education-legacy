@@ -8,19 +8,14 @@ use App\Entity\PackageStudentPeriod;
 use App\Fetcher\SessionFetcherInterface;
 use App\Repository\PackageStudentPeriodRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class PackageStudentPeriodManager
 {
     public function __construct(
         private readonly PackageStudentPeriodRepository $packageStudentPeriodRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly SessionFetcherInterface $sessionFetcher,
-        private readonly Security $security,
-        private readonly LoggerInterface $logger
-    ) {
-    }
+        private readonly SessionFetcherInterface $sessionFetcher
+    ) {}
 
     public function add(PackageStudentPeriod $packageStudentPeriod): PackageStudentPeriod
     {
@@ -31,7 +26,7 @@ class PackageStudentPeriodManager
             'package' => $packageStudentPeriod->getPackage(),
         ]);
 
-        if ($result instanceof \App\Entity\PackageStudentPeriod) {
+        if ($result instanceof PackageStudentPeriod) {
             return $result;
         }
 
@@ -54,10 +49,6 @@ class PackageStudentPeriodManager
 
     private function persistData(PackageStudentPeriod $packageStudentPeriod): void
     {
-        $this->logger->debug(__METHOD__, ['packageStudentPeriod' => $packageStudentPeriod]);
-
-        $packageStudentPeriod->setAuthor($this->security->getUser());
-
         $this->entityManager->persist($packageStudentPeriod);
         $this->entityManager->flush();
     }

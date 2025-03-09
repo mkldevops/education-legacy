@@ -18,7 +18,7 @@ class PeriodFixtures extends Fixture
     /**
      * @throws \Exception
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         $yearCurrent = ((int) date('Y')) - 1;
         $yearMax = $yearCurrent + 5;
@@ -32,10 +32,10 @@ class PeriodFixtures extends Fixture
                 ->setName($yearCurrent.'/'.($yearCurrent + 1))
             ;
 
-            $manager->persist($period);
+            $objectManager->persist($period);
             ++$yearCurrent;
         }
 
-        $manager->flush();
+        $objectManager->flush();
     }
 }

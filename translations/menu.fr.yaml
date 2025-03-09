@@ -1,37 +1,34 @@
-Dashboard: 'Tableau de bord'
+Dashboard: "Tableau de bord"
 Madrasse: Education
 Accounting: Comptabilité
 Account: Comptes
-'Account Slip': Transfert
-'Student Payments': 'Paiements élèves'
+"Account Slip": Transfert
+"Student Payments": "Paiements élèves"
 Shop: Boutique
-Meet: Réunions
 Users: Utilisateur
 Setting: Paramétrage
 School: École
 Period: Périodes
 Document: Documents
-'List users': 'Liste utilisateurs'
+"List users": "Liste utilisateurs"
 Member: Membres
 Student: Élèves
 Class: Classe
 Course: Cours
 Operation: Opérations
-'List Operation': 'Liste d''operations'
+"List Operation": "Liste d'operations"
 Product: Produits
 Sales: Ventes
-'List meet': 'Liste des réunions'
-'List person': 'Liste des personnes'
+"List person": "Liste des personnes"
 Teacher: Enseignants
 Package: Forfait
-Grade: 'Gestion des niveaux'
-'Stats Operation': 'Statistiques annuelles'
-'Operation Gender': 'Genres d''operations'
-'Type Operation': 'Type d''operation'
-'List User group': 'Groupe d''utilisateurs'
-'List family': 'Gestion Famille'
-Diploma: Diplôme
-'Easy Admin': Administation
-sidebar.change_password: 'Changer de mot de passe'
-sidebar.user_profile: 'Mon profile'
-sidebar.nothing_function: 'Aucune fonction'
+Grade: "Gestion des niveaux"
+"Stats Operation": "Statistiques annuelles"
+"Operation Gender": "Genres d'operations"
+"Type Operation": "Type d'operation"
+"List User group": "Groupe d'utilisateurs"
+"List family": "Gestion Famille"
+"Easy Admin": Administation
+sidebar.change_password: "Changer de mot de passe"
+sidebar.user_profile: "Mon profile"
+sidebar.nothing_function: "Aucune fonction"

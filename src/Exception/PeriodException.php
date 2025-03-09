@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace App\Exception;
 
-class PeriodException extends AppException
-{
-}
+class PeriodException extends AppException {}

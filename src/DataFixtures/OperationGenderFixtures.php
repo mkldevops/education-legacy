@@ -19,7 +19,7 @@ class OperationGenderFixtures extends AbstractAppFixtures implements DependentFi
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         $datas = self::getData();
 
@@ -30,8 +30,8 @@ class OperationGenderFixtures extends AbstractAppFixtures implements DependentFi
                 ->setCode($data['code'])
             ;
 
-            $manager->persist($gender);
-            $manager->flush();
+            $objectManager->persist($gender);
+            $objectManager->flush();
 
             $this->addReference(self::getKey($i), $gender);
         }

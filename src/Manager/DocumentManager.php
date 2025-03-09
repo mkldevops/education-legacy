@@ -33,8 +33,7 @@ final class DocumentManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     public function removesWithLinks(Document $document): bool
     {
@@ -91,7 +90,7 @@ final class DocumentManager
 
         $name = str_replace('.'.$document->getExtension(), '', $document->getFile()->getClientOriginalName());
 
-        if (!empty($document->getPrefix())) {
+        if (!\in_array($document->getPrefix(), [null, '', '0'], true)) {
             $name = $document->getPrefix().' '.$name;
         }
 
@@ -116,7 +115,7 @@ final class DocumentManager
         return $data;
     }
 
-    public static function getPathUploads(string $dir = null): string
+    public static function getPathUploads(?string $dir = null): string
     {
         $path = self::$pathUploads;
 
@@ -138,7 +137,7 @@ final class DocumentManager
 
         // If file is not supported
         if (!is_file($filepath) || !$document->isFormat([self::PDF, self::IMAGE])) {
-            throw new FileNotFoundException(sprintf('No such file %s or is not supported', $filepath));
+            throw new FileNotFoundException(\sprintf('No such file %s or is not supported', $filepath));
         }
 
         $this->logger->debug(__FUNCTION__, ['filepath' => $filepath]);
@@ -149,21 +148,21 @@ final class DocumentManager
         $thumb = null;
 
         try {
-            $img = new \Imagick($filepath);
+            $imagick = new \Imagick($filepath);
 
             if ($document->isFormat(self::PDF)) {
-                $img->setIteratorIndex(0);
+                $imagick->setIteratorIndex(0);
             }
 
             // If file is image, so to compress
             if ($document->isFormat(self::IMAGE)) {
-                $img->setCompression(\Imagick::COMPRESSION_LZW);
-                $img->setCompressionQuality(80);
-                $img->stripImage();
-                $img->writeImage();
+                $imagick->setCompression(\Imagick::COMPRESSION_LZW);
+                $imagick->setCompressionQuality(80);
+                $imagick->stripImage();
+                $imagick->writeImage();
             }
 
-            $filePreview = sprintf(
+            $filePreview = \sprintf(
                 '%s%s%s.%s',
                 self::getPathUploads(Document::DIR_PREVIEW),
                 \DIRECTORY_SEPARATOR,
@@ -173,12 +172,12 @@ final class DocumentManager
             $this->logger->debug(__FUNCTION__, ['filePreview' => $filePreview]);
 
             if (!is_file($filePreview)) {
-                $img->scaleImage(800, 0);
-                $img->setImageFormat(self::PNG);
-                $preview = $img->writeImage($filePreview);
+                $imagick->scaleImage(800, 0);
+                $imagick->setImageFormat(self::PNG);
+                $preview = $imagick->writeImage($filePreview);
             }
 
-            $fileThumb = sprintf(
+            $fileThumb = \sprintf(
                 '%s%s%s.%s',
                 self::getPathUploads(Document::DIR_THUMB),
                 \DIRECTORY_SEPARATOR,
@@ -188,12 +187,12 @@ final class DocumentManager
             $this->logger->debug(__FUNCTION__, ['fileThumb' => $fileThumb]);
 
             if (!is_file($fileThumb)) {
-                $img->scaleImage(150, 0);
-                $img->setImageFormat(self::PNG);
-                $thumb = $img->writeImage($fileThumb);
+                $imagick->scaleImage(150, 0);
+                $imagick->setImageFormat(self::PNG);
+                $thumb = $imagick->writeImage($fileThumb);
             }
 
-            $img->clear();
+            $imagick->clear();
         } catch (\ImagickException $imagickException) {
             $error = $imagickException->getMessage();
         }

@@ -23,16 +23,16 @@ class ClassPeriodType extends AbstractType
 {
     protected ?School $school = null;
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('classSchool', EntityType::class, [
                 'class' => ClassSchool::class,
-                'query_builder' => static fn (ClassSchoolRepository $er): QueryBuilder => $er->getQBAvailables(),
+                'query_builder' => static fn (ClassSchoolRepository $classSchoolRepository): QueryBuilder => $classSchoolRepository->getQBAvailables(),
             ])
             ->add('period', EntityType::class, [
                 'class' => Period::class,
-                'query_builder' => static fn (EntityRepository $er): QueryBuilder => $er->createQueryBuilder('p')
+                'query_builder' => static fn (EntityRepository $entityRepository): QueryBuilder => $entityRepository->createQueryBuilder('p')
                     ->orderBy('p.begin', 'DESC'),
             ])
             ->add('comment')
@@ -40,9 +40,9 @@ class ClassPeriodType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => ClassPeriod::class,
             'translation_domain' => 'class_period',
         ]);

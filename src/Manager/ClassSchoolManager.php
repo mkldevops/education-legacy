@@ -8,16 +8,13 @@ use App\Entity\ClassPeriod;
 use App\Entity\ClassPeriodStudent;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class ClassSchoolManager
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly StudentRepository $studentRepository,
-        private readonly Security $security,
-    ) {
-    }
+        private readonly StudentRepository $studentRepository
+    ) {}
 
     public function addStudentToClass(array $students, ClassPeriod $classPeriod): bool
     {
@@ -38,7 +35,6 @@ class ClassSchoolManager
                 ->setBegin($begin)
                 ->setEnd($classPeriod->getPeriod()->getEnd())
                 ->setStudent($student)
-                ->setAuthor($this->security->getUser())
             ;
 
             $this->entityManager->persist($classPeriodStudent);

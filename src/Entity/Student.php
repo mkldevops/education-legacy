@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Exception\AppException;
 use App\Repository\StudentRepository;
 use App\Trait\AuthorEntityTrait;
@@ -12,12 +14,13 @@ use App\Trait\IdEntityTrait;
 use App\Trait\SchoolEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
-class Student implements \Stringable
+class Student implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -29,50 +32,50 @@ class Student implements \Stringable
     #[ORM\OneToOne(targetEntity: Person::class, inversedBy: 'student', cascade: ['persist'])]
     private ?Person $person = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $lastSchool = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $personAuthorized = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $remarksHealth = null;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
     private bool $letAlone = false;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateRegistration = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateDesactivated = null;
 
     #[ORM\ManyToOne(targetEntity: Grade::class, cascade: ['persist'])]
     private ?Grade $grade = null;
 
     /**
-     * @var ClassPeriodStudent[]|Collection
+     * @var Collection&iterable<ClassPeriodStudent>
      */
     #[ORM\OneToMany(targetEntity: ClassPeriodStudent::class, mappedBy: 'student', cascade: ['persist'])]
-    private array|Collection $classPeriods;
+    private Collection $classPeriods;
 
     /**
-     * @var Collection|PackageStudentPeriod[]
+     * @var Collection&iterable<PackageStudentPeriod>
      */
     #[ORM\OneToMany(targetEntity: PackageStudentPeriod::class, mappedBy: 'student', cascade: ['persist'])]
-    private array|Collection $packagePeriods;
+    private Collection $packagePeriods;
 
     /**
-     * @var Collection<int, AppealCourse>
+     * @var Collection&iterable<AppealCourse>
      */
     #[ORM\OneToMany(targetEntity: AppealCourse::class, mappedBy: 'student')]
     private Collection $appealCourses;
 
     /**
-     * @var Collection|StudentComment[]
+     * @var Collection&iterable<StudentComment>
      */
     #[ORM\OneToMany(targetEntity: StudentComment::class, mappedBy: 'student')]
-    private array|Collection $comments;
+    private Collection $comments;
 
     public function __construct()
     {
@@ -313,9 +316,9 @@ class Student implements \Stringable
         return $this;
     }
 
-    public function setImage(Document $image): self
+    public function setImage(Document $document): self
     {
-        $this->person?->setImage($image);
+        $this->person?->setImage($document);
 
         return $this;
     }
@@ -335,16 +338,16 @@ class Student implements \Stringable
         return $this->person?->getAge();
     }
 
-    public function addClassPeriod(ClassPeriodStudent $classPeriod): self
+    public function addClassPeriod(ClassPeriodStudent $classPeriodStudent): self
     {
-        $this->classPeriods[] = $classPeriod;
+        $this->classPeriods[] = $classPeriodStudent;
 
         return $this;
     }
 
-    public function removeClassPeriod(ClassPeriodStudent $classPeriod): void
+    public function removeClassPeriod(ClassPeriodStudent $classPeriodStudent): void
     {
-        $this->classPeriods->removeElement($classPeriod);
+        $this->classPeriods->removeElement($classPeriodStudent);
     }
 
     public function getClassPeriods(): Collection
@@ -358,29 +361,29 @@ class Student implements \Stringable
 
         /** @var ClassPeriodStudent[] $classes */
         $classes = $this->classPeriods->toArray();
-        foreach ($classes as $classPeriod) {
-            if (!$classPeriod->getClassPeriod() instanceof ClassPeriod) {
+        foreach ($classes as $class) {
+            if (!$class->getClassPeriod() instanceof ClassPeriod) {
                 continue;
             }
 
-            if ($classPeriod->getClassPeriod()->getPeriod()->getId() === $period->getId()) {
-                $current = $classPeriod;
+            if ($class->getClassPeriod()->getPeriod()->getId() === $period->getId()) {
+                $current = $class;
             }
         }
 
         return $current;
     }
 
-    public function addPackagePeriod(PackageStudentPeriod $packagePeriods): static
+    public function addPackagePeriod(PackageStudentPeriod $packageStudentPeriod): static
     {
-        $this->packagePeriods[] = $packagePeriods;
+        $this->packagePeriods[] = $packageStudentPeriod;
 
         return $this;
     }
 
-    public function removePackagePeriod(PackageStudentPeriod $packagePeriods): void
+    public function removePackagePeriod(PackageStudentPeriod $packageStudentPeriod): void
     {
-        $this->packagePeriods->removeElement($packagePeriods);
+        $this->packagePeriods->removeElement($packageStudentPeriod);
     }
 
     public function getPackagePeriods(): Collection
@@ -397,23 +400,23 @@ class Student implements \Stringable
         return $this->dateDesactivated;
     }
 
-    public function setDateDesactivated(\DateTimeInterface $dateDesactivated = null): static
+    public function setDateDesactivated(?\DateTimeInterface $dateDesactivated = null): static
     {
         $this->dateDesactivated = $dateDesactivated;
 
         return $this;
     }
 
-    public function addCourse(AppealCourse $courses): static
+    public function addCourse(AppealCourse $appealCourse): static
     {
-        $this->appealCourses[] = $courses;
+        $this->appealCourses[] = $appealCourse;
 
         return $this;
     }
 
-    public function removeCourse(AppealCourse $courses): void
+    public function removeCourse(AppealCourse $appealCourse): void
     {
-        $this->appealCourses->removeElement($courses);
+        $this->appealCourses->removeElement($appealCourse);
     }
 
     /**
@@ -429,23 +432,23 @@ class Student implements \Stringable
         return $this->dateRegistration;
     }
 
-    public function setDateRegistration(\DateTimeInterface $dateRegistration = null): static
+    public function setDateRegistration(?\DateTimeInterface $dateRegistration = null): static
     {
         $this->dateRegistration = $dateRegistration;
 
         return $this;
     }
 
-    public function addComment(StudentComment $comment): self
+    public function addComment(StudentComment $studentComment): self
     {
-        $this->comments[] = $comment;
+        $this->comments[] = $studentComment;
 
         return $this;
     }
 
-    public function removeComment(StudentComment $comment): void
+    public function removeComment(StudentComment $studentComment): void
     {
-        $this->comments->removeElement($comment);
+        $this->comments->removeElement($studentComment);
     }
 
     public function getComments(): Collection
@@ -458,7 +461,7 @@ class Student implements \Stringable
         return $this->personAuthorized;
     }
 
-    public function setPersonAuthorized(string $personAuthorized = null): static
+    public function setPersonAuthorized(?string $personAuthorized = null): static
     {
         $this->personAuthorized = $personAuthorized;
 
@@ -470,7 +473,7 @@ class Student implements \Stringable
         return $this->remarksHealth;
     }
 
-    public function setRemarksHealth(string $remarksHealth = null): self
+    public function setRemarksHealth(?string $remarksHealth = null): self
     {
         $this->remarksHealth = $remarksHealth;
 

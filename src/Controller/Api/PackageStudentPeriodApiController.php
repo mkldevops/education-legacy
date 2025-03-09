@@ -16,21 +16,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api/pachage-student-period', options: ['expose' => true])]
 class PackageStudentPeriodApiController extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly PackageStudentPeriodManager $packageStudentPeriodManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws AppException
      * @throws PeriodException
      * @throws InvalidArgumentException
      */
-    #[Route(path: '/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
+    #[Route(path: '/api/pachage-student-period/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -50,7 +48,7 @@ class PackageStudentPeriodApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/api/pachage-student-period/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): JsonResponse
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);
@@ -68,7 +66,7 @@ class PackageStudentPeriodApiController extends AbstractController
 
         $this->packageStudentPeriodManager->edit($packageStudentPeriod);
 
-        $this->addFlash('success', sprintf(
+        $this->addFlash('success', \sprintf(
             'The package of student %s has been updated.',
             $packageStudentPeriod->getStudent()
         ));

@@ -18,7 +18,6 @@ use OfxParser\Entities\Transaction;
 use OfxParser\Ofx;
 use OfxParser\Parser;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\File;
 
 class OFXManager
@@ -50,17 +49,15 @@ class OFXManager
         private readonly OperationManager $operationManager,
         private readonly TransferManager $transferManager,
         private readonly AccountableFetcher $accountableFetcher,
-        private readonly Security $security,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws AppException
      */
-    public function ofx(File $fileUpload): bool
+    public function ofx(File $file): bool
     {
         set_time_limit(300);
-        $ofx = $this->extractOfxToFile($fileUpload);
+        $ofx = $this->extractOfxToFile($file);
         $count = 0;
 
         /** @var BankAccount $bank */
@@ -74,7 +71,7 @@ class OFXManager
                     ->findOperationByUniqueId($transaction->uniqueId)
                 ;
 
-                if ($operation instanceof \App\Entity\Operation) {
+                if ($operation instanceof Operation) {
                     $operation->setAmount($transaction->amount);
                     $this->entityManager->persist($operation);
                     $this->entityManager->flush();
@@ -99,13 +96,13 @@ class OFXManager
      * @throws AppException
      * @throws \Exception
      */
-    public function extractOfxToFile(File $fileUpload): Ofx
+    public function extractOfxToFile(File $file): Ofx
     {
-        if (empty($fileUpload->getRealPath())) {
+        if (empty($file->getRealPath())) {
             throw new AppException('The file was not path');
         }
 
-        $content = self::uniformizeContent(file_get_contents($fileUpload->getRealPath()));
+        $content = self::uniformizeContent(file_get_contents($file->getRealPath()));
         $ofxParser = new Parser();
 
         return $ofxParser->loadFromString($content);
@@ -131,9 +128,9 @@ class OFXManager
         return $this->accountTransfer;
     }
 
-    public function setAccountTransfer(Account $accountTransfer): static
+    public function setAccountTransfer(Account $account): static
     {
-        $this->accountTransfer = $accountTransfer;
+        $this->accountTransfer = $account;
 
         return $this;
     }
@@ -173,7 +170,7 @@ class OFXManager
             ->findOneBy(['code' => $genderCode])
         ;
 
-        if (!$gender instanceof \App\Entity\OperationGender) {
+        if (!$gender instanceof OperationGender) {
             $this->logger->error(__FUNCTION__.' Nothing found gender with code : '.$genderCode);
         }
 
@@ -184,7 +181,7 @@ class OFXManager
     {
         $text = trim((string) $transaction->name).' '.trim((string) $transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
-        if (preg_match('#(?<reference>\d+)#', $text, $matches)) {
+        if (preg_match('#(?<reference>\d+)#', (string) $text, $matches)) {
             return $matches['reference'];
         }
 
@@ -213,12 +210,6 @@ class OFXManager
                 ->setOperationGender($gender)
             ;
 
-            if (($user = $this->security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
-                $operation->setAuthor($user)
-                    ->setPublisher($user)
-                ;
-            }
-
             try {
                 $this->entityManager->persist($operation);
                 $this->entityManager->flush();
@@ -238,7 +229,7 @@ class OFXManager
     private function transferOperation(
         Transaction $transaction,
         string $reference,
-        ?OperationGender $gender
+        ?OperationGender $operationGender
     ): ?Operation {
         $transferModel = (new TransferModel())
             ->setAccountSlip(new AccountSlip())
@@ -250,7 +241,7 @@ class OFXManager
             ->setDate($transaction->date)
             ->setUniqueId($transaction->uniqueId)
             ->setAmount($transaction->amount)
-            ->setGender($gender)
+            ->setGender($operationGender)
         ;
 
         $accountSlip = $this->transferManager->createByTransferModel($transferModel);

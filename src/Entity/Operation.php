@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
+use App\Entity\Interface\PublisherEntityInterface;
 use App\Repository\OperationRepository;
 use App\Trait\AmountEntityTrait;
 use App\Trait\AuthorEntityTrait;
@@ -14,21 +17,21 @@ use App\Trait\NameEntityTrait;
 use App\Trait\PublisherEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Table]
 #[ORM\Index(columns: ['account_id'])]
 #[ORM\Index(columns: ['date', 'date_planned'])]
 #[ORM\Entity(repositoryClass: OperationRepository::class)]
-class Operation implements \Stringable
+class Operation implements EntityInterface, PublisherEntityInterface, AuthorEntityInterface
 {
     use AmountEntityTrait;
     use AuthorEntityTrait;
     use CommentEntityTrait;
     use EnableEntityTrait;
-    use IdentityTrait;
+    use IdEntityTrait;
     use NameEntityTrait;
     use PublisherEntityTrait;
     use SoftDeleteableEntity;
@@ -47,13 +50,16 @@ class Operation implements \Stringable
     #[ORM\ManyToOne(targetEntity: Validate::class, cascade: ['persist'])]
     private ?Validate $validate = null;
 
+    /**
+     * @var Collection<int, Document>
+     */
     #[ORM\ManyToMany(targetEntity: Document::class, inversedBy: 'operations', cascade: ['remove'])]
     private Collection $documents;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $reference = null;
 
-    #[ORM\Column(type: 'string', nullable: true, unique: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true, unique: true)]
     private ?string $uniqueId = null;
 
     #[ORM\ManyToOne(targetEntity: OperationGender::class)]
@@ -62,15 +68,18 @@ class Operation implements \Stringable
     /**
      * @var null|\DateTime|\DateTimeImmutable
      */
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date;
 
     /**
      * @var null|\DateTime|\DateTimeImmutable
      */
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datePlanned = null;
 
+    /**
+     * @var Collection<int, PaymentPackageStudent>
+     */
     #[ORM\OneToMany(targetEntity: PaymentPackageStudent::class, mappedBy: 'operation', cascade: ['remove'])]
     private Collection $paymentPackageStudents;
 
@@ -203,7 +212,7 @@ class Operation implements \Stringable
         return $this->validate;
     }
 
-    public function setValidate(Validate $validate = null): self
+    public function setValidate(?Validate $validate = null): self
     {
         $this->validate = $validate;
 
@@ -223,16 +232,16 @@ class Operation implements \Stringable
         return $result;
     }
 
-    public function addDocument(Document $documents): self
+    public function addDocument(Document $document): self
     {
-        $this->documents[] = $documents;
+        $this->documents[] = $document;
 
         return $this;
     }
 
-    public function removeDocument(Document $documents): void
+    public function removeDocument(Document $document): void
     {
-        $this->documents->removeElement($documents);
+        $this->documents->removeElement($document);
     }
 
     public function getDocuments(): Collection
@@ -245,7 +254,7 @@ class Operation implements \Stringable
         return $this->accountStatement;
     }
 
-    public function setAccountStatement(AccountStatement $accountStatement = null): static
+    public function setAccountStatement(?AccountStatement $accountStatement = null): static
     {
         $this->accountStatement = $accountStatement;
 
@@ -262,9 +271,9 @@ class Operation implements \Stringable
         return $this->slipsDebit;
     }
 
-    public function setSlipsDebit(AccountSlip $slipsDebit = null): static
+    public function setSlipsDebit(?AccountSlip $accountSlip = null): static
     {
-        $this->slipsDebit = $slipsDebit;
+        $this->slipsDebit = $accountSlip;
 
         return $this;
     }
@@ -274,9 +283,9 @@ class Operation implements \Stringable
         return $this->slipsCredit;
     }
 
-    public function setSlipsCredit(AccountSlip $slipsCredit): self
+    public function setSlipsCredit(AccountSlip $accountSlip): self
     {
-        $this->slipsCredit = $slipsCredit;
+        $this->slipsCredit = $accountSlip;
 
         return $this;
     }
@@ -286,7 +295,7 @@ class Operation implements \Stringable
         return $this->uniqueId;
     }
 
-    public function setUniqueId(string $uniqueId = null): self
+    public function setUniqueId(?string $uniqueId = null): self
     {
         if ($this->account->getIsBank()) {
             $this->uniqueId = $uniqueId;

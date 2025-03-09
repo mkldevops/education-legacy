@@ -22,9 +22,9 @@ use App\Entity\Structure;
  */
 class TransferModel
 {
-    private ?\DateTimeInterface $date = null;
+    private ?\DateTimeInterface $dateTime = null;
 
-    private ?OperationGender $gender = null;
+    private ?OperationGender $operationGender = null;
 
     private ?string $reference = null;
 
@@ -47,21 +47,21 @@ class TransferModel
         return $this->accountCredit;
     }
 
-    public function setAccountCredit(Account $accountCredit): self
+    public function setAccountCredit(Account $account): self
     {
-        $this->accountCredit = $accountCredit;
+        $this->accountCredit = $account;
 
         return $this;
     }
 
     public function getGender(): ?OperationGender
     {
-        return $this->gender;
+        return $this->operationGender;
     }
 
-    public function setGender(?OperationGender $gender): self
+    public function setGender(?OperationGender $operationGender): self
     {
-        $this->gender = $gender;
+        $this->operationGender = $operationGender;
 
         return $this;
     }
@@ -104,9 +104,9 @@ class TransferModel
     /**
      * Set AccountDebit.
      */
-    public function setAccountDebit(Account $accountDebit): self
+    public function setAccountDebit(Account $account): self
     {
-        $this->accountDebit = $accountDebit;
+        $this->accountDebit = $account;
 
         return $this;
     }
@@ -152,7 +152,7 @@ class TransferModel
      */
     public function getDate(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->dateTime;
     }
 
     /**
@@ -160,7 +160,7 @@ class TransferModel
      */
     public function setDate(\DateTimeInterface $date): self
     {
-        $this->date = $date;
+        $this->dateTime = $date;
 
         return $this;
     }

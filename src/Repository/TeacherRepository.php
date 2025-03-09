@@ -11,16 +11,13 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Teacher find($id, $lockMode = null, $lockVersion = null)
- * @method null|Teacher findOneBy(array $criteria, array $orderBy = null)
- * @method Teacher[]    findAll()
- * @method Teacher[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Teacher>
  */
 class TeacherRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Teacher::class);
+        parent::__construct($managerRegistry, Teacher::class);
     }
 
     public function getAvailablesQB(School $school): QueryBuilder

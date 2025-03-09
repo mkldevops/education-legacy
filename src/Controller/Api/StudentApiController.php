@@ -12,27 +12,23 @@ use App\Model\StudentModel;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/student', options: ['expose' => true])]
 class StudentApiController extends AbstractController
 {
     public function __construct(
-        private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
         private readonly SchoolManager $schoolManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws AppException
      */
-    #[Route('/create', name: 'app_api_student_create', methods: ['POST'])]
+    #[Route('/api/student/create', name: 'app_api_student_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $student = new Student();
@@ -50,7 +46,7 @@ class StudentApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route('/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
+    #[Route('/api/student/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Student $student): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
@@ -61,7 +57,7 @@ class StudentApiController extends AbstractController
 
         $this->persistData($student, $form);
 
-        $this->addFlash('success', sprintf('The student %s has been updated.', $student->getNameComplete()));
+        $this->addFlash('success', \sprintf('The student %s has been updated.', $student->getNameComplete()));
 
         return $this->json(StudentModel::fromStudent($student));
     }
@@ -81,7 +77,6 @@ class StudentApiController extends AbstractController
 
         $student
             ->setSchool($this->schoolManager->getEntitySchoolOnSession())
-            ->setAuthor($this->security->getUser())
         ;
 
         $this->entityManager->persist($student);

@@ -16,9 +16,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AccountStatementType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options = []): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options = []): void
     {
-        $builder
+        $formBuilder
             ->add('title')
             ->add('month', MonthPickerType::class)
             ->add('begin', DatePickerType::class)
@@ -32,9 +32,9 @@ class AccountStatementType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => AccountStatement::class,
             'translation_domain' => 'account_statement',
         ]);

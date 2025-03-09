@@ -10,15 +10,14 @@ class StudentModel
 {
     public function __construct(
         public readonly int $id,
-        public readonly PersonModel $person,
-    ) {
-    }
+        public readonly PersonModel $personModel,
+    ) {}
 
     public static function fromStudent(Student $student): self
     {
         return new self(
             id: $student->getId(),
-            person: PersonModel::fromPerson($student->getPerson())
+            personModel: PersonModel::fromPerson($student->getPerson())
         );
     }
 }

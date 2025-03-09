@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\SchoolRepository;
 use App\Trait\AddressEntityTrait;
 use App\Trait\AuthorEntityTrait;
@@ -16,11 +18,12 @@ use App\Trait\TimestampableEntityTrait;
 use App\Trait\ZipEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: SchoolRepository::class)]
-class School implements \Stringable
+class School implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
@@ -33,12 +36,15 @@ class School implements \Stringable
     use TimestampableEntityTrait;
     use ZipEntityTrait;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     protected bool $principal = false;
 
     #[ORM\ManyToOne(targetEntity: Member::class, cascade: ['persist'])]
     protected ?Member $director = null;
 
+    /**
+     * @var Collection<int, Package>
+     */
     #[ORM\OneToMany(mappedBy: 'school', targetEntity: Package::class)]
     protected Collection $packages;
 
@@ -72,23 +78,23 @@ class School implements \Stringable
         return $this->director;
     }
 
-    public function setDirector(Member $director): self
+    public function setDirector(Member $member): self
     {
-        $this->director = $director;
+        $this->director = $member;
 
         return $this;
     }
 
-    public function addPackage(Package $packages): self
+    public function addPackage(Package $package): self
     {
-        $this->packages[] = $packages;
+        $this->packages[] = $package;
 
         return $this;
     }
 
-    public function removePackage(Package $packages): void
+    public function removePackage(Package $package): void
     {
-        $this->packages->removeElement($packages);
+        $this->packages->removeElement($package);
     }
 
     public function getPackages(): Collection

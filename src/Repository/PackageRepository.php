@@ -13,16 +13,13 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Package find($id, $lockMode = null, $lockVersion = null)
- * @method null|Package findOneBy(array $criteria, array $orderBy = null)
- * @method Package[]    findAll()
- * @method Package[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Package>
  */
 class PackageRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Package::class);
+        parent::__construct($managerRegistry, Package::class);
     }
 
     /**
@@ -47,10 +44,10 @@ class PackageRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getQueryBuilder(string $search, School $school = null): QueryBuilder
+    public function getQueryBuilder(string $search, ?School $school = null): QueryBuilder
     {
-        $search = sprintf('%%%s%%', $search);
-        $qb = $this->createQueryBuilder('e')
+        $search = \sprintf('%%%s%%', $search);
+        $queryBuilder = $this->createQueryBuilder('e')
             ->where('e.name LIKE :search')
             ->orWhere('e.description LIKE :search')
             ->orWhere('e.price LIKE :search')
@@ -58,12 +55,12 @@ class PackageRepository extends ServiceEntityRepository
             ->setParameter('search', $search)
         ;
 
-        if ($school instanceof \App\Entity\School) {
-            $qb->andWhere('e.school = :school')
+        if ($school instanceof School) {
+            $queryBuilder->andWhere('e.school = :school')
                 ->setParameter('school', $school)
             ;
         }
 
-        return $qb;
+        return $queryBuilder;
     }
 }

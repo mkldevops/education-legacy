@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Exception\AppException;
 use App\Repository\AccountSlipRepository;
 use App\Trait\AmountEntityTrait;
@@ -15,13 +17,14 @@ use App\Trait\NameEntityTrait;
 use App\Trait\TimestampableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AccountSlipRepository::class)]
 #[UniqueEntity(fields: ['structure', 'gender', 'reference'])]
-class AccountSlip implements \Stringable
+class AccountSlip implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AmountEntityTrait;
     use AuthorEntityTrait;
@@ -68,19 +71,22 @@ class AccountSlip implements \Stringable
     #[ORM\OneToOne(targetEntity: Operation::class, inversedBy: 'slipsDebit', cascade: ['persist'])]
     protected ?Operation $operationDebit = null;
 
+    /**
+     * @var Collection<int, Document>
+     */
     #[ORM\ManyToMany(targetEntity: Document::class, cascade: ['persist'], inversedBy: 'accountSlips')]
     protected Collection $documents;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     protected ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: Types::STRING, length: 20)]
     protected string $gender;
 
-    #[ORM\Column(type: 'string', length: 40, nullable: false)]
+    #[ORM\Column(type: Types::STRING, length: 40, nullable: false)]
     protected string $reference;
 
-    #[ORM\Column(type: 'string', length: 100, nullable: true, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true, unique: true)]
     protected ?string $uniqueId = null;
 
     #[ORM\ManyToOne(targetEntity: Structure::class, cascade: ['persist'], inversedBy: 'accountSlips')]
@@ -154,12 +160,12 @@ class AccountSlip implements \Stringable
 
     public function hasOperationCredit(): bool
     {
-        return $this->operationCredit instanceof \App\Entity\Operation;
+        return $this->operationCredit instanceof Operation;
     }
 
     public function hasOperationDebit(): bool
     {
-        return $this->operationDebit instanceof \App\Entity\Operation;
+        return $this->operationDebit instanceof Operation;
     }
 
     public function getOperationDebit(): ?Operation
@@ -167,9 +173,9 @@ class AccountSlip implements \Stringable
         return $this->operationDebit;
     }
 
-    public function setOperationDebit(Operation $operationDebit): self
+    public function setOperationDebit(Operation $operation): self
     {
-        $this->operationDebit = $operationDebit;
+        $this->operationDebit = $operation;
 
         return $this;
     }
@@ -179,9 +185,9 @@ class AccountSlip implements \Stringable
         return $this->operationCredit;
     }
 
-    public function setOperationCredit(Operation $operationCredit): self
+    public function setOperationCredit(Operation $operation): self
     {
-        $this->operationCredit = $operationCredit;
+        $this->operationCredit = $operation;
 
         return $this;
     }
@@ -192,7 +198,7 @@ class AccountSlip implements \Stringable
     public function getOperation(string $type): ?Operation
     {
         if (!\in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
-            throw new AppException(sprintf("The type \"%s\" of operation don't supported", $type));
+            throw new AppException(\sprintf("The type \"%s\" of operation don't supported", $type));
         }
 
         $operation = $this->getOperationCredit();
@@ -209,7 +215,7 @@ class AccountSlip implements \Stringable
     public function hasOperation(string $type): bool
     {
         if (!\in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
-            throw new AppException(sprintf("The type \"%s\" of operation don't supported", $type));
+            throw new AppException(\sprintf("The type \"%s\" of operation don't supported", $type));
         }
 
         $result = $this->hasOperationCredit();
@@ -228,13 +234,13 @@ class AccountSlip implements \Stringable
         if (\in_array($type, [self::TYPE_CREDIT, self::TYPE_DEBIT], true)) {
             self::TYPE_DEBIT === $type ? $this->setOperationDebit($operation) : $this->setOperationCredit($operation);
         } else {
-            throw new AppException(sprintf("The type \"%s\" of operation don't exists", $type));
+            throw new AppException(\sprintf("The type \"%s\" of operation don't exists", $type));
         }
 
         return $operation;
     }
 
-    public function getAmount(string $type = null): float
+    public function getAmount(?string $type = null): float
     {
         return self::TYPE_DEBIT === $type ? -1 * abs($this->amount) : abs($this->amount);
     }

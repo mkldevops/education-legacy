@@ -1,0 +1,28 @@
+services:
+    app:
+        build:
+            context: .
+            target: dev
+        container_name: "${PROJECT_NAME:-education}-app"
+        restart: unless-stopped
+        environment:
+            PHP_CS_FIXER_IGNORE_ENV: 1
+            APP_ENV: dev
+            DATABASE_NAME: education_app
+            DATABASE_PASSWORD: ${PROJECT_DB_PASSWORD:-db_password}
+        ports:
+            - "${PROJECT_APP_PORT-3900}:80"
+        volumes:
+            - ./docker/app.png:/var/www/html/public/img/logo-custom.png
+            - ./public/uploads:/var/www/html/public/uploads
+
+    db:
+        image: mysql:8.1
+        container_name: "${PROJECT_NAME:-education}-db"
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: ${PROJECT_DB_PASSWORD:-db_password}
+        ports:
+            - "${PROJECT_DB_PORT:-8801}:3306"
+        volumes:
+            - ./var/db:/var/lib/mysql

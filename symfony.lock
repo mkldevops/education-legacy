@@ -11,9 +11,6 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
-    "clue/stream-filter": {
-        "version": "v1.6.0"
-    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.1"
     },
@@ -158,9 +155,6 @@
     "fakerphp/faker": {
         "version": "v1.19.0"
     },
-    "firebase/php-jwt": {
-        "version": "v5.5.1"
-    },
     "friendsofphp/php-cs-fixer": {
         "version": "3.6",
         "recipe": {
@@ -191,47 +185,14 @@
     "gedmo/doctrine-extensions": {
         "version": "v3.5.0"
     },
-    "google/apiclient": {
-        "version": "2.12",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "2.0",
-            "ref": "49c5d7a66d863d28513979bf0666dc77599100c0"
-        },
-        "files": [
-            "config/packages/google_apiclient.yaml"
-        ]
-    },
-    "google/apiclient-services": {
-        "version": "v0.237.0"
-    },
-    "google/auth": {
-        "version": "v1.18.0"
-    },
-    "guzzlehttp/guzzle": {
-        "version": "7.4.1"
-    },
-    "guzzlehttp/promises": {
-        "version": "1.5.1"
-    },
     "guzzlehttp/psr7": {
         "version": "2.1.0"
-    },
-    "http-interop/http-factory-guzzle": {
-        "version": "1.2.0"
     },
     "jean85/pretty-package-versions": {
         "version": "2.0.5"
     },
-    "jms/metadata": {
-        "version": "2.6.1"
-    },
     "laminas/laminas-code": {
         "version": "4.5.1"
-    },
-    "liip/test-fixtures-bundle": {
-        "version": "1.12.0"
     },
     "monolog/monolog": {
         "version": "2.3.5"
@@ -254,12 +215,6 @@
     "nikic/php-parser": {
         "version": "v4.13.2"
     },
-    "paragonie/constant_time_encoding": {
-        "version": "v2.5.0"
-    },
-    "paragonie/random_compat": {
-        "version": "v9.99.100"
-    },
     "phar-io/manifest": {
         "version": "2.0.3"
     },
@@ -269,24 +224,6 @@
     "php-cs-fixer/diff": {
         "version": "v2.0.2"
     },
-    "php-http/client-common": {
-        "version": "2.5.0"
-    },
-    "php-http/discovery": {
-        "version": "1.14.1"
-    },
-    "php-http/httplug": {
-        "version": "2.3.0"
-    },
-    "php-http/message": {
-        "version": "1.13.0"
-    },
-    "php-http/message-factory": {
-        "version": "v1.0.2"
-    },
-    "php-http/promise": {
-        "version": "1.1.0"
-    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
@@ -295,9 +232,6 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.6.0"
-    },
-    "phpseclib/phpseclib": {
-        "version": "3.0.13"
     },
     "phpspec/prophecy": {
         "version": "v1.15.0"
@@ -348,9 +282,6 @@
     },
     "psr/event-dispatcher": {
         "version": "1.0.0"
-    },
-    "psr/http-client": {
-        "version": "1.0.1"
     },
     "psr/http-factory": {
         "version": "1.0.1"
@@ -420,21 +351,6 @@
     },
     "sebastian/version": {
         "version": "3.0.2"
-    },
-    "sensio/framework-extra-bundle": {
-        "version": "6.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.2",
-            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
-        },
-        "files": [
-            "config/packages/sensio_framework_extra.yaml"
-        ]
-    },
-    "sentry/sdk": {
-        "version": "3.1.1"
     },
     "sentry/sentry": {
         "version": "3.3.7"
@@ -776,6 +692,18 @@
     "symfony/uid": {
         "version": "v5.4.3"
     },
+    "symfony/ux-twig-component": {
+        "version": "2.23",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.13",
+            "ref": "67814b5f9794798b885cec9d3f48631424449a01"
+        },
+        "files": [
+            "config/packages/twig_component.yaml"
+        ]
+    },
     "symfony/validator": {
         "version": "5.4",
         "recipe": {
@@ -849,18 +777,6 @@
     },
     "twig/twig": {
         "version": "v3.3.8"
-    },
-    "vich/uploader-bundle": {
-        "version": "1.19",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.7",
-            "ref": "c4f5755b37fb65b9c6a3cbdae91205c15a137ed4"
-        },
-        "files": [
-            "config/packages/vich_uploader.yaml"
-        ]
     },
     "webmozart/assert": {
         "version": "1.10.0"

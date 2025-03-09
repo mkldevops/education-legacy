@@ -24,17 +24,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/class-school')]
 class ClassSchoolController extends AbstractController
 {
     /**
      * @throws InvalidArgumentException
      * @throws AppException
      */
-    #[Route(path: '', name: 'app_class_school_index', methods: ['GET'])]
-    public function index(ClassSchoolRepository $repository, SchoolManager $schoolManager, PeriodManager $periodManager): Response
+    #[Route(path: '/class-school', name: 'app_class_school_index', methods: ['GET'])]
+    public function index(ClassSchoolRepository $classSchoolRepository, SchoolManager $schoolManager, PeriodManager $periodManager): Response
     {
-        $classSchools = $repository->findBy(['school' => $schoolManager->getSchool()], ['enable' => 'DESC']);
+        $classSchools = $classSchoolRepository->findBy(['school' => $schoolManager->getSchool()], ['enable' => 'DESC']);
 
         return $this->render('class_school/index.html.twig', [
             'class_schools' => $classSchools,
@@ -45,23 +44,21 @@ class ClassSchoolController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/create', name: 'app_class_school_create', methods: ['POST'])]
+    #[Route(path: '/class-school/create', name: 'app_class_school_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): Response
     {
         $classSchool = new ClassSchool();
         $form = $this->createCreateForm($classSchool);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $classSchool->setAuthor($this->getUser())
-                ->setSchool($schoolManager->getEntitySchool())
-            ;
+            $classSchool->setSchool($schoolManager->getEntitySchool());
 
             $entityManager->persist($classSchool);
             $entityManager->flush();
 
             $this->addFlash('success', 'The classSchool has been created.');
 
-            return $this->redirect($this->generateUrl('app_class_school_show', ['id' => $classSchool->getId()]));
+            return $this->redirectToRoute('app_class_school_show', ['id' => $classSchool->getId()]);
         }
 
         return $this->render('class_school/new.html.twig', [
@@ -73,7 +70,7 @@ class ClassSchoolController extends AbstractController
     /**
      * Displays a form to create a new classSchool entity.
      */
-    #[Route(path: '/new', name: 'app_class_school_new', methods: ['GET'])]
+    #[Route(path: '/class-school/new', name: 'app_class_school_new', methods: ['GET'])]
     public function new(): Response
     {
         $classSchool = new ClassSchool();
@@ -88,7 +85,7 @@ class ClassSchoolController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/show/{id}', name: 'app_class_school_show', methods: ['GET'])]
+    #[Route(path: '/class-school/show/{id}', name: 'app_class_school_show', methods: ['GET'])]
     public function show(ClassSchool $classSchool, PeriodManager $periodManager, PeriodRepository $periodRepository): Response
     {
         $periods = $periodRepository->getLastPeriods($periodManager->getPeriodsOnSession());
@@ -102,7 +99,7 @@ class ClassSchoolController extends AbstractController
     /**
      * Displays a form to edit an existing classSchool entity.
      */
-    #[Route(path: '/edit/{id}', name: 'app_class_school_edit', methods: ['GET'])]
+    #[Route(path: '/class-school/edit/{id}', name: 'app_class_school_edit', methods: ['GET'])]
     public function edit(ClassSchool $classSchool): Response
     {
         $editForm = $this->createEditForm($classSchool);
@@ -113,7 +110,7 @@ class ClassSchoolController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_class_school_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/class-school/update/{id}', name: 'app_class_school_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, ClassSchool $classSchool, EntityManagerInterface $entityManager): Response
     {
         $editForm = $this->createEditForm($classSchool);
@@ -123,7 +120,7 @@ class ClassSchoolController extends AbstractController
 
             $this->addFlash('success', 'The classSchool has been updated.');
 
-            return $this->redirect($this->generateUrl('app_class_school_show', ['id' => $classSchool->getId()]));
+            return $this->redirectToRoute('app_class_school_show', ['id' => $classSchool->getId()]);
         }
 
         return $this->render('class_school/edit.html.twig', [
@@ -132,7 +129,7 @@ class ClassSchoolController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_class_school_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/class-school/delete/{id}', name: 'app_class_school_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, ClassSchool $classSchool, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classSchool->getId());
@@ -144,7 +141,7 @@ class ClassSchoolController extends AbstractController
 
             $this->addFlash('success', 'The classSchool has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_class_school_index'));
+            return $this->redirectToRoute('app_class_school_index');
         }
 
         return $this->render('class_school/delete.html.twig', [
@@ -153,27 +150,27 @@ class ClassSchoolController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/search', name: 'app_class_school_search', methods: ['GET'])]
+    #[Route(path: '/class-school/search', name: 'app_class_school_search', methods: ['GET'])]
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 
-        return $this->redirect($this->generateUrl('app_class_school_index', [
+        return $this->redirectToRoute('app_class_school_index', [
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
-        ]));
+        ]);
     }
 
     /**
      * @throws \Exception
      */
-    #[Route(path: '/view-class-period/{id}', name: 'app_class_school_view_class_period', methods: ['POST', 'GET'])]
-    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $schoolManager): RedirectResponse
+    #[Route(path: '/class-school/view-class-period/{id}', name: 'app_class_school_view_class_period', methods: ['POST', 'GET'])]
+    public function viewClassPeriod(Request $request, ClassPeriod $classPeriod, ClassSchoolManager $classSchoolManager): RedirectResponse
     {
         if (Request::METHOD_POST === $request->getMethod()) {
             /** @var ?int[] $students */
             $students = $request->request->get('students', null);
-            $result = $schoolManager->addStudentToClass($students, $classPeriod);
+            $result = $classSchoolManager->addStudentToClass($students, $classPeriod);
 
             if ($result) {
                 $this->addFlash(
@@ -181,22 +178,22 @@ class ClassSchoolController extends AbstractController
                     'Les élèves ont été ajouté à la Classe '.$classPeriod->getclassSchool()->getName().' pour la periode '.$classPeriod->getPeriod()->getName()
                 );
 
-                return $this->redirect($this->generateUrl('app_class_period_show', ['id' => $classPeriod->getId()]));
+                return $this->redirectToRoute('app_class_period_show', ['id' => $classPeriod->getId()]);
             }
 
             $this->addFlash('success', 'The student has not added');
         }
 
-        return $this->redirect($this->generateUrl('app_class_period_show_student', [
+        return $this->redirectToRoute('app_class_period_show_student', [
             'id' => $classPeriod->getId(),
-        ]));
+        ]);
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws \Exception
      */
-    #[Route(path: '/without-student', name: 'app_class_school_without_student', options: ['expose' => true], methods: ['POST'])]
+    #[Route(path: '/class-school/without-student', name: 'app_class_school_without_student', options: ['expose' => true], methods: ['POST'])]
     public function withOutStudent(StudentRepository $studentRepository, SchoolManager $schoolManager, PeriodManager $periodManager): Response
     {
         $students = $studentRepository->getListStudentsWithoutClassPeriod($periodManager->getPeriodsOnSession(), $schoolManager->getSchool());

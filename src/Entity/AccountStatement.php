@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\AccountStatementRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: AccountStatementRepository::class)]
-class AccountStatement implements \Stringable
+class AccountStatement implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -27,40 +30,40 @@ class AccountStatement implements \Stringable
     #[ORM\OneToMany(targetEntity: Operation::class, mappedBy: 'accountStatement')]
     protected Collection $operations;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $title = null;
 
     /**
      * @var \DateTime|\DateTimeImmutable
      */
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $begin;
 
     /**
      * @var \DateTime|\DateTimeImmutable
      */
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $end;
 
     /**
      * @var \DateTime|\DateTimeImmutable
      */
-    #[ORM\Column(type: 'date', nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private \DateTimeInterface $month;
 
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $amountCredit = 0.00;
 
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $amountDebit = 0.00;
 
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $newBalance = 0.00;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $numberOperations = 0;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $reference = null;
 
     /**
@@ -138,16 +141,16 @@ class AccountStatement implements \Stringable
         return $this;
     }
 
-    public function addDocument(Document $documents): self
+    public function addDocument(Document $document): self
     {
-        $this->documents[] = $documents;
+        $this->documents[] = $document;
 
         return $this;
     }
 
-    public function removeDocument(Document $documents): self
+    public function removeDocument(Document $document): self
     {
-        $this->documents->removeElement($documents);
+        $this->documents->removeElement($document);
 
         return $this;
     }
@@ -166,9 +169,9 @@ class AccountStatement implements \Stringable
         return $this;
     }
 
-    public function removeOperation(Operation $operations): self
+    public function removeOperation(Operation $operation): self
     {
-        $this->operations->removeElement($operations);
+        $this->operations->removeElement($operation);
 
         return $this;
     }

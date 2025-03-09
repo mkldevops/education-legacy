@@ -26,20 +26,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/account-statement')]
 class AccountStatementController extends AbstractController
 {
     public function __construct(
         private readonly OperationRepository $operationRepository,
         private readonly EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    #[Route(path: '/list/{page}/{search}', name: 'app_account_statement_index', methods: ['GET'])]
+    #[Route(path: '/account-statement/list/{page}/{search}', name: 'app_account_statement_index', methods: ['GET'])]
     public function index(AccountStatementRepository $accountStatementRepository, int $page = 1, string $search = ''): Response
     {
         // Escape special characters and decode the search value.
@@ -85,7 +83,7 @@ class AccountStatementController extends AbstractController
         );
     }
 
-    #[Route(path: '/create/{account}', name: 'app_account_statement_create', methods: ['POST'])]
+    #[Route(path: '/account-statement/create/{account}', name: 'app_account_statement_create', methods: ['POST'])]
     public function create(Account $account, Request $request): RedirectResponse|Response
     {
         $accountStatement = new AccountStatement();
@@ -94,8 +92,6 @@ class AccountStatementController extends AbstractController
         $form = $this->createCreateForm($accountStatement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $accountStatement->setAuthor($this->getUser());
-
             $this->entityManager->persist($accountStatement);
             $this->entityManager->flush();
 
@@ -114,7 +110,7 @@ class AccountStatementController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
+    #[Route(path: '/account-statement/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
     public function new(Account $account): Response
     {
         $accountStatement = new AccountStatement();
@@ -128,7 +124,7 @@ class AccountStatementController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/show/{id}', name: 'app_account_statement_show', methods: ['GET'])]
+    #[Route(path: '/account-statement/show/{id}', name: 'app_account_statement_show', methods: ['GET'])]
     public function show(AccountStatement $accountStatement, OperationRepository $operationRepository): Response
     {
         $stats = $operationRepository->getQueryStatsAccountStatement([$accountStatement->getId()])
@@ -153,7 +149,7 @@ class AccountStatementController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_account_statement_edit', methods: ['GET'])]
+    #[Route(path: '/account-statement/edit/{id}', name: 'app_account_statement_edit', methods: ['GET'])]
     public function edit(AccountStatement $accountStatement): Response
     {
         $editForm = $this->createEditForm($accountStatement);
@@ -164,7 +160,7 @@ class AccountStatementController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_account_statement_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/account-statement/update/{id}', name: 'app_account_statement_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, AccountStatement $accountStatement): Response
     {
         $editForm = $this->createEditForm($accountStatement);
@@ -175,10 +171,7 @@ class AccountStatementController extends AbstractController
 
             $this->addFlash('success', 'The AccountStatement has been updated.');
 
-            return $this->redirect($this->generateUrl(
-                'app_account_statement_show',
-                ['id' => $accountStatement->getId()]
-            ));
+            return $this->redirectToRoute('app_account_statement_show', ['id' => $accountStatement->getId()]);
         }
 
         return $this->render('account_statement/edit.html.twig', [
@@ -187,7 +180,7 @@ class AccountStatementController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_account_statement_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/account-statement/delete/{id}', name: 'app_account_statement_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, AccountStatement $accountStatement): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($accountStatement->getId());
@@ -198,7 +191,7 @@ class AccountStatementController extends AbstractController
 
             $this->addFlash('success', 'The AccountStatement has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_account_statement_index'));
+            return $this->redirectToRoute('app_account_statement_index');
         }
 
         return $this->render('account_statement/delete.html.twig', [
@@ -207,15 +200,15 @@ class AccountStatementController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/search', name: 'app_account_statement_search', methods: ['GET'])]
+    #[Route(path: '/account-statement/search', name: 'app_account_statement_search', methods: ['GET'])]
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 
-        return $this->redirect($this->generateUrl('app_account_statement_index', [
+        return $this->redirectToRoute('app_account_statement_index', [
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
-        ]));
+        ]);
     }
 
     /**
@@ -223,7 +216,7 @@ class AccountStatementController extends AbstractController
      * @throws NotFoundDataException
      */
     #[Route(
-        path: '/add-document/{id}',
+        path: '/account-statement/add-document/{id}',
         name: 'app_account_statement_add_document',
         options: ['expose' => 'true'],
         methods: ['POST']
@@ -243,7 +236,7 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(
-        path: '/operations-available/{id}',
+        path: '/account-statement/operations-available/{id}',
         name: 'app_account_statement_operation_available',
         options: ['expose' => true],
         methods: ['GET', 'POST']
@@ -252,26 +245,26 @@ class AccountStatementController extends AbstractController
         AccountStatement $accountStatement,
         OperationRepository $operationRepository
     ): JsonResponse {
-        $response = ResponseRequest::responseDefault();
+        $responseModel = ResponseRequest::responseDefault();
         $operations = $operationRepository->getAvailableToAccountStatement($accountStatement);
         if ([] !== $operations) {
-            foreach ($operations as $value) {
-                $value['date'] = $value['date']->format('d/m/Y');
-                $value['amount'] = number_format($value['amount'], 2, ',', ' ');
+            foreach ($operations as $operation) {
+                $operation['date'] = $operation['date']->format('d/m/Y');
+                $operation['amount'] = number_format($operation['amount'], 2, ',', ' ');
 
-                $value['DT_RowId'] = $value['id'];
+                $operation['DT_RowId'] = $operation['id'];
 
-                $response->data[] = $value;
+                $responseModel->data[] = $operation;
             }
 
-            $response->success = true;
+            $responseModel->success = true;
         }
 
-        return new JsonResponse($response);
+        return new JsonResponse($responseModel);
     }
 
     #[Route(
-        path: '/add-operation/{id}',
+        path: '/account-statement/add-operation/{id}',
         name: 'app_account_statement_add_operation',
         options: ['expose' => 'true'],
         methods: ['GET', 'POST']
@@ -281,7 +274,7 @@ class AccountStatementController extends AbstractController
         return $this->treatmentOperations($request->get('operations'), $accountStatement);
     }
 
-    public function treatmentOperations(array $operationsId, AccountStatement $accountStatement = null): JsonResponse
+    public function treatmentOperations(array $operationsId, ?AccountStatement $accountStatement = null): JsonResponse
     {
         $operations = $this->operationRepository->findBy(['id' => $operationsId]);
 
@@ -300,7 +293,7 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(
-        path: '/delete-operation/{id}',
+        path: '/account-statement/delete-operation/{id}',
         name: 'app_account_statement_delete_operation',
         methods: ['GET', 'POST', 'DELETE']
     )]

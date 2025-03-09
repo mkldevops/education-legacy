@@ -15,9 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class SchoolType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('director', null, ['label' => 'label.director'])
             ->add('name', null, ['label' => 'label.name'])
             ->add('address', null, ['label' => 'label.address'])
@@ -31,9 +31,9 @@ class SchoolType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => School::class,
             'translation_domain' => 'school',
         ]);

@@ -13,6 +13,7 @@ use App\Form\Type\DatePickerType;
 use App\Form\Type\TimePickerType;
 use App\Repository\ClassPeriodRepository;
 use App\Repository\TeacherRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -31,23 +32,23 @@ class CourseType extends AbstractType
         $this->classPeriodId = $requestStack->getCurrentRequest()?->get('class_period', null);
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('date', DatePickerType::class)
         ;
 
-        if (!empty($this->classPeriodId)) {
-            $builder
+        if (null !== $this->classPeriodId && 0 !== $this->classPeriodId) {
+            $formBuilder
                 ->add('classPeriod', HiddenType::class, ['data' => $this->classPeriodId])
             ;
         } else {
-            $builder
+            $formBuilder
                 ->add('classPeriod', EntityType::class, [
                     'label' => 'form.label.class_period',
                     'class' => ClassPeriod::class,
                     'choice_label' => 'name',
-                    'query_builder' => fn (ClassPeriodRepository $er): \Doctrine\ORM\QueryBuilder => $er->getClassPeriodsQueryBuilder(
+                    'query_builder' => fn (ClassPeriodRepository $classPeriodRepository): QueryBuilder => $classPeriodRepository->getClassPeriodsQueryBuilder(
                         $this->sessionFetcher->getPeriodOnSession(),
                         $this->sessionFetcher->getSchoolOnSession()
                     ),
@@ -55,12 +56,12 @@ class CourseType extends AbstractType
             ;
         }
 
-        $builder
+        $formBuilder
             ->add('teachers', EntityType::class, [
                 'label' => 'form.label.teacher',
                 'class' => Teacher::class,
                 'choice_label' => 'name',
-                'query_builder' => fn (TeacherRepository $er): \Doctrine\ORM\QueryBuilder => $er->getAvailablesQB($this->sessionFetcher->getSchoolOnSession()),
+                'query_builder' => fn (TeacherRepository $teacherRepository): QueryBuilder => $teacherRepository->getAvailablesQB($this->sessionFetcher->getSchoolOnSession()),
                 'multiple' => true,
                 'attr' => ['data-role' => 'multiselect'],
             ])
@@ -71,9 +72,9 @@ class CourseType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Course::class,
             'translation_domain' => 'course',
         ]);

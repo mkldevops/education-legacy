@@ -30,7 +30,7 @@ security:
 
     firewalls:
         dev:
-            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
         main:
@@ -44,23 +44,22 @@ security:
             lazy: true
 
             remember_me:
-                secret:   '%kernel.secret%'
+                secret: "%kernel.secret%"
                 lifetime: 604800 # 1 week in seconds
-                path:     /
+                path: /
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: '^/login', roles: PUBLIC_ACCESS }
-        - { path: '^/resetting', role: PUBLIC_ACCESS }
-        - { path: '^/admin', roles: ROLE_ADMIN }
-        - { path: '^/profile', roles: IS_AUTHENTICATED_FULLY }
-        - { path: '^/account', roles: ROLE_ACCOUNTANT }
-        - { path: '^/teacher', roles: ROLE_TEACHER }
-        - { path: '^/course', roles: ROLE_TEACHER }
-        - { path: '^/class-period', roles: ROLE_TEACHER }
-        - { path: '^/class', roles: ROLE_TEACHER }
-        - { path: '^/member', roles: ROLE_MEMBER }
-        - { path: '^/meet', roles: ROLE_MEMBER }
-        - { path: '^/user', roles: ROLE_SUPER_ADMIN }
-        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
+        - { path: "^/login", roles: PUBLIC_ACCESS }
+        - { path: "^/resetting", role: PUBLIC_ACCESS }
+        - { path: "^/admin", roles: ROLE_ADMIN }
+        - { path: "^/profile", roles: IS_AUTHENTICATED_FULLY }
+        - { path: "^/account", roles: ROLE_ACCOUNTANT }
+        - { path: "^/teacher", roles: ROLE_TEACHER }
+        - { path: "^/course", roles: ROLE_TEACHER }
+        - { path: "^/class-period", roles: ROLE_TEACHER }
+        - { path: "^/class", roles: ROLE_TEACHER }
+        - { path: "^/member", roles: ROLE_MEMBER }
+        - { path: "^/user", roles: ROLE_SUPER_ADMIN }
+        - { path: "^/", roles: IS_AUTHENTICATED_FULLY }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Exception\AppException;
 use App\Manager\PhoneManager;
 use App\Repository\PersonRepository;
@@ -17,13 +19,14 @@ use App\Trait\NameEntityTrait;
 use App\Trait\ZipEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
-class Person implements \Stringable
+class Person implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AddressEntityTrait;
     use AuthorEntityTrait;
@@ -46,19 +49,19 @@ class Person implements \Stringable
     final public const GENDER_FEMALE = 'female';
 
     #[Assert\NotBlank]
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     protected ?string $forname = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $phone = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     protected ?\DateTimeInterface $birthday = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $birthplace = null;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: Types::STRING, length: 10)]
     protected ?string $gender = null;
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist'])]
@@ -71,6 +74,9 @@ class Person implements \Stringable
     #[ORM\OneToOne(targetEntity: Student::class, cascade: ['persist'], mappedBy: 'person')]
     protected ?Student $student = null;
 
+    /**
+     * @var Collection<int, School>
+     */
     #[ORM\ManyToMany(targetEntity: School::class, cascade: ['persist', 'merge', 'remove'])]
     protected Collection $schools;
 
@@ -96,7 +102,7 @@ class Person implements \Stringable
 
     public function getNameComplete(): string
     {
-        return sprintf('%s %s', strtoupper((string) $this->name), ucwords((string) $this->forname));
+        return \sprintf('%s %s', strtoupper((string) $this->name), ucwords((string) $this->forname));
     }
 
     public function getAge(): ?int
@@ -130,7 +136,7 @@ class Person implements \Stringable
      */
     public function addPhone(string $phone): self
     {
-        if (empty($phone)) {
+        if ('' === $phone || '0' === $phone) {
             throw new AppException('The phone number is not defined');
         }
 
@@ -144,7 +150,7 @@ class Person implements \Stringable
      */
     public function removePhone(string $key): self
     {
-        if (empty($key)) {
+        if ('' === $key || '0' === $key) {
             throw new AppException('The key phone number is not defined');
         }
 
@@ -175,7 +181,7 @@ class Person implements \Stringable
     public function setPhone(?string $phone = null, bool $add = false): self
     {
         // Check if number phone is str
-        if (!empty($phone) && $add && !empty($this->phone)) {
+        if (null !== $phone && '' !== $phone && '0' !== $phone && $add && (null !== $this->phone && '' !== $this->phone && '0' !== $this->phone)) {
             $phone = $this->phone.';'.$phone;
         }
 
@@ -219,7 +225,7 @@ class Person implements \Stringable
 
     public function hasGender(): bool
     {
-        return !empty($this->getGender());
+        return !\in_array($this->getGender(), [null, '', '0'], true);
     }
 
     public function getGender(): ?string
@@ -283,9 +289,9 @@ class Person implements \Stringable
         return $this->image;
     }
 
-    public function setImage(?Document $image): self
+    public function setImage(?Document $document): self
     {
-        $this->image = $image;
+        $this->image = $document;
 
         return $this;
     }

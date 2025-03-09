@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\TypeOperation;
 use App\Repository\TypeOperationRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TypeOperationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
         $typeAmounts = [
             TypeOperation::TYPE_AMOUNT_NEGATIVE => 'Négatif',
@@ -25,7 +26,7 @@ class TypeOperationType extends AbstractType
             TypeOperation::TYPE_AMOUNT_MIXTE => 'Mixte',
         ];
 
-        $builder
+        $formBuilder
             ->add('name')
             ->add('shortName')
             ->add('code')
@@ -40,7 +41,7 @@ class TypeOperationType extends AbstractType
                 'label' => "Type d'opération parent",
                 'class' => TypeOperation::class,
                 'choice_label' => 'name',
-                'query_builder' => static fn (TypeOperationRepository $er): \Doctrine\ORM\QueryBuilder => $er->getParents(),
+                'query_builder' => static fn (TypeOperationRepository $typeOperationRepository): QueryBuilder => $typeOperationRepository->getParents(),
             ])
             ->add('description')
             ->add('isInternalTransfert')
@@ -48,9 +49,9 @@ class TypeOperationType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => TypeOperation::class,
         ]);
     }

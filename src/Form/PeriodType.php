@@ -17,9 +17,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PeriodType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('name')
             ->add('begin', DatePickerType::class)
             ->add('end', DatePickerType::class)
@@ -32,9 +32,9 @@ class PeriodType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Period::class,
         ]);
     }

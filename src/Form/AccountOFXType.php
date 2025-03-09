@@ -20,9 +20,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AccountOFXType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('file', FileType::class, [
                 'mapped' => false,
                 'label' => 'account.ofx.form.file',
@@ -40,8 +40,8 @@ class AccountOFXType extends AbstractType
             ])
         ;
 
-        $accountsFieldValidator = static function (FormEvent $event): void {
-            $form = $event->getForm();
+        $accountsFieldValidator = static function (FormEvent $formEvent): void {
+            $form = $formEvent->getForm();
 
             try {
                 $file = $form->get('file')->getData();
@@ -60,12 +60,12 @@ class AccountOFXType extends AbstractType
             }
         };
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, $accountsFieldValidator);
+        $formBuilder->addEventListener(FormEvents::POST_SUBMIT, $accountsFieldValidator);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'translation_domain' => 'account',
         ]);
     }

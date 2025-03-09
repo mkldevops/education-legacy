@@ -5,7 +5,7 @@ ifneq ("$(wildcard .env.local)","")
 endif
 
 # Setup ————————————————————————————————————————————————————————————————————————
-DOCKER				:= @docker compose --env-file=docker/.env.docker
+DOCKER				:= @docker compose
 DOCKER_EXEC			:=
 DOCKER_TEST_EXEC	:= APP_ENV=test
 CONSOLE 			:= symfony console
@@ -83,7 +83,7 @@ doctrine-schema: create-database ## implement schema of database if not exists
 	$(CONSOLE) doctrine:schema:create
 
 load-fixtures: ## load fixtures
-	 $(CONSOLE) doctrine:fixtures:load -n
+	$(CONSOLE) doctrine:fixtures:load -n
 
 reset-database:  drop-database migrate load-fixtures  doctrine-validate ## Build the db, control the schema validity, load fixtures and check the migration status
 
@@ -111,7 +111,7 @@ stan: ## Run PHPStan only
 cs-fix: ## Run php-cs-fixer and fix the code.
 	$(DOCKER_EXEC) ./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes
 
-rector: ## Run php-cs-fixer and fix the code.
+rector: ## Run rector process
 	$(DOCKER_EXEC) ./vendor/bin/rector process src
 
 cs-dry: ## Run php-cs-fixer and fix the code.
@@ -120,48 +120,45 @@ cs-dry: ## Run php-cs-fixer and fix the code.
 analyze: stan cs-fix rector ## Run php-cs-fixer and fix the code.
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
-config: docker-compose.yaml ## build services to image
+config: compose.yaml ## build services to image
 	$(DOCKER) config
 
-build: docker-compose.yaml ## build services to image
+build: compose.yaml ## build services to image
 	$(DOCKER) build
 
-up: docker-compose.yaml ## up services for running containers
+up: compose.yaml ## up services for running containers
 	$(DOCKER) up -d
 	$(DOCKER) ps
 
-build-up: docker-compose.yaml ## up services for running containers
+build-up: compose.yaml ## up services for running containers
 	$(DOCKER) up -d --build
 	$(DOCKER) ps
 
-start: docker-compose.yaml ## start containers
+start: compose.yaml ## start containers
 	$(DOCKER) start
 
-down: docker-compose.yaml ## down containers
+down: compose.yaml ## down containers
 	$(DOCKER) down
 
-destroy: docker-compose.yaml ## down containers & removes orphans
-	$(DOCKER) down -v --remove-orphans
+destroy: compose.yaml ## down containers & removes orphans
+	$(DOCKER) down -v --remove-orphans --volumes
 
-stop: docker-compose.yaml ## stop containers
+stop: compose.yaml ## stop containers
 	$(DOCKER) stop
 
-restart: docker-compose.yaml stop up ## stop & re-up containers
+restart: compose.yaml stop up ## stop & re-up containers
 
-logs: docker-compose.yaml ## logs of all containers
-	$(DOCKER) logs --tail=100 -f
+logs: compose.yaml ## logs of all containers
+	$(DOCKER) logs --tail=100 -f $(c)
 
-app-logs: docker-compose.yaml ## logs of container app
+app-logs: compose.yaml ## logs of container app
 	$(DOCKER) logs --tail=100 -f app
 
-ps: docker-compose.yaml ## ps containers
+ps: compose.yaml ## ps containers
 	$(DOCKER) ps
 
-app: docker-compose.yaml ## exec bash command for containers app
+app: compose.yaml ## exec bash command for containers app
 	$(DOCKER) exec app zsh
-
-nice: docker-compose.yaml ## exec bash command for containers app
-	$(DOCKER) exec nice zsh $(c)
 
 prune: ## clean all containers unused
 	$(DOCKER) system prune -a
@@ -189,7 +186,7 @@ auto-commit: ## Auto commit
 	@git commit -m "$(m)" || true
 
 current_branch=$(shell git rev-parse --abbrev-ref HEAD)
-push: ## Push current branch
+git-push: ## Push current branch
 	git push origin "$(current_branch)" --force-with-lease
 
-commit: analyze auto-commit git-rebase push ## Commit and push
+push: analyze auto-commit git-rebase push ## Commit and push

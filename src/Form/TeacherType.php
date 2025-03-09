@@ -9,6 +9,7 @@ use App\Entity\Period;
 use App\Entity\School;
 use App\Entity\Teacher;
 use App\Repository\ClassPeriodRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -29,12 +30,12 @@ class TeacherType extends AbstractType
         $this->school = $requestStack->getSession()->get('school');
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
         $period = $this->period;
         $school = $this->school;
 
-        $builder
+        $formBuilder
             ->add('person', PersonType::class, [
                 'label' => false,
             ])
@@ -46,7 +47,7 @@ class TeacherType extends AbstractType
                 'class' => ClassPeriod::class,
                 'choice_label' => 'name',
                 'multiple' => 'true',
-                'query_builder' => static fn (ClassPeriodRepository $cpr): \Doctrine\ORM\QueryBuilder => $cpr->getClassPeriodsQueryBuilder($period, $school),
+                'query_builder' => static fn (ClassPeriodRepository $classPeriodRepository): QueryBuilder => $classPeriodRepository->getClassPeriodsQueryBuilder($period, $school),
                 'attr' => ['data-toggle' => 'multiselect'],
                 'required' => false,
                 'label' => 'form.label.class_periods',
@@ -58,9 +59,9 @@ class TeacherType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Teacher::class,
             'translation_domain' => 'teacher',
         ]);

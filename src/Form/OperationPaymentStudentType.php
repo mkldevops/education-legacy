@@ -8,11 +8,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class OperationPaymentStudentType extends OperationType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        parent::buildForm($builder, $options);
+        parent::buildForm($formBuilder, $options);
 
-        $builder->remove('name')
+        $formBuilder->remove('name')
             ->remove('typeOperation')
         ;
     }

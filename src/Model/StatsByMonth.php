@@ -18,7 +18,7 @@ class StatsByMonth
      */
     private array $row = [];
 
-    private DataStats $global;
+    private DataStats $dataStats;
 
     private array $data = [];
 
@@ -88,28 +88,28 @@ class StatsByMonth
 
     public function getGlobal(): DataStats
     {
-        return $this->global;
+        return $this->dataStats;
     }
 
-    public function setGlobal(DataStats $global): static
+    public function setGlobal(DataStats $dataStats): static
     {
-        $this->global = $global;
+        $this->dataStats = $dataStats;
 
         return $this;
     }
 
-    public function addColumn(DataStats $data): self
+    public function addColumn(DataStats $dataStats): self
     {
-        if (!isset($this->column[$data->getColumnId()])) {
-            $this->column[$data->getColumnId()] = (new DataStats())
-                ->setColumnId($data->getColumnId())
-                ->setColumnLabel($data->getColumnLabel())
+        if (!isset($this->column[$dataStats->getColumnId()])) {
+            $this->column[$dataStats->getColumnId()] = (new DataStats())
+                ->setColumnId($dataStats->getColumnId())
+                ->setColumnLabel($dataStats->getColumnLabel())
                 ->setSum(0)
                 ->setCount(0)
             ;
         }
 
-        $this->column[$data->getColumnId()]->merge($data);
+        $this->column[$dataStats->getColumnId()]->merge($dataStats);
 
         ksort($this->column);
 

@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\EntityInterface;
 use App\Repository\OperationGenderRepository;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\NameEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: OperationGenderRepository::class)]
-class OperationGender implements \Stringable
+class OperationGender implements \Stringable, EntityInterface
 {
     use EnableEntityTrait;
     use IdEntityTrait;
@@ -49,7 +51,7 @@ class OperationGender implements \Stringable
      */
     final public const CODE_CHEQUE = 'cheque';
 
-    #[ORM\Column(type: 'string', length: 30, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 30, unique: true)]
     private ?string $code = null;
 
     public function __construct()
