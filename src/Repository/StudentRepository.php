@@ -122,6 +122,7 @@ class StudentRepository extends ServiceEntityRepository
                 'pck',
                 'doc',
                 'prs',
+                'fam',
             ])
             ->addSelect('CASE WHEN std.enable > 0
                 THEN (psp.amount - psp.discount) ELSE SUM(psp.amount) END AS amountTotal')
@@ -131,17 +132,16 @@ class StudentRepository extends ServiceEntityRepository
             ->innerJoin('psp.package', 'pck')
             ->innerJoin('psp.period', 'per')
             ->leftJoin('std.person', 'prs')
+            ->leftJoin('prs.family', 'fam')
             ->leftJoin('prs.image', 'doc')
             ->leftJoin('psp.payments', 'pps')
             ->leftJoin('pps.operation', 'ope')
             ->where('per.id = :period')
             ->andWhere('std.school = :school')
-            ->groupBy('std.id')
+            ->groupBy('std.id, psp.id, per.id, pck.id, doc.id, prs.id, fam.id')
             ->setParameter('school', $school)
             ->setParameter('period', $period)
         ;
-
-        dump($queryBuilder->getQuery()->getSQL());
 
         return $queryBuilder->getQuery()->getArrayResult();
     }

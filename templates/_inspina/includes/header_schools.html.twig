@@ -2,12 +2,12 @@
 
 <li class="dropdown">
     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-        <i class="fas fa-school"></i> {{ app.session.get('school').selected }}
+        <i class="fas fa-school"></i> {{ app.session.get('school').school.name ?? 'No school selected' }}
     </a>
     <ul class="dropdown-menu dropdown-alerts">
         {% for school in app.session.get('school').list|default({}) %}
             {% if school.id|default(null) %}
-                {% set active = school.id == app.session.get('school').selected.id|default(null) %}
+                {% set active = school.id == app.session.get('school').school.id|default(null) %}
                 <li class="{{ active ? 'active' : null }}">
                     <a href="{{ path('app_school_switch', { 'id' : school.id }) }}">
                         <div>

@@ -25,7 +25,7 @@ class PackageStudentPeriodType extends AbstractType
     #[Required]
     public function setSchoolBySession(RequestStack $requestStack): void
     {
-        $this->school = $requestStack->getSession()->get('school')->selected;
+        $this->school = $requestStack->getSession()->get('school')->school;
     }
 
     public function buildForm(FormBuilderInterface $formBuilder, array $options): void

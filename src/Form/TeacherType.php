@@ -27,7 +27,7 @@ class TeacherType extends AbstractType
         RequestStack $requestStack,
     ) {
         $this->period = $requestStack->getSession()->get('period')->selected;
-        $this->school = $requestStack->getSession()->get('school');
+        $this->school = $requestStack->getSession()->get('school')->school;
     }
 
     public function buildForm(FormBuilderInterface $formBuilder, array $options): void

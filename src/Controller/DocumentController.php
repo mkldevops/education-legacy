@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Document;
-use App\Exception\AppException;
 use App\Exception\FileNotFoundException;
 use App\Form\DocumentType;
 use App\Manager\DocumentManager;
@@ -137,7 +136,7 @@ class DocumentController extends AbstractController
     }
 
     /**
-     * @throws AppException
+     * Get the last documents.
      */
     #[Route(path: '/document/last', name: 'app_document_last', options: ['expose' => true], methods: ['POST', 'GET'])]
     public function last(Request $request, DocumentRepository $documentRepository): JsonResponse
@@ -149,14 +148,23 @@ class DocumentController extends AbstractController
                 ->last($request->get('exists', [0]), $request->get('firstResult', 0))
             ;
         } catch (\Exception $exception) {
-            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
+            $this->logger->error($exception->getMessage(), [
+                'class' => $exception::class,
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            $responseModel->success = false;
+            $responseModel->data = [];
+            $responseModel->message = $exception->getMessage();
+
+            return new JsonResponse($responseModel, Response::HTTP_BAD_REQUEST);
         }
 
         return new JsonResponse($responseModel);
     }
 
     /**
-     * @throws AppException
+     * Upload a document.
      */
     #[Route(path: '/document/upload', name: 'app_document_upload', methods: ['POST'])]
     public function upload(Request $request, DocumentManager $documentManager, EntityManagerInterface $entityManager, SchoolManager $schoolManager): JsonResponse
@@ -182,7 +190,11 @@ class DocumentController extends AbstractController
                 'trace' => $exception->getTraceAsString(),
             ]);
 
-            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
+            return $this->json([
+                'upload' => false,
+                'success' => false,
+                'error' => $exception->getMessage(),
+            ], 400);
         }
     }
 
