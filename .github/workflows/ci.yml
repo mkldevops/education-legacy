@@ -1,0 +1,157 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.1
+        env:
+          MYSQL_DATABASE: education_app_test
+          MYSQL_USER: app
+          MYSQL_PASSWORD: db_password
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_mysql, zip, intl, imagick
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo 'waiting for mysql...'
+            sleep 1
+          done
+
+      - name: Setup test environment
+        run: |
+          cp .env .env.test.local
+          echo "DATABASE_URL=mysql://app:db_password@127.0.0.1:3306/education_app_test?charset=utf8mb4" >> .env.test.local
+          echo "APP_ENV=test" >> .env.test.local
+
+      - name: Create test database
+        run: php bin/console doctrine:database:create --env=test --if-not-exists
+
+      - name: Run migrations
+        run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+      - name: PHPStan Analysis
+        run: ./vendor/bin/phpstan analyse src --level=5 --no-progress
+
+      - name: PHP CS Fixer (Dry Run)
+        run: ./vendor/bin/php-cs-fixer fix src/ --dry-run --diff --allow-risky=yes
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
+
+      - name: Rector (Dry Run)
+        run: ./vendor/bin/rector process src --dry-run
+
+      - name: Doctrine Schema Validation
+        run: php bin/console doctrine:schema:validate --env=test
+
+  tests:
+    name: PHPUnit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+
+    services:
+      mysql:
+        image: mysql:8.1
+        env:
+          MYSQL_DATABASE: education_app_test
+          MYSQL_USER: app
+          MYSQL_PASSWORD: db_password
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_mysql, zip, intl, imagick
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo 'waiting for mysql...'
+            sleep 1
+          done
+
+      - name: Setup test environment
+        run: |
+          cp .env .env.test.local
+          echo "DATABASE_URL=mysql://app:db_password@127.0.0.1:3306/education_app_test?charset=utf8mb4" >> .env.test.local
+          echo "APP_ENV=test" >> .env.test.local
+
+      - name: Prepare test database
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:migrations:migrate --env=test --no-interaction
+          php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+      - name: Run PHPUnit Tests
+        run: ./vendor/bin/simple-phpunit --coverage-text --coverage-clover coverage.xml
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
