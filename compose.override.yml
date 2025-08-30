@@ -4,4 +4,4 @@ services:
             context: .
             target: dev
         volumes:
-            - "./:/srv/app"
+            - "./:/app"

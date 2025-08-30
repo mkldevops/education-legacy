@@ -17,10 +17,10 @@ trait AuthorEntityTrait
         return $this->author instanceof User ? $this->author : null;
     }
 
-    public function setAuthor(?User $author): static
+    public function setAuthor(?User $user): static
     {
-        if ($author instanceof User) {
-            $this->author = $author;
+        if ($user instanceof User) {
+            $this->author = $user;
         }
 
         return $this;

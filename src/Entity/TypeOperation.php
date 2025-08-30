@@ -63,7 +63,7 @@ class TypeOperation implements EntityInterface, AuthorEntityInterface
     /**
      * @var Collection<int, TypeOperation>
      */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'typeOperation')]
     protected Collection $typeOperations;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'typeOperations')]

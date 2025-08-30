@@ -36,7 +36,6 @@ class PersonRepository extends ServiceEntityRepository
             ->where('p.family = :family')
             ->setParameter('family', $family)
             ->setParameter('period', $period)
-            ->groupBy('p.id')
             ->getQuery()
             ->getResult()
         ;

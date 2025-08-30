@@ -18,9 +18,9 @@ trait PublisherEntityTrait
         return $this->publisher;
     }
 
-    public function setPublisher(?User $publisher): static
+    public function setPublisher(?User $user): static
     {
-        $this->publisher = $publisher;
+        $this->publisher = $user;
 
         return $this;
     }

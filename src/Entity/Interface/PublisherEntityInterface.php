@@ -10,5 +10,5 @@ interface PublisherEntityInterface
 {
     public function getPublisher(): ?User;
 
-    public function setPublisher(?User $publisher): static;
+    public function setPublisher(?User $user): static;
 }

@@ -10,7 +10,6 @@ use App\Repository\FamilyRepository;
 use App\Trait\AddressEntityTrait;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CityEntityTrait;
-use App\Trait\EmailEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\ZipEntityTrait;
@@ -21,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Fardus\Traits\Symfony\Accessors\NameAccessorsTrait;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FamilyRepository::class)]
@@ -30,13 +30,18 @@ class Family implements EntityInterface, AuthorEntityInterface
     use AddressEntityTrait;
     use AuthorEntityTrait;
     use CityEntityTrait;
-    use EmailEntityTrait;
     use EnableEntityTrait;
     use IdEntityTrait;
     use NameAccessorsTrait;
     use SoftDeleteableEntity;
     use TimestampableEntity;
     use ZipEntityTrait;
+
+    #[Groups(['email', 'email:write'])]
+    #[Assert\Email]
+    #[Assert\Length(max: 255)]
+    #[ORM\Column(unique: true, nullable: true)]
+    protected ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     protected ?string $name = null;
@@ -81,6 +86,18 @@ class Family implements EntityInterface, AuthorEntityInterface
     public function __toString(): string
     {
         return \sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email = null): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 
     public function setGenders(): self

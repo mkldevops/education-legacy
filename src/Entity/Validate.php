@@ -58,7 +58,7 @@ class Validate implements \Stringable, EntityInterface, AuthorEntityInterface
 
     public function __toString(): string
     {
-        return $this->getMessage();
+        return (string) $this->getMessage();
     }
 
     /**

@@ -48,6 +48,11 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script
+        src="https://js.sentry-cdn.com/f1037c7551f541a3a3b9cdd1a2200ba5.min.js"
+        crossorigin="anonymous"
+        ></script>
+
     <!-- Mainly scripts -->
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>

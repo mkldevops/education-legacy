@@ -54,25 +54,25 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
     private ?Grade $grade = null;
 
     /**
-     * @var Collection&iterable<ClassPeriodStudent>
+     * @var Collection<int, ClassPeriodStudent>
      */
     #[ORM\OneToMany(targetEntity: ClassPeriodStudent::class, mappedBy: 'student', cascade: ['persist'])]
     private Collection $classPeriods;
 
     /**
-     * @var Collection&iterable<PackageStudentPeriod>
+     * @var Collection<int, PackageStudentPeriod>
      */
     #[ORM\OneToMany(targetEntity: PackageStudentPeriod::class, mappedBy: 'student', cascade: ['persist'])]
     private Collection $packagePeriods;
 
     /**
-     * @var Collection&iterable<AppealCourse>
+     * @var Collection<int, AppealCourse>
      */
     #[ORM\OneToMany(targetEntity: AppealCourse::class, mappedBy: 'student')]
     private Collection $appealCourses;
 
     /**
-     * @var Collection&iterable<StudentComment>
+     * @var Collection<int, StudentComment>
      */
     #[ORM\OneToMany(targetEntity: StudentComment::class, mappedBy: 'student')]
     private Collection $comments;

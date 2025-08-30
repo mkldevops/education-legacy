@@ -1,15 +1,9 @@
-#syntax=docker/dockerfile:1.7
-
-FROM php:8.2-fpm-alpine as base
-
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-
-RUN install-php-extensions gd opcache pdo_mysql zip intl @composer
-
-RUN apk add --no-cache $PHPIZE_DEPS git build-base zsh shadow
+FROM dunglas/frankenphp:php8.4-alpine AS base
 
 RUN set -eux; \
-	install-php-extensions imagick
+	apk add --no-cache $PHPIZE_DEPS git build-base zsh shadow;\
+	install-php-extensions opcache pdo_mysql zip intl @composer imagick
+
 
 RUN set -eux; \
 	curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | sh && \
@@ -17,20 +11,18 @@ RUN set -eux; \
 	sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 ENV APP_ENV=prod
+ENV SERVER_NAME=:80
 
-WORKDIR /srv/app
+WORKDIR /app
 
 COPY --link docker/app.ini $PHP_INI_DIR/conf.d/
 
-EXPOSE 80
-CMD ["symfony", "serve", "--no-tls", "--allow-http", "--port=80"]
-
-FROM base as prod
+FROM base AS prod
 
 COPY --link . .
 RUN set -eux; \
 	symfony composer install --no-cache --prefer-dist --no-scripts --no-progress
 
-FROM base as dev
+FROM base AS dev
 
 ENV APP_ENV=dev

@@ -10,5 +10,5 @@ interface AuthorEntityInterface
 {
     public function getAuthor(): ?User;
 
-    public function setAuthor(?User $author): static;
+    public function setAuthor(?User $user): static;
 }
