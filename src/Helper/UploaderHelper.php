@@ -28,37 +28,37 @@ class UploaderHelper implements RuntimeExtensionInterface
             return $result;
         }
 
-        $img = new \Imagick($filepath);
+        $imagick = new \Imagick($filepath);
 
         if ($document->isFormat('pdf')) {
-            $img->setIteratorIndex(0);
+            $imagick->setIteratorIndex(0);
         }
 
         // If file is image, so to compress
         if ($document->isFormat('image')) {
-            $img->setCompression(\Imagick::COMPRESSION_LZW);
-            $img->setCompressionQuality(80);
-            $img->stripImage();
-            $img->writeImage();
+            $imagick->setCompression(\Imagick::COMPRESSION_LZW);
+            $imagick->setCompressionQuality(80);
+            $imagick->stripImage();
+            $imagick->writeImage();
         }
 
         $pathPreview = Document::getUploadRootDir(Document::DIR_PREVIEW).'/'.$document->getFileName().'.'.Document::EXT_PNG;
         if (!is_file($pathPreview)) {
             // Genreration du preview
-            $img->scaleImage(800, 0);
-            $img->setImageFormat('png');
-            $result['preview'] = $img->writeImage($pathPreview);
+            $imagick->scaleImage(800, 0);
+            $imagick->setImageFormat('png');
+            $result['preview'] = $imagick->writeImage($pathPreview);
         }
 
         $pathThumb = Document::getUploadRootDir(Document::DIR_THUMB).'/'.$document->getFileName().'.'.Document::EXT_PNG;
         if (!is_file($pathThumb)) {
             // Generation du thumb
-            $img->scaleImage(150, 0);
-            $img->setImageFormat('png');
-            $result['thumb'] = $img->writeImage($pathThumb);
+            $imagick->scaleImage(150, 0);
+            $imagick->setImageFormat('png');
+            $result['thumb'] = $imagick->writeImage($pathThumb);
         }
 
-        $img->clear();
+        $imagick->clear();
 
         return $result;
     }

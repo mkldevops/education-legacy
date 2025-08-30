@@ -11,9 +11,9 @@ class AppException extends \Exception implements MainErrorInterface, \Stringable
     public function __construct(
         string $message = '',
         int $code = Response::HTTP_INTERNAL_SERVER_ERROR,
-        \Throwable $previous = null
+        ?\Throwable $throwable = null
     ) {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $code, $throwable);
     }
 
     public function __toString(): string

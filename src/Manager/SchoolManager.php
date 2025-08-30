@@ -20,13 +20,12 @@ class SchoolManager implements SchoolManagerInterface
     use RequestStackTrait;
 
     public function __construct(
-        private readonly SchoolRepository $repository,
+        private readonly SchoolRepository $schoolRepository,
         private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
         private readonly TranslatorInterface $translator,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws SchoolException
@@ -41,7 +40,7 @@ class SchoolManager implements SchoolManagerInterface
      */
     public function getEntitySchoolOnSession(): School
     {
-        $school = $this->repository->find($this->getSchool()->getId());
+        $school = $this->schoolRepository->find($this->getSchool()->getId());
 
         if (!$school instanceof School) {
             throw new SchoolException('not found a School selected');
@@ -72,11 +71,11 @@ class SchoolManager implements SchoolManagerInterface
             throw new SchoolException('Error on session school list');
         }
 
-        if (!$schoolList->selected instanceof School) {
+        if (!$schoolList->school instanceof School) {
             throw new SchoolException('not found a School selected');
         }
 
-        return $schoolList->selected;
+        return $schoolList->school;
     }
 
     public function setSchoolsOnSession(): bool
@@ -85,8 +84,8 @@ class SchoolManager implements SchoolManagerInterface
         $user = $this->security->getUser();
 
         if ($user->getSchoolAccessRight()->isEmpty()) {
-            $school = $this->repository->findOneBy([], ['principal' => 'DESC']);
-            if ($school instanceof \App\Entity\School) {
+            $school = $this->schoolRepository->findOneBy([], ['principal' => 'DESC']);
+            if ($school instanceof School) {
                 $user = $user->addSchoolAccessRight($school);
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
@@ -116,7 +115,7 @@ class SchoolManager implements SchoolManagerInterface
             throw new SchoolException('Error on session school list');
         }
 
-        $schoolList->selected = $school;
+        $schoolList->school = $school;
         $this->getSession()->set('school', $schoolList);
         $this->getSession()->save();
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\CourseRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CommentEntityTrait;
@@ -11,11 +13,12 @@ use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
-class Course implements \Stringable
+class Course implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;
@@ -23,32 +26,40 @@ class Course implements \Stringable
     use IdEntityTrait;
     use TimestampableEntity;
 
+    /**
+     * @var Collection<int, AppealCourse>
+     */
     #[ORM\OneToMany(targetEntity: AppealCourse::class, mappedBy: 'course')]
     protected Collection $students;
 
-    #[ORM\Column(type: 'string', unique: true, nullable: true, options: ['default' => null])]
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true, options: ['default' => null])]
     private string $idEvent;
 
     #[ORM\ManyToOne(targetEntity: ClassPeriod::class, inversedBy: 'courses', cascade: ['persist'])]
     private ClassPeriod $classPeriod;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private \DateTimeInterface $date;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $text = null;
 
-    #[ORM\Column(type: 'time')]
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
     private \DateTimeInterface $hourBegin;
 
-    #[ORM\Column(type: 'time')]
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
     private \DateTimeInterface $hourEnd;
 
+    /**
+     * @var Collection<int, Teacher>
+     */
     #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'courses', cascade: ['persist'])]
     private Collection $teachers;
 
     public function __construct()
     {
+        $this->students = new ArrayCollection();
+        $this->teachers = new ArrayCollection();
         $this->setStudents(new ArrayCollection())
             ->setTeachers(new ArrayCollection())
             ->setDate(new \DateTime())
@@ -62,7 +73,7 @@ class Course implements \Stringable
 
     public function getNameComplete(): string
     {
-        return sprintf(
+        return \sprintf(
             '%s [%s, %s - %s]',
             $this->classPeriod->getName(),
             $this->date->format('d/m/Y'),
@@ -144,7 +155,7 @@ class Course implements \Stringable
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ').$teacher;
+            $str .= ('' === $str || '0' === $str ? '' : ', ').$teacher;
         }
 
         return $str;
@@ -153,7 +164,7 @@ class Course implements \Stringable
     /**
      * @return Collection|Teacher[]
      */
-    public function getTeachers(): iterable|Collection
+    public function getTeachers(): Collection|iterable
     {
         return $this->teachers;
     }
@@ -161,23 +172,23 @@ class Course implements \Stringable
     /**
      * @param Collection|Teacher[] $teachers
      */
-    public function setTeachers(Collection|array $teachers): self
+    public function setTeachers(array|Collection $teachers): self
     {
         $this->teachers = $teachers;
 
         return $this;
     }
 
-    public function addStudent(AppealCourse $students): self
+    public function addStudent(AppealCourse $appealCourse): self
     {
-        $this->students[] = $students;
+        $this->students[] = $appealCourse;
 
         return $this;
     }
 
-    public function removeStudent(AppealCourse $students): self
+    public function removeStudent(AppealCourse $appealCourse): self
     {
-        $this->students->removeElement($students);
+        $this->students->removeElement($appealCourse);
 
         return $this;
     }

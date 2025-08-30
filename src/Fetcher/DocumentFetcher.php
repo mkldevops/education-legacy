@@ -13,8 +13,7 @@ class DocumentFetcher implements DocumentFetcherInterface
 {
     public function __construct(
         private readonly DocumentRepository $documentRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidArgumentException
@@ -28,7 +27,7 @@ class DocumentFetcher implements DocumentFetcherInterface
 
         $document = $this->documentRepository->find($id);
 
-        if (!$document instanceof \App\Entity\Document) {
+        if (!$document instanceof Document) {
             throw new NotFoundDataException('Not found document with id '.$id);
         }
 

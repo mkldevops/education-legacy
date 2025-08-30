@@ -9,16 +9,13 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Period find($id, $lockMode = null, $lockVersion = null)
- * @method null|Period findOneBy(array $criteria, array $orderBy = null)
- * @method Period[]    findAll()
- * @method Period[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Period>
  */
 class PeriodRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Period::class);
+        parent::__construct($managerRegistry, Period::class);
     }
 
     /**

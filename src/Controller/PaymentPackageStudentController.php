@@ -19,35 +19,29 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
-#[Route(path: 'payment-package-student')]
 class PaymentPackageStudentController extends AbstractController
 {
-    #[Route('/create/{id}', name: 'app_payment_package_student_create', methods: ['GET', 'POST'])]
-    public function create(Request $request, PackageStudentPeriod $packageStudentPeriod, TypeOperationRepository $repository, EntityManagerInterface $entityManager): Response
+    #[Route('payment-package-student/create/{id}', name: 'app_payment_package_student_create', methods: ['GET', 'POST'])]
+    public function create(Request $request, PackageStudentPeriod $packageStudentPeriod, TypeOperationRepository $typeOperationRepository, EntityManagerInterface $entityManager): Response
     {
         $paymentPackageStudent = new PaymentPackageStudent();
         $form = $this->createCreateForm($paymentPackageStudent, $packageStudentPeriod);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $typeOperation = $repository->findOneBy(['code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT]);
+            $typeOperation = $typeOperationRepository->findOneBy(['code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT]);
 
             $paymentPackageStudent->setPackageStudentPeriod($packageStudentPeriod);
             $paymentPackageStudent->getOperation()->setTypeOperation($typeOperation);
 
-            if (($user = $this->getUser()) && $user instanceof UserInterface) {
-                $paymentPackageStudent->getOperation()->setPublisher($user);
-            }
-
-            if (null === $paymentPackageStudent->getOperation()->getDate()
+            if (!$paymentPackageStudent->getOperation()->getDate() instanceof \DateTimeInterface
                 && $planned = $paymentPackageStudent->getOperation()->getDatePlanned()) {
                 $paymentPackageStudent->getOperation()->setDate($planned);
             }
 
             $paymentPackageStudent->getOperation()
-                ->setName(sprintf(
+                ->setName(\sprintf(
                     '%s - %s ',
                     $packageStudentPeriod->getStudent()?->getNameComplete() ?? '',
                     $packageStudentPeriod->getPeriod()?->getName() ?? ''
@@ -62,12 +56,12 @@ class PaymentPackageStudentController extends AbstractController
             $this->addFlash('danger', 'The PaymentPackageStudent form invalid');
         }
 
-        return $this->redirect($this->generateUrl('app_student_show', [
+        return $this->redirectToRoute('app_student_show', [
             'id' => $packageStudentPeriod->getStudent()?->getId(),
-        ]));
+        ]);
     }
 
-    #[Route(path: '/family/{family}/{period}', name: 'app_payment_package_student_family', methods: ['GET'])]
+    #[Route(path: 'payment-package-student/family/{family}/{period}', name: 'app_payment_package_student_family', methods: ['GET'])]
     public function family(Family $family, Period $period): Response
     {
         $form = $this->createForm(OperationPaymentStudentType::class);
@@ -79,7 +73,7 @@ class PaymentPackageStudentController extends AbstractController
         ]);
     }
 
-    #[Route('/new-student/{id}', name: 'app_payment_package_student_new', methods: ['GET', 'POST'])]
+    #[Route('payment-package-student/new-student/{id}', name: 'app_payment_package_student_new', methods: ['GET', 'POST'])]
     public function newStudent(PackageStudentPeriod $packageStudentPeriod): Response
     {
         $paymentPackageStudent = new PaymentPackageStudent();

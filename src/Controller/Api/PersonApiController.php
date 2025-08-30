@@ -13,10 +13,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api/person', options: ['expose' => true])]
 class PersonApiController extends AbstractController
 {
-    #[Route(path: '/get-phones/{id}', name: 'app_api_person_get_phones', methods: ['GET'])]
+    #[Route(path: '/api/person/get-phones/{id}', name: 'app_api_person_get_phones', methods: ['GET'])]
     public function getPhones(Person $person): JsonResponse
     {
         return $this->json(new ResponseModel(success: true, data: ['phones' => PhoneManager::getAllPhones($person)]));
@@ -25,12 +24,12 @@ class PersonApiController extends AbstractController
     /**
      * @throws \Exception
      */
-    #[Route(path: '/update-phones/{id}', name: 'app_api_person_update_phone', methods: ['POST', 'PUT'])]
-    public function updatePhone(Request $request, Person $person, PhoneManager $manager): JsonResponse
+    #[Route(path: '/api/person/update-phones/{id}', name: 'app_api_person_update_phone', methods: ['POST', 'PUT'])]
+    public function updatePhone(Request $request, Person $person, PhoneManager $phoneManager): JsonResponse
     {
         $key = (string) $request->request->get('key', null);
         $value = (string) $request->request->get('value', null);
-        $result = $manager->updatePhone($person, $value, $key);
+        $result = $phoneManager->updatePhone($person, $value, $key);
 
         return $this->json(new ResponseModel(success: true, data: ['phones' => $result]));
     }
@@ -38,11 +37,11 @@ class PersonApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/delete-phones/{id}', name: 'app_api_person_delete_phone', methods: ['DELETE'])]
-    public function deletePhone(Request $request, Person $person, PhoneManager $manager): JsonResponse
+    #[Route(path: '/api/person/delete-phones/{id}', name: 'app_api_person_delete_phone', methods: ['DELETE'])]
+    public function deletePhone(Request $request, Person $person, PhoneManager $phoneManager): JsonResponse
     {
         ['key' => $key] = $request->request->all();
-        $result = $manager->deletePhone($person, $key);
+        $result = $phoneManager->deletePhone($person, $key);
 
         return $this->json(new ResponseModel(success: true, data: ['phones' => $result]));
     }

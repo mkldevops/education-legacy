@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\TeacherRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\EnableEntityTrait;
@@ -16,7 +18,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
-class Teacher implements \Stringable
+class Teacher implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -25,6 +27,9 @@ class Teacher implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
+    /**
+     * @var Collection<int, Course>
+     */
     #[ORM\ManyToMany(targetEntity: Course::class, inversedBy: 'teachers', cascade: ['persist', 'merge'])]
     protected Collection $courses;
 
@@ -34,6 +39,9 @@ class Teacher implements \Stringable
     #[ORM\ManyToOne(targetEntity: Grade::class, cascade: ['persist'])]
     private ?Grade $grade = null;
 
+    /**
+     * @var Collection<int, ClassPeriod>
+     */
     #[ORM\ManyToMany(targetEntity: ClassPeriod::class, inversedBy: 'teachers', cascade: ['persist', 'merge'])]
     private readonly Collection $classPeriods;
 
@@ -45,7 +53,7 @@ class Teacher implements \Stringable
 
     public function __toString(): string
     {
-        return empty($this->name) ? $this->person->getNameComplete() : $this->name;
+        return null === $this->name || '' === $this->name || '0' === $this->name ? $this->person->getNameComplete() : $this->name;
     }
 
     public function getGrade(): ?Grade
@@ -60,9 +68,9 @@ class Teacher implements \Stringable
         return $this;
     }
 
-    public function removeClassPeriod(ClassPeriod $classPeriods): self
+    public function removeClassPeriod(ClassPeriod $classPeriod): self
     {
-        $this->classPeriods->removeElement($classPeriods);
+        $this->classPeriods->removeElement($classPeriod);
 
         return $this;
     }
@@ -85,9 +93,9 @@ class Teacher implements \Stringable
         return $this;
     }
 
-    public function addClassPeriod(ClassPeriod $classPeriods): self
+    public function addClassPeriod(ClassPeriod $classPeriod): self
     {
-        $this->classPeriods->add($classPeriods);
+        $this->classPeriods->add($classPeriod);
 
         return $this;
     }
@@ -104,16 +112,16 @@ class Teacher implements \Stringable
         return $this;
     }
 
-    public function addCourse(Course $courses): self
+    public function addCourse(Course $course): self
     {
-        $this->courses[] = $courses;
+        $this->courses[] = $course;
 
         return $this;
     }
 
-    public function removeCourse(Course $courses): void
+    public function removeCourse(Course $course): void
     {
-        $this->courses->removeElement($courses);
+        $this->courses->removeElement($course);
     }
 
     public function getCourses(): Collection

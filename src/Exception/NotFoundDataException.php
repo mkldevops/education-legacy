@@ -11,8 +11,8 @@ class NotFoundDataException extends AppException
     public function __construct(
         string $message = '',
         int $code = Response::HTTP_NOT_FOUND,
-        \Throwable $previous = null
+        ?\Throwable $throwable = null
     ) {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $code, $throwable);
     }
 }

@@ -13,16 +13,13 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Course find($id, $lockMode = null, $lockVersion = null)
- * @method null|Course findOneBy(array $criteria, array $orderBy = null)
- * @method Course[]    findAll()
- * @method Course[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Course>
  */
 class CourseRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Course::class);
+        parent::__construct($managerRegistry, Course::class);
     }
 
     public function getListQueryBuilder(string $search, School $school, Period $period): QueryBuilder

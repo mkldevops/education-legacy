@@ -11,10 +11,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MemberType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        parent::buildForm($builder, $options);
-        $builder
+        parent::buildForm($formBuilder, $options);
+        $formBuilder
             ->add('person', PersonType::class, [
                 'label' => false,
             ])
@@ -23,9 +23,9 @@ class MemberType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Member::class,
             'translation_domain' => 'member',
         ]);

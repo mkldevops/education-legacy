@@ -25,10 +25,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/family')]
 class FamilyController extends AbstractController
 {
-    #[Route(path: '', methods: ['GET'])]
+    #[Route(path: '/family', methods: ['GET'])]
     public function index(FamilyRepository $familyRepository): Response
     {
         $families = $familyRepository->findBy(['enable' => true]);
@@ -38,7 +37,7 @@ class FamilyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', methods: ['GET'])]
+    #[Route(path: '/family/new', methods: ['GET'])]
     public function new(Request $request): Response
     {
         $family = new Family();
@@ -52,7 +51,7 @@ class FamilyController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/create', methods: ['POST'])]
+    #[Route(path: '/family/create', methods: ['POST'])]
     public function create(Request $request, FamilyManagerInterface $familyManager): RedirectResponse|Response
     {
         $family = new Family();
@@ -73,7 +72,7 @@ class FamilyController extends AbstractController
      * @throws InvalidArgumentException
      * @throws AppException
      */
-    #[Route(path: '/show/{id}', methods: ['GET'])]
+    #[Route(path: '/family/show/{id}', methods: ['GET'])]
     public function show(
         Family $family,
         FamilyManager $familyManager,
@@ -103,7 +102,7 @@ class FamilyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/edit/{id}', methods: ['GET'])]
+    #[Route(path: '/family/edit/{id}', methods: ['GET'])]
     public function edit(Request $request, Family $family): Response
     {
         $editForm = $this->createEditForm($request, $family);
@@ -114,7 +113,7 @@ class FamilyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/update', methods: ['POST'])]
+    #[Route(path: '/family/{id}/update', methods: ['POST'])]
     public function update(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($request, $family);
@@ -130,7 +129,7 @@ class FamilyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', methods: ['DELETE'])]
+    #[Route(path: '/family/delete/{id}', methods: ['DELETE'])]
     public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse
     {
         $form = $this->createDeleteForm($family);

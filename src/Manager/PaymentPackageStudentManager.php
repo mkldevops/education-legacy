@@ -9,6 +9,7 @@ use App\Entity\Operation;
 use App\Entity\PaymentPackageStudent;
 use App\Entity\Period;
 use App\Entity\TypeOperation;
+use App\Entity\User;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Manager\Interfaces\PaymentPackageStudentManagerInterface;
@@ -29,8 +30,7 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
         private readonly TypeOperationRepository $typeOperationRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidArgumentException
@@ -42,17 +42,17 @@ class PaymentPackageStudentManager implements PaymentPackageStudentManagerInterf
         $packages = $this->packageStudentPeriodRepository->findBy(['period' => $period, 'student' => $students]);
         $familyPaymentModel = $this->persistPayments(family: $family, packages: $packages, operation: $operation);
 
-        if (($user = $this->security->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
+        if (($user = $this->security->getUser()) instanceof User) {
             $operation->setPublisher($user);
         }
 
         if (($typeOperation = $this->typeOperationRepository->findOneBy([
             'code' => TypeOperation::TYPE_CODE_PAYMENT_PACKAGE_STUDENT,
-        ])) instanceof \App\Entity\TypeOperation) {
+        ])) instanceof TypeOperation) {
             $operation->setTypeOperation($typeOperation);
         }
 
-        $operation->setName(sprintf('[%s] %s', $period->__toString(), $family->__toString()));
+        $operation->setName(\sprintf('[%s] %s', $period->__toString(), $family->__toString()));
         $this->entityManager->persist($operation);
         $this->entityManager->flush();
 

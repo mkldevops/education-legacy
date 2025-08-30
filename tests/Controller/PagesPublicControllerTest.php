@@ -21,6 +21,9 @@ class PagesPublicControllerTest extends WebTestCase
         static::assertResponseIsSuccessful();
     }
 
+    /**
+     * @return iterable<array-key, string[]>
+     */
     public static function providers(): iterable
     {
         yield ['/login'];

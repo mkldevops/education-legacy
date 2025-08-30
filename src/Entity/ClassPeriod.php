@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\ClassPeriodRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CommentEntityTrait;
@@ -18,7 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: ClassPeriodRepository::class)]
 #[UniqueEntity(fields: ['classSchool'], groups: ['classPeriod'])]
 #[UniqueEntity(fields: ['period'], groups: ['classPeriod'])]
-class ClassPeriod implements \Stringable
+class ClassPeriod implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;
@@ -34,12 +36,21 @@ class ClassPeriod implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private Period $period;
 
+    /**
+     * @var Collection<int, ClassPeriodStudent>
+     */
     #[ORM\OneToMany(targetEntity: ClassPeriodStudent::class, mappedBy: 'classPeriod', cascade: ['persist'])]
     private Collection $students;
 
+    /**
+     * @var Collection<int, Teacher>
+     */
     #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'classPeriods', cascade: ['persist'])]
     private Collection $teachers;
 
+    /**
+     * @var Collection<int, Course>
+     */
     #[ORM\OneToMany(targetEntity: Course::class, mappedBy: 'classPeriod', cascade: ['persist'])]
     private Collection $courses;
 
@@ -85,16 +96,16 @@ class ClassPeriod implements \Stringable
         return $this;
     }
 
-    public function addStudent(ClassPeriodStudent $students): self
+    public function addStudent(ClassPeriodStudent $classPeriodStudent): self
     {
-        $this->students[] = $students;
+        $this->students[] = $classPeriodStudent;
 
         return $this;
     }
 
-    public function removeStudent(ClassPeriodStudent $students): void
+    public function removeStudent(ClassPeriodStudent $classPeriodStudent): void
     {
-        $this->students->removeElement($students);
+        $this->students->removeElement($classPeriodStudent);
     }
 
     public function getStudents(): Collection
@@ -102,16 +113,16 @@ class ClassPeriod implements \Stringable
         return $this->students;
     }
 
-    public function addCourse(Course $courses): self
+    public function addCourse(Course $course): self
     {
-        $this->courses[] = $courses;
+        $this->courses[] = $course;
 
         return $this;
     }
 
-    public function removeCourse(Course $courses): void
+    public function removeCourse(Course $course): void
     {
-        $this->courses->removeElement($courses);
+        $this->courses->removeElement($course);
     }
 
     /**
@@ -122,16 +133,16 @@ class ClassPeriod implements \Stringable
         return $this->courses;
     }
 
-    public function addTeacher(Teacher $teachers): self
+    public function addTeacher(Teacher $teacher): self
     {
-        $this->teachers[] = $teachers;
+        $this->teachers[] = $teacher;
 
         return $this;
     }
 
-    public function removeTeacher(Teacher $teachers): void
+    public function removeTeacher(Teacher $teacher): void
     {
-        $this->teachers->removeElement($teachers);
+        $this->teachers->removeElement($teacher);
     }
 
     public function getTeachers(): Collection
@@ -143,7 +154,7 @@ class ClassPeriod implements \Stringable
     {
         $str = '';
         foreach ($this->teachers as $teacher) {
-            $str .= (empty($str) ? '' : ', ').$teacher;
+            $str .= ('' === $str || '0' === $str ? '' : ', ').$teacher;
         }
 
         return $str;

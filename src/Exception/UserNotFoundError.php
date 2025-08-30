@@ -6,6 +6,4 @@ namespace App\Exception;
 
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
-class UserNotFoundError extends UserNotFoundException implements MainErrorInterface
-{
-}
+class UserNotFoundError extends UserNotFoundException implements MainErrorInterface {}

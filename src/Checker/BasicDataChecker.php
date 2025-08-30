@@ -24,8 +24,7 @@ class BasicDataChecker implements BasicDataCheckerInterface
         private readonly PackageRepository $packageRepository,
         private readonly PeriodRepository $periodRepository,
         private readonly SchoolRepository $schoolRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws UnexpectedResultException
@@ -81,7 +80,7 @@ class BasicDataChecker implements BasicDataCheckerInterface
         }
     }
 
-    private function trans(string $class, string $text = null): string
+    private function trans(string $class, ?string $text = null): string
     {
         return $this->translator->trans(
             $class.($text ? '.'.$text : null),

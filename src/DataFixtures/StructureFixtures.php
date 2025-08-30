@@ -18,7 +18,7 @@ class StructureFixtures extends AbstractAppFixtures
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         foreach (self::getData() as $i => $item) {
             $entity = (new Structure())
@@ -28,8 +28,8 @@ class StructureFixtures extends AbstractAppFixtures
                 ->setEnable(true)
             ;
 
-            $manager->persist($entity);
-            $manager->flush();
+            $objectManager->persist($entity);
+            $objectManager->flush();
 
             $this->addReference(self::getKey($i), $entity);
         }

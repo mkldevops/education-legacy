@@ -18,6 +18,7 @@ use App\Model\ResponseModel;
 use App\Repository\AccountSlipRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
@@ -31,21 +32,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/account-slip')]
 class AccountSlipController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AccountSlipRepository $accountSlipRepository,
         private readonly TranslatorInterface $translator,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws NonUniqueResultException
-     * @throws \Doctrine\ORM\NoResultException
+     * @throws NoResultException
      */
-    #[Route(path: '/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
+    #[Route(path: '/account-slip/list/{page}/{search}', name: 'app_account_slip_index', methods: ['GET'])]
     public function index(int $page = 1, string $search = ''): Response
     {
         // Escape special characters and decode the search value.
@@ -77,7 +76,7 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/create', name: 'app_account_slip_create', methods: ['POST'])]
+    #[Route(path: '/account-slip/create', name: 'app_account_slip_create', methods: ['POST'])]
     public function create(Request $request, TransferManager $transferManager, SchoolManager $schoolManager): Response
     {
         $accountSlip = new AccountSlip();
@@ -102,7 +101,7 @@ class AccountSlipController extends AbstractController
 
                 $this->addFlash('success', 'The AccountSlip has been created.');
 
-                return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
+                return $this->redirectToRoute('app_account_slip_show', ['id' => $accountSlip->getId()]);
             } catch (AppException|NonUniqueResultException $e) {
                 $this->addFlash('danger', $this->translator->trans('error.not_created', [], 'account_slip').$e->getMessage());
             }
@@ -114,7 +113,7 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', name: 'app_account_slip_new', methods: ['GET'])]
+    #[Route(path: '/account-slip/new', name: 'app_account_slip_new', methods: ['GET'])]
     public function new(): Response
     {
         $accountSlip = new AccountSlip();
@@ -126,7 +125,7 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
+    #[Route(path: '/account-slip/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
     public function show(AccountSlip $accountSlip): Response
     {
         return $this->render('account_slip/show.html.twig', [
@@ -134,7 +133,7 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
+    #[Route(path: '/account-slip/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
     public function edit(AccountSlip $accountSlip): Response
     {
         $editForm = $this->createEditForm($accountSlip);
@@ -145,7 +144,7 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
+    #[Route(path: '/account-slip/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
     public function update(
         Request $request,
         AccountSlip $accountSlip,
@@ -164,7 +163,7 @@ class AccountSlipController extends AbstractController
                     $transferManager->setAccountDebit($editForm->get('accountDebit')->getData());
                 }
 
-                if (($structure = $schoolManager->getEntitySchool()->getStructure()) instanceof \App\Entity\Structure) {
+                if (($structure = $schoolManager->getEntitySchool()->getStructure()) instanceof Structure) {
                     $accountSlip->setStructure($structure);
                 }
 
@@ -175,7 +174,7 @@ class AccountSlipController extends AbstractController
 
                 $this->addFlash('success', 'The AccountSlip has been updated.');
 
-                return $this->redirect($this->generateUrl('app_account_slip_show', ['id' => $accountSlip->getId()]));
+                return $this->redirectToRoute('app_account_slip_show', ['id' => $accountSlip->getId()]);
             } catch (AppException $appException) {
                 $this->addFlash('danger', 'The AccountSlip has not updated : '.$appException->getMessage());
             }
@@ -187,7 +186,7 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/account-slip/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, AccountSlip $accountSlip): Response
     {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
@@ -199,7 +198,7 @@ class AccountSlipController extends AbstractController
 
             $this->addFlash('success', 'The AccountSlip has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_account_slip_index'));
+            return $this->redirectToRoute('app_account_slip_index');
         }
 
         return $this->render('account_slip/delete.html.twig', [
@@ -208,22 +207,22 @@ class AccountSlipController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/search', name: 'app_account_slip_search', methods: ['POST'])]
+    #[Route(path: '/account-slip/search', name: 'app_account_slip_search', methods: ['POST'])]
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 
-        return $this->redirect($this->generateUrl('app_account_slip_index', [
+        return $this->redirectToRoute('app_account_slip_index', [
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
-        ]));
+        ]);
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws NotFoundDataException
      */
-    #[Route(path: '/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
+    #[Route(path: '/account-slip/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
     public function setDocument(
         Request $request,
         AccountSlip $accountSlip,

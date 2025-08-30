@@ -14,11 +14,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: 'api/payment-package-student')]
 class PaymentPackageStudentApiController extends AbstractController
 {
     #[Route(
-        path: '/family/{family}/{period}',
+        path: 'api/payment-package-student/family/{family}/{period}',
         name: 'api_payment_package_student_family',
         options: ['expose' => 'true'],
         methods: [Request::METHOD_POST]
@@ -27,17 +26,17 @@ class PaymentPackageStudentApiController extends AbstractController
         Request $request,
         Family $family,
         Period $period,
-        PaymentPackageStudentManagerInterface $manager
+        PaymentPackageStudentManagerInterface $paymentPackageStudentManager
     ): JsonResponse {
         $operation = new Operation();
         $this->createForm(OperationPaymentStudentType::class, $operation)
             ->handleRequest($request)
         ;
 
-        $familyPayment = $manager->familyPayments($operation, $family, $period);
+        $familyPaymentModel = $paymentPackageStudentManager->familyPayments($operation, $family, $period);
 
         return $this->json([
-            'payments' => $familyPayment->payments,
+            'payments' => $familyPaymentModel->payments,
         ], context: [
             'ignore' => [],
             'circular_reference_handler' => static fn ($object) => $object->__toString(),

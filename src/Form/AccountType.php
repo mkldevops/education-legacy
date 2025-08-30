@@ -21,9 +21,9 @@ class AccountType extends AbstractType
     /**
      * buildForm.
      */
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('name')
             ->add('structure', EntityType::class, [
                 'label' => 'form.label.structure',
@@ -72,9 +72,9 @@ class AccountType extends AbstractType
     /**
      * configureOptions.
      */
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => Account::class,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

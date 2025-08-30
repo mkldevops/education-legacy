@@ -17,9 +17,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class ClassSchoolCrudController extends AbstractCrudController
 {
-    public function __construct(private readonly Security $security)
-    {
-    }
+    public function __construct(private readonly Security $security) {}
 
     public static function getEntityFqcn(): string
     {

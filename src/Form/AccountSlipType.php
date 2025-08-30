@@ -22,9 +22,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AccountSlipType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('gender', ChoiceType::class, [
                 'choices' => AccountSlip::getGenders(),
             ])
@@ -50,8 +50,8 @@ class AccountSlipType extends AbstractType
         /**
          * @param FormEvent $event
          */
-        $accountsFieldValidator = static function (FormEvent $event): void {
-            $form = $event->getForm();
+        $accountsFieldValidator = static function (FormEvent $formEvent): void {
+            $form = $formEvent->getForm();
             if ($form->has('accountCredit')) {
                 $accountCredit = $form->get('accountCredit')->getData();
                 $accountDebit = $form->get('accountDebit')->getData();
@@ -65,12 +65,12 @@ class AccountSlipType extends AbstractType
         };
 
         // adding the validator to the FormBuilderInterface
-        $builder->addEventListener(FormEvents::POST_SUBMIT, $accountsFieldValidator);
+        $formBuilder->addEventListener(FormEvents::POST_SUBMIT, $accountsFieldValidator);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => AccountSlip::class,
             'translation_domain' => 'account_slip',
         ]);

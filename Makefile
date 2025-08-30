@@ -5,7 +5,7 @@ ifneq ("$(wildcard .env.local)","")
 endif
 
 # Setup ————————————————————————————————————————————————————————————————————————
-DOCKER				:= @docker compose --env-file=docker/.env.docker
+DOCKER				:= @docker compose
 DOCKER_EXEC			:=
 DOCKER_TEST_EXEC	:= APP_ENV=test
 CONSOLE 			:= symfony console
@@ -83,9 +83,58 @@ doctrine-schema: create-database ## implement schema of database if not exists
 	$(CONSOLE) doctrine:schema:create
 
 load-fixtures: ## load fixtures
-	 $(CONSOLE) doctrine:fixtures:load -n
+	$(CONSOLE) doctrine:fixtures:load -n
 
 reset-database:  drop-database migrate load-fixtures  doctrine-validate ## Build the db, control the schema validity, load fixtures and check the migration status
+
+## —— Database Backup & Restore 💾 ———————————————————————————————————————————
+# Example PROD_DB_URL: mysql://user:password@host:port/database
+PROD_DB_URL ?=
+BACKUP_FILE ?= backup-prod-$$(date +%Y%m%d-%H%M%S).sql
+
+# Parse database URL components
+parse-db-url = $(shell echo $(1) | sed -E 's|mysql://([^:]+):([^@]+)@([^:]+):([^/]+)/(.+)|\1 \2 \3 \4 \5|')
+
+fetch-prod-backup: ## Dump production database from MySQL URL
+	@if [ -z "$(PROD_DB_URL)" ]; then \
+		echo "Error: PROD_DB_URL is required. Usage: make fetch-prod-backup PROD_DB_URL=mysql://user:pass@host:3306/dbname"; \
+		exit 1; \
+	fi
+	@echo "Parsing database URL..."
+	@DB_PARTS=$$(echo "$(PROD_DB_URL)" | sed -E 's|mysql://([^:]+):([^@]+)@([^:]+):([^/]+)/(.+)|\1 \2 \3 \4 \5|'); \
+	set -- $$DB_PARTS; \
+	PROD_USER=$$1; \
+	PROD_PASS=$$2; \
+	PROD_HOST=$$3; \
+	PROD_PORT=$$4; \
+	PROD_NAME=$$5; \
+	echo "Connecting to $$PROD_HOST:$$PROD_PORT as $$PROD_USER..."; \
+	echo "Dumping database $$PROD_NAME..."; \
+	mysqldump -h$$PROD_HOST -P$$PROD_PORT -u$$PROD_USER -p$$PROD_PASS $$PROD_NAME > var/$(BACKUP_FILE); \
+	echo "✅ Backup saved to var/$(BACKUP_FILE)"
+
+restore-backup: drop-database create-database ## Restore database from backup file
+	@if [ ! -f "var/$(BACKUP_FILE)" ]; then \
+		echo "Error: Backup file var/$(BACKUP_FILE) not found"; \
+		echo "Available backups:"; \
+		ls -la var/*.sql 2>/dev/null || echo "No backup files found"; \
+		exit 1; \
+	fi
+	@echo "Restoring database from var/$(BACKUP_FILE)..."
+	@cat var/$(BACKUP_FILE) | docker compose exec -T database mysql -u$(DATABASE_USER) -p$(DATABASE_PASSWORD) $(DATABASE_NAME)
+	@echo "✅ Database restored successfully"
+
+sync-from-prod: fetch-prod-backup restore-backup ## Sync local database with production (dump and restore)
+
+backup-local: ## Create a backup of local database
+	@echo "Creating local database backup..."
+	@BACKUP_NAME=local-backup-$$(date +%Y%m%d-%H%M%S).sql; \
+	docker compose exec -T database mysqldump -u$(DATABASE_USER) -p$(DATABASE_PASSWORD) $(DATABASE_NAME) > var/$$BACKUP_NAME; \
+	echo "✅ Local backup created: var/$$BACKUP_NAME"
+
+list-backups: ## List all available backups
+	@echo "Available backups in var/ directory:"
+	@ls -lah var/*.sql 2>/dev/null || echo "No backup files found"
 
 ## —— Tests ✅ —————————————————————————————————————————————————————————————————
 test-load-fixtures: ## load database schema & fixtures
@@ -111,7 +160,7 @@ stan: ## Run PHPStan only
 cs-fix: ## Run php-cs-fixer and fix the code.
 	$(DOCKER_EXEC) ./vendor/bin/php-cs-fixer fix src/ --allow-risky=yes
 
-rector: ## Run php-cs-fixer and fix the code.
+rector: ## Run rector process
 	$(DOCKER_EXEC) ./vendor/bin/rector process src
 
 cs-dry: ## Run php-cs-fixer and fix the code.
@@ -120,48 +169,45 @@ cs-dry: ## Run php-cs-fixer and fix the code.
 analyze: stan cs-fix rector ## Run php-cs-fixer and fix the code.
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
-config: docker-compose.yaml ## build services to image
+config: compose.yaml ## build services to image
 	$(DOCKER) config
 
-build: docker-compose.yaml ## build services to image
+build: compose.yaml ## build services to image
 	$(DOCKER) build
 
-up: docker-compose.yaml ## up services for running containers
-	$(DOCKER) up -d
+up: compose.yaml ## up services for running containers
+	$(DOCKER) up -d --wait
 	$(DOCKER) ps
 
-build-up: docker-compose.yaml ## up services for running containers
-	$(DOCKER) up -d --build
+build-up: compose.yaml ## up services for running containers
+	$(DOCKER) up -d --build --wait
 	$(DOCKER) ps
 
-start: docker-compose.yaml ## start containers
+start: compose.yaml ## start containers
 	$(DOCKER) start
 
-down: docker-compose.yaml ## down containers
-	$(DOCKER) down
+down: compose.yaml ## down containers
+	$(DOCKER) down --remove-orphans
 
-destroy: docker-compose.yaml ## down containers & removes orphans
-	$(DOCKER) down -v --remove-orphans
+destroy: compose.yaml ## down containers & removes orphans
+	$(DOCKER) down -v --remove-orphans --volumes
 
-stop: docker-compose.yaml ## stop containers
+stop: compose.yaml ## stop containers
 	$(DOCKER) stop
 
-restart: docker-compose.yaml stop up ## stop & re-up containers
+restart: compose.yaml down up ## stop & re-up containers
 
-logs: docker-compose.yaml ## logs of all containers
-	$(DOCKER) logs --tail=100 -f
+logs: compose.yaml ## logs of all containers
+	$(DOCKER) logs --tail=100 -f $(c)
 
-app-logs: docker-compose.yaml ## logs of container app
+app-logs: compose.yaml ## logs of container app
 	$(DOCKER) logs --tail=100 -f app
 
-ps: docker-compose.yaml ## ps containers
+ps: compose.yaml ## ps containers
 	$(DOCKER) ps
 
-app: docker-compose.yaml ## exec bash command for containers app
+app: compose.yaml ## exec bash command for containers app
 	$(DOCKER) exec app zsh
-
-nice: docker-compose.yaml ## exec bash command for containers app
-	$(DOCKER) exec nice zsh $(c)
 
 prune: ## clean all containers unused
 	$(DOCKER) system prune -a
@@ -189,7 +235,7 @@ auto-commit: ## Auto commit
 	@git commit -m "$(m)" || true
 
 current_branch=$(shell git rev-parse --abbrev-ref HEAD)
-push: ## Push current branch
+git-push: ## Push current branch
 	git push origin "$(current_branch)" --force-with-lease
 
-commit: analyze auto-commit git-rebase push ## Commit and push
+push: analyze auto-commit git-rebase push ## Commit and push

@@ -10,7 +10,6 @@ use App\Repository\TeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,20 +19,20 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted as AttributeIsGranted;
 
-#[Route(path: '/teacher')]
-#[IsGranted('ROLE_DIRECTOR')]
+#[AttributeIsGranted('ROLE_DIRECTOR')]
 class TeacherController extends AbstractController
 {
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    #[Route(path: '', name: 'app_teacher_index', methods: ['GET'])]
-    public function index(TeacherRepository $repository, int $page = 1, string $search = ''): Response
+    #[Route(path: '/teacher', name: 'app_teacher_index', methods: ['GET'])]
+    public function index(TeacherRepository $teacherRepository, int $page = 1, string $search = ''): Response
     {
         $search = addcslashes(urldecode($search), '%_');
-        $count = $repository->createQueryBuilder('e')
+        $count = $teacherRepository->createQueryBuilder('e')
             ->select('COUNT(e)')
             ->getQuery()
             ->getSingleScalarResult()
@@ -41,7 +40,7 @@ class TeacherController extends AbstractController
         $pages = ceil($count / 20);
 
         /** @var Teacher[] $teacherList */
-        $teacherList = $repository
+        $teacherList = $teacherRepository
             ->createQueryBuilder('e')
             ->setFirstResult(($page - 1) * 20)
             ->setMaxResults(20)
@@ -58,7 +57,7 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    #[Route(path: 'create', name: 'app_teacher_create', methods: ['POST'])]
+    #[Route(path: '/teachercreate', name: 'app_teacher_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $teacher = new Teacher();
@@ -66,15 +65,13 @@ class TeacherController extends AbstractController
             ->handleRequest($request)
         ;
         if ($form->isValid()) {
-            $teacher->setName($teacher->getPerson()?->getNameComplete())
-                ->setAuthor($this->getUser())
-            ;
+            $teacher->setName($teacher->getPerson()?->getNameComplete());
             $entityManager->persist($teacher);
             $entityManager->flush();
 
             $this->addFlash('success', 'The Teacher has been created.');
 
-            return $this->redirect($this->generateUrl('app_teacher_show', ['id' => $teacher->getId()]));
+            return $this->redirectToRoute('app_teacher_show', ['id' => $teacher->getId()]);
         }
 
         return $this->render('teacher/new.html.twig', [
@@ -83,7 +80,7 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', name: 'app_teacher_new', methods: ['GET'])]
+    #[Route(path: '/teacher/new', name: 'app_teacher_new', methods: ['GET'])]
     public function new(): Response
     {
         $teacher = new Teacher();
@@ -98,7 +95,7 @@ class TeacherController extends AbstractController
     /**
      * Finds and displays a Teacher entity.
      */
-    #[Route(path: '/show/{id}', name: 'app_teacher_show', methods: ['GET'])]
+    #[Route(path: '/teacher/show/{id}', name: 'app_teacher_show', methods: ['GET'])]
     public function show(Teacher $teacher): Response
     {
         $person = $teacher->getPerson();
@@ -112,7 +109,7 @@ class TeacherController extends AbstractController
     /**
      * Displays a form to edit an existing Teacher entity.
      */
-    #[Route(path: '/edit/{id}', name: 'app_teacher_edit', methods: ['GET'])]
+    #[Route(path: '/teacher/edit/{id}', name: 'app_teacher_edit', methods: ['GET'])]
     public function edit(Teacher $teacher): Response
     {
         $editForm = $this->createEditForm($teacher);
@@ -126,7 +123,7 @@ class TeacherController extends AbstractController
     /**
      * Edits an existing Teacher entity.
      */
-    #[Route(path: '/update/{id}', name: 'app_teacher_update', methods: ['PUT', 'POST'])]
+    #[Route(path: '/teacher/update/{id}', name: 'app_teacher_update', methods: ['PUT', 'POST'])]
     public function update(Request $request, Teacher $teacher, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($teacher);
@@ -136,7 +133,7 @@ class TeacherController extends AbstractController
 
             $this->addFlash('success', 'The Teacher has been updated.');
 
-            return $this->redirect($this->generateUrl('app_teacher_show', ['id' => $teacher->getId()]));
+            return $this->redirectToRoute('app_teacher_show', ['id' => $teacher->getId()]);
         }
 
         return $this->render('teacher/edit.html.twig', [
@@ -145,7 +142,7 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_teacher_delete', methods: [Request::METHOD_GET, Request::METHOD_DELETE])]
+    #[Route(path: '/teacher/delete/{id}', name: 'app_teacher_delete', methods: [Request::METHOD_GET, Request::METHOD_DELETE])]
     public function delete(Request $request, Teacher $teacher, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($teacher->getId());
@@ -162,7 +159,7 @@ class TeacherController extends AbstractController
 
             $this->addFlash('success', 'The Teacher has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_teacher_index'));
+            return $this->redirectToRoute('app_teacher_index');
         }
 
         return $this->render('teacher/delete.html.twig', [
@@ -171,15 +168,15 @@ class TeacherController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/search', name: 'app_teacher_search', methods: ['GET'])]
+    #[Route(path: '/teacher/search', name: 'app_teacher_search', methods: ['GET'])]
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 
-        return $this->redirect($this->generateUrl('app_teacher_index', [
+        return $this->redirectToRoute('app_teacher_index', [
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
-        ]));
+        ]);
     }
 
     private function createSearchForm(string $q = ''): FormInterface

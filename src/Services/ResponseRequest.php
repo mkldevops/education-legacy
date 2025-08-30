@@ -6,6 +6,4 @@ namespace App\Services;
 
 use App\Model\ResponseModel;
 
-class ResponseRequest extends ResponseModel
-{
-}
+class ResponseRequest extends ResponseModel {}

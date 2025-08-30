@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\TypeOperationRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\DescriptionEntityTrait;
@@ -12,12 +14,13 @@ use App\Trait\IdEntityTrait;
 use App\Trait\NameEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TypeOperationRepository::class)]
-class TypeOperation implements \Stringable
+class TypeOperation implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use DescriptionEntityTrait;
@@ -57,22 +60,25 @@ class TypeOperation implements \Stringable
      */
     final public const TYPE_CODE_TO_DEFINE = 'TO_DEFINE';
 
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    /**
+     * @var Collection<int, TypeOperation>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'typeOperation')]
     protected Collection $typeOperations;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'typeOperations')]
-    private ?TypeOperation $parent = null;
+    private ?TypeOperation $typeOperation = null;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $shortName = null;
 
-    #[ORM\Column(type: 'string', length: 10, unique: true, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 10, unique: true, nullable: true)]
     private ?string $code = null;
 
-    #[ORM\Column(type: 'string', length: 10, options: ['default' => 'mixte'])]
+    #[ORM\Column(type: Types::STRING, length: 10, options: ['default' => 'mixte'])]
     private string $typeAmount = self::TYPE_AMOUNT_MIXTE;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isInternalTransfert = false;
 
     public function __construct()
@@ -100,12 +106,12 @@ class TypeOperation implements \Stringable
 
     public function getParent(): ?self
     {
-        return $this->parent;
+        return $this->typeOperation;
     }
 
     public function setParent(?self $parent): self
     {
-        $this->parent = $parent;
+        $this->typeOperation = $parent;
 
         return $this;
     }

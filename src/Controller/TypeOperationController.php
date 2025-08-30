@@ -15,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/type-operation')]
 class TypeOperationController extends AbstractController
 {
     /**
@@ -23,7 +22,7 @@ class TypeOperationController extends AbstractController
      *
      * @throws AppException|InvalidArgumentException
      */
-    #[Route(path: '/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
+    #[Route(path: '/type-operation/operations/{id}', name: 'app_type_operation_operations', methods: ['GET'])]
     public function operations(
         TypeOperation $typeOperation,
         OperationRepository $operationRepository,

@@ -13,15 +13,14 @@ class DataStats
         private ?string $rowLabel = null,
         private int $count = 0,
         private float $sum = 0
-    ) {
-    }
+    ) {}
 
     public function getColumnLabel(): ?string
     {
         return $this->columnLabel;
     }
 
-    public function setColumnLabel(string $columnLabel = null): static
+    public function setColumnLabel(?string $columnLabel = null): static
     {
         $this->columnLabel = $columnLabel;
 
@@ -77,7 +76,7 @@ class DataStats
         return $this->columnId;
     }
 
-    public function setColumnId(string $columnId = null): static
+    public function setColumnId(?string $columnId = null): static
     {
         $this->columnId = $columnId;
 
@@ -89,7 +88,7 @@ class DataStats
         return $this->rowLabel;
     }
 
-    public function setRowLabel(string $rowLabel = null): static
+    public function setRowLabel(?string $rowLabel = null): static
     {
         $this->rowLabel = $rowLabel;
 

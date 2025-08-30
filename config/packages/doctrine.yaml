@@ -1,21 +1,14 @@
-parameters:
-    # Adds a fallback DATABASE_URL if the env var is not set.
-    # This allows you to run cache:warmup even if your
-    # environment variables are not available yet.
-    # You should not need to change this value.
-    env(DATABASE_URL): ''
-
 doctrine:
     dbal:
         # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '8'
+        driver: "pdo_mysql"
+        server_version: "8"
         charset: utf8mb4
         default_table_options:
             charset: utf8mb4
             collate: utf8mb4_unicode_ci
 
-        url: '%env(resolve:DATABASE_URL)%'
+        url: "%env(resolve:DATABASE_URL)%"
     orm:
         auto_generate_proxy_classes: true
         entity_managers:
@@ -27,7 +20,7 @@ doctrine:
                     App:
                         is_bundle: false
                         type: attribute
-                        dir: '%kernel.project_dir%/src/Entity'
+                        dir: "%kernel.project_dir%/src/Entity"
                         prefix: 'App\Entity'
                         alias: App
                 dql:
@@ -37,7 +30,7 @@ doctrine:
                     datetime_functions:
                         regexp: DoctrineExtensions\Query\Mysql\Regexp
                         date_format: DoctrineExtensions\Query\Mysql\DateFormat
-                        strftime:  DoctrineExtensions\Query\Sqlite\StrfTime
+                        strftime: DoctrineExtensions\Query\Sqlite\StrfTime
                         date: DoctrineExtensions\Query\Mysql\Date
                         hour: DoctrineExtensions\Query\Mysql\Hour
                         month: DoctrineExtensions\Query\Mysql\Month
@@ -46,7 +39,7 @@ when@test:
     doctrine:
         dbal:
             # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            dbname_suffix: "_test%env(default::TEST_TOKEN)%"
 
 when@prod:
     doctrine:

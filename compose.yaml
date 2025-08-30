@@ -1,0 +1,34 @@
+services:
+    app:
+        build:
+            context: .
+            target: prod
+        container_name: "${PROJECT_NAME:-education}-app"
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:80"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        environment:
+            SERVER_NAME: ":80"
+            PHP_CS_FIXER_IGNORE_ENV: 1
+            DATABASE_URL: mysql://${DATABASE_USER:-app}:${DATABASE_PASSWORD:-db_password}@database/${DATABASE_NAME:-education_app}
+        ports:
+            - "${PROJECT_APP_PORT-3900}:80"
+        volumes:
+            - ./public/uploads:/app/public/uploads
+
+    database:
+        image: mysql:8.1
+        container_name: "${PROJECT_NAME:-education}-db"
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DATABASE_NAME:-education_app}
+            MYSQL_USER: ${DATABASE_USER:-app}
+            MYSQL_PASSWORD: ${DATABASE_PASSWORD:-db_password}
+            MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD:-db_password}
+        ports:
+            - "${PROJECT_DB_PORT:-8801}:3306"
+        volumes:
+            - ./var/db:/var/lib/mysql

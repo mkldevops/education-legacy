@@ -23,7 +23,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class ClassPeriodManager implements ClassPeriodManagerInterface
 {
@@ -35,9 +34,7 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
         private readonly CourseRepository $courseRepository,
         private readonly StudentRepository $studentRepository,
         private readonly PackageStudentPeriodRepository $packageStudentPeriodRepository,
-        private readonly Security $security,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws AppException
@@ -64,14 +61,14 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
      */
     public function getPackageStudent(ClassPeriod $classPeriod): array
     {
-        $studentPeriods = $classPeriod->getStudents();
+        $students = $classPeriod->getStudents();
         $packageStudents = [];
 
-        foreach ($studentPeriods as $studentPeriod) {
-            $id = $studentPeriod->getStudent()->getId();
+        foreach ($students as $student) {
+            $id = $student->getStudent()->getId();
             $package = $this->packageStudentPeriodRepository->getCurrentPackageStudent($id, $classPeriod->getPeriod());
 
-            if ($package instanceof \App\Entity\PackageStudentPeriod) {
+            if ($package instanceof PackageStudentPeriod) {
                 $packageStudents[$id] = $package;
             }
         }
@@ -159,7 +156,6 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
 
                     $classPeriodStudent->setEnd($end)
                         ->setEnable(false)
-                        ->setAuthor($this->security->getUser())
                         ->setComment('Change for new class '.$classPeriod->getClassSchool()->getName())
                     ;
                 } else {
@@ -230,7 +226,6 @@ class ClassPeriodManager implements ClassPeriodManagerInterface
             ->setEnable(true)
             ->setEnd($classPeriod->getPeriod()->getEnd())
             ->setStudent($student)
-            ->setAuthor($this->security->getUser())
         ;
 
         $this->entityManager->persist($classPeriodStudent);

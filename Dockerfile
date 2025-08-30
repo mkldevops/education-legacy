@@ -1,35 +1,28 @@
-#syntax=docker/dockerfile:1.4
+FROM dunglas/frankenphp:php8.4-alpine AS base
 
-FROM php:8.2-apache as php-base
+RUN set -eux; \
+	apk add --no-cache $PHPIZE_DEPS git build-base zsh shadow;\
+	install-php-extensions opcache pdo_mysql zip intl @composer imagick
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN usermod -u 1000 www-data && groupmod -g 1000 www-data \
-    && mkdir -p -m 777 /opt/apache/sessiontmp5/
+RUN set -eux; \
+	curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | sh && \
+	apk add symfony-cli && \
+	sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-RUN apt update && apt install -y zip curl vim mycli git zsh --no-install-recommends && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+ENV APP_ENV=prod
+ENV SERVER_NAME=:80
 
-RUN install-php-extensions gd opcache pdo_mysql zip intl imagick @composer
+WORKDIR /app
 
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash && \
-    apt install symfony-cli && \
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+COPY --link docker/app.ini $PHP_INI_DIR/conf.d/
 
-COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
+FROM base AS prod
 
-FROM registry.gitlab.com/msadawaheri-projects/education/php:8.2-base as app
-
-ARG APP_VERSION=local
-
-ENV APP_VERSION=$APP_VERSION
-
-WORKDIR /var/www/html/
 COPY --link . .
+RUN set -eux; \
+	symfony composer install --no-cache --prefer-dist --no-scripts --no-progress
 
-COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY docker/apache.conf /etc/apache2/conf-available/z-app.conf
+FROM base AS dev
 
-RUN a2enmod rewrite remoteip && \
-    a2enconf z-app
+ENV APP_ENV=dev

@@ -33,8 +33,8 @@ final class DocumentManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+        private readonly string $projectDir
+    ) {}
 
     public function removesWithLinks(Document $document): bool
     {
@@ -91,7 +91,7 @@ final class DocumentManager
 
         $name = str_replace('.'.$document->getExtension(), '', $document->getFile()->getClientOriginalName());
 
-        if (!empty($document->getPrefix())) {
+        if (!\in_array($document->getPrefix(), [null, '', '0'], true)) {
             $name = $document->getPrefix().' '.$name;
         }
 
@@ -102,7 +102,13 @@ final class DocumentManager
 
         $this->logger->debug(__FUNCTION__, ['document' => $document]);
 
-        $data['move'] = $document->getFile()->move(self::getPathUploads(Document::DIR_FILE), $document->getPath());
+        // Ensure upload directories exist
+        $uploadPath = $this->getPublicUploadPath(Document::DIR_FILE);
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0o777, true);
+        }
+
+        $data['move'] = $document->getFile()->move($uploadPath, $document->getPath());
 
         ['preview' => $data['preview'], 'thumb' => $data['thumb']] = $this->generateImages($document);
 
@@ -116,7 +122,7 @@ final class DocumentManager
         return $data;
     }
 
-    public static function getPathUploads(string $dir = null): string
+    public static function getPathUploads(?string $dir = null): string
     {
         $path = self::$pathUploads;
 
@@ -127,6 +133,13 @@ final class DocumentManager
         return $path;
     }
 
+    private function getPublicUploadPath(?string $dir = null): string
+    {
+        $publicDir = $this->projectDir.\DIRECTORY_SEPARATOR.'public';
+
+        return $publicDir.\DIRECTORY_SEPARATOR.self::getPathUploads($dir);
+    }
+
     /**
      * @return array<string, bool>|array<string, null>|array<string, string>
      *
@@ -134,11 +147,12 @@ final class DocumentManager
      */
     private function generateImages(Document $document): array
     {
-        $filepath = self::getPathUploads(Document::DIR_FILE).\DIRECTORY_SEPARATOR.$document->getPath();
+        // Use absolute path for ImageMagick
+        $filepath = $this->getPublicUploadPath(Document::DIR_FILE).\DIRECTORY_SEPARATOR.$document->getPath();
 
         // If file is not supported
         if (!is_file($filepath) || !$document->isFormat([self::PDF, self::IMAGE])) {
-            throw new FileNotFoundException(sprintf('No such file %s or is not supported', $filepath));
+            throw new FileNotFoundException(\sprintf('No such file %s or is not supported', $filepath));
         }
 
         $this->logger->debug(__FUNCTION__, ['filepath' => $filepath]);
@@ -149,23 +163,34 @@ final class DocumentManager
         $thumb = null;
 
         try {
-            $img = new \Imagick($filepath);
+            // Check if file exists and is readable
+            if (!is_readable($filepath)) {
+                throw new FileNotFoundException(\sprintf('File %s is not readable', $filepath));
+            }
+
+            $imagick = new \Imagick($filepath);
 
             if ($document->isFormat(self::PDF)) {
-                $img->setIteratorIndex(0);
+                $imagick->setIteratorIndex(0);
             }
 
             // If file is image, so to compress
             if ($document->isFormat(self::IMAGE)) {
-                $img->setCompression(\Imagick::COMPRESSION_LZW);
-                $img->setCompressionQuality(80);
-                $img->stripImage();
-                $img->writeImage();
+                $imagick->setCompression(\Imagick::COMPRESSION_LZW);
+                $imagick->setCompressionQuality(80);
+                $imagick->stripImage();
+                $imagick->writeImage();
             }
 
-            $filePreview = sprintf(
+            // Create preview directory if needed
+            $previewDir = $this->getPublicUploadPath(Document::DIR_PREVIEW);
+            if (!is_dir($previewDir)) {
+                mkdir($previewDir, 0o777, true);
+            }
+
+            $filePreview = \sprintf(
                 '%s%s%s.%s',
-                self::getPathUploads(Document::DIR_PREVIEW),
+                $previewDir,
                 \DIRECTORY_SEPARATOR,
                 $document->getFileName(),
                 Document::EXT_PNG
@@ -173,14 +198,20 @@ final class DocumentManager
             $this->logger->debug(__FUNCTION__, ['filePreview' => $filePreview]);
 
             if (!is_file($filePreview)) {
-                $img->scaleImage(800, 0);
-                $img->setImageFormat(self::PNG);
-                $preview = $img->writeImage($filePreview);
+                $imagick->scaleImage(800, 0);
+                $imagick->setImageFormat(self::PNG);
+                $preview = $imagick->writeImage($filePreview);
             }
 
-            $fileThumb = sprintf(
+            // Create thumb directory if needed
+            $thumbDir = $this->getPublicUploadPath(Document::DIR_THUMB);
+            if (!is_dir($thumbDir)) {
+                mkdir($thumbDir, 0o777, true);
+            }
+
+            $fileThumb = \sprintf(
                 '%s%s%s.%s',
-                self::getPathUploads(Document::DIR_THUMB),
+                $thumbDir,
                 \DIRECTORY_SEPARATOR,
                 $document->getFileName(),
                 Document::EXT_PNG
@@ -188,14 +219,28 @@ final class DocumentManager
             $this->logger->debug(__FUNCTION__, ['fileThumb' => $fileThumb]);
 
             if (!is_file($fileThumb)) {
-                $img->scaleImage(150, 0);
-                $img->setImageFormat(self::PNG);
-                $thumb = $img->writeImage($fileThumb);
+                $imagick->scaleImage(150, 0);
+                $imagick->setImageFormat(self::PNG);
+                $thumb = $imagick->writeImage($fileThumb);
             }
 
-            $img->clear();
+            $imagick->clear();
         } catch (\ImagickException $imagickException) {
+            $this->logger->error('Imagick error: '.$imagickException->getMessage(), [
+                'filepath' => $filepath,
+                'exists' => file_exists($filepath),
+                'readable' => is_readable($filepath),
+                'mime' => $document->getMime(),
+                'extension' => $document->getExtension(),
+            ]);
             $error = $imagickException->getMessage();
+        } catch (\Exception $exception) {
+            $this->logger->error('General error: '.$exception->getMessage(), [
+                'filepath' => $filepath,
+                'exists' => file_exists($filepath),
+                'readable' => is_readable($filepath),
+            ]);
+            $error = $exception->getMessage();
         }
 
         return ['filepath' => $filepath, 'preview' => $preview, 'thumb' => $thumb, 'error' => $error];

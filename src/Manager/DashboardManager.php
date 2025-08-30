@@ -20,17 +20,16 @@ class DashboardManager
         private readonly FamilyRepository $familyRepository,
         private readonly DocumentRepository $documentRepository,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws AppException
      */
-    public static function generateItemsOfMenu(string $route = null): array
+    public static function generateItemsOfMenu(?string $route = null): array
     {
         $file = __DIR__.'/../../config/menu.yml';
         if (!is_file($file)) {
-            throw new AppException(sprintf('No such file or directory : %s', $file));
+            throw new AppException(\sprintf('No such file or directory : %s', $file));
         }
 
         // extract yaml file menu
@@ -85,16 +84,16 @@ class DashboardManager
         $base = 1024;
         $class = min((int) log($int, $base), \count($si_prefix) - 1);
 
-        return sprintf('%1.2f', $int / $base ** $class).' '.$si_prefix[$class];
+        return \sprintf('%1.2f', $int / $base ** $class).' '.$si_prefix[$class];
     }
 
     /**
      * @throws AppException
      */
-    public function search(string $search = null): iterable
+    public function search(?string $search = null): iterable
     {
         try {
-            if (empty($search)) {
+            if (null === $search || '' === $search || '0' === $search) {
                 throw new AppException('The search is empty');
             }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\EntityInterface;
 use App\Repository\GradeRepository;
 use App\Trait\DescriptionEntityTrait;
 use App\Trait\EnableEntityTrait;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: GradeRepository::class)]
-class Grade implements \Stringable
+class Grade implements EntityInterface
 {
     use DescriptionEntityTrait;
     use EnableEntityTrait;

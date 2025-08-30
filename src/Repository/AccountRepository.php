@@ -12,16 +12,13 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|Account find($id, $lockMode = null, $lockVersion = null)
- * @method null|Account findOneBy(array $criteria, array $orderBy = null)
- * @method Account[]    findAll()
- * @method Account[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Account>
  */
 class AccountRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Account::class);
+        parent::__construct($managerRegistry, Account::class);
     }
 
     /**
@@ -33,11 +30,8 @@ class AccountRepository extends ServiceEntityRepository
             ->getAccounts($school, $principalOnly, $listAccountId)
             ->getArrayResult()
         ;
-        if ([] === $result) {
-            return [];
-        }
 
-        if (!\is_array($result)) {
+        if ([] === $result) {
             return [];
         }
 
@@ -73,26 +67,26 @@ class AccountRepository extends ServiceEntityRepository
 
     public function getAccountsQB(School $school, bool $principalOnly = true, array $listAccountId = []): QueryBuilder
     {
-        $query = $this
+        $queryBuilder = $this
             ->createQueryBuilder('acc')
             ->where('acc.structure = :structure')
             ->setParameter('structure', $school->getStructure())
         ;
 
         if ($principalOnly) {
-            $query
+            $queryBuilder
                 ->andWhere('acc.principal in (:principal)')
                 ->setParameter('principal', 1)
             ;
         }
 
         if ([] !== $listAccountId) {
-            $query
+            $queryBuilder
                 ->andWhere('acc.id in (:accounts)')
                 ->setParameter('accounts', $listAccountId)
             ;
         }
 
-        return $query;
+        return $queryBuilder;
     }
 }

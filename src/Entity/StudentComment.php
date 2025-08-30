@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\StudentCommentRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\StudentEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: StudentCommentRepository::class)]
-class StudentComment implements \Stringable
+class StudentComment implements \Stringable, EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -49,13 +52,13 @@ class StudentComment implements \Stringable
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'comments', cascade: ['persist', 'remove'])]
     protected ?Student $student = null;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $title = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: Types::TEXT)]
     private string $text;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: Types::STRING, length: 20)]
     private string $type;
 
     public function __construct()
@@ -65,7 +68,7 @@ class StudentComment implements \Stringable
 
     public function __toString(): string
     {
-        return sprintf('%s %s', (string) $this->id, (string) $this->student?->__toString());
+        return \sprintf('%s %s', (string) $this->id, (string) $this->student?->__toString());
     }
 
     public function getTitle(): ?string

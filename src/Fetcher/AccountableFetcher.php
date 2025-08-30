@@ -23,8 +23,7 @@ class AccountableFetcher
         private readonly LoggerInterface $logger,
         private readonly AccountSlipRepository $accountSlipRepository,
         private readonly AccountRepository $accountRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws NonUniqueResultException
@@ -45,7 +44,7 @@ class AccountableFetcher
      */
     public function findAccount(int $id): Account
     {
-        if (empty($id)) {
+        if (0 === $id) {
             throw new AppException('Id to search account is empty');
         }
 

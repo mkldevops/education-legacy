@@ -17,8 +17,7 @@ class SessionFetcher implements SessionFetcherInterface
     public function __construct(
         private readonly PeriodManager $periodManager,
         private readonly SchoolManager $schoolManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws InvalidArgumentException

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\ClassSchoolRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\DescriptionEntityTrait;
@@ -13,13 +15,14 @@ use App\Trait\NameEntityTrait;
 use App\Trait\SchoolEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ClassSchoolRepository::class)]
-class ClassSchool implements \Stringable
+class ClassSchool implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use DescriptionEntityTrait;
@@ -37,15 +40,16 @@ class ClassSchool implements \Stringable
     private Collection $classPeriods;
 
     #[Assert\Range(min: 3, max: 30)]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $ageMinimum = 3;
 
     #[Assert\Range(min: 3, max: 30)]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $ageMaximum = 3;
 
     public function __construct()
     {
+        $this->classPeriods = new ArrayCollection();
         $this->setEnable(true)
             ->classPeriods = new ArrayCollection()
         ;
@@ -56,16 +60,16 @@ class ClassSchool implements \Stringable
         return (string) $this->getName();
     }
 
-    public function addClassPeriod(ClassPeriod $classPeriods): self
+    public function addClassPeriod(ClassPeriod $classPeriod): self
     {
-        $this->classPeriods[] = $classPeriods;
+        $this->classPeriods[] = $classPeriod;
 
         return $this;
     }
 
-    public function removeClassPeriod(ClassPeriod $classPeriods): void
+    public function removeClassPeriod(ClassPeriod $classPeriod): void
     {
-        $this->classPeriods->removeElement($classPeriods);
+        $this->classPeriods->removeElement($classPeriod);
     }
 
     public function getClassPeriods(): ArrayCollection

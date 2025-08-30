@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\EntityInterface;
 use App\Repository\PackageRepository;
 use App\Trait\Accessor\SchoolAccessorTrait;
 use App\Trait\DescriptionEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\NameEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-#[ORM\Table]
 #[ORM\Entity(repositoryClass: PackageRepository::class)]
-class Package implements \Stringable
+class Package implements \Stringable, EntityInterface
 {
     use DescriptionEntityTrait;
     use EnableEntityTrait;
@@ -29,7 +30,7 @@ class Package implements \Stringable
     #[ORM\ManyToOne(targetEntity: School::class, inversedBy: 'packages', cascade: ['persist'])]
     protected ?School $school = null;
 
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column(type: Types::FLOAT)]
     private float $price = 0.00;
 
     public function __construct()

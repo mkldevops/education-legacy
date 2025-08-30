@@ -17,10 +17,9 @@ class OperationManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
-        private readonly OperationRepository $repository,
+        private readonly OperationRepository $operationRepository,
         private readonly PeriodManager $periodManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array{typeOperation: array{id: null|int, name: null|string}, date: null|int, datePlanned: null|int, amount: float}
@@ -53,12 +52,12 @@ class OperationManager
      */
     public function findOperationByUniqueId(int $uniqueId): ?Operation
     {
-        if (empty($uniqueId)) {
+        if (0 === $uniqueId) {
             throw new AppException('Unique id is empty');
         }
 
         try {
-            $operation = $this->repository->findOneBy(['uniqueId' => $uniqueId]);
+            $operation = $this->operationRepository->findOneBy(['uniqueId' => $uniqueId]);
         } catch (\Exception $exception) {
             $this->logger->error(__FUNCTION__.' '.$exception->getMessage());
 
@@ -87,6 +86,6 @@ class OperationManager
      */
     public function toValidate(): array
     {
-        return $this->repository->toValidate($this->periodManager->getPeriodsOnSession());
+        return $this->operationRepository->toValidate($this->periodManager->getPeriodsOnSession());
     }
 }

@@ -14,11 +14,10 @@ class StatisticsManager
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly OperationRepository $repository,
+        private readonly OperationRepository $operationRepository,
         private readonly PeriodManager $periodManager,
         private readonly SchoolManager $schoolManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws AppException
@@ -29,8 +28,8 @@ class StatisticsManager
         $school = $this->schoolManager->getSchool();
         $this->logger->debug(__FUNCTION__, ['period' => $period, 'school' => $school]);
 
-        $operations = $this->repository->getStatsByMonthly($period, $school);
-        $stats = new StatsByMonth();
+        $operations = $this->operationRepository->getStatsByMonthly($period, $school);
+        $statsByMonth = new StatsByMonth();
 
         foreach ($operations as $operation) {
             try {
@@ -43,7 +42,7 @@ class StatisticsManager
                     ->setSum((float) $operation['sumCredit'] + (float) $operation['sumDebit'])
                 ;
 
-                $stats->addData($dataStats);
+                $statsByMonth->addData($dataStats);
             } catch (\Exception $exception) {
                 $this->logger->error(__METHOD__.' '.$exception->getMessage(), compact($operation));
 
@@ -51,6 +50,6 @@ class StatisticsManager
             }
         }
 
-        return $stats;
+        return $statsByMonth;
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Entity\Account;
-use App\Entity\AccountStatement;
 use App\Exception\AppException;
 use App\Repository\AccountStatementRepository;
 use App\Repository\OperationRepository;
@@ -17,8 +16,7 @@ class AccountManager
     public function __construct(
         private readonly AccountStatementRepository $accountStatementRepository,
         private readonly OperationRepository $operationRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, int>|array<string, mixed>|array<string, mixed[]>
@@ -36,21 +34,21 @@ class AccountManager
 
         $listAccountStatementId = [];
 
-        /** @var AccountStatement[] $accountStatements */
-        $accountStatements = [];
         $result = $this->accountStatementRepository
             ->findBy(['account' => $account->getId()], ['begin' => 'DESC'])
         ;
 
+        $months = [];
         foreach ($result as $accountStatement) {
             $id = $accountStatement->getId();
-            $accountStatement->stats = [
+            $month = [
+                'accountStatement' => $accountStatement,
                 'numberOperations' => 0,
                 'sumCredit' => 0,
                 'sumDebit' => 0,
                 'isValid' => false,
             ];
-            $accountStatements[$id] = $accountStatement;
+            $months[$id] = $month;
             $listAccountStatementId[] = $id;
         }
 
@@ -64,22 +62,22 @@ class AccountManager
             $id = $stats['id'];
             $stats['isValid'] = false;
 
-            $accountStatement = $accountStatements[$id];
+            $month = $months[$id];
 
-            if ($accountStatement->getNumberOperations() === (int) $stats['numberOperations']
-                && $accountStatement->getAmountCredit() === round((float) $stats['sumCredit'], 2)
-                && $accountStatement->getAmountDebit() === round((float) $stats['sumDebit'], 2)
+            if ($month['accountStatement']->getNumberOperations() === (int) $stats['numberOperations']
+                && $month['accountStatement']->getAmountCredit() === round((float) $stats['sumCredit'], 2)
+                && $month['accountStatement']->getAmountDebit() === round((float) $stats['sumDebit'], 2)
             ) {
                 $stats['isValid'] = true;
             }
 
-            $accountStatements[$id]->stats = $stats;
+            $month = [...$month, ...$stats];
         }
 
         $nbOperations = $this->operationRepository->getNumberWithoutAccountStatement($account);
 
         $data['nbWithoutAccountStatements'] = $nbOperations;
-        $data['accountStatements'] = $accountStatements;
+        $data['accountStatements'] = $months;
 
         return $data;
     }

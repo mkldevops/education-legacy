@@ -6,22 +6,21 @@ namespace App\Trait;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 trait PublisherEntityTrait
 {
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true)]
-    protected null|User|UserInterface $publisher;
+    protected ?User $publisher;
 
-    public function getPublisher(): null|User|UserInterface
+    public function getPublisher(): ?User
     {
         return $this->publisher;
     }
 
-    public function setPublisher(User|UserInterface $publisher): static
+    public function setPublisher(?User $user): static
     {
-        $this->publisher = $publisher;
+        $this->publisher = $user;
 
         return $this;
     }

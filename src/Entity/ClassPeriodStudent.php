@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\ClassPeriodStudentRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\CommentEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\TimestampableEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClassPeriodStudentRepository::class)]
-class ClassPeriodStudent implements \Stringable
+class ClassPeriodStudent implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use CommentEntityTrait;
@@ -27,15 +30,15 @@ class ClassPeriodStudent implements \Stringable
     #[ORM\ManyToOne(targetEntity: Student::class, inversedBy: 'classPeriods')]
     private Student $student;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $begin;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $end = null;
 
     public function __toString(): string
     {
-        return sprintf('%s - %s', (string) $this->student, (string) $this->classPeriod);
+        return \sprintf('%s - %s', (string) $this->student, (string) $this->classPeriod);
     }
 
     public function isActive(): bool

@@ -24,13 +24,13 @@ class TransferManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
-        private readonly AccountableFetcher $fetcher,
+        private readonly AccountableFetcher $accountableFetcher,
         private readonly TranslatorInterface $translator,
         Security $security,
         private ?Account $accountCredit = null,
         private ?Account $accountDebit = null,
         private ?AccountSlip $accountSlip = null,
-        private null|User $user = null,
+        private ?User $user = null,
     ) {
         if ($security->getUser() instanceof User) {
             $this->user = $security->getUser();
@@ -80,13 +80,13 @@ class TransferManager
     public function create(): AccountSlip
     {
         $this->logger->debug(__FUNCTION__);
-        $result = $this->fetcher->findAccountSlip(
+        $result = $this->accountableFetcher->findAccountSlip(
             $this->accountSlip->getReference(),
             $this->accountSlip->getStructure(),
             $this->accountSlip->getGender()
         );
 
-        if ($result instanceof \App\Entity\AccountSlip) {
+        if ($result instanceof AccountSlip) {
             $msg = $this->translator->trans(
                 'error.already_exists_ref',
                 ['%reference%' => $this->accountSlip->getReference()],
@@ -117,28 +117,28 @@ class TransferManager
     public function createByForm(): AccountSlip
     {
         $this->create();
-        if (!$this->accountDebit instanceof \App\Entity\Account) {
+        if (!$this->accountDebit instanceof Account) {
             throw new AppException('Account of debit is not defined');
         }
 
         $this->setOperation(AccountSlip::TYPE_DEBIT, $this->accountDebit);
 
-        if (!$this->accountCredit instanceof \App\Entity\Account) {
+        if (!$this->accountCredit instanceof Account) {
             throw new AppException('Account of credit is not defined');
         }
 
         $this->setOperation(AccountSlip::TYPE_CREDIT, $this->accountCredit);
 
-        if (!$this->accountSlip instanceof \App\Entity\AccountSlip) {
+        if (!$this->accountSlip instanceof AccountSlip) {
             throw new AppException('AccountSlip not added correctly');
         }
 
         return $this->accountSlip;
     }
 
-    public function setAccountCredit(Account $accountCredit): self
+    public function setAccountCredit(Account $account): self
     {
-        $this->accountCredit = $accountCredit;
+        $this->accountCredit = $account;
 
         return $this;
     }
@@ -148,15 +148,15 @@ class TransferManager
      */
     public function setAccountCreditById(int $accountCreditId): self
     {
-        $accountCredit = $this->fetcher->findAccount($accountCreditId);
+        $accountCredit = $this->accountableFetcher->findAccount($accountCreditId);
         $this->setAccountCredit($accountCredit);
 
         return $this;
     }
 
-    public function setAccountDebit(Account $accountDebit): self
+    public function setAccountDebit(Account $account): self
     {
-        $this->accountDebit = $accountDebit;
+        $this->accountDebit = $account;
 
         return $this;
     }
@@ -166,8 +166,12 @@ class TransferManager
      */
     public function update(): AccountSlip
     {
+        if (!$this->accountSlip instanceof AccountSlip) {
+            throw new AppException('AccountSlip not defined');
+        }
+
         if (
-            !($operation = $this->accountSlip?->getOperationCredit()) instanceof Operation
+            !($operation = $this->accountSlip->getOperationCredit()) instanceof Operation
             || !($account = $operation->getAccount()) instanceof Account
         ) {
             throw new AppException('Not found account of accountslip credit');
@@ -177,10 +181,10 @@ class TransferManager
         $this->setOperation(AccountSlip::TYPE_DEBIT, $account);
 
         if (
-            !($operation = $this->accountSlip?->getOperationDebit()) instanceof Operation
+            !($operation = $this->accountSlip->getOperationDebit()) instanceof Operation
             || !($account = $operation->getAccount()) instanceof Account
         ) {
-            throw new AppException('Not found account of accountslip credit');
+            throw new AppException('Not found account of accountslip debit');
         }
 
         $this->setAccountDebit($account);
@@ -197,7 +201,7 @@ class TransferManager
      */
     public function getAccountSlip(): AccountSlip
     {
-        if (!$this->accountSlip instanceof \App\Entity\AccountSlip) {
+        if (!$this->accountSlip instanceof AccountSlip) {
             throw new AppException('AccountSlip not defined');
         }
 
@@ -220,14 +224,14 @@ class TransferManager
 
         $operation = $this->findOperation($type, $account, $this->accountSlip->getUniqueId());
 
-        if (!$operation instanceof \App\Entity\Operation) {
+        if (!$operation instanceof Operation) {
             throw new AppException('Operation not found');
         }
 
-        $typeOperation = $this->fetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_SPLIT);
-        $gender = $this->fetcher->findOperationGender($this->accountSlip->getGender());
+        $typeOperation = $this->accountableFetcher->findTypeOperationByCode(TypeOperation::TYPE_CODE_SPLIT);
+        $gender = $this->accountableFetcher->findOperationGender($this->accountSlip->getGender());
 
-        $name = mb_strtoupper($this->accountSlip->getName(), 'UTF-8');
+        $name = mb_strtoupper((string) $this->accountSlip->getName(), 'UTF-8');
 
         $operation->setComment($this->accountSlip->getComment())
             ->setName($name)
@@ -253,7 +257,7 @@ class TransferManager
      * @throws AppException
      * @throws \Exception
      */
-    private function findOperation(string $type, Account $account, string $uniqueId = null): ?Operation
+    private function findOperation(string $type, Account $account, ?string $uniqueId = null): ?Operation
     {
         $operation = new Operation();
 
@@ -261,13 +265,13 @@ class TransferManager
             $operation = $this->accountSlip->getOperation($type);
         }
 
-        if (!empty($uniqueId)) {
+        if (null !== $uniqueId && '' !== $uniqueId && '0' !== $uniqueId) {
             $operationUnique = $this->entityManager
                 ->getRepository(Operation::class)
                 ->findOneBy(['uniqueId' => $uniqueId, 'account' => $account])
             ;
 
-            if ($operationUnique instanceof \App\Entity\Operation) {
+            if ($operationUnique instanceof Operation) {
                 $operation = $operationUnique;
             }
         }

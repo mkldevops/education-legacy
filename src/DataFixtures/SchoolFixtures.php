@@ -21,11 +21,10 @@ class SchoolFixtures extends AbstractAppFixtures implements DependentFixtureInte
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         foreach (self::getData() as $i => $data) {
-            /** @var Structure $structure */
-            $structure = $this->getReference(StructureFixtures::getKey($data['structure']));
+            $structure = $this->getReference(StructureFixtures::getKey($data['structure']), Structure::class);
 
             $school = (new School())
                 ->setName($data['name'])
@@ -36,20 +35,20 @@ class SchoolFixtures extends AbstractAppFixtures implements DependentFixtureInte
                 ->setStructure($structure)
             ;
 
-            $manager->persist($school);
-            $manager->flush();
+            $objectManager->persist($school);
+            $objectManager->flush();
 
             $this->addReference(self::getKey($i), $school);
         }
 
-        $users = $manager->getRepository(User::class)->findAll();
-        $schools = $manager->getRepository(School::class)->findAll();
+        $users = $objectManager->getRepository(User::class)->findAll();
+        $schools = $objectManager->getRepository(School::class)->findAll();
 
         foreach ($users as $user) {
             foreach ($schools as $school) {
                 $user->addschoolAccessRight($school);
 
-                $manager->flush();
+                $objectManager->flush();
             }
         }
     }

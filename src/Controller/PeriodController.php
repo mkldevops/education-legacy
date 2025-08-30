@@ -13,13 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/period')]
 class PeriodController extends AbstractController
 {
     /**
      * @throws AppException
      */
-    #[Route('/switch/{id}', name: 'app_period_switch', methods: [Request::METHOD_GET])]
+    #[Route('/period/switch/{id}', name: 'app_period_switch', methods: [Request::METHOD_GET])]
     public function switch(Request $request, Period $period, PeriodManager $periodManager, TranslatorInterface $translator): RedirectResponse
     {
         $periodManager->switch($period);

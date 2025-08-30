@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Repository\MemberRepository;
 use App\Trait\AuthorEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\NameEntityTrait;
 use App\Trait\TimestampableEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Table(name: '`person_member`')]
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
-class Member implements \Stringable
+class Member implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -24,7 +27,7 @@ class Member implements \Stringable
     use SoftDeleteableEntity;
     use TimestampableEntityTrait;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: Types::STRING)]
     protected ?string $positionName = null;
 
     #[ORM\OneToOne(targetEntity: Person::class, cascade: ['persist', 'merge', 'remove'], inversedBy: 'member')]

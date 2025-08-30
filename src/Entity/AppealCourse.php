@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\EntityInterface;
 use App\Exception\AppException;
 use App\Manager\CourseManager;
 use App\Repository\AppealCourseRepository;
@@ -11,14 +12,14 @@ use App\Trait\CommentEntityTrait;
 use App\Trait\EnableEntityTrait;
 use App\Trait\IdEntityTrait;
 use App\Trait\StudentEntityTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Table]
 #[UniqueConstraint(columns: ['student_id', 'course_id'])]
 #[ORM\Entity(repositoryClass: AppealCourseRepository::class)]
-class AppealCourse implements \Stringable
+class AppealCourse implements \Stringable, EntityInterface
 {
     use CommentEntityTrait;
     use EnableEntityTrait;
@@ -62,12 +63,12 @@ class AppealCourse implements \Stringable
     #[ORM\ManyToOne(targetEntity: Course::class, cascade: ['persist', 'remove'], inversedBy: 'students')]
     private Course $course;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $status = self::STATUS_NOTHING;
 
     public function __toString(): string
     {
-        return sprintf('%s %s', $this->course->__toString(), $this->student->__toString());
+        return \sprintf('%s %s', $this->course->__toString(), $this->student->__toString());
     }
 
     public function getCourse(): Course

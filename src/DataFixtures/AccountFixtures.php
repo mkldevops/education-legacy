@@ -15,11 +15,10 @@ class AccountFixtures extends AbstractAppFixtures implements DependentFixtureInt
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         foreach (self::getData() as $i => $data) {
-            /** @var Structure $structure */
-            $structure = $this->getReference(StructureFixtures::getKey($data['structure']));
+            $structure = $this->getReference(StructureFixtures::getKey($data['structure']), Structure::class);
 
             $account = (new Account())
                 ->setId($data['id'])
@@ -31,8 +30,8 @@ class AccountFixtures extends AbstractAppFixtures implements DependentFixtureInt
                 ->setStructure($structure)
             ;
 
-            $manager->persist($account);
-            $manager->flush();
+            $objectManager->persist($account);
+            $objectManager->flush();
 
             $this->addReference(self::getKey($i), $account);
         }

@@ -14,6 +14,4 @@ namespace App\Exception;
 /**
  * Class AlreadyExistsException.
  */
-class SchoolException extends AppException
-{
-}
+class SchoolException extends AppException {}

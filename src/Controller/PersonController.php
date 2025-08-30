@@ -25,13 +25,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/person')]
 class PersonController extends AbstractController
 {
     /**
      * @throws NonUniqueResultException|NoResultException
      */
-    #[Route(path: '/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
+    #[Route(path: '/person/list/{page}/{search}', name: 'app_person_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager, int $page = 1, string $search = ''): Response
     {
         $count = $entityManager
@@ -101,7 +100,7 @@ class PersonController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/create', name: 'app_person_create', methods: ['POST'])]
+    #[Route(path: '/person/create', name: 'app_person_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): RedirectResponse|Response
     {
         // If form have redirect
@@ -110,7 +109,6 @@ class PersonController extends AbstractController
         $form = $this->createCreateForm($person, $pathRedirect);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $person->setAuthor($this->getUser());
             $person->addSchool($schoolManager->getEntitySchool());
 
             $entityManager->persist($person);
@@ -126,7 +124,7 @@ class PersonController extends AbstractController
                 $parameters = ['id' => $person->getId()];
             }
 
-            return $this->redirect($this->generateUrl($pathRedirect, $parameters));
+            return $this->redirectToRoute($pathRedirect, $parameters);
         }
 
         return $this->render('person/new.html.twig', [
@@ -135,8 +133,8 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/new', name: 'app_person_new', methods: ['GET'])]
-    public function new(string $pathRedirect = null): Response
+    #[Route(path: '/person/new', name: 'app_person_new', methods: ['GET'])]
+    public function new(?string $pathRedirect = null): Response
     {
         $person = new Person();
         $form = $this->createCreateForm($person, $pathRedirect);
@@ -150,12 +148,12 @@ class PersonController extends AbstractController
     /**
      * Finds and displays a Person entity.
      */
-    #[Route(path: '/show/{id}', name: 'app_person_show', methods: ['GET'])]
-    public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $em): Response
+    #[Route(path: '/person/show/{id}', name: 'app_person_show', methods: ['GET'])]
+    public function show(Person $person, FamilyRepository $familyRepository, EntityManagerInterface $entityManager): Response
     {
-        $member = $em->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
-        $teacher = $em->getRepository(Teacher::class)->findOneBy(['person' => $person->getId()]);
-        $student = $em->getRepository(Student::class)->findOneBy(['person' => $person->getId()]);
+        $member = $entityManager->getRepository(Member::class)->findOneBy(['person' => $person->getId()]);
+        $teacher = $entityManager->getRepository(Teacher::class)->findOneBy(['person' => $person->getId()]);
+        $student = $entityManager->getRepository(Student::class)->findOneBy(['person' => $person->getId()]);
 
         return $this->render('person/show.html.twig', [
             'person' => $person,
@@ -166,7 +164,7 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
+    #[Route(path: '/person/edit/{id}', name: 'app_person_edit', methods: ['GET'])]
     public function edit(Person $person): Response
     {
         $editForm = $this->createEditForm($person);
@@ -177,7 +175,7 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/person/update/{id}', name: 'app_person_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Person $person, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($person);
@@ -187,7 +185,7 @@ class PersonController extends AbstractController
 
             $this->addFlash('success', 'The Person has been updated.');
 
-            return $this->redirect($this->generateUrl('app_person_show', ['id' => $person->getId()]));
+            return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
         return $this->render('person/edit.html.twig', [
@@ -196,7 +194,7 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
+    #[Route(path: '/person/delete/{id}', name: 'app_person_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Person $person, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($person->getId());
@@ -207,7 +205,7 @@ class PersonController extends AbstractController
 
             $this->addFlash('success', 'The Person has been deleted.');
 
-            return $this->redirect($this->generateUrl('app_person_index'));
+            return $this->redirectToRoute('app_person_index');
         }
 
         return $this->render('person/delete.html.twig', [
@@ -216,18 +214,18 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/search', name: 'app_person_search', methods: ['POST'])]
+    #[Route(path: '/person/search', name: 'app_person_search', methods: ['POST'])]
     public function search(Request $request): RedirectResponse
     {
         $all = $request->request->all();
 
-        return $this->redirect($this->generateUrl('app_person_index', [
+        return $this->redirectToRoute('app_person_index', [
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
-        ]));
+        ]);
     }
 
-    #[Route(path: '/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
+    #[Route(path: '/person/phones/{id}', name: 'app_person_phones', methods: ['GET'])]
     public function phones(Person $person): Response
     {
         $phones = PhoneManager::getAllPhones($person);
@@ -255,7 +253,7 @@ class PersonController extends AbstractController
         ;
     }
 
-    private function createCreateForm(Person $person, string $pathRedirect = null): FormInterface
+    private function createCreateForm(Person $person, ?string $pathRedirect = null): FormInterface
     {
         $form = $this->createForm(PersonType::class, $person, [
             'action' => $this->generateUrl('app_person_create'),

@@ -20,17 +20,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('')]
 class AdminController extends AbstractController
 {
     /**
      * @throws AppException
      */
     #[Route('/search', name: 'app_admin_seacrh', methods: ['GET', 'POST'])]
-    public function search(Request $request, DashboardManager $dashboard): Response
+    public function search(Request $request, DashboardManager $dashboardManager): Response
     {
         $search = $request->get('search');
-        $result = $dashboard->search($search);
+        $result = $dashboardManager->search($search);
 
         return $this->render('admin/search.html.twig', ['result' => $result, 'search' => $search]);
     }
@@ -41,7 +40,7 @@ class AdminController extends AbstractController
      */
     #[Route('', name: 'app_admin_home')]
     public function index(
-        DashboardManager $dashboard,
+        DashboardManager $dashboardManager,
         TranslatorInterface $translator,
         StudentRepository $studentRepository,
         AccountRepository $accountRepository,

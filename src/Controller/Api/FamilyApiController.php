@@ -17,17 +17,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api/family', options: ['expose' => true])]
 class FamilyApiController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger)
-    {
-    }
+    public function __construct(private readonly LoggerInterface $logger) {}
 
     /**
      * @throws AppException
      */
-    #[Route(path: '/create', name: 'app_api_family_create', methods: ['POST'])]
+    #[Route(path: '/api/family/create', name: 'app_api_family_create', methods: ['POST'])]
     public function create(Request $request, FamilyManagerInterface $familyManager): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
@@ -61,15 +58,15 @@ class FamilyApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Family $family, FamilyManagerInterface $manager): JsonResponse
+    #[Route(path: '/api/family/update/{id}', name: 'app_api_family_update', methods: ['POST', 'PUT'])]
+    public function update(Request $request, Family $family, FamilyManagerInterface $familyManager): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
         $form = $this->createCreateForm($family)
             ->handleRequest($request)
         ;
 
-        $manager->persistData($family, $form);
+        $familyManager->persistData($family, $form);
 
         return $this->json(new ResponseModel(
             success: true,
@@ -78,7 +75,7 @@ class FamilyApiController extends AbstractController
         ));
     }
 
-    public function createEditForm(Family $family = null): FormInterface
+    public function createEditForm(?Family $family = null): FormInterface
     {
         $form = $this->createForm(FamilyType::class, $family, [
             'action' => $this->generateUrl('app_api_family_create'),

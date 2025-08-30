@@ -20,20 +20,20 @@ use Doctrine\Persistence\ManagerRegistry;
 use Fardus\Traits\Symfony\Manager\LoggerTrait;
 
 /**
- * @method null|Student find($id, $lockMode = null, $lockVersion = null)
- * @method null|Student findOneBy(array $criteria, array $orderBy = null)
- * @method Student[]    findAll()
- * @method Student[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Student>
  */
 class StudentRepository extends ServiceEntityRepository
 {
     use LoggerTrait;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, Student::class);
+        parent::__construct($managerRegistry, Student::class);
     }
 
+    /**
+     * @return Student[]
+     */
     public function findByFamily(Family $family): array
     {
         return $this->createQueryBuilder('s')
@@ -47,12 +47,10 @@ class StudentRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return int[]
-     *
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function getStatsNumberStudent(School $school): array
+    public function getStatsNumberStudent(School $school): int
     {
         return $this->createQueryBuilder('s')
             ->select('COUNT(s) AS nb')
@@ -63,6 +61,9 @@ class StudentRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return Paginator<Student>
+     */
     public function getStudents(int $iPage = 1, int $iCountPerPage = 20): Paginator
     {
         $oQuery = $this->createQueryBuilder('s')
@@ -82,9 +83,9 @@ class StudentRepository extends ServiceEntityRepository
     /**
      * @return Student[]
      */
-    public function getListStudents(Period $period, School $school, bool $enable = true, int $limit = null): array
+    public function getListStudents(Period $period, School $school, bool $enable = true, ?int $limit = null): array
     {
-        $qb = $this->createQueryBuilder('std')
+        $queryBuilder = $this->createQueryBuilder('std')
             ->innerJoin('std.grade', 'gra')
             ->leftJoin('std.classPeriods', 'cps')
             ->leftJoin('cps.classPeriod', 'clp', 'WITH', 'clp.period = ?1')
@@ -102,10 +103,10 @@ class StudentRepository extends ServiceEntityRepository
         ;
 
         if (null !== $limit) {
-            $qb->setMaxResults($limit);
+            $queryBuilder->setMaxResults($limit);
         }
 
-        return $qb->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
@@ -113,7 +114,7 @@ class StudentRepository extends ServiceEntityRepository
      */
     public function getPaymentList(Period $period, School $school): array
     {
-        $qb = $this->createQueryBuilder('std')
+        $queryBuilder = $this->createQueryBuilder('std')
             ->select([
                 'std AS student',
                 'psp',
@@ -121,6 +122,7 @@ class StudentRepository extends ServiceEntityRepository
                 'pck',
                 'doc',
                 'prs',
+                'fam',
             ])
             ->addSelect('CASE WHEN std.enable > 0
                 THEN (psp.amount - psp.discount) ELSE SUM(psp.amount) END AS amountTotal')
@@ -130,19 +132,18 @@ class StudentRepository extends ServiceEntityRepository
             ->innerJoin('psp.package', 'pck')
             ->innerJoin('psp.period', 'per')
             ->leftJoin('std.person', 'prs')
+            ->leftJoin('prs.family', 'fam')
             ->leftJoin('prs.image', 'doc')
             ->leftJoin('psp.payments', 'pps')
             ->leftJoin('pps.operation', 'ope')
             ->where('per.id = :period')
             ->andWhere('std.school = :school')
-            ->groupBy('std.id')
+            ->groupBy('std.id, psp.id, per.id, pck.id, doc.id, prs.id, fam.id')
             ->setParameter('school', $school)
             ->setParameter('period', $period)
         ;
 
-        dump($qb->getQuery()->getSQL());
-
-        return $qb->getQuery()->getArrayResult();
+        return $queryBuilder->getQuery()->getArrayResult();
     }
 
     /**
@@ -152,7 +153,7 @@ class StudentRepository extends ServiceEntityRepository
      */
     public function getStatsStudent(School $school): array
     {
-        $qb = $this->createQueryBuilder('std')
+        $queryBuilder = $this->createQueryBuilder('std')
             ->select([
                 'COUNT(std.id) + 0 AS nbTotal',
                 'SUM(std.enable) + 0 AS nbActive',
@@ -168,11 +169,11 @@ class StudentRepository extends ServiceEntityRepository
         ;
 
         try {
-            $result = $qb->getQuery()
+            $result = $queryBuilder->getQuery()
                 ->getSingleResult(AbstractQuery::HYDRATE_ARRAY)
             ;
         } catch (ORMException $ormException) {
-            throw new AppException(sprintf('%s Query failed', __FUNCTION__), previous: $ormException);
+            throw new AppException(\sprintf('%s Query failed', __FUNCTION__), throwable: $ormException);
         }
 
         return $result;
@@ -183,7 +184,7 @@ class StudentRepository extends ServiceEntityRepository
      */
     public function getListStudentsWithoutPackagePeriod(Period $period, School $school): array
     {
-        $qb = $this->createQueryBuilder('std')
+        $queryBuilder = $this->createQueryBuilder('std')
             ->select(['doc', 'std', 'prs'])
             ->innerJoin('std.person', 'prs')
             ->leftJoin('prs.image', 'doc')
@@ -195,7 +196,7 @@ class StudentRepository extends ServiceEntityRepository
             ->setParameter('school', $school->getId())
         ;
 
-        return $qb->getQuery()
+        return $queryBuilder->getQuery()
             ->getResult()
         ;
     }
@@ -240,9 +241,9 @@ class StudentRepository extends ServiceEntityRepository
      */
     private function getStatsMove(School $school, Period $period, string $fieldDate = 'createdAt'): array
     {
-        $qb = $this->createQueryBuilder('std')
+        $queryBuilder = $this->createQueryBuilder('std')
             ->select('COUNT(std.id) + 0 AS nb')
-            ->addSelect(sprintf("DATE_FORMAT(std.%s, '%%Y-%%m') AS dateMonth", $fieldDate))
+            ->addSelect(\sprintf("DATE_FORMAT(std.%s, '%%Y-%%m') AS dateMonth", $fieldDate))
             ->where('std.school = :school')
             ->andWhere('std.'.$fieldDate.' BETWEEN :begin and :end')
             ->groupBy('dateMonth')
@@ -252,7 +253,7 @@ class StudentRepository extends ServiceEntityRepository
             ->setParameter('begin', $period->getBegin())
         ;
 
-        $data = $qb->getQuery()->getArrayResult();
+        $data = $queryBuilder->getQuery()->getArrayResult();
         $result = [];
 
         foreach ($data as $value) {

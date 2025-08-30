@@ -12,16 +12,13 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|PackageStudentPeriod find($id, $lockMode = null, $lockVersion = null)
- * @method null|PackageStudentPeriod findOneBy(array $criteria, array $orderBy = null)
- * @method PackageStudentPeriod[]    findAll()
- * @method PackageStudentPeriod[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<PackageStudentPeriod>
  */
 class PackageStudentPeriodRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, PackageStudentPeriod::class);
+        parent::__construct($managerRegistry, PackageStudentPeriod::class);
     }
 
     /**
@@ -31,9 +28,9 @@ class PackageStudentPeriodRepository extends ServiceEntityRepository
      */
     public function getCurrentPackageStudent(int $sIdStudent, Period $period): ?PackageStudentPeriod
     {
-        $qb = $this->createQueryBuilder('psd');
+        $queryBuilder = $this->createQueryBuilder('psd');
 
-        $qb->innerJoin('psd.package', 'pck')
+        $queryBuilder->innerJoin('psd.package', 'pck')
             ->innerJoin('psd.student', 'std')
             ->innerJoin('psd.period', 'per')
             ->innerJoin('psd.author', 'usr')
@@ -41,12 +38,12 @@ class PackageStudentPeriodRepository extends ServiceEntityRepository
             ->addSelect('per')
             ->addSelect('std')
             ->addSelect('pck')
-            ->where($qb->expr()->eq('std.id', $sIdStudent))
+            ->where($queryBuilder->expr()->eq('std.id', $sIdStudent))
             ->andWhere('per.id = :period')
             ->setParameter('period', $period)
         ;
 
-        return $qb->getQuery()->getOneOrNullResult();
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
     /**

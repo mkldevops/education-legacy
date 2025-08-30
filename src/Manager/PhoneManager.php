@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
+use App\Entity\Family;
 use App\Entity\Person;
 use App\Exception\AppException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,8 +33,7 @@ final readonly class PhoneManager
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     /**
      * Get All Phones.
@@ -46,16 +46,16 @@ final readonly class PhoneManager
             self::PERSON => self::getPhones($person),
         ];
 
-        if ($person->getFamily() instanceof \App\Entity\Family) {
-            if ($person->getFamily()->getFather() instanceof \App\Entity\Person) {
+        if ($person->getFamily() instanceof Family) {
+            if ($person->getFamily()->getFather() instanceof Person) {
                 $phones[self::FATHER] = self::getPhones($person->getFamily()->getFather());
             }
 
-            if ($person->getFamily()->getMother() instanceof \App\Entity\Person) {
+            if ($person->getFamily()->getMother() instanceof Person) {
                 $phones[self::MOTHER] = self::getPhones($person->getFamily()->getMother());
             }
 
-            if ($person->getFamily()->getLegalGuardian() instanceof \App\Entity\Person) {
+            if ($person->getFamily()->getLegalGuardian() instanceof Person) {
                 $phones[self::LEGAL_GUARDIAN] = self::getPhones($person->getFamily()->getLegalGuardian());
             }
         }
@@ -80,11 +80,11 @@ final readonly class PhoneManager
         $phones = array_unique($phones);
 
         $list = [];
-        foreach ($phones as $value) {
-            $value = self::purgePhone($value);
+        foreach ($phones as $phone) {
+            $phone = self::purgePhone($phone);
 
-            if (!empty($value)) {
-                $list[base64_encode($value)] = $value;
+            if ('' !== $phone && '0' !== $phone) {
+                $list[base64_encode($phone)] = $phone;
             }
         }
 
@@ -94,9 +94,9 @@ final readonly class PhoneManager
     /**
      * @throws AppException
      */
-    public function updatePhone(Person $person, string $value, string $key = null): string
+    public function updatePhone(Person $person, string $value, ?string $key = null): string
     {
-        if (!empty($key)) {
+        if (null !== $key && '' !== $key && '0' !== $key) {
             $person->removePhone($key);
         }
 
@@ -123,9 +123,9 @@ final readonly class PhoneManager
 
     private static function purgePhone(string $value): string
     {
-        $value = preg_replace('#\\D+#', '', $value);
-        $value = preg_replace('#(\\d{2})#', '$1 ', $value);
+        $value = preg_replace('#\D+#', '', $value);
+        $value = preg_replace('#(\d{2})#', '$1 ', (string) $value);
 
-        return trim($value);
+        return trim((string) $value);
     }
 }

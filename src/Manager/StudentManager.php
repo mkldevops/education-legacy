@@ -19,15 +19,14 @@ readonly class StudentManager
         private LoggerInterface $logger,
         private Security $security,
         private EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array{students: array, total: array{percentage: float|int, totalPreviousWithoutDiscount: int, discount: float|int, totalPreview: int, totalPaid: int, totalReminderPaid: int, type: array&array<int|string, int>}}
      */
     public function dataPaymentsStudents(array $students, Period $period): array
     {
-        $list = self::getDataListDefault();
+        $list = $this->getDataListDefault();
 
         foreach ($students as $data) {
             $student = $data['student'];
@@ -100,7 +99,7 @@ readonly class StudentManager
     /**
      * @return array{students: never[], total: array{percentage: int, totalPreviousWithoutDiscount: int, discount: int, totalPreview: int, totalPaid: int, totalReminderPaid: int, type: array{danger: int, warning: int, info: int, success: int}}}
      */
-    private static function getDataListDefault(): array
+    private function getDataListDefault(): array
     {
         return [
             'students' => [],

@@ -149,7 +149,11 @@
                                 </td>
                                 <td class="no_sort  text-center">
                                     {% if packagePeriod is not empty and infoStudent.paymentTotal <  infoStudent.amountTotal %}
-                                        <a href="{{ path('app_student_show', { 'id' : student.id }) }}" class="fa fa-money"></a> Payer
+                                        {% if student.person.family %}
+                                            <a href="{{ path('app_family_show', { 'id' : student.person.family.id }) }}" class="fa fa-money"></a> Payer
+                                        {% else %}
+                                            <a href="{{ path('app_student_show', { 'id' : student.id }) }}" class="fa fa-money"></a> Payer
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>

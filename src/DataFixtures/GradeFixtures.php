@@ -13,7 +13,7 @@ class GradeFixtures extends AbstractAppFixtures
     /**
      * @throws AppException
      */
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         foreach (self::getData() as $id => $data) {
             $grade = (new Grade())
@@ -24,9 +24,9 @@ class GradeFixtures extends AbstractAppFixtures
                 ->setEnable(true)
             ;
 
-            $manager->persist($grade);
+            $objectManager->persist($grade);
 
-            $manager->flush();
+            $objectManager->flush();
             $this->addReference(self::getKey($id), $grade);
         }
     }

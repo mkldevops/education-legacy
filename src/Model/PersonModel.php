@@ -14,8 +14,7 @@ class PersonModel
         public readonly string $forname,
         public readonly ?\DateTimeInterface $birthday,
         public readonly string $gender,
-    ) {
-    }
+    ) {}
 
     public static function fromPerson(Person $person): self
     {

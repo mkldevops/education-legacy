@@ -18,9 +18,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ClassPeriodStudentType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $formBuilder, array $options): void
     {
-        $builder
+        $formBuilder
             ->add('period', TextType::class, ['label' => 'Nom'])
             ->add('student', IntegerType::class, ['label' => 'Age minimum'])
             ->add('comment', IntegerType::class, ['label' => 'Age maximum'])
@@ -30,9 +30,9 @@ class ClassPeriodStudentType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $resolver->setDefaults([
+        $optionsResolver->setDefaults([
             'data_class' => ClassPeriodStudent::class,
         ]);
     }

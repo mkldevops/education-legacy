@@ -39,7 +39,7 @@ class FamilyPaymentModel
         }
 
         if ($toPay > $toDue) {
-            throw new InvalidArgumentException(sprintf('Amount that you want to pay (%d €) is too high that you due amount (%d €)', $toPay, $toDue));
+            throw new InvalidArgumentException(\sprintf('Amount that you want to pay (%d €) is too high that you due amount (%d €)', $toPay, $toDue));
         }
 
         return $toDue;

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AuthorEntityInterface;
+use App\Entity\Interface\EntityInterface;
 use App\Exception\AppException;
 use App\Helper\UploaderHelper;
 use App\Manager\DocumentManager;
@@ -16,13 +18,14 @@ use App\Trait\SchoolEntityTrait;
 use App\Trait\TimestampableEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
-class Document implements \Stringable
+class Document implements EntityInterface, AuthorEntityInterface
 {
     use AuthorEntityTrait;
     use EnableEntityTrait;
@@ -52,7 +55,7 @@ class Document implements \Stringable
     final public const EXT_PNG = 'png';
 
     #[Assert\File(maxSize: 60_000_000)]
-    private ?UploadedFile $file = null;
+    private ?UploadedFile $uploadedFile = null;
 
     private ?string $fileName = null;
 
@@ -61,14 +64,14 @@ class Document implements \Stringable
     /**
      * Mime Type file.
      */
-    #[ORM\Column(type: 'string', length: 30, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 30, nullable: true)]
     #[Assert\NotBlank]
     private ?string $mime = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $path = null;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: Types::STRING, length: 10)]
     private ?string $extension = null;
 
     /**
@@ -95,7 +98,7 @@ class Document implements \Stringable
     #[ORM\ManyToMany(targetEntity: AccountSlip::class, mappedBy: 'documents', cascade: ['remove'])]
     private Collection $accountSlips;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $size = null;
 
     public function __construct()
@@ -113,12 +116,12 @@ class Document implements \Stringable
 
     public function getFile(): ?UploadedFile
     {
-        return $this->file;
+        return $this->uploadedFile;
     }
 
-    public function setFile(UploadedFile $file = null): self
+    public function setFile(?UploadedFile $uploadedFile = null): self
     {
-        $this->file = $file;
+        $this->uploadedFile = $uploadedFile;
 
         return $this;
     }
@@ -140,7 +143,7 @@ class Document implements \Stringable
     {
         $url = null;
 
-        if (!empty($this->path)) {
+        if (null !== $this->path && '' !== $this->path && '0' !== $this->path) {
             $url = DocumentManager::getPathUploads($dir).\DIRECTORY_SEPARATOR.$this->getPath($dir);
         }
 
@@ -169,9 +172,9 @@ class Document implements \Stringable
         return $path;
     }
 
-    public function setPath(string $path = null): static
+    public function setPath(?string $path = null): static
     {
-        $this->path = null === $path && empty($this->path) ? $this->getFileName().'.'.$this->getExtension() : $path;
+        $this->path = null === $path && (null === $this->path || '' === $this->path || '0' === $this->path) ? $this->getFileName().'.'.$this->getExtension() : $path;
 
         return $this;
     }
@@ -185,7 +188,7 @@ class Document implements \Stringable
 
     public function getFileName(): string
     {
-        if (empty($this->fileName)) {
+        if (null === $this->fileName || '' === $this->fileName || '0' === $this->fileName) {
             $this->fileName = str_replace(strrchr((string) $this->path, '.'), '', (string) $this->path);
         }
 
@@ -209,7 +212,7 @@ class Document implements \Stringable
         $dir = DocumentManager::getPathUploads().\DIRECTORY_SEPARATOR.self::getUploadDir($dir);
 
         if (!file_exists($dir) && (!mkdir($dir, 0o770, true) && !is_dir($dir))) {
-            throw new AppException(sprintf('Directory "%s" was not created', $dir));
+            throw new AppException(\sprintf('Directory "%s" was not created', $dir));
         }
 
         return $dir;
@@ -396,18 +399,18 @@ class Document implements \Stringable
 
     public function getTitle(): string
     {
-        return 'ID : '.$this->getId().
-            "\r\nNAME: ".$this->getName().
-            "\r\nCREATED: ".$this->getCreatedAt()->format('d/m/Y H:i:s').
-            "\r\nAUTHOR: ".$this->getAuthor()?->getName();
+        return 'ID : '.$this->getId()
+            ."\r\nNAME: ".$this->getName()
+            ."\r\nCREATED: ".$this->getCreatedAt()->format('d/m/Y H:i:s')
+            ."\r\nAUTHOR: ".$this->getAuthor()?->getName();
     }
 
     /**
      * Add accountStatements.
      */
-    public function addAccountStatement(AccountStatement $accountStatements): static
+    public function addAccountStatement(AccountStatement $accountStatement): static
     {
-        $this->accountStatements[] = $accountStatements;
+        $this->accountStatements[] = $accountStatement;
 
         return $this;
     }
@@ -415,9 +418,9 @@ class Document implements \Stringable
     /**
      * Remove accountStatements.
      */
-    public function removeAccountStatement(AccountStatement $accountStatements): void
+    public function removeAccountStatement(AccountStatement $accountStatement): void
     {
-        $this->accountStatements->removeElement($accountStatements);
+        $this->accountStatements->removeElement($accountStatement);
     }
 
     /**
