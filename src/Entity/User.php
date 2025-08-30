@@ -61,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     #[Ignore]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dateTime = null;
+    private ?\DateTimeInterface $lastLogin = null;
 
     public function __construct()
     {
@@ -154,12 +154,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function getLastLogin(): ?\DateTimeInterface
     {
-        return $this->dateTime;
+        return $this->lastLogin;
     }
 
     public function setLastLogin(\DateTimeInterface $lastLogin): self
     {
-        $this->dateTime = $lastLogin;
+        $this->lastLogin = $lastLogin;
 
         return $this;
     }

@@ -2,14 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Created by PhpStorm.
- * User: fardus
- * Date: 28/09/2017
- * Time: 22:20
- * PHP Version : 7.1.
- */
-
 namespace App\Model;
 
 use App\Entity\Account;
@@ -17,9 +9,6 @@ use App\Entity\AccountSlip;
 use App\Entity\OperationGender;
 use App\Entity\Structure;
 
-/**
- * Class TransferModel.
- */
 class TransferModel
 {
     private ?\DateTimeInterface $dateTime = null;

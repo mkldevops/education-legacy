@@ -70,7 +70,7 @@ class PackageStudentPeriod implements \Stringable, EntityInterface, AuthorEntity
     private ?Period $period = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateTime = null;
+    private ?\DateTimeInterface $dateExpire = null;
 
     #[ORM\Column(type: Types::FLOAT)]
     private float $discount = 0;
@@ -120,12 +120,12 @@ class PackageStudentPeriod implements \Stringable, EntityInterface, AuthorEntity
 
     public function getDateExpire(): ?\DateTimeInterface
     {
-        return $this->dateTime;
+        return $this->dateExpire;
     }
 
     public function setDateExpire(\DateTimeInterface $dateExpire): self
     {
-        $this->dateTime = $dateExpire;
+        $this->dateExpire = $dateExpire;
 
         return $this;
     }

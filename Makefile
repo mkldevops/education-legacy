@@ -140,7 +140,7 @@ list-backups: ## List all available backups
 test-load-fixtures: ## load database schema & fixtures
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:database:drop --if-exists --force
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:database:create --if-not-exists
-	$(DOCKER_TEST_EXEC) php bin/console doctrine:migration:migrate -n --all-or-nothing
+	$(DOCKER_TEST_EXEC) php bin/console doctrine:migration:migrate -n --no-all-or-nothing
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:fixtures:load -n
 
 test: phpunit.xml.dist ## Launch main functional and unit tests, stopped on failure
