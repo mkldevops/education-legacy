@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private string $email;
 
     #[Ignore]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'last_login', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastLogin = null;
 
     public function __construct()

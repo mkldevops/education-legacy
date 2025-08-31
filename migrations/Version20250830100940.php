@@ -121,7 +121,6 @@ final class Version20250830100940 extends AbstractMigration
         $this->addSql('ALTER TABLE operation CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE operation_gender CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE package CHANGE enable enable TINYINT(1) NOT NULL');
-        // Keep original column name date_expire
         $this->addSql('ALTER TABLE payment_package_student CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE period ADD diploma_id INT DEFAULT NULL, CHANGE enable enable TINYINT(1) NOT NULL, CHANGE created_at created_at DATETIME DEFAULT NULL, CHANGE updated_at updated_at DATETIME DEFAULT NULL');
         $this->addSql('ALTER TABLE period ADD CONSTRAINT FK_C5B81ECEA99ACEB5 FOREIGN KEY (diploma_id) REFERENCES diploma (id) ON UPDATE NO ACTION ON DELETE NO ACTION');

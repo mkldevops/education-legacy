@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Code Quality & Linting
@@ -34,13 +41,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.3'
           extensions: pdo_mysql, zip, intl, imagick
           coverage: none
           tools: composer:v2
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -48,20 +55,33 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+        run: composer install --prefer-dist --no-progress --no-interaction --no-ansi --optimize-autoloader
+
+      - name: Validate composer.json
+        run: composer validate --no-interaction --no-ansi
 
       - name: Wait for MySQL
         run: |
-          until mysqladmin ping -h 127.0.0.1 --silent; do
-            echo 'waiting for mysql...'
-            sleep 1
+          for i in {1..60}; do
+            if mysqladmin ping -h 127.0.0.1 --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/60)"
+            sleep 2
           done
 
       - name: Setup test environment
         run: |
-          cp .env .env.test.local
-          echo "DATABASE_URL=mysql://app:db_password@127.0.0.1:3306/education_app_test?charset=utf8mb4" >> .env.test.local
-          echo "APP_ENV=test" >> .env.test.local
+          rm -f .env.test.local
+          {
+            echo "APP_ENV=test"
+            echo "DATABASE_URL=mysql://app:db_password@127.0.0.1:3306/education_app_test?charset=utf8mb4&serverVersion=8.1"
+          } >> .env.test.local
+
+      - name: Verify database connection
+        run: |
+          mysql -h 127.0.0.1 -u app -pdb_password -e "SHOW DATABASES;" | grep education_app_test || echo "Database not found"
 
       - name: Create test database
         run: php bin/console doctrine:database:create --env=test --if-not-exists
@@ -111,13 +131,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.3'
           extensions: pdo_mysql, zip, intl, imagick
           coverage: xdebug
           tools: composer:v2
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -125,20 +145,26 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+        run: composer install --prefer-dist --no-progress --no-interaction --no-ansi --optimize-autoloader
 
       - name: Wait for MySQL
         run: |
-          until mysqladmin ping -h 127.0.0.1 --silent; do
-            echo 'waiting for mysql...'
-            sleep 1
+          for i in {1..60}; do
+            if mysqladmin ping -h 127.0.0.1 --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/60)"
+            sleep 2
           done
 
       - name: Setup test environment
         run: |
-          cp .env .env.test.local
-          echo "DATABASE_URL=mysql://app:db_password@127.0.0.1:3306/education_app_test?charset=utf8mb4" >> .env.test.local
-          echo "APP_ENV=test" >> .env.test.local
+          rm -f .env.test.local
+          {
+            echo "APP_ENV=test"
+            echo "DATABASE_URL=mysql://app:db_password@127.0.0.1:3306/education_app_test?charset=utf8mb4&serverVersion=8.1"
+          } >> .env.test.local
 
       - name: Prepare test database
         run: |
@@ -150,7 +176,7 @@ jobs:
         run: ./vendor/bin/simple-phpunit --coverage-text --coverage-clover coverage.xml
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           flags: unittests
