@@ -1,0 +1,231 @@
+name: PR Lifecycle Management
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+env:
+  DOCKER_IMAGE: mkldevops/education
+  REGISTRY: docker.io
+  REGISTRY_GHCR: ghcr.io
+
+jobs:
+  # Build and test when PR is created or updated
+  build-pr:
+    name: Build PR Image
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
+    outputs:
+      image-tag: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}
+          tags: |
+            type=ref,event=pr
+            type=sha,format=short,prefix=pr-${{ github.event.pull_request.number }}-
+
+      - name: Build and push PR image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          target: dev
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY_GHCR }}/${{ github.repository }}:buildcache
+          cache-to: type=gha,mode=max
+          build-args: |
+            APP_VERSION=${{ github.sha }}
+            BUILD_DATE=${{ github.event.pull_request.updated_at }}
+
+      - name: Comment PR with image details
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `### 🐳 Docker Image Built Successfully
+
+            **Image Tags:**
+            \`\`\`
+            ${{ steps.meta.outputs.tags }}
+            \`\`\`
+
+            **Pull Command:**
+            \`\`\`bash
+            docker pull ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            \`\`\`
+
+            **Run Command:**
+            \`\`\`bash
+            docker run -p 3900:80 ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+            \`\`\`
+
+            ✅ Ready for testing!`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+
+  # Run tests on the PR
+  test-pr:
+    name: Test PR
+    runs-on: ubuntu-latest
+    needs: build-pr
+    if: github.event.action != 'closed'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tests in Docker
+        run: |
+          docker pull ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          docker run --rm \
+            -e APP_ENV=test \
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }} \
+            sh -c "php bin/console doctrine:database:create --if-not-exists && php bin/console doctrine:migrations:migrate -n --no-all-or-nothing && vendor/bin/simple-phpunit"
+
+      - name: Run code quality checks
+        run: |
+          docker run --rm \
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }} \
+            sh -c "vendor/bin/phpstan analyse --no-progress --memory-limit 256M && vendor/bin/php-cs-fixer fix src --dry-run --allow-risky=yes"
+
+  # Security scanning
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build-pr
+    if: github.event.action != 'closed'
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy scan and upload results
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Cleanup when PR is closed
+  cleanup-pr:
+    name: Cleanup PR Resources
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed'
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete PR images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: education-legacy
+          package-type: container
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-versions-to-keep: 0
+          delete-only-pre-release-versions: false
+          ignore-versions: '^(latest|main|master|v\d+\.\d+\.\d+)$'
+          delete-only-untagged-versions: false
+
+      - name: Comment PR cleanup
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `### 🧹 PR Resources Cleaned Up
+
+            All Docker images associated with PR #${{ github.event.pull_request.number }} have been removed.
+
+            Thank you for your contribution! 🎉`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+
+  # Status check
+  pr-status:
+    name: PR Status Check
+    runs-on: ubuntu-latest
+    needs: [build-pr, test-pr, security-scan]
+    if: always() && github.event.action != 'closed'
+    steps:
+      - name: Check status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'build-pr', status: '${{ needs.build-pr.result }}' },
+              { name: 'test-pr', status: '${{ needs.test-pr.result }}' },
+              { name: 'security-scan', status: '${{ needs.security-scan.result }}' }
+            ];
+
+            const failed = jobs.filter(job => job.status === 'failure');
+            const success = jobs.every(job => job.status === 'success');
+
+            let status = 'pending';
+            let description = 'Checks in progress...';
+
+            if (success) {
+              status = 'success';
+              description = 'All checks passed!';
+            } else if (failed.length > 0) {
+              status = 'failure';
+              description = `Failed checks: ${failed.map(j => j.name).join(', ')}`;
+            }
+
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: status,
+              description: description,
+              context: 'PR Checks'
+            });

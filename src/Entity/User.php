@@ -60,8 +60,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private string $email;
 
     #[Ignore]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dateTime = null;
+    #[ORM\Column(name: 'last_login', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastLogin = null;
 
     public function __construct()
     {
@@ -154,16 +154,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function getLastLogin(): ?\DateTimeInterface
     {
-        return $this->dateTime;
+        return $this->lastLogin;
     }
 
     public function setLastLogin(\DateTimeInterface $lastLogin): self
     {
-        $this->dateTime = $lastLogin;
+        $this->lastLogin = $lastLogin;
 
         return $this;
     }
 
+    /**
+     * @return Collection<int, School>
+     */
     public function getSchoolAccessRight(): Collection
     {
         return $this->schoolAccessRight;

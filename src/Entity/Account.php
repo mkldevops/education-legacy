@@ -92,6 +92,9 @@ class Account implements \Stringable, EntityInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Operation>
+     */
     public function getOperations(): Collection
     {
         return $this->operations;
@@ -123,6 +126,9 @@ class Account implements \Stringable, EntityInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, AccountStatement>
+     */
     public function getAccountStatements(): Collection
     {
         return $this->accountStatements;

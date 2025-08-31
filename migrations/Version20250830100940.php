@@ -45,7 +45,7 @@ final class Version20250830100940 extends AbstractMigration
         if ($schema->getTable('class_period_student')->hasIndex('id')) {
             $this->addSql('DROP INDEX id ON class_period_student');
         }
-        $this->addSql('ALTER TABLE class_period_student CHANGE class_period_id class_period_id INT DEFAULT NULL, CHANGE student_id student_id INT DEFAULT NULL, CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL, CHANGE created_at created_at DATETIME NOT NULL, CHANGE updated_at updated_at DATETIME NOT NULL');
+        $this->addSql('ALTER TABLE class_period_student CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL, CHANGE created_at created_at DATETIME NOT NULL, CHANGE updated_at updated_at DATETIME NOT NULL');
         $this->addSql('ALTER TABLE class_school CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL');
         $this->addSql('ALTER TABLE course CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL');
         $this->addSql('ALTER TABLE document CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL, CHANGE created_at created_at DATETIME NOT NULL, CHANGE updated_at updated_at DATETIME NOT NULL');
@@ -58,11 +58,8 @@ final class Version20250830100940 extends AbstractMigration
         $this->addSql('ALTER TABLE operation CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL');
         $this->addSql('ALTER TABLE operation_gender CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL');
         $this->addSql('ALTER TABLE package CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL');
-        // Check if column date_expire exists before renaming
-        $packageStudentPeriodTable = $schema->getTable('package_student_period');
-        if ($packageStudentPeriodTable->hasColumn('date_expire')) {
-            $this->addSql('ALTER TABLE package_student_period CHANGE date_expire date_time DATETIME NOT NULL');
-        }
+        // Keep the column as date_expire (don't rename it)
+        // The entity now correctly maps to date_expire column
         $this->addSql('ALTER TABLE payment_package_student CHANGE enable enable TINYINT(1) DEFAULT 1 NOT NULL');
         // Check if index exists before dropping
         if ($schema->getTable('period')->hasIndex('IDX_C5B81ECEA99ACEB5')) {
@@ -113,7 +110,7 @@ final class Version20250830100940 extends AbstractMigration
         $this->addSql('ALTER TABLE account_statement CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE appeal_course CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE class_period CHANGE enable enable TINYINT(1) NOT NULL');
-        $this->addSql('ALTER TABLE class_period_student CHANGE class_period_id class_period_id INT NOT NULL, CHANGE student_id student_id INT NOT NULL, CHANGE enable enable TINYINT(1) NOT NULL, CHANGE created_at created_at DATETIME DEFAULT NULL, CHANGE updated_at updated_at DATETIME DEFAULT NULL');
+        $this->addSql('ALTER TABLE class_period_student CHANGE enable enable TINYINT(1) NOT NULL, CHANGE created_at created_at DATETIME DEFAULT NULL, CHANGE updated_at updated_at DATETIME DEFAULT NULL');
         $this->addSql('CREATE UNIQUE INDEX id ON class_period_student (id)');
         $this->addSql('ALTER TABLE class_school CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE course CHANGE enable enable TINYINT(1) NOT NULL');
@@ -124,7 +121,6 @@ final class Version20250830100940 extends AbstractMigration
         $this->addSql('ALTER TABLE operation CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE operation_gender CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE package CHANGE enable enable TINYINT(1) NOT NULL');
-        $this->addSql('ALTER TABLE package_student_period CHANGE date_time date_expire DATETIME NOT NULL');
         $this->addSql('ALTER TABLE payment_package_student CHANGE enable enable TINYINT(1) NOT NULL');
         $this->addSql('ALTER TABLE period ADD diploma_id INT DEFAULT NULL, CHANGE enable enable TINYINT(1) NOT NULL, CHANGE created_at created_at DATETIME DEFAULT NULL, CHANGE updated_at updated_at DATETIME DEFAULT NULL');
         $this->addSql('ALTER TABLE period ADD CONSTRAINT FK_C5B81ECEA99ACEB5 FOREIGN KEY (diploma_id) REFERENCES diploma (id) ON UPDATE NO ACTION ON DELETE NO ACTION');

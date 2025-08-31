@@ -155,6 +155,9 @@ class Family implements EntityInterface, AuthorEntityInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Person>
+     */
     public function getPersons(): Collection
     {
         return $this->persons;

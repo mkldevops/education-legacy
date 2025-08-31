@@ -1,0 +1,324 @@
+name: Scheduled Cleanup
+
+on:
+  schedule:
+    # Run every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no deletions)'
+        required: false
+        default: false
+        type: boolean
+      days_to_keep:
+        description: 'Keep images newer than X days'
+        required: false
+        default: '7'
+        type: string
+
+env:
+  REGISTRY_GHCR: ghcr.io
+
+jobs:
+  cleanup-old-images:
+    name: Cleanup Old Docker Images
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculate cutoff date
+        id: cutoff
+        run: |
+          DAYS="${{ github.event.inputs.days_to_keep || '7' }}"
+          CUTOFF=$(date -u -d "$DAYS days ago" +%Y-%m-%dT%H:%M:%SZ)
+          echo "date=$CUTOFF" >> $GITHUB_OUTPUT
+          echo "Cutoff date: $CUTOFF (keeping images from last $DAYS days)"
+
+      - name: List packages to clean
+        id: list
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cutoffDate = new Date('${{ steps.cutoff.outputs.date }}');
+            const dryRun = ${{ github.event.inputs.dry_run || 'false' }};
+
+            // Get all container packages
+            const packages = await github.rest.packages.listPackagesForOrganization({
+              package_type: 'container',
+              org: context.repo.owner
+            }).catch(() =>
+              github.rest.packages.listPackagesForUser({
+                package_type: 'container',
+                username: context.repo.owner
+              })
+            );
+
+            let totalDeleted = 0;
+            let totalKept = 0;
+            const report = [];
+
+            for (const pkg of packages.data) {
+              if (pkg.name !== 'education-legacy') continue;
+
+              // Get all versions of the package
+              const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
+                package_type: 'container',
+                package_name: pkg.name,
+                org: context.repo.owner
+              }).catch(() =>
+                github.rest.packages.getAllPackageVersionsForPackageOwnedByUser({
+                  package_type: 'container',
+                  package_name: pkg.name,
+                  username: context.repo.owner
+                })
+              );
+
+              for (const version of versions.data) {
+                const versionDate = new Date(version.updated_at);
+                const tags = version.metadata?.container?.tags || [];
+
+                // Skip if it's a production tag
+                const isProduction = tags.some(tag =>
+                  tag === 'latest' ||
+                  tag === 'main' ||
+                  tag === 'master' ||
+                  tag.match(/^v\d+\.\d+\.\d+$/)
+                );
+
+                if (isProduction) {
+                  console.log(`Keeping production version: ${version.name} (tags: ${tags.join(', ')})`);
+                  totalKept++;
+                  continue;
+                }
+
+                // Skip if it's newer than cutoff
+                if (versionDate > cutoffDate) {
+                  console.log(`Keeping recent version: ${version.name} (updated: ${version.updated_at})`);
+                  totalKept++;
+                  continue;
+                }
+
+                // Delete old PR/feature branch images
+                if (tags.some(tag => tag.startsWith('pr-') || tag.startsWith('feature-'))) {
+                  const age = Math.floor((Date.now() - versionDate) / (1000 * 60 * 60 * 24));
+                  report.push({
+                    id: version.id,
+                    name: version.name,
+                    tags: tags.join(', '),
+                    age: `${age} days`,
+                    action: dryRun ? 'WOULD DELETE' : 'DELETING'
+                  });
+
+                  if (!dryRun) {
+                    try {
+                      await github.rest.packages.deletePackageVersionForOrg({
+                        package_type: 'container',
+                        package_name: pkg.name,
+                        org: context.repo.owner,
+                        package_version_id: version.id
+                      }).catch(() =>
+                        github.rest.packages.deletePackageVersionForUser({
+                          package_type: 'container',
+                          package_name: pkg.name,
+                          username: context.repo.owner,
+                          package_version_id: version.id
+                        })
+                      );
+                      totalDeleted++;
+                    } catch (error) {
+                      console.error(`Failed to delete version ${version.id}: ${error.message}`);
+                    }
+                  } else {
+                    totalDeleted++;
+                  }
+                }
+              }
+            }
+
+            // Create summary
+            const summary = `
+            ## 🧹 Docker Image Cleanup Report
+
+            **Mode:** ${dryRun ? '🔍 DRY RUN' : '✅ LIVE'}
+            **Cutoff Date:** ${cutoffDate.toISOString()}
+            **Images Processed:** ${totalDeleted + totalKept}
+            **Images ${dryRun ? 'To Delete' : 'Deleted'}:** ${totalDeleted}
+            **Images Kept:** ${totalKept}
+
+            ### Detailed Report
+            ${report.length > 0 ?
+              '| Version | Tags | Age | Action |\n|---------|------|-----|--------|\n' +
+              report.map(r => `| ${r.name} | ${r.tags} | ${r.age} | ${r.action} |`).join('\n')
+              : 'No images to clean up.'}
+            `;
+
+            // Output summary
+            console.log(summary);
+
+            // Create GitHub summary
+            await core.summary
+              .addRaw(summary)
+              .write();
+
+  cleanup-docker-hub:
+    name: Cleanup Docker Hub Images
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Cleanup old tags on Docker Hub
+        run: |
+          echo "Fetching tags from Docker Hub..."
+
+          # Get all tags
+          TAGS=$(curl -s "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/education/tags?page_size=100" | jq -r '.results[].name')
+
+          # Keep production tags and recent builds
+          KEEP_PATTERNS="latest|main|master|^v[0-9]+\.[0-9]+\.[0-9]+$"
+          DAYS_TO_KEEP="${{ github.event.inputs.days_to_keep || '7' }}"
+          CUTOFF_DATE=$(date -d "$DAYS_TO_KEEP days ago" +%s)
+
+          for TAG in $TAGS; do
+            if echo "$TAG" | grep -E "$KEEP_PATTERNS" > /dev/null; then
+              echo "Keeping production tag: $TAG"
+              continue
+            fi
+
+            # Get tag date
+            TAG_DATE=$(curl -s "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/education/tags/$TAG" | jq -r '.last_updated')
+            TAG_TIMESTAMP=$(date -d "$TAG_DATE" +%s 2>/dev/null || echo 0)
+
+            if [ "$TAG_TIMESTAMP" -lt "$CUTOFF_DATE" ]; then
+              if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+                echo "Would delete old tag: $TAG (last updated: $TAG_DATE)"
+              else
+                echo "Deleting old tag: $TAG (last updated: $TAG_DATE)"
+                curl -X DELETE \
+                  -H "Authorization: JWT ${HUB_TOKEN}" \
+                  "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/education/tags/$TAG/"
+              fi
+            else
+              echo "Keeping recent tag: $TAG (last updated: $TAG_DATE)"
+            fi
+          done
+
+  prune-github-actions-cache:
+    name: Prune GitHub Actions Cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup caches
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const dryRun = ${{ github.event.inputs.dry_run || 'false' }};
+            const daysToKeep = parseInt('${{ github.event.inputs.days_to_keep || '7' }}');
+            const cutoffDate = new Date(Date.now() - daysToKeep * 24 * 60 * 60 * 1000);
+
+            // Get all caches
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+
+            let totalSize = 0;
+            let deletedSize = 0;
+            let deletedCount = 0;
+
+            for (const cache of caches.data.actions_caches) {
+              totalSize += cache.size_in_bytes;
+              const cacheDate = new Date(cache.last_accessed_at);
+
+              // Delete old caches
+              if (cacheDate < cutoffDate) {
+                if (!dryRun) {
+                  try {
+                    await github.rest.actions.deleteActionsCacheById({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      cache_id: cache.id
+                    });
+                    deletedSize += cache.size_in_bytes;
+                    deletedCount++;
+                    console.log(`Deleted cache: ${cache.key} (${(cache.size_in_bytes / 1024 / 1024).toFixed(2)} MB)`);
+                  } catch (error) {
+                    console.error(`Failed to delete cache ${cache.id}: ${error.message}`);
+                  }
+                } else {
+                  deletedSize += cache.size_in_bytes;
+                  deletedCount++;
+                  console.log(`Would delete cache: ${cache.key} (${(cache.size_in_bytes / 1024 / 1024).toFixed(2)} MB)`);
+                }
+              }
+            }
+
+            const summary = `
+            ## 📦 GitHub Actions Cache Cleanup
+
+            **Mode:** ${dryRun ? '🔍 DRY RUN' : '✅ LIVE'}
+            **Total Cache Size:** ${(totalSize / 1024 / 1024).toFixed(2)} MB
+            **${dryRun ? 'Would Delete' : 'Deleted'}:** ${deletedCount} caches (${(deletedSize / 1024 / 1024).toFixed(2)} MB)
+            **Space ${dryRun ? 'Would Be Freed' : 'Freed'}:** ${(deletedSize / 1024 / 1024).toFixed(2)} MB
+            `;
+
+            console.log(summary);
+
+            await core.summary
+              .addRaw(summary)
+              .write();
+
+  summary:
+    name: Cleanup Summary
+    runs-on: ubuntu-latest
+    needs: [cleanup-old-images, cleanup-docker-hub, prune-github-actions-cache]
+    if: always()
+    steps:
+      - name: Create final summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'GitHub Container Registry Cleanup', status: '${{ needs.cleanup-old-images.result }}' },
+              { name: 'Docker Hub Cleanup', status: '${{ needs.cleanup-docker-hub.result }}' },
+              { name: 'GitHub Actions Cache Cleanup', status: '${{ needs.prune-github-actions-cache.result }}' }
+            ];
+
+            const summary = `
+            # 🎯 Cleanup Workflow Summary
+
+            ${jobs.map(job => {
+              const icon = job.status === 'success' ? '✅' :
+                          job.status === 'failure' ? '❌' :
+                          job.status === 'skipped' ? '⏭️' : '⏳';
+              return `- ${icon} **${job.name}**: ${job.status}`;
+            }).join('\n')}
+
+            **Triggered by:** ${{ github.event_name }}
+            **Run by:** @${{ github.actor }}
+            **Dry Run:** ${{ github.event.inputs.dry_run || 'false' }}
+            **Days to Keep:** ${{ github.event.inputs.days_to_keep || '7' }}
+
+            ---
+            *Next scheduled run: Sunday 2 AM UTC*
+            `;
+
+            await core.summary
+              .addRaw(summary)
+              .write();

@@ -350,6 +350,9 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
         $this->classPeriods->removeElement($classPeriodStudent);
     }
 
+    /**
+     * @return Collection<int, ClassPeriodStudent>
+     */
     public function getClassPeriods(): Collection
     {
         return $this->classPeriods;
@@ -386,6 +389,9 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
         $this->packagePeriods->removeElement($packageStudentPeriod);
     }
 
+    /**
+     * @return Collection<int, PackageStudentPeriod>
+     */
     public function getPackagePeriods(): Collection
     {
         return $this->packagePeriods;
@@ -451,6 +457,9 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
         $this->comments->removeElement($studentComment);
     }
 
+    /**
+     * @return Collection<int, StudentComment>
+     */
     public function getComments(): Collection
     {
         return $this->comments;

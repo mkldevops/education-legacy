@@ -140,7 +140,7 @@ list-backups: ## List all available backups
 test-load-fixtures: ## load database schema & fixtures
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:database:drop --if-exists --force
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:database:create --if-not-exists
-	$(DOCKER_TEST_EXEC) php bin/console doctrine:migration:migrate -n --all-or-nothing
+	$(DOCKER_TEST_EXEC) php bin/console doctrine:migration:migrate -n --no-all-or-nothing
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:fixtures:load -n
 
 test: phpunit.xml.dist ## Launch main functional and unit tests, stopped on failure
@@ -213,13 +213,13 @@ prune: ## clean all containers unused
 	$(DOCKER) system prune -a
 
 login:
-	docker login $(REGISTRY) -u $(USER) -p $(TOKEN)
+	docker login $(REGISTRY) -u $(DOCKERHUB_USERNAME) -p $(DOCKERHUB_TOKEN)
 
 ## —— Deployments ————————————————————————————————————————————————————————————————
 
-docker-build-base: login
-	@docker build --target php-base -t $(REGISTRY_IMAGE)/php:8.2-base ./
-	@docker push $(REGISTRY_IMAGE)/php:8.2-base
+docker-build-push: login
+	@docker build --target prod -t $(DOCKER_IMAGE):latest ./
+	@docker push $(DOCKER_IMAGE):latest
 
 ## —— Git ———————————————————————————————————
 git-clean-branches: ## Clean merged branches

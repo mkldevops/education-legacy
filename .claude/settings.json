@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose:*)",
+      "Bash(docker exec:*)",
+      "Bash(make:*)",
+      "Bash(curl:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
+      "Bash(sed:*)",
+      "Bash(perl:*)",
+      "Bash(php:*)",
+      "Read(~/.zshrc)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

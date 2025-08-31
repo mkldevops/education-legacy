@@ -162,7 +162,7 @@ class Course implements EntityInterface, AuthorEntityInterface
     }
 
     /**
-     * @return Collection|Teacher[]
+     * @return Collection<int, Teacher>
      */
     public function getTeachers(): Collection|iterable
     {
@@ -194,7 +194,7 @@ class Course implements EntityInterface, AuthorEntityInterface
     }
 
     /**
-     * @return AppealCourse[]|Collection
+     * @return Collection<int, AppealCourse>
      */
     public function getStudents(): Collection
     {
