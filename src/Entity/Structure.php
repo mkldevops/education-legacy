@@ -131,6 +131,9 @@ class Structure implements \Stringable, EntityInterface, AuthorEntityInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Member>
+     */
     public function getMembers(): Collection
     {
         return $this->members;

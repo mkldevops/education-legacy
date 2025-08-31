@@ -161,6 +161,9 @@ class Operation implements EntityInterface, PublisherEntityInterface, AuthorEnti
         return $this;
     }
 
+    /**
+     * @return Collection<int, PaymentPackageStudent>
+     */
     public function getPaymentPackageStudents(): Collection
     {
         return $this->paymentPackageStudents;
@@ -244,6 +247,9 @@ class Operation implements EntityInterface, PublisherEntityInterface, AuthorEnti
         $this->documents->removeElement($document);
     }
 
+    /**
+     * @return Collection<int, Document>
+     */
     public function getDocuments(): Collection
     {
         return $this->documents;

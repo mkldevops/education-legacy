@@ -97,6 +97,9 @@ class School implements \Stringable, EntityInterface, AuthorEntityInterface
         $this->packages->removeElement($package);
     }
 
+    /**
+     * @return Collection<int, Package>
+     */
     public function getPackages(): Collection
     {
         return $this->packages;

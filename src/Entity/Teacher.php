@@ -75,6 +75,9 @@ class Teacher implements EntityInterface, AuthorEntityInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, ClassPeriod>
+     */
     public function getClassPeriods(): Collection
     {
         return $this->classPeriods;
@@ -124,6 +127,9 @@ class Teacher implements EntityInterface, AuthorEntityInterface
         $this->courses->removeElement($course);
     }
 
+    /**
+     * @return Collection<int, Course>
+     */
     public function getCourses(): Collection
     {
         return $this->courses;

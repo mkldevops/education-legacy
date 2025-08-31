@@ -211,6 +211,9 @@ class PackageStudentPeriod implements \Stringable, EntityInterface, AuthorEntity
         $this->payments->removeElement($paymentPackageStudent);
     }
 
+    /**
+     * @return Collection<int, PaymentPackageStudent>
+     */
     public function getPayments(): Collection
     {
         return $this->payments;

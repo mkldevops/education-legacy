@@ -15,7 +15,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 #[AsDoctrineListener(event: 'preUpdate')]
 readonly class PublisherDoctrineListener
 {
-    public function __construct(private readonly Security $security) {}
+    public function __construct(private Security $security) {}
 
     public function __invoke(PrePersistEventArgs|PreUpdateEventArgs $args): void
     {

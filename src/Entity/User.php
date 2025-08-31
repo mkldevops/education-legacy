@@ -164,6 +164,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
         return $this;
     }
 
+    /**
+     * @return Collection<int, School>
+     */
     public function getSchoolAccessRight(): Collection
     {
         return $this->schoolAccessRight;

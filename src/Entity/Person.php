@@ -246,6 +246,9 @@ class Person implements \Stringable, EntityInterface, AuthorEntityInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, School>
+     */
     public function getSchools(): Collection
     {
         return $this->schools;

@@ -155,6 +155,9 @@ class AccountStatement implements \Stringable, EntityInterface, AuthorEntityInte
         return $this;
     }
 
+    /**
+     * @return Collection<int, Document>
+     */
     public function getDocuments(): Collection
     {
         return $this->documents;
@@ -176,6 +179,9 @@ class AccountStatement implements \Stringable, EntityInterface, AuthorEntityInte
         return $this;
     }
 
+    /**
+     * @return Collection<int, Operation>
+     */
     public function getOperations(): array|Collection
     {
         return $this->operations;

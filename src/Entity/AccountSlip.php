@@ -283,6 +283,9 @@ class AccountSlip implements \Stringable, EntityInterface, AuthorEntityInterface
         $this->documents->removeElement($document);
     }
 
+    /**
+     * @return Collection<int, Document>
+     */
     public function getDocuments(): Collection
     {
         return $this->documents;
