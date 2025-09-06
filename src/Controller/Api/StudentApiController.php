@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(path: '/api', name: 'app_api_', options: ['expose' => true])]
 class StudentApiController extends AbstractController
 {
     public function __construct(
@@ -28,7 +29,7 @@ class StudentApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route('/api/student/create', name: 'app_api_student_create', methods: ['POST'])]
+    #[Route('/student/create', name: 'student_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $student = new Student();
@@ -46,7 +47,7 @@ class StudentApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route('/api/student/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
+    #[Route('/student/update/{id}', name: 'student_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Student $student): JsonResponse
     {
         $this->logger->info(__FUNCTION__);

@@ -1,21 +1,43 @@
-$(function() {
-    $('#modalPackageStudentPeriod').on('show.bs.modal', function (event) {
-        let button = $(event.relatedTarget) // Button that triggered the modal
-        let student = button.data('student') // Extract info from data-* attributes
-        console.log(student)
-        $('#app_package_student_period_student').val(student);
-    })
+document.addEventListener('DOMContentLoaded', function() {
+    const modalElement = document.getElementById('modalPackageStudentPeriod');
 
-    $('.modal #save-package-student').click(function (event) {
-        event.preventDefault()
+    if (modalElement) {
+        modalElement.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const student = button.getAttribute('data-student'); // Extract info from data-* attributes
+            console.log(student);
+            const studentInput = document.getElementById('app_package_student_period_student');
+            if (studentInput) {
+                studentInput.value = student;
+            }
+        });
+    }
 
-        $.post(Routing.generate( 'app_api_package_student_period_create'), $( this ).parents('form').serialize())
-            .done(function (data) {
-                document.location.reload(true)
-            }).fail(function (data) {
-            console.log(data)
-                alert(data)
+    const saveButton = document.querySelector('.modal #save-package-student');
+    if (saveButton) {
+        saveButton.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const form = this.closest('form');
+            const formData = new FormData(form);
+
+            fetch(Routing.generate('app_api_package_student_period_create'), {
+                method: 'POST',
+                body: formData
             })
-
-    })
+            .then(function(response) {
+                if (response.ok) {
+                    document.location.reload(true);
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+                alert(error.message);
+            });
+        });
+    }
 });
