@@ -4,23 +4,30 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Dto\PackageStudentPeriodCreateDto;
+use App\Dto\PackageStudentPeriodUpdateDto;
 use App\Entity\PackageStudentPeriod;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Exception\PeriodException;
-use App\Form\PackageStudentPeriodType;
+use App\Fetcher\SessionFetcherInterface;
 use App\Manager\PackageStudentPeriodManager;
-use Psr\Log\LoggerInterface;
+use App\Repository\PackageRepository;
+use App\Repository\StudentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PackageStudentPeriodApiController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
         private readonly PackageStudentPeriodManager $packageStudentPeriodManager,
+        private readonly PackageRepository $packageRepository,
+        private readonly StudentRepository $studentRepository,
+        private readonly SessionFetcherInterface $sessionFetcher,
+        private readonly ValidatorInterface $validator,
     ) {}
 
     /**
@@ -28,16 +35,37 @@ class PackageStudentPeriodApiController extends AbstractController
      * @throws PeriodException
      * @throws InvalidArgumentException
      */
-    #[Route(path: '/api/pachage-student-period/create', name: 'app_api_package_student_period_create', methods: ['POST'], options: ['expose' => true])]
-    public function create(Request $request): JsonResponse
+    #[Route(
+        path: '/api/pachage-student-period/create',
+        name: 'app_api_package_student_period_create',
+        methods: ['POST'],
+        options: ['expose' => true]
+    )]
+    public function create(#[MapRequestPayload] PackageStudentPeriodCreateDto $packageStudentPeriodCreateDto): JsonResponse
     {
-        $packageStudentPeriod = new PackageStudentPeriod();
+        $constraintViolationList = $this->validator->validate($packageStudentPeriodCreateDto);
+        if (\count($constraintViolationList) > 0) {
+            $errors = [];
+            foreach ($constraintViolationList as $violation) {
+                $errors[$violation->getPropertyPath()] = $violation->getMessage();
+            }
 
-        $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)->handleRequest($request);
+            throw new AppException('Validation failed: '.json_encode($errors));
+        }
+
+        $package = $this->packageRepository->find($packageStudentPeriodCreateDto->packageId);
+        $student = $this->studentRepository->find($packageStudentPeriodCreateDto->studentId);
+
+        $period = $this->sessionFetcher->getEntityPeriodOnSession();
+
+        $packageStudentPeriod = new PackageStudentPeriod();
+        $packageStudentPeriod->setPackage($package);
+        $packageStudentPeriod->setStudent($student);
+        $packageStudentPeriod->setPeriod($period);
+        $packageStudentPeriod->setDiscount($packageStudentPeriodCreateDto->discount);
+        $packageStudentPeriod->setComment($packageStudentPeriodCreateDto->comment);
 
         $this->packageStudentPeriodManager->add($packageStudentPeriod);
-
-        $this->addFlash('success', 'The package of student has been added.');
 
         return $this->json([
             'result' => true,
@@ -54,27 +82,24 @@ class PackageStudentPeriodApiController extends AbstractController
         methods: ['POST', 'PUT'],
         options: ['expose' => true]
     )]
-    public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): JsonResponse
+    public function update(#[MapRequestPayload] PackageStudentPeriodUpdateDto $packageStudentPeriodUpdateDto, PackageStudentPeriod $packageStudentPeriod): JsonResponse
     {
-        $this->logger->info(__FUNCTION__, ['request' => $request]);
-        $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
-            ->handleRequest($request)
-        ;
+        $constraintViolationList = $this->validator->validate($packageStudentPeriodUpdateDto);
+        if (\count($constraintViolationList) > 0) {
+            $errors = [];
+            foreach ($constraintViolationList as $violation) {
+                $errors[$violation->getPropertyPath()] = $violation->getMessage();
+            }
 
-        if (!$form->isSubmitted()) {
-            throw new AppException('The form is not submitted ');
+            throw new AppException('Validation failed: '.json_encode($errors));
         }
 
-        if (!$form->isValid()) {
-            throw new AppException('The form is not valid '.$form->getErrors());
-        }
+        $package = $this->packageRepository->find($packageStudentPeriodUpdateDto->packageId);
+        $packageStudentPeriod->setPackage($package);
+        $packageStudentPeriod->setDiscount($packageStudentPeriodUpdateDto->discount);
+        $packageStudentPeriod->setComment($packageStudentPeriodUpdateDto->comment);
 
         $this->packageStudentPeriodManager->edit($packageStudentPeriod);
-
-        $this->addFlash('success', \sprintf(
-            'The package of student %s has been updated.',
-            $packageStudentPeriod->getStudent()
-        ));
 
         return $this->json([
             'result' => true,
