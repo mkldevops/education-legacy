@@ -1,5 +1,16 @@
 // Use jQuery events because Bootstrap 3/4 trigger jQuery events, not native ones
 $(function () {
+    // Helper to support both FOSJsRouting v1 (Routing) and v2+ (fos.Router)
+    function routeGenerate(name, params) {
+        params = params || {};
+        if (window.fos && window.fos.Router && typeof window.fos.Router.generate === 'function') {
+            return window.fos.Router.generate(name, params);
+        }
+        if (window.Routing && typeof window.Routing.generate === 'function') {
+            return window.Routing.generate(name, params);
+        }
+        throw new Error('Routing is not available on this page');
+    }
     // When the modal is about to be shown
     $(document).on('show.bs.modal', '#modalPackageStudentPeriod', function (event) {
         var button = event.relatedTarget; // Button that triggered the modal
@@ -60,7 +71,7 @@ $(function () {
             comment: commentField ? String(commentField.value || '') : ''
         };
 
-        fetch(Routing.generate('app_api_package_student_period_create'), {
+        fetch(routeGenerate('app_api_package_student_period_create'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
