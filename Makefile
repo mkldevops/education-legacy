@@ -10,7 +10,7 @@ DOCKER_EXEC			:=
 DOCKER_TEST_EXEC	:= APP_ENV=test
 CONSOLE 			:= symfony console
 COMPOSER 			:= symfony composer
-.DEFAULT_GOAL 		:= help
+.DEFAULT_GOAL 		:= up
 .PHONY: tests
 SHELL := /bin/bash
 

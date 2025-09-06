@@ -28,7 +28,7 @@ class PackageStudentPeriodApiController extends AbstractController
      * @throws PeriodException
      * @throws InvalidArgumentException
      */
-    #[Route(path: '/api/pachage-student-period/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
+    #[Route(path: '/api/pachage-student-period/create', name: 'app_api_package_student_period_create', methods: ['POST'], options: ['expose' => true])]
     public function create(Request $request): JsonResponse
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -48,7 +48,12 @@ class PackageStudentPeriodApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/api/pachage-student-period/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
+    #[Route(
+        path: '/api/pachage-student-period/update/{id}',
+        name: 'app_api_package_student_period_update',
+        methods: ['POST', 'PUT'],
+        options: ['expose' => true]
+    )]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): JsonResponse
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);

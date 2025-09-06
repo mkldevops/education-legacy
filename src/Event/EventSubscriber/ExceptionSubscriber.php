@@ -40,7 +40,11 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function processException(ExceptionEvent $exceptionEvent): void
     {
         $throwable = $exceptionEvent->getThrowable();
-        $this->logger->error(__METHOD__, ['exception' => $throwable]);
+
+        // Don't log AccessDeniedException as errors since they're expected security behavior
+        if (!$throwable instanceof AccessDeniedException) {
+            $this->logger->error(__METHOD__, ['exception' => $throwable]);
+        }
 
         if ($throwable instanceof AccessDeniedException && !$this->security->getUser() instanceof UserInterface) {
             $exceptionEvent->setResponse(new RedirectResponse('/login'));

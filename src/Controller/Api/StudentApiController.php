@@ -28,7 +28,7 @@ class StudentApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route('/api/student/create', name: 'app_api_student_create', methods: ['POST'])]
+    #[Route('/api/student/create', name: 'app_api_student_create', methods: ['POST'], options: ['expose' => true])]
     public function create(Request $request): JsonResponse
     {
         $student = new Student();
@@ -46,7 +46,7 @@ class StudentApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route('/api/student/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'])]
+    #[Route('/api/student/update/{id}', name: 'app_api_student_update', methods: ['POST', 'PUT'], options: ['expose' => true])]
     public function update(Request $request, Student $student): JsonResponse
     {
         $this->logger->info(__FUNCTION__);
