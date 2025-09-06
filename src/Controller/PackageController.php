@@ -114,8 +114,13 @@ class PackageController extends AbstractController
     }
 
     /**
-     * Displays a form to edit an existing Package entity.
-     */
+         * Show the edit form for an existing Package.
+         *
+         * The Package is typically resolved from the `{id}` route parameter (ParamConverter).
+         *
+         * @param Package $package The Package entity to edit.
+         * @return Response The rendered edit page response.
+         */
     #[Route(path: '/package/edit/{id}', name: 'app_package_edit', methods: ['GET'])]
     public function edit(Package $package): Response
     {
@@ -127,6 +132,16 @@ class PackageController extends AbstractController
         ]);
     }
 
+    /**
+     * Process and persist edits to an existing Package entity.
+     *
+     * Validates the submitted edit form; on success flushes changes, adds a success flash
+     * message, and redirects to the package show page. If the form is not valid the edit
+     * template is re-rendered with validation errors.
+     *
+     * @param Package $package The Package entity being edited.
+     * @return Response A redirect to the package show route on success, or the edit page response on validation failure.
+     */
     #[Route(path: '/package/update/{id}', name: 'app_package_update', methods: ['POST'])]
     public function update(Request $request, Package $package, EntityManagerInterface $entityManager): Response
     {

@@ -20,6 +20,11 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api', name: 'app_api_', options: ['expose' => true])]
 class StudentApiController extends AbstractController
 {
+    /**
+     * Constructor.
+     *
+     * Stores injected dependencies used for persistence, logging, and obtaining the current school.
+     */
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
@@ -27,7 +32,12 @@ class StudentApiController extends AbstractController
     ) {}
 
     /**
-     * @throws AppException
+     * Handle POST request to create a new Student from submitted form data and return its JSON representation.
+     *
+     * Validates and persists the new Student and adds a success flash message on success.
+     *
+     * @throws AppException If the form is not submitted or contains validation errors.
+     * @return JsonResponse The created student serialized via StudentModel::fromStudent.
      */
     #[Route('/student/create', name: 'student_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
@@ -45,7 +55,16 @@ class StudentApiController extends AbstractController
     }
 
     /**
-     * @throws AppException
+     * Update an existing Student from request data and return its JSON representation.
+     *
+     * Processes the submitted StudentType form bound to the provided Student entity,
+     * validates and persists changes (via persistData), adds a success flash message,
+     * and returns the updated student as JSON using StudentModel::fromStudent().
+     *
+     * @param Request $request HTTP request containing form data.
+     * @param Student $student The Student entity to update (provided by route parameter).
+     * @return JsonResponse JSON representation of the updated student.
+     * @throws AppException If the form is not submitted or contains validation errors.
      */
     #[Route('/student/update/{id}', name: 'student_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, Student $student): JsonResponse

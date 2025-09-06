@@ -130,13 +130,25 @@ class Operation implements EntityInterface, PublisherEntityInterface, AuthorEnti
     }
 
     /**
-     * @return null|\DateTime|\DateTimeImmutable
+     * Get the planned date for the operation.
+     *
+     * This is the operation's planned date (used when the actual date is not set).
+     *
+     * @return \DateTimeInterface|null
      */
     public function getDatePlanned(): ?\DateTimeInterface
     {
         return $this->datePlanned;
     }
 
+    /**
+     * Set the planned date for the operation.
+     *
+     * Accepts a DateTime or DateTimeImmutable instance, or null to clear the planned date.
+     *
+     * @param \DateTime|\DateTimeImmutable|null $datePlanned The planned date or null.
+     * @return $this
+     */
     public function setDatePlanned(\DateTime|\DateTimeImmutable|null $datePlanned): self
     {
         $this->datePlanned = $datePlanned;
