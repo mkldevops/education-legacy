@@ -113,6 +113,13 @@ class FamilyController extends AbstractController
         ]);
     }
 
+    /**
+     * Processes the edit form for a Family: on valid submission persists changes and redirects to the family's show page; otherwise re-renders the edit form.
+     *
+     * If the submitted edit form is valid this method calls the entity manager's flush to persist changes and returns a RedirectResponse to the family's show route. If the form is not submitted or is invalid it returns a Response rendering the edit template with the form view.
+     *
+     * @return RedirectResponse|Response Redirects to the family's show page on success, or renders the edit page on failure.
+     */
     #[Route(path: '/family/{id}/update', methods: ['POST'])]
     public function update(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
@@ -129,6 +136,15 @@ class FamilyController extends AbstractController
         ]);
     }
 
+    /**
+     * Display a confirmation page for deleting a Family and perform the deletion on POST.
+     *
+     * If the submitted confirmation form is valid, the Family entity is removed and the EntityManager is flushed,
+     * a success flash message is added, and the user is redirected to the family index. Otherwise the delete
+     * confirmation view is rendered.
+     *
+     * @return RedirectResponse|Response Redirects to the family index after successful deletion, or renders the confirmation page.
+     */
     #[Route(path: '/family/delete/{id}', methods: ['GET', 'POST'])]
     public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
@@ -149,6 +165,15 @@ class FamilyController extends AbstractController
         ]);
     }
 
+    /**
+     * Create and handle the "create family" form.
+     *
+     * Builds a FamilyType form for the given Family, sets its action to the family creation route
+     * with POST method, adds a submit button labeled `form.button.create`, and processes the provided Request
+     * (binding submitted data and validation state).
+     *
+     * @return FormInterface The prepared form instance (already handled against the request).
+     */
     private function createCreateForm(Request $request, Family $family): FormInterface
     {
         return $this->createForm(FamilyType::class, $family, [
@@ -174,6 +199,15 @@ class FamilyController extends AbstractController
         return $form;
     }
 
+    /**
+     * Create a delete confirmation form for a Family.
+     *
+     * The form submits via POST to the `app_family_delete` route for the given family's id
+     * and contains a single submit button labeled `form.button.delete`.
+     *
+     * @param Family $family The family whose id is used to build the delete route.
+     * @return FormInterface The configured delete confirmation form.
+     */
     private function createDeleteForm(Family $family): FormInterface
     {
         return $this->createFormBuilder()
