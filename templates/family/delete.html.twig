@@ -1,0 +1,18 @@
+{% extends 'family/common.html.twig' %}
+
+{% trans_default_domain 'family' %}
+
+{% set title = 'family.title.delete'|trans({'%name%' : family}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_family_show', {id : family.id })}|merge(breadcrumbs|default({})) %}
+
+{% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
+
+
+{% block body %}
+    {% embed '_inspina/embed/delete.html.twig' %}
+        {% trans_default_domain 'family' %}
+        {% set nameEntity = 'name_entity'|trans %}
+        {% block title 'form.title.delete'|trans %}
+    {% endembed %}
+{% endblock %}

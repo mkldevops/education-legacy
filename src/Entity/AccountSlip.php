@@ -135,6 +135,9 @@ class AccountSlip implements \Stringable, EntityInterface, AuthorEntityInterface
         return $this->id;
     }
 
+    /**
+     * @return string[]
+     */
     public function getErrors(): array
     {
         $errors = [];

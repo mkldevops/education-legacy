@@ -137,7 +137,7 @@ class Operation implements EntityInterface, PublisherEntityInterface, AuthorEnti
         return $this->datePlanned;
     }
 
-    public function setDatePlanned(null|\DateTime|\DateTimeImmutable $datePlanned): self
+    public function setDatePlanned(\DateTime|\DateTimeImmutable|null $datePlanned): self
     {
         $this->datePlanned = $datePlanned;
 

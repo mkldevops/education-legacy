@@ -127,7 +127,7 @@ class PackageController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/package/update/{}id', name: 'app_package_update', methods: ['POST'])]
+    #[Route(path: '/package/update/{id}', name: 'app_package_update', methods: ['POST'])]
     public function update(Request $request, Package $package, EntityManagerInterface $entityManager): Response
     {
         $editForm = $this->createEditForm($package);

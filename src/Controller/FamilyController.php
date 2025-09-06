@@ -129,17 +129,24 @@ class FamilyController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/family/delete/{id}', methods: ['DELETE'])]
-    public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse
+    #[Route(path: '/family/delete/{id}', methods: ['GET', 'POST'])]
+    public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse|Response
     {
         $form = $this->createDeleteForm($family);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->remove($family);
             $entityManager->flush();
+
+            $this->addFlash('success', 'The Family has been deleted.');
+
+            return $this->redirectToRoute('app_family_index');
         }
 
-        return $this->redirectToRoute('app_family_index');
+        return $this->render('family/delete.html.twig', [
+            'family' => $family,
+            'delete_form' => $form,
+        ]);
     }
 
     private function createCreateForm(Request $request, Family $family): FormInterface
@@ -171,7 +178,7 @@ class FamilyController extends AbstractController
     {
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_family_delete', ['id' => $family->getId()]))
-            ->setMethod(Request::METHOD_DELETE)
+            ->setMethod(Request::METHOD_POST)
             ->getForm()
             ->add('submit', SubmitType::class, ['label' => 'form.button.delete'])
         ;
