@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api', name: 'app_api_', options: ['expose' => true])]
 class PackageStudentPeriodApiController extends AbstractController
 {
     public function __construct(
@@ -29,7 +28,7 @@ class PackageStudentPeriodApiController extends AbstractController
      * @throws PeriodException
      * @throws InvalidArgumentException
      */
-    #[Route(path: '/pachage-student-period/create', name: 'package_student_period_create', methods: ['POST'])]
+    #[Route(path: '/api/pachage-student-period/create', name: 'app_api_package_student_period_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $packageStudentPeriod = new PackageStudentPeriod();
@@ -49,7 +48,7 @@ class PackageStudentPeriodApiController extends AbstractController
     /**
      * @throws AppException
      */
-    #[Route(path: '/pachage-student-period/update/{id}', name: 'package_student_period_update', methods: ['POST', 'PUT'])]
+    #[Route(path: '/api/pachage-student-period/update/{id}', name: 'app_api_package_student_period_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, PackageStudentPeriod $packageStudentPeriod): JsonResponse
     {
         $this->logger->info(__FUNCTION__, ['request' => $request]);
