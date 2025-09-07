@@ -44,22 +44,6 @@
                 {% endblock %}
             {% endembed %}
 
-            {% if member %}
-                <a href="{{ path('app_member_show', { 'id': member.id }) }}" class="btn btn-default btn-block">
-                    <i class="fab fa-shirtsinbulk"></i>
-                    <span>{% trans %}Profil Member{% endtrans %} ({{ member.positionName }})</span>
-                </a>
-            {% else %}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('app_member_new', { 'person' : person.id }) }}" class="btn btn-default btn-block">
-                        <i class="fab fa-shirtsinbulk"></i>
-                        {% trans %}Add Profil Member{% endtrans %}
-                    </a>
-                {% else %}
-                    {% trans %}only an administrator can add the state to member profile{% endtrans %}
-                {% endif %}
-            {% endif %}
-
             {% if student %}
                 <a href="{{ path('app_student_show', { 'id': student.id }) }}" class="btn btn-default btn-block">
                     <i class="fa fa-graduation-cap"></i>

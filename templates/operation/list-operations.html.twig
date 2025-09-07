@@ -27,7 +27,7 @@
                 {%  set debit = debit + (operation.amount < 0 ? operation.amount : 0) %}
                 {%  set total = total + operation.amount %}
                 {%  set label = '' %}
-                
+
                 <tr id="operation-{{ operation.id }}" data-id="{{ operation.id }}">
                     <td class="date desc">
                         {% if operation.date and operation.date.timestamp > 0  %}
@@ -45,7 +45,7 @@
                             {% if operation.typeOperation.id|default(null) > 0 %}
                                 {% set label = operation.amount > 0 ? 'label-success' : 'label-danger' %}
                             {% endif %}
-                            
+
                             <span class="type-operation label {{ label }}"
                                title="{{ operation.typeOperation.name|default('unknow') }}"
                                data-toggle="modal"
@@ -89,7 +89,7 @@
                 </tr>
             {% endfor %}
         </tbody>
-        
+
         <tfoot>
             <tr>
                 <th colspan="6" class="text-right"> Total : </th>
@@ -99,7 +99,5 @@
             </tr>
         </tfoot>
     </table>
-    
-    {{ render(controller('App\\Controller\\TypeOperationController:modalList')) }}
-    
+
 {% endif %}

@@ -14,8 +14,8 @@
     <server name="APP_ENV" value="test" force="true" />
     <server name="SHELL_VERBOSITY" value="-1" />
     <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-    <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
-    <server name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
+    <server name="SYMFONY_PHPUNIT_VERSION" value="10.5" />
+    <server name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0" />
   </php>
 
   <testsuites>
@@ -34,9 +34,7 @@
     </exclude>
   </coverage>
 
-  <listeners>
-    <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-  </listeners>
+  <!-- Symfony PHPUnit Bridge now integrates via simple-phpunit; listeners are no longer needed in PHPUnit 10. -->
 
   <extensions>
     <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
