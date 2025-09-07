@@ -61,10 +61,20 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $data['traces'] = $throwable->getTrace();
         }
 
-        $jsonResponse = new JsonResponse($data, $throwable->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+        // Determine a valid HTTP status code.
+        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+        if ($throwable instanceof HttpExceptionInterface) {
+            $status = $throwable->getStatusCode();
+        } else {
+            $code = (int) $throwable->getCode();
+            if ($code >= 400 && $code <= 599) {
+                $status = $code;
+            }
+        }
+
+        $jsonResponse = new JsonResponse($data, $status);
 
         if ($throwable instanceof HttpExceptionInterface) {
-            $jsonResponse->setStatusCode($throwable->getStatusCode());
             $jsonResponse->headers->add($throwable->getHeaders());
         }
 
