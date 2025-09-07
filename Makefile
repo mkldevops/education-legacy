@@ -144,13 +144,13 @@ test-load-fixtures: ## load database schema & fixtures
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:fixtures:load -n
 
 test: phpunit.xml.dist ## Launch main functional and unit tests, stopped on failure
-	$(DOCKER_TEST_EXEC) ./vendor/bin/simple-phpunit --stop-on-failure
+	$(DOCKER_TEST_EXEC) ./vendor/bin/phpunit --stop-on-failure
 
 test-all: phpunit.xml.dist test-load-fixtures ## Launch main functional and unit tests
-	$(DOCKER_TEST_EXEC) ./vendor/bin/simple-phpunit $c
+	$(DOCKER_TEST_EXEC) ./vendor/bin/phpunit $c
 
 test-report: phpunit.xml.dist test-load-fixtures ## Launch main functional and unit tests with report
-	$(DOCKER_TEST_EXEC) ./vendor/bin/simple-phpunit --coverage-text --colors=never --log-junit report.xml $c
+	$(DOCKER_TEST_EXEC) ./vendor/bin/phpunit --coverage-text --colors=never --log-junit report.xml $c
 
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
 stan: ## Run PHPStan only

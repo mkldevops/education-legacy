@@ -63,8 +63,8 @@ class ClassPeriodRepository extends ServiceEntityRepository
             ->leftJoin('clp.classSchool', 'cls')
             ->where('clp.period = :period')
             ->andWhere('cls.school = :school')
-            ->setParameter('period', $period->getId())
-            ->setParameter('school', $school->getId())
+            ->setParameter('period', $period)
+            ->setParameter('school', $school)
         ;
     }
 

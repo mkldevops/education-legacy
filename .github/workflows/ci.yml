@@ -180,8 +180,8 @@ jobs:
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
           php bin/console doctrine:fixtures:load --env=test --no-interaction
 
-      - name: Run PHPUnit Tests
-        run: ./vendor/bin/simple-phpunit --coverage-text --coverage-clover coverage.xml
+      - name: Run PHPUnit Tests (PHPUnit 10)
+        run: ./vendor/bin/phpunit --coverage-text --coverage-clover coverage.xml
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
