@@ -53,8 +53,7 @@
         crossorigin="anonymous"
         ></script>
 
-    <!-- FOSJsRouting: use static path to avoid AssetMapper fingerprinting in prod -->
-    <script src="/bundles/fosjsrouting/js/router.js"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
 
     <!-- Mainly scripts -->
