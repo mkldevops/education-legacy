@@ -4,57 +4,98 @@ A comprehensive Symfony 7.3 education management system designed for managing st
 
 ## 📋 Table of Contents
 
-- [Features](#-features)
-- [Prerequisites](#-prerequisites)
-- [Installation](#-installation)
-- [Development Commands](#-development-commands)
-- [Project Structure](#-project-structure)
-- [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
-- [Configuration](#-configuration)
-- [Testing](#-testing)
-- [Deployment](#-deployment)
+-   [Features](#-features)
+-   [Prerequisites](#-prerequisites)
+-   [Installation](#-installation)
+-   [Development Commands](#-development-commands)
+-   [Project Structure](#-project-structure)
+-   [Architecture](#-architecture)
+-   [Tech Stack](#-tech-stack)
+-   [Configuration](#-configuration)
+-   [Testing](#-testing)
+-   [Deployment](#-deployment)
 
 ## ✨ Features
 
 ### Education Management
-- **Student Management**: Complete student profiles with academic history
-- **Family Management**: Family relationships and contact information
-- **School Administration**: Multi-school support with class organization
-- **Course Management**: Course creation, scheduling, and assignments
-- **Grade Tracking**: Comprehensive grade management and reporting
-- **Academic Periods**: Support for academic years and periods
+
+-   **Student Management**: Complete student profiles with academic history
+-   **Family Management**: Family relationships and contact information
+-   **School Administration**: Multi-school support with class organization
+-   **Course Management**: Course creation, scheduling, and assignments
+-   **Grade Tracking**: Comprehensive grade management and reporting
+-   **Academic Periods**: Support for academic years and periods
 
 ### Financial Operations
-- **Package Management**: Educational packages and pricing
-- **Payment Processing**: Student payment tracking and management
-- **Financial Reporting**: Detailed financial reports and analytics
-- **Account Management**: Student account balances and transactions
+
+-   **Package Management**: Educational packages and pricing
+-   **Payment Processing**: Student payment tracking and management
+-   **Financial Reporting**: Detailed financial reports and analytics
+-   **Account Management**: Student account balances and transactions
 
 ### Administrative Features
-- **User Management**: Role-based access control
-- **Document Management**: File uploads and document organization
-- **QR Code Generation**: QR codes for various entities
-- **Multi-language Support**: Internationalization ready
-- **Email Notifications**: Automated email system
+
+-   **User Management**: Role-based access control
+-   **Document Management**: File uploads and document organization
+-   **QR Code Generation**: QR codes for various entities
+-   **Multi-language Support**: Internationalization ready
+-   **Email Notifications**: Automated email system
 
 ## 🔧 Prerequisites
 
-- **PHP**: 8.2 or higher
-- **Docker**: Latest version
-- **Docker Compose**: Latest version
-- **Make**: Build automation tool
-- **Git**: Version control
+-   **PHP**: 8.2 or higher
+-   **Docker**: Latest version
+-   **Docker Compose**: Latest version
+-   **Make**: Build automation tool
+-   **Git**: Version control
 
 ## 🚀 Installation
 
 ### 1. Clone the Repository
+
+### Education Management
+
+-   **Student Management**: Complete student profiles with academic history
+-   **Family Management**: Family relationships and contact information
+-   **School Administration**: Multi-school support with class organization
+-   **Course Management**: Course creation, scheduling, and assignments
+-   **Grade Tracking**: Comprehensive grade management and reporting
+-   **Academic Periods**: Support for academic years and periods
+
+### Financial Operations
+
+-   **Package Management**: Educational packages and pricing
+-   **Payment Processing**: Student payment tracking and management
+-   **Financial Reporting**: Detailed financial reports and analytics
+-   **Account Management**: Student account balances and transactions
+
+### Administrative Features
+
+-   **User Management**: Role-based access control
+-   **Document Management**: File uploads and document organization
+-   **QR Code Generation**: QR codes for various entities
+-   **Multi-language Support**: Internationalization ready
+-   **Email Notifications**: Automated email system
+
+## 🔧 Prerequisites
+
+-   **PHP**: 8.2 or higher
+-   **Docker**: Latest version
+-   **Docker Compose**: Latest version
+-   **Make**: Build automation tool
+-   **Git**: Version control
+
+## 🚀 Installation
+
+### 1. Clone the Repository
+
 ```bash
 git clone <repository-url>
 cd education-legacy
 ```
 
 ### 2. Environment Setup
+
 ```bash
 # Copy environment file
 cp .env .env.local
@@ -64,6 +105,7 @@ nano .env.local
 ```
 
 ### 3. Start Development Environment
+
 ```bash
 # Start all services
 make up
@@ -77,13 +119,15 @@ make load-fixtures
 ```
 
 ### 4. Access the Application
-- **Application**: `http://localhost:3900`
-- **Admin Panel**: `http://localhost:3900/admin`
-- **Database**: `localhost:8801` (MySQL)
+
+-   **Application**: `http://localhost:3900`
+-   **Admin Panel**: `http://localhost:3900/admin`
+-   **Database**: `localhost:8801` (MySQL)
 
 ## 🛠 Development Commands
 
 ### Environment Management
+
 ```bash
 make up              # Start all containers
 make down            # Stop all containers
@@ -95,6 +139,7 @@ make app             # Access app container shell
 ```
 
 ### Database Operations
+
 ```bash
 make create-database     # Create database
 make migrate            # Run migrations
@@ -105,6 +150,7 @@ make doctrine-validate  # Validate schema
 ```
 
 ### Testing
+
 ```bash
 make test              # Run basic tests
 make test-all          # Run all tests with fixtures
@@ -116,6 +162,7 @@ docker compose exec -e APP_ENV=test app ./vendor/bin/simple-phpunit tests/Path/T
 ```
 
 ### Code Quality & Analysis
+
 ```bash
 make analyze    # Run all analysis tools
 make stan       # PHPStan static analysis (level 5)
@@ -125,6 +172,7 @@ make rector     # Automated code refactoring
 ```
 
 ### Symfony Commands
+
 ```bash
 make cc         # Clear cache
 make warmup     # Warmup cache
@@ -165,57 +213,66 @@ education-legacy/
 ## 🏗 Architecture
 
 ### Domain-Driven Design
+
 The application follows DDD principles with clear separation of concerns:
 
 #### Core Entities (28 total)
-- **Academic**: `Student`, `Family`, `School`, `ClassSchool`, `ClassPeriod`, `Course`, `Grade`
-- **Financial**: `Package`, `PaymentPackageStudent`, `Operation`, `Account`, `AccountSlip`
-- **Administrative**: `User`, `Person`, `Member`, `Document`, `Period`
-- **System**: `OperationGender`, `TypeOperation`, `Structure`, `Validate`
+
+-   **Academic**: `Student`, `Family`, `School`, `ClassSchool`, `ClassPeriod`, `Course`, `Grade`
+-   **Financial**: `Package`, `PaymentPackageStudent`, `Operation`, `Account`, `AccountSlip`
+-   **Administrative**: `User`, `Person`, `Member`, `Document`, `Period`
+-   **System**: `OperationGender`, `TypeOperation`, `Structure`, `Validate`
 
 #### Layered Architecture
-- **Controllers**: HTTP request handling, EasyAdmin integration
-- **Managers**: Complex business logic and domain operations
-- **Repositories**: Database queries with custom methods
-- **Forms**: Data input validation and transformation
-- **Traits**: Reusable entity behaviors (`IdEntityTrait`, `NameEntityTrait`, etc.)
+
+-   **Controllers**: HTTP request handling, EasyAdmin integration
+-   **Managers**: Complex business logic and domain operations
+-   **Repositories**: Database queries with custom methods
+-   **Forms**: Data input validation and transformation
+-   **Traits**: Reusable entity behaviors (`IdEntityTrait`, `NameEntityTrait`, etc.)
 
 #### Design Patterns
-- **Repository Pattern**: All database access through repositories
-- **Manager Pattern**: Business logic encapsulation
-- **Trait Composition**: Shared entity properties
-- **Event-Driven**: Domain events for decoupled operations
+
+-   **Repository Pattern**: All database access through repositories
+-   **Manager Pattern**: Business logic encapsulation
+-   **Trait Composition**: Shared entity properties
+-   **Event-Driven**: Domain events for decoupled operations
 
 ## 🔧 Tech Stack
 
 ### Backend
-- **Framework**: Symfony 7.3 (migrated from 6.4)
-- **PHP**: 8.2+ with modern features
-- **Database**: MySQL 8.1 with Doctrine ORM
-- **Server**: FrankenPHP with PHP 8.4 Alpine
+
+-   **Framework**: Symfony 7.3 (migrated from 6.4)
+-   **PHP**: 8.2+ with modern features
+-   **Database**: MySQL 8.1 with Doctrine ORM
+-   **Server**: FrankenPHP with PHP 8.4 Alpine
 
 ### Frontend
-- **Templates**: Twig templating engine
-- **Assets**: Symfony AssetMapper
-- **Components**: Symfony UX Live Components
-- **Styling**: Bootstrap-based admin interface
+
+-   **Templates**: Twig templating engine
+-   **Assets**: Symfony AssetMapper
+-   **Components**: Symfony UX Live Components
+-   **Styling**: Bootstrap-based admin interface
 
 ### Development Tools
-- **Admin Panel**: EasyAdmin 4.7+ for CRUD operations
-- **Testing**: PHPUnit 9.5 with DAMA DoctrineTestBundle
-- **Code Quality**: PHPStan (level 5), PHP CS Fixer, Rector
-- **Container**: Docker with optimized multi-stage builds
+
+-   **Admin Panel**: EasyAdmin 4.7+ for CRUD operations
+-   **Testing**: PHPUnit 9.5 with DAMA DoctrineTestBundle
+-   **Code Quality**: PHPStan (level 5), PHP CS Fixer, Rector
+-   **Container**: Docker with optimized multi-stage builds
 
 ### Key Libraries
-- **QR Codes**: Endroid QR Code Bundle
-- **File Processing**: OFX Parser for financial data
-- **Monitoring**: Sentry integration
-- **Routing**: FOSJsRouting for frontend routing
-- **Extensions**: StofDoctrineExtensions, BeberleDoctrineExtensions
+
+-   **QR Codes**: Endroid QR Code Bundle
+-   **File Processing**: OFX Parser for financial data
+-   **Monitoring**: Sentry integration
+-   **Routing**: FOSJsRouting for frontend routing
+-   **Extensions**: StofDoctrineExtensions, BeberleDoctrineExtensions
 
 ## ⚙️ Configuration
 
 ### Environment Variables
+
 ```bash
 # Database
 DATABASE_URL=mysql://app:db_password@database/education_app?charset=utf8mb4
@@ -235,22 +292,25 @@ SENTRY_DSN=your-sentry-dsn
 ```
 
 ### Docker Services
-- **app**: Symfony application (FrankenPHP + PHP 8.4)
-  - Port: 3900 (configurable)
-  - Volumes: Application code, uploads
-- **database**: MySQL 8.1
-  - Port: 8801 (configurable)
-  - Volume: Persistent database storage
+
+-   **app**: Symfony application (FrankenPHP + PHP 8.4)
+    -   Port: 3900 (configurable)
+    -   Volumes: Application code, uploads
+-   **database**: MySQL 8.1
+    -   Port: 8801 (configurable)
+    -   Volume: Persistent database storage
 
 ## 🧪 Testing
 
 ### Test Configuration
-- **Framework**: PHPUnit 9.5 with Symfony Test Bundle
-- **Database**: DAMA DoctrineTestBundle for transaction rollback
-- **Fixtures**: Alice/Faker for test data generation
-- **Coverage**: PHPUnit coverage reporting
+
+-   **Framework**: PHPUnit 9.5 with Symfony Test Bundle
+-   **Database**: DAMA DoctrineTestBundle for transaction rollback
+-   **Fixtures**: Alice/Faker for test data generation
+-   **Coverage**: PHPUnit coverage reporting
 
 ### Running Tests
+
 ```bash
 # All tests with fresh fixtures
 make test-all
@@ -264,6 +324,7 @@ docker compose exec -e APP_ENV=test app ./vendor/bin/simple-phpunit --group inte
 ## 🚀 Deployment
 
 ### Production Environment
+
 ```bash
 # Build production image
 docker build --target prod -t education-app .
@@ -274,16 +335,19 @@ DATABASE_URL=mysql://user:pass@host/database
 ```
 
 ### CI/CD Pipeline
+
 The project includes GitLab CI configuration with:
-- Automated testing
-- Code quality checks
-- Docker image building
-- Deployment automation
+
+-   Automated testing
+-   Code quality checks
+-   Docker image building
+-   Deployment automation
 
 ### Monitoring
-- **Error Tracking**: Sentry integration
-- **Logging**: Monolog with structured logging
-- **Performance**: Built-in Symfony profiler (dev only)
+
+-   **Error Tracking**: Sentry integration
+-   **Logging**: Monolog with structured logging
+-   **Performance**: Built-in Symfony profiler (dev only)
 
 ---
 

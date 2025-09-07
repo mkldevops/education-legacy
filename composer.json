@@ -12,6 +12,7 @@
         "asgrim/ofxparser": "^1",
         "beberlei/doctrineextensions": "^1",
         "composer/package-versions-deprecated": "^1.11",
+        "doctrine/dbal": "^3.6",
         "doctrine/annotations": "^2.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.2",
@@ -50,7 +51,7 @@
         "symfony/web-link": "^7.3",
         "symfony/yaml": "^7.3",
         "twig/extra-bundle": "^3.0",
-        "twig/twig": "^2.12|^3.0",
+        "twig/twig": "~3.0",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
