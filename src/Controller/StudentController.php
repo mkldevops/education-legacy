@@ -66,8 +66,8 @@ class StudentController extends AbstractController
         try {
             $students = $studentRepository->getListStudents($period, $school);
             $classPeriods = $classPeriodRepository->getClassPeriods($period, $school);
-        } catch (\Throwable $e) {
-            $this->logger->error(__METHOD__.' query failure', ['exception' => $e]);
+        } catch (\Throwable $throwable) {
+            $this->logger->error(__METHOD__.' query failure', ['exception' => $throwable]);
             $students = [];
             $classPeriods = [];
         }
