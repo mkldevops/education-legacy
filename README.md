@@ -53,6 +53,42 @@ A comprehensive Symfony 7.3 education management system designed for managing st
 
 ### 1. Clone the Repository
 
+### Education Management
+
+-   **Student Management**: Complete student profiles with academic history
+-   **Family Management**: Family relationships and contact information
+-   **School Administration**: Multi-school support with class organization
+-   **Course Management**: Course creation, scheduling, and assignments
+-   **Grade Tracking**: Comprehensive grade management and reporting
+-   **Academic Periods**: Support for academic years and periods
+
+### Financial Operations
+
+-   **Package Management**: Educational packages and pricing
+-   **Payment Processing**: Student payment tracking and management
+-   **Financial Reporting**: Detailed financial reports and analytics
+-   **Account Management**: Student account balances and transactions
+
+### Administrative Features
+
+-   **User Management**: Role-based access control
+-   **Document Management**: File uploads and document organization
+-   **QR Code Generation**: QR codes for various entities
+-   **Multi-language Support**: Internationalization ready
+-   **Email Notifications**: Automated email system
+
+## 🔧 Prerequisites
+
+-   **PHP**: 8.2 or higher
+-   **Docker**: Latest version
+-   **Docker Compose**: Latest version
+-   **Make**: Build automation tool
+-   **Git**: Version control
+
+## 🚀 Installation
+
+### 1. Clone the Repository
+
 ```bash
 git clone <repository-url>
 cd education-legacy
