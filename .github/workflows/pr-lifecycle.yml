@@ -111,7 +111,7 @@ jobs:
           docker run --rm \
             -e APP_ENV=test \
             ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }} \
-            sh -c "php bin/console doctrine:database:create --if-not-exists && php bin/console doctrine:migrations:migrate -n --no-all-or-nothing && vendor/bin/simple-phpunit"
+            sh -c "php bin/console doctrine:database:create --if-not-exists && php bin/console doctrine:migrations:migrate -n --no-all-or-nothing && vendor/bin/phpunit"
 
       - name: Run code quality checks
         run: |
