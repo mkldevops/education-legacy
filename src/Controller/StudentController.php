@@ -62,8 +62,15 @@ class StudentController extends AbstractController
     {
         $period = $this->periodManager->getPeriodsOnSession();
         $school = $this->schoolManager->getSchool();
-        $students = $studentRepository->getListStudents($period, $school);
-        $classPeriods = $classPeriodRepository->getClassPeriods($period, $school);
+
+        try {
+            $students = $studentRepository->getListStudents($period, $school);
+            $classPeriods = $classPeriodRepository->getClassPeriods($period, $school);
+        } catch (\Throwable $e) {
+            $this->logger->error(__METHOD__.' query failure', ['exception' => $e]);
+            $students = [];
+            $classPeriods = [];
+        }
 
         return $this->render('student/index.html.twig', [
             'students' => $students,
