@@ -38,9 +38,9 @@ doctrine:
 when@test:
     doctrine:
         dbal:
+            driver: 'pdo_sqlite'
+            url: '%env(resolve:DATABASE_URL)%'
             use_savepoints: true
-            # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: "_test%env(default::TEST_TOKEN)%"
 
 when@prod:
     doctrine:
