@@ -7,10 +7,6 @@ on:
 permissions:
   contents: read
   security-events: write
-  statuses: write
-  packages: write
-  pull-requests: write
-  issues: write
 
 env:
   DOCKER_IMAGE: mkldevops/education
@@ -138,19 +134,19 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
-          format: 'table'
-          exit-code: '0'
+          format: "table"
+          exit-code: "0"
           ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
 
       - name: Run Trivy scan and upload results
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '0'
+          format: "sarif"
+          output: "trivy-results.sarif"
+          exit-code: "0"
         continue-on-error: true
 
       - name: Check if SARIF file exists
@@ -168,7 +164,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: env.SARIF_EXISTS == 'true'
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   # Cleanup when PR is closed
   cleanup-pr:
