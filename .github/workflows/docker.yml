@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
   security-events: write
+  packages: write
 
 env:
   DOCKER_IMAGE: mkldevops/education
