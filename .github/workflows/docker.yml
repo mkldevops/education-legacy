@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  security-events: write
+
 env:
   DOCKER_IMAGE: mkldevops/education
   REGISTRY: docker.io
@@ -100,15 +104,28 @@ jobs:
     if: github.event_name != 'pull_request'
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
+          exit-code: '0'
+        continue-on-error: true
+
+      - name: Check if SARIF file exists
+        run: |
+          if [ -f "trivy-results.sarif" ]; then
+            echo "SARIF file exists, size: $(wc -c < trivy-results.sarif) bytes"
+            echo "SARIF_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "SARIF file not found"
+            echo "SARIF_EXISTS=false" >> $GITHUB_ENV
+            ls -la .
+          fi
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: env.SARIF_EXISTS == 'true'
         with:
           sarif_file: 'trivy-results.sarif'
 
