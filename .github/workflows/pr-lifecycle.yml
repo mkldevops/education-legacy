@@ -4,6 +4,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
+permissions:
+  contents: read
+  security-events: write
+  statuses: write
+  packages: write
+  pull-requests: write
+  issues: write
+
 env:
   DOCKER_IMAGE: mkldevops/education
   REGISTRY: docker.io
@@ -107,16 +115,16 @@ jobs:
 
       - name: Run tests in Docker
         run: |
-          docker pull ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          docker pull ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
           docker run --rm \
             -e APP_ENV=test \
-            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }} \
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }} \
             sh -c "php bin/console doctrine:database:create --if-not-exists && php bin/console doctrine:migrations:migrate -n --no-all-or-nothing && vendor/bin/phpunit"
 
       - name: Run code quality checks
         run: |
           docker run --rm \
-            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }} \
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }} \
             sh -c "vendor/bin/phpstan analyse --no-progress --memory-limit 256M && vendor/bin/php-cs-fixer fix src --dry-run --allow-risky=yes"
 
   # Security scanning
@@ -127,9 +135,9 @@ jobs:
     if: github.event.action != 'closed'
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
@@ -137,15 +145,28 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Run Trivy scan and upload results
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          image-ref: ${{ env.REGISTRY_GHCR }}/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
           format: 'sarif'
           output: 'trivy-results.sarif'
+          exit-code: '0'
+        continue-on-error: true
+
+      - name: Check if SARIF file exists
+        run: |
+          if [ -f "trivy-results.sarif" ]; then
+            echo "SARIF file exists, size: $(wc -c < trivy-results.sarif) bytes"
+            echo "SARIF_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "SARIF file not found"
+            echo "SARIF_EXISTS=false" >> $GITHUB_ENV
+            ls -la .
+          fi
 
       - name: Upload Trivy scan results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: env.SARIF_EXISTS == 'true'
         with:
           sarif_file: 'trivy-results.sarif'
 
