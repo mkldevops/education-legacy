@@ -9,6 +9,8 @@ permissions:
   security-events: write
   statuses: write
   packages: write
+  pull-requests: write
+  issues: write
 
 env:
   DOCKER_IMAGE: mkldevops/education
