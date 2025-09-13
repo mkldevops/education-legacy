@@ -8,8 +8,8 @@
   },
   "scripts": {
     "prepare": "husky",
-    "lint:php": "vendor/bin/php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php",
-    "lint:php:fix": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+    "lint:php": "vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes --config=.php-cs-fixer.dist.php",
+    "lint:php:fix": "vendor/bin/php-cs-fixer fix --allow-risky=yes --config=.php-cs-fixer.dist.php",
     "analyse:php": "vendor/bin/phpstan analyse --memory-limit=1G --no-progress",
     "validate:composer": "composer validate --no-interaction --no-ansi",
     "hooks:install": "husky install",
@@ -24,7 +24,7 @@
   "lint-staged": {
     "*.php": [
       "php -l",
-      "vendor/bin/php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php",
+      "vendor/bin/php-cs-fixer fix --allow-risky=yes --config=.php-cs-fixer.dist.php",
       "vendor/bin/phpstan analyse --memory-limit=1G --no-progress"
     ],
     "composer.{json,lock}": [
