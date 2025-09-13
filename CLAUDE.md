@@ -89,6 +89,31 @@ make cs-dry
 make rector
 ```
 
+### Git Hooks
+
+The project uses Husky + lint-staged for automated code quality checks:
+
+```bash
+# Install git hooks
+make hooks-install
+
+# Test lint-staged configuration
+make hooks-test
+
+# Show hooks status and configuration
+make hooks-status
+```
+
+**Pre-commit hooks automatically:**
+- Check PHP syntax (`php -l`)
+- Fix code style with PHP CS Fixer
+- Run PHPStan static analysis
+- Validate composer.json files
+
+**Pre-push hooks:**
+- Run the full test suite (`make test-all`)
+- Prevent push if tests fail
+
 ### Symfony Commands
 
 ```bash
