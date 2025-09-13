@@ -2,10 +2,10 @@ name: Docker Build & Push
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+    branches: [main]
+    tags: ["v*"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -108,9 +108,9 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '0'
+          format: "sarif"
+          output: "trivy-results.sarif"
+          exit-code: "0"
         continue-on-error: true
 
       - name: Check if SARIF file exists
@@ -128,7 +128,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: env.SARIF_EXISTS == 'true'
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   deploy-notification:
     name: Deployment Notification
