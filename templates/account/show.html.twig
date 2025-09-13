@@ -90,21 +90,21 @@
                                 <tbody>
                                     {% for accountStatement in accountStatements %}
                                         <tr>
-                                            <td><a href="{{ path("app_account_statement_show", { id : accountStatement.id }) }}">{{ accountStatement.id }}</a></td>
+                                            <td><a href="{{ path("app_account_statement_show", { id : accountStatement.accountStatement.id }) }}">{{ accountStatement.accountStatement.id }}</a></td>
                                             <td>
-                                                <a href="{{ path("app_account_statement_show", { id : accountStatement.id }) }}" title="{{ accountStatement.title }}" data-toggle="tooltip">{{ accountStatement.month.format('F Y') }}</a>
+                                                <a href="{{ path("app_account_statement_show", { id : accountStatement.accountStatement.id }) }}" title="{{ accountStatement.accountStatement.title }}" data-toggle="tooltip">{{ accountStatement.accountStatement.month.format('F Y') }}</a>
                                             </td>
-                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.stats.numberOperations }}</span> / {{ accountStatement.numberOperations + 0 }}</td>
-                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.stats.sumCredit|number_format(2, '.', ',') }}</span> / {{ accountStatement.amountCredit|number_format(2, '.', ',') }}</td>
-                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.stats.sumDebit|number_format(2, '.', ',') }}</span> / {{ accountStatement.amountDebit|number_format(2, '.', ',') }}</td>
-                                            <td class="text-rigtht">{{ accountStatement.newBalance|number_format(2, '.', ',') }} €</td>
+                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.numberOperations }}</span> / {{ accountStatement.accountStatement.numberOperations + 0 }}</td>
+                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.sumCredit|number_format(2, '.', ',') }}</span> / {{ accountStatement.accountStatement.amountCredit|number_format(2, '.', ',') }}</td>
+                                            <td class="text-rigtht"><span class='text-muted'>{{ accountStatement.sumDebit|number_format(2, '.', ',') }}</span> / {{ accountStatement.accountStatement.amountDebit|number_format(2, '.', ',') }}</td>
+                                            <td class="text-rigtht">{{ accountStatement.accountStatement.newBalance|number_format(2, '.', ',') }} €</td>
                                             <td>
-                                                {% if accountStatement.stats.isValid %}
+                                                {% if accountStatement.isValid %}
                                                     <i class="fa fa-check-circle text-success"></i>
                                                 {% else %}
                                                     <i class="fa fa-exclamation-circle text-warning"></i>
                                                 {% endif %}
-                                                &nbsp;<a href="{{ path("app_account_statement_show", { id : accountStatement.id }) }}" target="_blank" class="fas fa-folder-open"></a>
+                                                &nbsp;<a href="{{ path("app_account_statement_show", { id : accountStatement.accountStatement.id }) }}" target="_blank" rel="noopener noreferrer" class="fa fa-folder-open"></a>
                                             </td>
                                         </tr>
                                     {% endfor %}
