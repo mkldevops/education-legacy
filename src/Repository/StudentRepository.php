@@ -85,34 +85,20 @@ class StudentRepository extends ServiceEntityRepository
      */
     public function getListStudents(Period $period, School $school, bool $enable = true, ?int $limit = null): array
     {
+        // MAIN QUERY: Load students with ManyToOne/OneToOne relations only (no cartesian products)
         $queryBuilder = $this->createQueryBuilder('std')
-            // Existing optimized relations
             ->innerJoin('std.grade', 'gra')
-            ->leftJoin('std.classPeriods', 'cps')
-            ->leftJoin('cps.classPeriod', 'clp', 'WITH', 'clp.period = :period')
-            ->leftJoin('clp.classSchool', 'cls')
 
-            // NEW: Critical relations to eliminate N+1 queries
+            // Critical ManyToOne relations (safe from cartesian products)
             ->leftJoin('std.person', 'prs')              // Person (name, phones, etc.)
             ->leftJoin('prs.family', 'fam')              // Family (family ID, contact info)
             ->leftJoin('prs.image', 'img')               // Student photo/image
 
-            // Family members for phone optimization (getListPhones accesses these)
-            ->leftJoin('fam.mother', 'mth')              // Mother (for phone numbers)
-            ->leftJoin('fam.father', 'fth')              // Father (for phone numbers)
-            ->leftJoin('fam.legalGuardian', 'lgd')       // Legal Guardian (for phone numbers)
-
-            // SELECT all relations to load them eagerly
+            // SELECT core relations
             ->addSelect('gra')    // Grade
-            ->addSelect('cps')    // ClassPeriodStudent
-            ->addSelect('clp')    // ClassPeriod
-            ->addSelect('cls')    // ClassSchool
             ->addSelect('prs')    // Person (eliminates student.person queries)
             ->addSelect('fam')    // Family (eliminates student.person.family queries)
             ->addSelect('img')    // Image (eliminates student.image queries)
-            ->addSelect('mth')    // Mother (eliminates family.mother queries for phones)
-            ->addSelect('fth')    // Father (eliminates family.father queries for phones)
-            ->addSelect('lgd')    // Legal Guardian (eliminates family.legalGuardian queries)
 
             ->where('std.enable = :enable')
             ->andWhere('std.school = :school')
@@ -125,7 +111,28 @@ class StudentRepository extends ServiceEntityRepository
             $queryBuilder->setMaxResults($limit);
         }
 
-        return $queryBuilder->getQuery()->getResult();
+        $students = $queryBuilder->getQuery()->getResult();
+
+        // BATCH LOAD: Fetch OneToMany relations separately to avoid cartesian products
+        if (!empty($students)) {
+            $studentIds = array_map(static fn ($student) => $student->getId(), $students);
+
+            // Load ClassPeriodStudent relations in separate query
+            $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('cps, clp, cls')
+                ->from('App\Entity\ClassPeriodStudent', 'cps')
+                ->leftJoin('cps.classPeriod', 'clp', 'WITH', 'clp.period = :period')
+                ->leftJoin('clp.classSchool', 'cls')
+                ->where('cps.student IN (:students)')
+                ->setParameter('period', $period)
+                ->setParameter('students', $studentIds)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        return $students;
     }
 
     /**
