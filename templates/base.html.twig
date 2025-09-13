@@ -7,6 +7,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="shortcut icon" href="{{ asset('img/logo-custom.png') }}" type="image/x-icon" />
         <title>{% block title %}{% endblock %}</title>
+
+        {# PWA meta tags #}
+        <link rel="manifest" href="{{ asset('/site.webmanifest') }}">
+        <meta name="theme-color" content="#007bff">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="Education App">
+        <link rel="apple-touch-icon" href="{{ asset('/images/icons/icon-192x192.png') }}">
         {% block metas %}{% endblock %}
         {% block stylesheets %}{% endblock %}
         {% block optionals %}{% endblock %}
@@ -16,5 +24,20 @@
 
         {% block javascripts %}{% endblock %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
+
+        {# PWA Service Worker Registration #}
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(function(registration) {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        })
+                        .catch(function(error) {
+                            console.log('ServiceWorker registration failed: ', error);
+                        });
+                });
+            }
+        </script>
     </body>
 </html>
