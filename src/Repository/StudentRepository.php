@@ -85,24 +85,24 @@ class StudentRepository extends ServiceEntityRepository
      */
     public function getListStudents(Period $period, School $school, bool $enable = true, ?int $limit = null): array
     {
-        // MAIN QUERY: Load students with ManyToOne/OneToOne relations only (no cartesian products)
         $queryBuilder = $this->createQueryBuilder('std')
             ->innerJoin('std.grade', 'gra')
-
-            // Critical ManyToOne relations (safe from cartesian products)
-            ->leftJoin('std.person', 'prs')              // Person (name, phones, etc.)
-            ->leftJoin('prs.family', 'fam')              // Family (family ID, contact info)
-            ->leftJoin('prs.image', 'img')               // Student photo/image
-
-            // SELECT core relations
-            ->addSelect('gra')    // Grade
-            ->addSelect('prs')    // Person (eliminates student.person queries)
-            ->addSelect('fam')    // Family (eliminates student.person.family queries)
-            ->addSelect('img')    // Image (eliminates student.image queries)
-
+            ->leftJoin('std.person', 'prs')
+            ->leftJoin('prs.family', 'fam')
+            ->leftJoin('prs.image', 'img')
+            ->leftJoin('std.classPeriods', 'cps')
+            ->leftJoin('cps.classPeriod', 'clp')
+            ->leftJoin('clp.classSchool', 'cls')
+            ->addSelect('std')
+            ->addSelect('gra')
+            ->addSelect('prs')
+            ->addSelect('fam')
+            ->addSelect('img')
+            ->addSelect('cps')
+            ->addSelect('clp')
+            ->addSelect('cls')
             ->where('std.enable = :enable')
             ->andWhere('std.school = :school')
-            ->setParameter('period', $period)
             ->setParameter('enable', $enable)
             ->setParameter('school', $school)
         ;
@@ -111,28 +111,7 @@ class StudentRepository extends ServiceEntityRepository
             $queryBuilder->setMaxResults($limit);
         }
 
-        $students = $queryBuilder->getQuery()->getResult();
-
-        // BATCH LOAD: Fetch OneToMany relations separately to avoid cartesian products
-        if (!empty($students)) {
-            $studentIds = array_map(static fn ($student) => $student->getId(), $students);
-
-            // Load ClassPeriodStudent relations in separate query
-            $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('cps, clp, cls')
-                ->from('App\Entity\ClassPeriodStudent', 'cps')
-                ->leftJoin('cps.classPeriod', 'clp', 'WITH', 'clp.period = :period')
-                ->leftJoin('clp.classSchool', 'cls')
-                ->where('cps.student IN (:students)')
-                ->setParameter('period', $period)
-                ->setParameter('students', $studentIds)
-                ->getQuery()
-                ->getResult()
-            ;
-        }
-
-        return $students;
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
