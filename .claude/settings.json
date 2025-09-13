@@ -10,7 +10,9 @@
       "Bash(sed:*)",
       "Bash(perl:*)",
       "Bash(php:*)",
-      "Read(~/.zshrc)"
+      "Bash(composer:*)",
+      "Read(~/.zshrc)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
