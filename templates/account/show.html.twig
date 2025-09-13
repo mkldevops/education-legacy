@@ -104,7 +104,7 @@
                                                 {% else %}
                                                     <i class="fa fa-exclamation-circle text-warning"></i>
                                                 {% endif %}
-                                                &nbsp;<a href="{{ path("app_account_statement_show", { id : accountStatement.accountStatement.id }) }}" target="_blank" class="fas fa-folder-open"></a>
+                                                &nbsp;<a href="{{ path("app_account_statement_show", { id : accountStatement.accountStatement.id }) }}" target="_blank" rel="noopener noreferrer" class="fa fa-folder-open"></a>
                                             </td>
                                         </tr>
                                     {% endfor %}
