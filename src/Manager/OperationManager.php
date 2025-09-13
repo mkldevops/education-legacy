@@ -9,7 +9,7 @@ use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
 use App\Repository\OperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use OfxParser\Entities\Transaction;
+use Endeken\OFX\Transaction;
 use Psr\Log\LoggerInterface;
 
 class OperationManager
@@ -50,9 +50,9 @@ class OperationManager
     /**
      * @throws AppException
      */
-    public function findOperationByUniqueId(int $uniqueId): ?Operation
+    public function findOperationByUniqueId(string $uniqueId): ?Operation
     {
-        if (0 === $uniqueId) {
+        if ('' === $uniqueId || '0' === $uniqueId) {
             throw new AppException('Unique id is empty');
         }
 
