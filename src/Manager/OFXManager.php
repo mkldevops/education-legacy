@@ -13,10 +13,10 @@ use App\Exception\AppException;
 use App\Fetcher\AccountableFetcher;
 use App\Model\TransferModel;
 use Doctrine\ORM\EntityManagerInterface;
-use OfxParser\Entities\BankAccount;
-use OfxParser\Entities\Transaction;
-use OfxParser\Ofx;
-use OfxParser\Parser;
+use Endeken\OFX\BankAccount;
+use Endeken\OFX\OFX;
+use Endeken\OFX\OFXData;
+use Endeken\OFX\Transaction;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -57,12 +57,12 @@ class OFXManager
     public function ofx(File $file): bool
     {
         set_time_limit(300);
-        $ofx = $this->extractOfxToFile($file);
+        $ofxData = $this->extractOfxToFile($file);
         $count = 0;
 
         /** @var BankAccount $bank */
-        foreach ($ofx->BankAccounts as $bank) {
-            if (empty($bank->statement->transactions)) {
+        foreach ($ofxData->bankAccounts as $bank) {
+            if ([] === $bank->statement->transactions) {
                 continue;
             }
 
@@ -86,7 +86,7 @@ class OFXManager
                 $this->transactionToOperation($transaction);
             }
 
-            $count += is_countable($bank->statement->transactions) ? \count($bank->statement->transactions) : 0;
+            $count += \count($bank->statement->transactions);
         }
 
         return \count($this->logs) === $count;
@@ -96,16 +96,20 @@ class OFXManager
      * @throws AppException
      * @throws \Exception
      */
-    public function extractOfxToFile(File $file): Ofx
+    public function extractOfxToFile(File $file): OFXData
     {
         if (empty($file->getRealPath())) {
             throw new AppException('The file was not path');
         }
 
         $content = self::uniformizeContent(file_get_contents($file->getRealPath()));
-        $ofxParser = new Parser();
 
-        return $ofxParser->loadFromString($content);
+        $parsedData = OFX::parse($content);
+        if (!$parsedData instanceof OFXData) {
+            throw new AppException('Failed to parse OFX file');
+        }
+
+        return $parsedData;
     }
 
     public static function uniformizeContent(string $content): ?string
@@ -157,7 +161,7 @@ class OFXManager
         ];
 
         $pattern = '#(?<gender>'.implode('|', array_keys($listLabels)).')#i';
-        if (!preg_match($pattern, strtolower((string) $transaction->name), $matches)) {
+        if (!preg_match($pattern, strtolower($transaction->name), $matches)) {
             $this->logger->error(__FUNCTION__.' Not found gender on ofx type : "'.$transaction->name.'"');
 
             return null;
@@ -179,7 +183,7 @@ class OFXManager
 
     protected static function getReference(Transaction $transaction): string
     {
-        $text = trim((string) $transaction->name).' '.trim((string) $transaction->memo);
+        $text = trim($transaction->name).' '.trim($transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
         if (preg_match('#(?<reference>\d+)#', (string) $text, $matches)) {
             return $matches['reference'];
@@ -193,7 +197,7 @@ class OFXManager
      */
     private function transactionToOperation(Transaction $transaction): void
     {
-        $transaction->memo = trim((string) $transaction->memo);
+        $transaction->memo = trim($transaction->memo);
         $gender = $this->getGenderByOFX($transaction);
         $reference = self::getReference($transaction);
 
