@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 echo "Running pre-push validations..."
 
-# Run full test suite (essential for push)
+# Run tests without resetting database fixtures
 echo "Running tests..."
-make test-all
+make test
 
 if [ $? -ne 0 ]; then
   echo "❌ Tests must pass before push!"
