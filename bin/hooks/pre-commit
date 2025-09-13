@@ -45,6 +45,15 @@ EOF
 	exit 1
 fi
 
+# Validate composer.json
+composer validate --no-interaction --no-ansi
+
+# $? stores exit value of the last command
+if [ $? -ne 0 ]; then
+ echo "Composer validation failed, fix it before commit"
+ exit 1
+fi
+
 make stan
 
 # $? stores exit value of the last command
