@@ -86,20 +86,39 @@ class StudentRepository extends ServiceEntityRepository
     public function getListStudents(Period $period, School $school, bool $enable = true, ?int $limit = null): array
     {
         $queryBuilder = $this->createQueryBuilder('std')
+            // Existing optimized relations
             ->innerJoin('std.grade', 'gra')
             ->leftJoin('std.classPeriods', 'cps')
             ->leftJoin('cps.classPeriod', 'clp', 'WITH', 'clp.period = :period')
             ->leftJoin('clp.classSchool', 'cls')
-            ->addSelect('gra')
-            ->addSelect('cps')
-            ->addSelect('clp')
-            ->addSelect('cls')
+
+            // NEW: Critical relations to eliminate N+1 queries
+            ->leftJoin('std.person', 'prs')              // Person (name, phones, etc.)
+            ->leftJoin('prs.family', 'fam')              // Family (family ID, contact info)
+            ->leftJoin('prs.image', 'img')               // Student photo/image
+
+            // Family members for phone optimization (getListPhones accesses these)
+            ->leftJoin('fam.mother', 'mth')              // Mother (for phone numbers)
+            ->leftJoin('fam.father', 'fth')              // Father (for phone numbers)
+            ->leftJoin('fam.legalGuardian', 'lgd')       // Legal Guardian (for phone numbers)
+
+            // SELECT all relations to load them eagerly
+            ->addSelect('gra')    // Grade
+            ->addSelect('cps')    // ClassPeriodStudent
+            ->addSelect('clp')    // ClassPeriod
+            ->addSelect('cls')    // ClassSchool
+            ->addSelect('prs')    // Person (eliminates student.person queries)
+            ->addSelect('fam')    // Family (eliminates student.person.family queries)
+            ->addSelect('img')    // Image (eliminates student.image queries)
+            ->addSelect('mth')    // Mother (eliminates family.mother queries for phones)
+            ->addSelect('fth')    // Father (eliminates family.father queries for phones)
+            ->addSelect('lgd')    // Legal Guardian (eliminates family.legalGuardian queries)
+
             ->where('std.enable = :enable')
             ->andWhere('std.school = :school')
             ->setParameter('period', $period)
             ->setParameter('enable', $enable)
             ->setParameter('school', $school)
-            ->setMaxResults($limit)
         ;
 
         if (null !== $limit) {
