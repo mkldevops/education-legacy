@@ -2,7 +2,7 @@ doctrine:
     dbal:
         # configure these for your database server
         driver: "pdo_mysql"
-        server_version: "8"
+        server_version: "8.0.31"
         charset: utf8mb4
         default_table_options:
             charset: utf8mb4
@@ -11,6 +11,7 @@ doctrine:
         url: "%env(resolve:DATABASE_URL)%"
     orm:
         auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
         entity_managers:
             default:
                 quote_strategy: doctrine.orm.quote_strategy.ansi
@@ -23,6 +24,7 @@ doctrine:
                         dir: "%kernel.project_dir%/src/Entity"
                         prefix: 'App\Entity'
                         alias: App
+                report_fields_where_declared: true
                 dql:
                     string_functions:
                         if: DoctrineExtensions\Query\Mysql\IfElse
