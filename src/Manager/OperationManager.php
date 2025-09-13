@@ -52,6 +52,8 @@ class OperationManager
      */
     public function findOperationByUniqueId(string $uniqueId): ?Operation
     {
+        // Trim whitespace and validate - '0' is considered invalid by policy, callers should pass trimmed string IDs
+        $uniqueId = trim($uniqueId);
         if ('' === $uniqueId || '0' === $uniqueId) {
             throw new AppException('Unique id is empty');
         }
