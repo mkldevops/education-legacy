@@ -118,12 +118,8 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
         },
-        "init-hooks": [
-            "sh bin/hooks/install"
-        ],
         "post-install-cmd": [
-            "@auto-scripts",
-            "@init-hooks"
+            "@auto-scripts"
         ],
         "post-update-cmd": [
             "@auto-scripts"

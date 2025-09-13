@@ -222,6 +222,26 @@ docker-build-push: login
 	@docker build --target prod -t $(DOCKER_IMAGE):latest ./
 	@docker push $(DOCKER_IMAGE):latest
 
+## —— Git Hooks 🪝 ————————————————————————————————————————————————————————————
+hooks-install: package.json ## Install git hooks with Husky
+	bun install
+	bunx husky init
+
+hooks-test: ## Test lint-staged configuration without committing
+	bunx lint-staged --allow-empty
+
+hooks-status: ## Show status of git hooks
+	@echo "🪝 Git Hooks Status:"
+	@echo ""
+	@echo "Husky hooks:"
+	@ls -la .husky/ 2>/dev/null | grep -E "(pre-commit|pre-push)" || echo "No hooks found"
+	@echo ""
+	@echo "Package.json scripts:"
+	@grep -A5 -B1 "lint-staged" package.json 2>/dev/null || echo "lint-staged not configured"
+	@echo ""
+	@echo "Test hooks (dry run):"
+	@bunx lint-staged --allow-empty 2>/dev/null && echo "✅ lint-staged working" || echo "❌ lint-staged not working"
+
 ## —— Git ———————————————————————————————————
 git-clean-branches: ## Clean merged branches
 	git remote prune origin

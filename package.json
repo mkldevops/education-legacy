@@ -1,0 +1,49 @@
+{
+  "name": "education-legacy",
+  "version": "1.0.0",
+  "description": "A comprehensive education management system for schools, students, and families",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint:php": "vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes --config=.php-cs-fixer.dist.php",
+    "lint:php:fix": "vendor/bin/php-cs-fixer fix --allow-risky=yes --config=.php-cs-fixer.dist.php",
+    "analyse:php": "vendor/bin/phpstan analyse --memory-limit=1G --no-progress",
+    "validate:composer": "composer validate --no-interaction --no-ansi",
+    "hooks:install": "husky install",
+    "hooks:test": "lint-staged --allow-empty",
+    "pre-commit": "lint-staged",
+    "test": "make test"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10"
+  },
+  "lint-staged": {
+    "*.php": [
+      "php -l",
+      "vendor/bin/php-cs-fixer fix --allow-risky=yes --config=.php-cs-fixer.dist.php",
+      "vendor/bin/phpstan analyse --memory-limit=1G --no-progress"
+    ],
+    "composer.{json,lock}": [
+      "composer validate --no-interaction --no-ansi"
+    ],
+    "{src,tests}/**/*.php": [
+      "vendor/bin/phpstan analyse --memory-limit=1G --no-progress"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mkldevops/education-legacy.git"
+  },
+  "keywords": [
+    "symfony",
+    "education",
+    "management",
+    "php"
+  ],
+  "author": "MKL DevOps",
+  "license": "proprietary"
+}
