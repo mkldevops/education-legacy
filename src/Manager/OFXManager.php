@@ -183,7 +183,7 @@ class OFXManager
 
     protected static function getReference(Transaction $transaction): string
     {
-        $text = trim($transaction->name).' '.trim($transaction->memo);
+        $text = trim((string) $transaction->name).' '.trim((string) $transaction->memo);
         $text = preg_replace('# +#', ' ', $text);
         if (preg_match('#(?<reference>\d+)#', (string) $text, $matches)) {
             return $matches['reference'];
