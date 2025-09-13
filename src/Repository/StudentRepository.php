@@ -87,19 +87,24 @@ class StudentRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('std')
             ->innerJoin('std.grade', 'gra')
+            ->leftJoin('std.person', 'prs')
+            ->leftJoin('prs.family', 'fam')
+            ->leftJoin('prs.image', 'img')
             ->leftJoin('std.classPeriods', 'cps')
-            ->leftJoin('cps.classPeriod', 'clp', 'WITH', 'clp.period = :period')
+            ->leftJoin('cps.classPeriod', 'clp')
             ->leftJoin('clp.classSchool', 'cls')
+            ->addSelect('std')
             ->addSelect('gra')
+            ->addSelect('prs')
+            ->addSelect('fam')
+            ->addSelect('img')
             ->addSelect('cps')
             ->addSelect('clp')
             ->addSelect('cls')
             ->where('std.enable = :enable')
             ->andWhere('std.school = :school')
-            ->setParameter('period', $period)
             ->setParameter('enable', $enable)
             ->setParameter('school', $school)
-            ->setMaxResults($limit)
         ;
 
         if (null !== $limit) {
