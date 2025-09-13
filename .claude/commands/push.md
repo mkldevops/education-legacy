@@ -1,6 +1,7 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*)
 description: Add, commit, push and create PR if needed
+model: claude-3-5-haiku-20241022
 ---
 
 # Complete Git workflow
