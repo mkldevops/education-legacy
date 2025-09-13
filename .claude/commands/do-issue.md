@@ -66,7 +66,8 @@ Execute a complete issue resolution workflow:
 - Add all changes to staging
 - Generate descriptive commit message referencing issue
 - Commit changes
-- Push to remote branch
+- Rebase current branch against main: `git rebase main`
+- Push to remote branch (force push if rebase occurred)
 - Create/update PR linking to the issue
 - Add issue closing keywords to PR description
 
