@@ -1,7 +1,6 @@
 pwa:
     manifest:
         enabled: true
-        public_url: /site.webmanifest
         name: 'Education Management System'
         short_name: 'Education App'
         description: 'A comprehensive education management system for schools, students, and families'

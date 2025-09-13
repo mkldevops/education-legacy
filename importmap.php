@@ -28,4 +28,7 @@ return [
     '@symfony/stimulus-bridge' => [
         'version' => '4.0.1',
     ],
+    'workbox-window' => [
+        'version' => '7.3.0',
+    ],
 ];

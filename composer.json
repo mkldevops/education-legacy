@@ -23,7 +23,7 @@
         "friendsofsymfony/jsrouting-bundle": "^3.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "sentry/sentry-symfony": "^5.2",
-        "spomky-labs/pwa-bundle": "*",
+        "spomky-labs/pwa-bundle": "^1.2",
         "stof/doctrine-extensions-bundle": "^1.7",
         "symfony/asset": "^7.3",
         "symfony/asset-mapper": "^7.3",
