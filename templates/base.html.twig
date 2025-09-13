@@ -8,13 +8,9 @@
         <link rel="shortcut icon" href="{{ asset('img/logo-custom.png') }}" type="image/x-icon" />
         <title>{% block title %}{% endblock %}</title>
 
-        {# PWA meta tags #}
-        <link rel="manifest" href="{{ asset('/site.webmanifest') }}">
-        <meta name="theme-color" content="#007bff">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="default">
-        <meta name="apple-mobile-web-app-title" content="Education App">
-        <link rel="apple-touch-icon" href="{{ asset('/images/icons/icon-192x192.png') }}">
+        {# PWA (injected by Spomky-Labs/PWA Bundle) #}
+        {{ pwa() }}
+
         {% block metas %}{% endblock %}
         {% block stylesheets %}{% endblock %}
         {% block optionals %}{% endblock %}
