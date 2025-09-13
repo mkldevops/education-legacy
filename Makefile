@@ -140,6 +140,7 @@ list-backups: ## List all available backups
 test-load-fixtures: ## load database schema & fixtures (SQLite + doctrine:schema)
 	@rm -f var/test.db || true
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:database:create --if-not-exists
+	$(DOCKER_TEST_EXEC) php bin/console doctrine:schema:drop --full-database --force
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:schema:create -n
 	$(DOCKER_TEST_EXEC) php bin/console doctrine:fixtures:load -n
 
