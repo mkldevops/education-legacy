@@ -36,6 +36,6 @@ class AccountSlipRepository extends ServiceEntityRepository
             ->setParameter('gender', $gender)
         ;
 
-        return $queryBuilder->getQuery()->getSingleResult();
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }
