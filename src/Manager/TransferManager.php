@@ -233,7 +233,7 @@ class TransferManager
 
         $name = mb_strtoupper((string) $this->accountSlip->getName(), 'UTF-8');
 
-        $operation->setComment($this->accountSlip->getComment())
+        $operation->setComment($this->accountSlip->getComment() ?? '')
             ->setName($name)
             ->setAmount($this->accountSlip->getAmount($type))
             ->setDate(\DateTime::createFromInterface($this->accountSlip->getDate()))
