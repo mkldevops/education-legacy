@@ -1,0 +1,59 @@
+{% extends "base-tailwind.html.twig" %}
+
+
+{% block container %}
+    <div class="min-h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-md w-full space-y-8">
+                {% block auth_content %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <footer class="absolute bottom-0 w-full bg-white/80 backdrop-blur-sm border-t border-gray-200/50">
+            <div class="px-4 py-3">
+                <p class="text-xs text-gray-500 text-center">
+                    {{ "now"|date("Y") }} © Education Management System - Système sécurisé
+                </p>
+            </div>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstInput = document.querySelector('input[type="text"], input[type="email"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+
+            const forms = document.querySelectorAll('form');
+            forms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        
+                        const loadingText = submitButton.dataset.loadingLabel || '{{ 'security.login.loading'|trans }}';
+                        
+                        const targetSpan = submitButton.querySelector('span:not([x-show])');
+                        if (targetSpan) {
+                            targetSpan.textContent = loadingText;
+                        } else {
+                            submitButton.textContent = loadingText;
+                        }
+                    }
+                });
+            });
+
+            const passwordField = document.querySelector('input[type="password"]');
+            if (passwordField) {
+                passwordField.addEventListener('input', function(e) {
+                });
+            }
+        });
+    </script>
+{% endblock %}

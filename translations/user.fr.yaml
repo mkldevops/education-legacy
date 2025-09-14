@@ -47,6 +47,7 @@ security.login.remember_me: 'Se souvenir de moi'
 security.login.submit: 'Se connecter'
 security.login.forgot_password: 'Mot de passe oublié ?'
 security.login.welcome: 'Bienvenue sur l''outil d''administration EDUCATION'
+security.login.loading: 'Connexion en cours...'
 show.name.label: Nom
 show.surname.label: Prénom
 show.email.label: E-mail

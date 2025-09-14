@@ -1,27 +1,55 @@
 <?php
 
+declare(strict_types=1);
+
+use DAMA\DoctrineTestBundle\DAMADoctrineTestBundle;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
+use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use Endroid\QrCodeBundle\EndroidQrCodeBundle;
+use Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle;
+use FOS\JsRoutingBundle\FOSJsRoutingBundle;
+use Nelmio\Alice\Bridge\Symfony\NelmioAliceBundle;
+use Sentry\SentryBundle\SentryBundle;
+use SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle;
+use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
+use Symfony\Bundle\DebugBundle\DebugBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\UX\Icons\UXIconsBundle;
+use Symfony\UX\LiveComponent\LiveComponentBundle;
+use Symfony\UX\StimulusBundle\StimulusBundle;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
+use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
+
 return [
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
-    Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
-    Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
-    EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle::class => ['all' => true],
-    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
-    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
-    Endroid\QrCodeBundle\EndroidQrCodeBundle::class => ['all' => true],
-    FOS\JsRoutingBundle\FOSJsRoutingBundle::class => ['all' => true],
-    Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
-    Twig\Extra\TwigExtraBundle\TwigExtraBundle::class => ['all' => true],
-    Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
-    Sentry\SentryBundle\SentryBundle::class => ['all' => true],
-    Nelmio\Alice\Bridge\Symfony\NelmioAliceBundle::class => ['dev' => true, 'test' => true],
-    Fidry\AliceDataFixtures\Bridge\Symfony\FidryAliceDataFixturesBundle::class => ['dev' => true, 'test' => true],
-    DAMA\DoctrineTestBundle\DAMADoctrineTestBundle::class => ['test' => true],
-    Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
-    Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
-    Symfony\UX\LiveComponent\LiveComponentBundle::class => ['all' => true],
-    SpomkyLabs\PwaBundle\SpomkyLabsPwaBundle::class => ['all' => true],
+    MakerBundle::class => ['dev' => true],
+    DoctrineBundle::class => ['all' => true],
+    DoctrineMigrationsBundle::class => ['all' => true],
+    FrameworkBundle::class => ['all' => true],
+    TwigBundle::class => ['all' => true],
+    SecurityBundle::class => ['all' => true],
+    EasyAdminBundle::class => ['all' => true],
+    MonologBundle::class => ['all' => true],
+    WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    DebugBundle::class => ['dev' => true],
+    EndroidQrCodeBundle::class => ['all' => true],
+    FOSJsRoutingBundle::class => ['all' => true],
+    DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    TwigExtraBundle::class => ['all' => true],
+    StofDoctrineExtensionsBundle::class => ['all' => true],
+    SentryBundle::class => ['all' => true],
+    NelmioAliceBundle::class => ['dev' => true, 'test' => true],
+    FidryAliceDataFixturesBundle::class => ['dev' => true, 'test' => true],
+    DAMADoctrineTestBundle::class => ['test' => true],
+    TwigComponentBundle::class => ['all' => true],
+    StimulusBundle::class => ['all' => true],
+    LiveComponentBundle::class => ['all' => true],
+    SpomkyLabsPwaBundle::class => ['all' => true],
+    UXIconsBundle::class => ['all' => true],
 ];

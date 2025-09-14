@@ -1,61 +1,172 @@
-{% extends "_inspina/core.html.twig" %}
+{% extends "_tailwind/auth-layout.html.twig" %}
 
 {% trans_default_domain 'user' %}
 
-{% set title = 'Login'|trans %}
-{% set body_attr = "class='gray-bg'" %}
+{% set title = 'Login'|trans ~ ' - Education App' %}
 
-{% block stylesheets %}
-    <link href="{{ asset('inspina/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" referrerpolicy="no-referrer" />
-    <link href="{{ asset('inspina/css/style.css') }}" rel="stylesheet">
-{% endblock %}
-
-{% block javascripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-    <script src="{{ asset('inspina/js/bootstrap.min.js') }}"></script>
-{% endblock %}
-
-{% block container %}
-
-    <div class="middle-box text-center loginscreen  animated fadeInDown">
-        <div>
-            <div>
-                {% if asset('img/logo-custom.png') %}
-                    <img src="{{ asset('img/logo-custom.png') }}" alt="" width="200px">
-                {% else %}
-                    <h1 class="logo-name">E+</h1>
-                {% endif %}
+{% block auth_content %}
+    <div x-data="{ showPassword: false }" class="h-full">
+        <div class="text-center mb-8">
+            <div class="relative inline-block p-6 bg-white backdrop-blur-sm rounded-2xl shadow-2xl ring-1 ring-black/5 border border-white/20">
+                <div class="absolute inset-0 bg-gradient-to-r from-primary-600 to-indigo-600 rounded-2xl blur-xl opacity-30 transform scale-110 -z-10"></div>
+                
+                <img id="structure-logo" 
+                     src="{{ asset('img/logo-structure.jpg') }}" 
+                     alt="Logo" 
+                     class="h-16 w-auto mx-auto"
+                     onerror="this.style.display='none'; document.getElementById('fallback-logo').classList.remove('hidden');">
+                
+                <div id="fallback-logo" class="hidden flex items-center justify-center">
+                    <div class="p-3 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-lg">
+                        {{ ux_icon('bi:mortarboard', {class: 'h-10 w-10 text-white'}) }}
+                    </div>
+                    <div class="ml-3">
+                        <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Education</h1>
+                        <p class="text-sm text-gray-500">Management System</p>
+                    </div>
+                </div>
             </div>
 
-            <h3>{{ 'security.login.welcome'|trans }}</h3>
-            {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 tracking-tight">{{ 'security.login.welcome'|trans }}</h2>
+                <p class="mt-2 text-sm text-gray-600">Connectez-vous pour accéder à votre espace</p>
+            </div>
+        </div>
 
-            <form class="m-t" role="form" method="post" >
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
-                <div class="form-group">
-                    <input class="form-control" type="text" id="username" name="username" value="{{ last_username }}" required="required" placeholder="{{ 'security.login.username'|trans }}" />
+        {% if error %}
+            <div class="rounded-xl bg-red-50 border border-red-200 p-4 shadow-sm mb-6" x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        {{ ux_icon('bi:exclamation-triangle', {class: 'h-5 w-5 text-red-400'}) }}
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-red-800">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </p>
+                    </div>
+                    <button @click="show = false" class="ml-3 flex-shrink-0">
+                        {{ ux_icon('bi:x', {class: 'h-4 w-4 text-red-400 hover:text-red-600 transition-colors'}) }}
+                    </button>
                 </div>
-                <div class="form-group">
-                    <input class="form-control" type="password" id="password" name="password" required="required" placeholder="{{ 'security.login.password'|trans }}" />
-                </div>
+            </div>
+        {% endif %}
 
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label for="remember_me">
-                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-                            {{ 'security.login.remember_me'|trans }}
-                        </label>
+        <form class="space-y-6" method="post" x-data="{ loading: false }" @submit="loading = true">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+
+            <div class="space-y-6">
+                <div class="group">
+                    <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <div class="flex items-center">
+                            {{ ux_icon('bi:person', {class: 'w-4 h-4 mr-2 text-gray-500'}) }}
+                            {{ 'security.login.username'|trans }}
+                        </div>
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                               id="username"
+                               name="username"
+                               value="{{ last_username }}"
+                               required="required"
+                               placeholder="{{ 'security.login.username'|trans }}"
+                               class="block w-full px-4 py-3 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-gray-400 bg-white/50 backdrop-blur-sm"
+                               x-bind:class="{ 'animate-pulse': loading }">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            {{ ux_icon('bi:person-check', {class: 'h-4 w-4 text-gray-400'}) }}
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary block full-width m-b" id="_submit" name="_submit">{{ 'security.login.submit'|trans }}</button>
+                <div class="group">
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <div class="flex items-center">
+                            {{ ux_icon('bi:lock', {class: 'w-4 h-4 mr-2 text-gray-500'}) }}
+                            {{ 'security.login.password'|trans }}
+                        </div>
+                    </label>
+                    <div class="relative">
+                        <input x-bind:type="showPassword ? 'text' : 'password'"
+                               id="password"
+                               name="password"
+                               required="required"
+                               placeholder="{{ 'security.login.password'|trans }}"
+                               class="block w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-gray-400 bg-white/50 backdrop-blur-sm"
+                               x-bind:class="{ 'animate-pulse': loading }">
+                        <button type="button"
+                                @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors">
+                            <span x-show="!showPassword">{{ ux_icon('bi:eye', {class: 'h-4 w-4'}) }}</span>
+                            <span x-show="showPassword">{{ ux_icon('bi:eye-slash', {class: 'h-4 w-4'}) }}</span>
+                        </button>
+                    </div>
+                </div>
 
-                <a href="#"><small>{{ 'security.login.forgot_password'|trans }}</small></a>
-            </form>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox"
+                               id="remember_me"
+                               name="_remember_me"
+                               value="on"
+                               class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded transition-colors">
+                        <label for="remember_me" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                            {{ 'security.login.remember_me'|trans }}
+                        </label>
+                    </div>
+                    <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                        {{ 'security.login.forgot_password'|trans }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit"
+                        id="_submit"
+                        name="_submit"
+                        data-loading-label="{{ 'security.login.loading'|trans }}"
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        x-bind:disabled="loading"
+                        x-bind:class="{ 'animate-pulse': loading }">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3" x-show="!loading">
+                        {{ ux_icon('bi:box-arrow-in-right', {class: 'h-4 w-4'}) }}
+                    </span>
+                    <span x-show="!loading">{{ 'security.login.submit'|trans }}</span>
+                    <span x-show="loading" class="flex items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {{ 'security.login.loading'|trans }}
+                    </span>
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-8">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-gradient-to-br from-blue-50 via-white to-indigo-50 text-gray-500">Connexion sécurisée</span>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <div class="flex justify-center items-center space-x-4 text-xs text-gray-400">
+                    <div class="flex items-center">
+                        {{ ux_icon('bi:shield-check', {class: 'w-4 h-4 mr-1'}) }}
+                        <span>SSL/TLS</span>
+                    </div>
+                    <div class="flex items-center">
+                        {{ ux_icon('bi:lock', {class: 'w-4 h-4 mr-1'}) }}
+                        <span>Chiffré</span>
+                    </div>
+                    <div class="flex items-center">
+                        {{ ux_icon('bi:check-circle', {class: 'w-4 h-4 mr-1'}) }}
+                        <span>Sécurisé</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -1,0 +1,79 @@
+{% trans_default_domain trans_bundle|default('messages') %}
+
+<!-- Flash messages container -->
+<div class="space-y-3">
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div data-auto-hide="true" 
+                 class="rounded-md p-4 {{ type == 'success' ? 'bg-success-50 border border-success-200' : 
+                                          type == 'error' or type == 'danger' ? 'bg-danger-50 border border-danger-200' : 
+                                          type == 'warning' ? 'bg-warning-50 border border-warning-200' : 
+                                          type == 'info' ? 'bg-blue-50 border border-blue-200' : 
+                                          'bg-gray-50 border border-gray-200' }}">
+                <div class="flex items-start">
+                    <!-- Icon -->
+                    <div class="flex-shrink-0">
+                        {% if type == 'success' %}
+                            <svg class="h-5 w-5 text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        {% elseif type == 'error' or type == 'danger' %}
+                            <svg class="h-5 w-5 text-danger-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        {% elseif type == 'warning' %}
+                            <svg class="h-5 w-5 text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        {% elseif type == 'info' %}
+                            <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        {% else %}
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Message content -->
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium {{ type == 'success' ? 'text-success-800' : 
+                                                        type == 'error' or type == 'danger' ? 'text-danger-800' : 
+                                                        type == 'warning' ? 'text-warning-800' : 
+                                                        type == 'info' ? 'text-blue-800' : 
+                                                        'text-gray-800' }}">
+                            {% if trans_bundle is defined and trans_bundle %}
+                                {{ message|trans({}, trans_bundle) }}
+                            {% else %}
+                                {{ message|trans }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <!-- Dismiss button -->
+                    <div class="ml-auto pl-3">
+                        <div class="-mx-1.5 -my-1.5">
+                            <button type="button" 
+                                    onclick="this.parentElement.parentElement.parentElement.parentElement.remove()"
+                                    class="inline-flex rounded-md p-1.5 {{ type == 'success' ? 'text-success-500 hover:bg-success-100' : 
+                                                                         type == 'error' or type == 'danger' ? 'text-danger-500 hover:bg-danger-100' : 
+                                                                         type == 'warning' ? 'text-warning-500 hover:bg-warning-100' : 
+                                                                         type == 'info' ? 'text-blue-500 hover:bg-blue-100' : 
+                                                                         'text-gray-500 hover:bg-gray-100' }} focus:outline-none focus:ring-2 focus:ring-offset-2 {{ type == 'success' ? 'focus:ring-success-600' : 
+                                                                                                                                                                     type == 'error' or type == 'danger' ? 'focus:ring-danger-600' : 
+                                                                                                                                                                     type == 'warning' ? 'focus:ring-warning-600' : 
+                                                                                                                                                                     type == 'info' ? 'focus:ring-blue-600' : 
+                                                                                                                                                                     'focus:ring-gray-600' }}">
+                                <span class="sr-only">Fermer</span>
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>

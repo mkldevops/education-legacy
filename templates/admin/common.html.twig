@@ -1,4 +1,4 @@
-{% extends '_inspina/layout.html.twig' %}
+{% extends '_tailwind/layout.html.twig' %}
 
 {% trans_default_domain "common" %}
 
@@ -7,15 +7,29 @@
 {% endblock %}
 
 {% block menu_action %}
-
     {% if is_granted('ROLE_ACCOUNTANT') %}
-        <li class="{% if 'app_operation_new' == app.request.attributes.get('_route')%} active{% endif %}">
-            <a href="{{ path('app_operation_new') }}"><i class="fa fa-list"></i> {{ 'operation.new'|trans }}</a>
-        </li>
+        <!-- Enhanced Operation New Action -->
+        <a href="{{ path('app_operation_new') }}"
+           class="inline-flex items-center px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 hover:translate-y-1 {{ 'app_operation_new' == app.request.attributes.get('_route') ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/25' : 'text-green-700 bg-white hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md' }}">
+            <div class="flex items-center justify-center w-5 h-5 mr-2 {{ 'app_operation_new' == app.request.attributes.get('_route') ? 'bg-white/20' : 'bg-green-100' }} rounded-lg transition-all duration-200">
+                {{ ux_icon('bi:currency-euro', {class: 'h-3 w-3 ' ~ ('app_operation_new' == app.request.attributes.get('_route') ? 'text-green-600' : 'text-green-600')}) }}
+            </div>
+            <span>{{ 'operation.new'|trans }}</span>
+            {% if 'app_operation_new' == app.request.attributes.get('_route') %}
+                <div class="ml-2 w-1.5 h-1.5 bg-white rounded-full"></div>
+            {% endif %}
+        </a>
 
-        <li class="{%if 'app_account_slip_new' == app.request.attributes.get('_route')%} active{% endif %}">
-            <a href="{{ path('app_account_slip_new') }}"><i class="fas fa-random"></i> {{ 'account_slip.new'|trans }}</a>
-        </li>
+        <!-- Enhanced Account Slip New Action -->
+        <a href="{{ path('app_account_slip_new') }}"
+           class="inline-flex items-center px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 hover:translate-y-1 {{ 'app_account_slip_new' == app.request.attributes.get('_route') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-blue-700 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 border border-blue-200 hover:border-blue-300 shadow-sm hover:shadow-md' }}">
+            <div class="flex items-center justify-center w-5 h-5 mr-2 {{ 'app_account_slip_new' == app.request.attributes.get('_route') ? 'bg-white/20' : 'bg-blue-100' }} rounded-lg transition-all duration-200">
+                {{ ux_icon('bi:arrow-left-right', {class: 'h-3 w-3 ' ~ ('app_account_slip_new' == app.request.attributes.get('_route') ? 'text-white' : 'text-blue-600')}) }}
+            </div>
+            <span>{{ 'account_slip.new'|trans }}</span>
+            {% if 'app_account_slip_new' == app.request.attributes.get('_route') %}
+                <div class="ml-2 w-1.5 h-1.5 bg-white rounded-full"></div>
+            {% endif %}
+        </a>
     {% endif %}
-
 {% endblock %}
