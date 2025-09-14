@@ -44,9 +44,8 @@ final class PlaygroundControllerTest extends AppWebTestCase
 
         // Should show "Tailwind: OFF" by default
         self::assertStringContainsString('Tailwind: OFF', $content);
-        // Should not load Tailwind CDN script by default
-        self::assertStringNotContainsString('cdn.tailwindcss.com', $content);
-        // Should show enable button
+        // Note: Tailwind is now loaded globally in base.html.twig so CDN will be present
+        // Should show enable button for playground-specific features
         self::assertStringContainsString('Enable Tailwind CSS', $content);
     }
 
@@ -92,9 +91,9 @@ final class PlaygroundControllerTest extends AppWebTestCase
         self::assertStringContainsString('inspina:', $content);
     }
 
-    public function testNoUIChangesToExistingPages(): void
+    public function testTailwindIsNowGloballyEnabled(): void
     {
-        // Test that enabling Tailwind on playground doesn't affect other pages
+        // Test that Tailwind is now globally enabled in the new base template
         self::$client->request(Request::METHOD_GET, '/');
 
         $response = self::$client->getResponse();
@@ -103,9 +102,11 @@ final class PlaygroundControllerTest extends AppWebTestCase
         $content = $response->getContent();
         self::assertNotFalse($content);
 
-        // Should not contain Tailwind CDN even if playground has it enabled
-        self::assertStringNotContainsString('cdn.tailwindcss.com', $content);
-        // Should still contain Inspina theme assets
-        self::assertStringContainsString('inspina', $content);
+        // Should contain Tailwind CDN since it's now the main CSS framework
+        self::assertStringContainsString('cdn.tailwindcss.com', $content);
+        // Should contain modern styling classes
+        self::assertStringContainsString('bg-gray-50', $content);
+        // Confirm the new modern HTML structure
+        self::assertStringContainsString('class="h-full bg-gray-50"', $content);
     }
 }
