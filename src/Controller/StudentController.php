@@ -251,8 +251,7 @@ class StudentController extends AbstractController
     public function edit(
         #[MapEntity(id: 'id')] Student $student,
         FamilyApiController $familyApiController
-    ): Response
-    {
+    ): Response {
         $form = $this->createEditForm($student);
         $formFamily = $familyApiController->createEditForm($student->getFamily());
 
@@ -268,8 +267,7 @@ class StudentController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Student $student,
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($student)
             ->handleRequest($request)
         ;
@@ -301,8 +299,7 @@ class StudentController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Student $student,
         EntityManagerInterface $entityManager
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
@@ -334,8 +331,7 @@ class StudentController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Student $student,
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
         $student->setEnable((bool) $request->get('enable'));
         $entityManager->persist($student);
         $entityManager->flush();
@@ -364,8 +360,7 @@ class StudentController extends AbstractController
         #[MapEntity(id: 'id')] Student $student,
         EntityManagerInterface $entityManager,
         DocumentRepository $documentRepository
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $image = $documentRepository->find($request->get('document'));
 
         if (!$image instanceof Document) {
@@ -387,8 +382,7 @@ class StudentController extends AbstractController
         #[MapEntity(id: 'id')] Student $student,
         Request $request,
         EntityManagerInterface $entityManager
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $responseModel = ResponseRequest::responseDefault();
         match ($request->get('action')) {
             'delete' => $student->removePhone($request->get('key')),
@@ -408,8 +402,7 @@ class StudentController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Student $student,
         EntityManagerInterface $entityManager
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $studentComment = new StudentComment();
         $form = $this->createCreateCommentForm($studentComment, $student);
         $form->handleRequest($request);
@@ -441,8 +434,7 @@ class StudentController extends AbstractController
         #[MapEntity(id: 'id')] PackageStudentPeriod $packageStudentPeriod,
         string $format = 'html',
         bool $force = false
-    ): Response
-    {
+    ): Response {
         $pathFileTmp = implode(\DIRECTORY_SEPARATOR, [
             $this->getParameter('kernel.project_dir'),
             'public/uploads/%format%',
