@@ -36,7 +36,7 @@
     <div class="flex items-center space-x-4">
         <!-- Enhanced Period Selector -->
         {% if app.session.get('period') is defined %}
-            {% include '_tailwind/components/period_dropdown.html.twig' %}
+            <twig:PeriodDropdown />
         {% endif %}
 
         <!-- Enhanced Notifications -->
