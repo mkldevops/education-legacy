@@ -9,6 +9,7 @@ top.logout: Déconnexion
 top.welcome: 'Bienvenue sur l''admin'
 top.search: 'Recherche global...'
 header.periods.notfound: 'Aucune période disponible'
+header.periods.none_selected: 'Aucune période sélectionnée'
 search.btn: Rechercher
 search.placehoder: 'Votre recherche...'
 base.not_body.title: 'Page en cours de construction...'

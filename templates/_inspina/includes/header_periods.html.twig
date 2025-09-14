@@ -2,7 +2,7 @@
 
 <li class="dropdown">
     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-        <em class="fa fa-calendar"></em> {{ app.session.get('period').selected|default(null) }}
+        <em class="fa fa-calendar"></em> {{ app.session.get('period').selected.name|default('header.periods.none_selected'|trans) }}
     </a>
     <ul class="dropdown-menu dropdown-alerts">
         {% for period in app.session.get('period').list|default({}) %}
