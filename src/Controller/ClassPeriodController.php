@@ -213,8 +213,8 @@ class ClassPeriodController extends AbstractController
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function add(ClassSchool $classSchool, Period $period, EntityManagerInterface $entityManager): RedirectResponse
     {
-        $classPeriod = $this->classPeriodRepository->findBy(['classSchool' => $classSchool, 'period' => $period]);
-        if ([] === $classPeriod) {
+        $classPeriod = $this->classPeriodRepository->findOneBy(['classSchool' => $classSchool, 'period' => $period]);
+        if (null === $classPeriod) {
             $classPeriod = new ClassPeriod();
             $classPeriod->setClassSchool($classSchool)
                 ->setPeriod($period)
