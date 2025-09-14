@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Components;
 
+use App\Entity\Period;
+use App\Model\PeriodsList;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
@@ -16,31 +18,42 @@ final readonly class PeriodDropdown
 
     public function getPeriods(): array
     {
-        $session = $this->requestStack->getSession();
+        $periodsList = $this->getPeriodsListObject();
 
-        return $session->get('period')['list'] ?? [];
+        if (!$periodsList instanceof PeriodsList) {
+            return [];
+        }
+
+        return $periodsList->list ?? [];
     }
 
-    public function getSelectedPeriod(): ?object
+    public function getSelectedPeriod(): ?Period
     {
-        $session = $this->requestStack->getSession();
+        $periodsList = $this->getPeriodsListObject();
 
-        return $session->get('period')['selected'] ?? null;
+        return $periodsList?->selected;
     }
 
-    public function isPeriodActive(object $period): bool
+    public function isPeriodActive(Period $period): bool
     {
         $selectedPeriod = $this->getSelectedPeriod();
 
-        if (!$selectedPeriod || !isset($period->id, $selectedPeriod->id)) {
+        if (!$selectedPeriod instanceof Period) {
             return false;
         }
 
-        return $period->id === $selectedPeriod->id;
+        return $period->getId() === $selectedPeriod->getId();
     }
 
     public function hasPeriods(): bool
     {
         return [] !== $this->getPeriods();
+    }
+
+    private function getPeriodsListObject(): ?PeriodsList
+    {
+        $session = $this->requestStack->getSession();
+
+        return $session->get('period');
     }
 }
