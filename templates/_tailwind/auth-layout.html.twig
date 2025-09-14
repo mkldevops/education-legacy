@@ -43,7 +43,18 @@
                     const submitButton = form.querySelector('button[type="submit"]');
                     if (submitButton) {
                         submitButton.disabled = true;
-                        submitButton.querySelector('span:not([x-show])').textContent = 'Connexion...';
+                        
+                        // Get the loading text from data attribute or use fallback
+                        const loadingText = submitButton.dataset.loadingLabel || '{{ 'security.login.loading'|trans }}';
+                        
+                        // Try to find a span without x-show attribute first
+                        const targetSpan = submitButton.querySelector('span:not([x-show])');
+                        if (targetSpan) {
+                            targetSpan.textContent = loadingText;
+                        } else {
+                            // Fallback: set button text directly
+                            submitButton.textContent = loadingText;
+                        }
                     }
                 });
             });
