@@ -349,6 +349,52 @@ The project includes GitLab CI configuration with:
 -   **Logging**: Monolog with structured logging
 -   **Performance**: Built-in Symfony profiler (dev only)
 
+## 🎨 Tailwind CSS Migration (Experimental)
+
+The project includes an experimental Tailwind CSS integration for modernizing the UI. This is currently in **evaluation phase** and does not affect the existing Inspina theme by default.
+
+### Access Tailwind Playground
+
+Visit the playground route to test Tailwind CSS components:
+
+```bash
+# Access playground (Tailwind OFF by default)
+http://localhost:8800/playground/tw
+
+# Enable Tailwind CSS for testing
+http://localhost:8800/playground/tw?tw=1
+```
+
+### Toggle Options
+
+**Option A: Query Parameter (Recommended for testing)**
+- Add `?tw=1` to any playground URL to enable Tailwind
+- Remove the parameter to return to standard styling
+
+**Option B: Environment Variable (Not yet implemented)**
+- `TAILWIND_CDN=1` in your `.env` file (future feature)
+
+### Features
+
+✅ **Safe Integration**: Preflight disabled, no conflicts with existing theme  
+✅ **Component Gallery**: Buttons, forms, tables, alerts, cards  
+✅ **Responsive Utilities**: Mobile-first responsive design  
+✅ **Plugin Support**: Forms and typography plugins enabled  
+✅ **Custom Configuration**: Brand colors and extended theme  
+
+### Important Notes
+
+- **Development Only**: Currently CDN-based for quick prototyping  
+- **No UI Changes**: Existing application UI remains unchanged  
+- **Future Plans**: Will migrate to build pipeline (PostCSS) for production
+
+### Migration Roadmap
+
+1. ✅ **Phase 1**: CDN integration with playground (current)
+2. ⏳ **Phase 2**: Build pipeline integration (PostCSS, purging)
+3. ⏳ **Phase 3**: Incremental component migration
+4. ⏳ **Phase 4**: Complete theme modernization
+
 ---
 
 For detailed development guidelines and advanced configuration, see [CLAUDE.md](CLAUDE.md).
