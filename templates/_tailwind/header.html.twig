@@ -35,19 +35,8 @@
     <!-- Right side -->
     <div class="flex items-center space-x-4">
         <!-- Enhanced Period Selector -->
-        {% if app.session.get('period') is defined and app.session.get('period').selected is defined %}
-            <div class="hidden sm:block">
-                <div class="relative">
-                    <select class="appearance-none rounded-xl border-gray-200 bg-white hover:bg-gray-50 pl-4 pr-10 py-2.5 text-sm font-medium text-gray-700 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
-                        <option>{{ app.session.get('period').selected.name ?? 'Période courante' }}</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
+        {% if app.session.get('period') is defined %}
+            <twig:PeriodDropdown />
         {% endif %}
 
         <!-- Enhanced Notifications -->
