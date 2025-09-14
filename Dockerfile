@@ -26,3 +26,19 @@ RUN set -eux; \
 FROM base AS dev
 
 ENV APP_ENV=dev
+
+# Copy source code and configuration
+COPY --link . .
+
+# Install dependencies with dev requirements  
+RUN set -eux; \
+	symfony composer install --no-cache --prefer-dist --no-progress
+
+# Set proper permissions
+RUN set -eux; \
+	chown -R www-data:www-data /app && \
+	chmod +x bin/console
+
+# Warmup cache for better performance (ignore errors in case of missing dependencies)
+RUN set -eux; \
+	php bin/console cache:warmup --env=dev || true
