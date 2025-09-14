@@ -1,19 +1,15 @@
 {% extends "base-tailwind.html.twig" %}
 
-{# Authentication layout - extends base Tailwind without sidebar/header #}
 
 {% block container %}
     <div class="min-h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <!-- Main authentication content -->
         <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div class="max-w-md w-full space-y-8">
                 {% block auth_content %}
-                    <!-- Default auth content can be placed here -->
                 {% endblock %}
             </div>
         </div>
 
-        <!-- Enhanced Footer for Auth Pages -->
         <footer class="absolute bottom-0 w-full bg-white/80 backdrop-blur-sm border-t border-gray-200/50">
             <div class="px-4 py-3">
                 <p class="text-xs text-gray-500 text-center">
@@ -27,16 +23,13 @@
 {% block javascripts %}
     {{ parent() }}
     
-    {# Authentication specific JavaScript #}
     <script>
-        // Auto-focus first input field
         document.addEventListener('DOMContentLoaded', function() {
             const firstInput = document.querySelector('input[type="text"], input[type="email"]');
             if (firstInput) {
                 firstInput.focus();
             }
 
-            // Enhanced form validation feedback
             const forms = document.querySelectorAll('form');
             forms.forEach(function(form) {
                 form.addEventListener('submit', function(e) {
@@ -44,26 +37,21 @@
                     if (submitButton) {
                         submitButton.disabled = true;
                         
-                        // Get the loading text from data attribute or use fallback
                         const loadingText = submitButton.dataset.loadingLabel || '{{ 'security.login.loading'|trans }}';
                         
-                        // Try to find a span without x-show attribute first
                         const targetSpan = submitButton.querySelector('span:not([x-show])');
                         if (targetSpan) {
                             targetSpan.textContent = loadingText;
                         } else {
-                            // Fallback: set button text directly
                             submitButton.textContent = loadingText;
                         }
                     }
                 });
             });
 
-            // Password strength indicator (optional enhancement)
             const passwordField = document.querySelector('input[type="password"]');
             if (passwordField) {
                 passwordField.addEventListener('input', function(e) {
-                    // You can add password strength logic here if needed
                 });
             }
         });
