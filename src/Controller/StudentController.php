@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -127,9 +128,9 @@ class StudentController extends AbstractController
     public function addPackage(
         Request $request,
         StudentManager $studentManager,
-        Student $student,
+        #[MapEntity(id: 'id')] Student $student,
         PackageRepository $packageRepository,
-        Period $period,
+        #[MapEntity(id: 'period')] Period $period,
         SchoolManager $schoolManager
     ): Response {
         $packageStudentPeriod = (new PackageStudentPeriod())
@@ -228,7 +229,7 @@ class StudentController extends AbstractController
      */
     #[Route(path: '/student/show/{id}', name: 'app_student_show', methods: ['GET'])]
     public function show(
-        Student $student,
+        #[MapEntity(id: 'id')] Student $student,
         PackageStudentPeriodRepository $packageStudentPeriodRepository,
         StudentCommentRepository $studentCommentRepository,
         PeriodManager $periodManager
@@ -247,7 +248,10 @@ class StudentController extends AbstractController
     }
 
     #[Route(path: '/student/edit/{id}', name: 'app_student_edit', methods: ['GET'])]
-    public function edit(Student $student, FamilyApiController $familyApiController): Response
+    public function edit(
+        #[MapEntity(id: 'id')] Student $student,
+        FamilyApiController $familyApiController
+    ): Response
     {
         $form = $this->createEditForm($student);
         $formFamily = $familyApiController->createEditForm($student->getFamily());
@@ -260,7 +264,11 @@ class StudentController extends AbstractController
     }
 
     #[Route(path: '/student/update/{id}', name: 'app_student_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, Student $student, EntityManagerInterface $entityManager): Response
+    public function update(
+        Request $request,
+        #[MapEntity(id: 'id')] Student $student,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $editForm = $this->createEditForm($student)
             ->handleRequest($request)
@@ -289,7 +297,11 @@ class StudentController extends AbstractController
 
     #[Route(path: '/student/delete/{id}')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function delete(Request $request, Student $student, EntityManagerInterface $entityManager): RedirectResponse|Response
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] Student $student,
+        EntityManagerInterface $entityManager
+    ): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($student->getId());
         $deleteForm->handleRequest($request);
@@ -318,7 +330,11 @@ class StudentController extends AbstractController
         options: ['expose' => true],
         methods: ['POST', 'GET']
     )]
-    public function editStatus(Request $request, Student $student, EntityManagerInterface $entityManager): Response
+    public function editStatus(
+        Request $request,
+        #[MapEntity(id: 'id')] Student $student,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $student->setEnable((bool) $request->get('enable'));
         $entityManager->persist($student);
@@ -343,7 +359,12 @@ class StudentController extends AbstractController
      * @throws \ImagickException
      */
     #[Route(path: '/student/set-image/{id}', methods: ['PUT', 'POST'])]
-    public function setImage(Request $request, Student $student, EntityManagerInterface $entityManager, DocumentRepository $documentRepository): JsonResponse
+    public function setImage(
+        Request $request,
+        #[MapEntity(id: 'id')] Student $student,
+        EntityManagerInterface $entityManager,
+        DocumentRepository $documentRepository
+    ): JsonResponse
     {
         $image = $documentRepository->find($request->get('document'));
 
@@ -362,7 +383,11 @@ class StudentController extends AbstractController
      * @throws AppException
      */
     #[Route(path: '/student/set-phone/{id}', methods: ['POST', 'PUT'])]
-    public function setPhone(Student $student, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function setPhone(
+        #[MapEntity(id: 'id')] Student $student,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
     {
         $responseModel = ResponseRequest::responseDefault();
         match ($request->get('action')) {
@@ -379,7 +404,11 @@ class StudentController extends AbstractController
     }
 
     #[Route('/student/{id}/add-comment', methods: ['POST'])]
-    public function addComment(Request $request, Student $student, EntityManagerInterface $entityManager): RedirectResponse
+    public function addComment(
+        Request $request,
+        #[MapEntity(id: 'id')] Student $student,
+        EntityManagerInterface $entityManager
+    ): RedirectResponse
     {
         $studentComment = new StudentComment();
         $form = $this->createCreateCommentForm($studentComment, $student);
@@ -408,7 +437,11 @@ class StudentController extends AbstractController
      * @throws AppException
      */
     #[Route('/student/print/{id}/{format}/{force}', name : 'app_student_print')]
-    public function print(PackageStudentPeriod $packageStudentPeriod, string $format = 'html', bool $force = false): Response
+    public function print(
+        #[MapEntity(id: 'id')] PackageStudentPeriod $packageStudentPeriod,
+        string $format = 'html',
+        bool $force = false
+    ): Response
     {
         $pathFileTmp = implode(\DIRECTORY_SEPARATOR, [
             $this->getParameter('kernel.project_dir'),

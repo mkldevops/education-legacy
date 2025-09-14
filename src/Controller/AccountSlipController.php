@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
@@ -126,7 +127,9 @@ class AccountSlipController extends AbstractController
     }
 
     #[Route(path: '/account-slip/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
-    public function show(AccountSlip $accountSlip): Response
+    public function show(
+        #[MapEntity(id: 'id')] AccountSlip $accountSlip
+    ): Response
     {
         return $this->render('account_slip/show.html.twig', [
             'accountslip' => $accountSlip,
@@ -134,7 +137,9 @@ class AccountSlipController extends AbstractController
     }
 
     #[Route(path: '/account-slip/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
-    public function edit(AccountSlip $accountSlip): Response
+    public function edit(
+        #[MapEntity(id: 'id')] AccountSlip $accountSlip
+    ): Response
     {
         $editForm = $this->createEditForm($accountSlip);
 
@@ -147,7 +152,7 @@ class AccountSlipController extends AbstractController
     #[Route(path: '/account-slip/update/{id}', name: 'app_account_slip_update', methods: ['PUT', 'POST'])]
     public function update(
         Request $request,
-        AccountSlip $accountSlip,
+        #[MapEntity(id: 'id')] AccountSlip $accountSlip,
         TransferManager $transferManager,
         SchoolManager $schoolManager,
     ): Response {
@@ -187,7 +192,10 @@ class AccountSlipController extends AbstractController
     }
 
     #[Route(path: '/account-slip/delete/{id}', name: 'app_account_slip_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, AccountSlip $accountSlip): Response
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] AccountSlip $accountSlip
+    ): Response
     {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
         $deleteForm->handleRequest($request);
@@ -225,7 +233,7 @@ class AccountSlipController extends AbstractController
     #[Route(path: '/account-slip/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
     public function setDocument(
         Request $request,
-        AccountSlip $accountSlip,
+        #[MapEntity(id: 'id')] AccountSlip $accountSlip,
         string $action,
         DocumentFetcher $documentFetcher,
         EntityManagerInterface $entityManager,

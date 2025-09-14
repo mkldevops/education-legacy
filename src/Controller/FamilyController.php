@@ -17,6 +17,7 @@ use App\Manager\Interfaces\FamilyManagerInterface;
 use App\Manager\PeriodManager;
 use App\Repository\FamilyRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -74,7 +75,7 @@ class FamilyController extends AbstractController
      */
     #[Route(path: '/family/show/{id}', methods: ['GET'])]
     public function show(
-        Family $family,
+        #[MapEntity(id: 'id')] Family $family,
         FamilyManager $familyManager,
         PeriodManager $periodManager,
     ): Response {
@@ -103,7 +104,10 @@ class FamilyController extends AbstractController
     }
 
     #[Route(path: '/family/edit/{id}', methods: ['GET'])]
-    public function edit(Request $request, Family $family): Response
+    public function edit(
+        Request $request,
+        #[MapEntity(id: 'id')] Family $family
+    ): Response
     {
         $editForm = $this->createEditForm($request, $family);
 
@@ -114,7 +118,11 @@ class FamilyController extends AbstractController
     }
 
     #[Route(path: '/family/{id}/update', methods: ['POST'])]
-    public function update(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse|Response
+    public function update(
+        Request $request,
+        #[MapEntity(id: 'id')] Family $family,
+        EntityManagerInterface $entityManager
+    ): RedirectResponse|Response
     {
         $editForm = $this->createEditForm($request, $family);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -130,7 +138,11 @@ class FamilyController extends AbstractController
     }
 
     #[Route(path: '/family/delete/{id}', methods: ['GET', 'POST'])]
-    public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): RedirectResponse|Response
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] Family $family,
+        EntityManagerInterface $entityManager
+    ): RedirectResponse|Response
     {
         $form = $this->createDeleteForm($family);
         $form->handleRequest($request);
