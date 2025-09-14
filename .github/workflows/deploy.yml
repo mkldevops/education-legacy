@@ -60,10 +60,13 @@ jobs:
           echo "Commit: ${GITHUB_SHA}"
           echo "Branch: ${GITHUB_REF}"
           
-          # Make the webhook request
-          response=$(curl -fsSL -w "%{http_code}" -X POST "${WEBHOOK_URL}" "${headers[@]}" -d "${payload}")
-          http_code="${response: -3}"
-          response_body="${response%???}"
+          # Make the webhook request with timeouts/retries; capture body and status separately
+          http_code=$(curl -sS -L --connect-timeout 5 --max-time 30 \
+            --retry 3 --retry-all-errors \
+            -w "%{http_code}" \
+            -o /tmp/coolify_resp.txt \
+            -X POST "${WEBHOOK_URL}" "${headers[@]}" -d "${payload}")
+          response_body=$(cat /tmp/coolify_resp.txt 2>/dev/null || true)
           
           echo "HTTP Status: ${http_code}"
           if [ "${http_code}" -ge 200 ] && [ "${http_code}" -lt 300 ]; then
