@@ -14,6 +14,7 @@ use App\Manager\SchoolManager;
 use App\Repository\AccountRepository;
 use App\Repository\OperationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
@@ -92,7 +93,12 @@ class AccountController extends AbstractController
      * @throws AppException
      */
     #[Route(path: '/account/show/{id}', name: 'app_account_show')]
-    public function show(AccountManager $accountManager, Account $account, SchoolManager $schoolManager, OperationRepository $operationRepository): Response
+    public function show(
+        AccountManager $accountManager,
+        #[MapEntity(id: 'id')] Account $account,
+        SchoolManager $schoolManager,
+        OperationRepository $operationRepository
+    ): Response
     {
         if ($account->getStructure()?->getId() !== $schoolManager->getEntitySchool()->getStructure()?->getId()) {
             throw $this->createNotFoundException('Unable to find Account entity.');
@@ -107,7 +113,9 @@ class AccountController extends AbstractController
     }
 
     #[Route(path: '/account/operations/{id}', name: 'app_account_operations')]
-    public function operations(Account $account): Response
+    public function operations(
+        #[MapEntity(id: 'id')] Account $account
+    ): Response
     {
         return $this->render('account/operations.html.twig', [
             'account' => $account,
@@ -119,7 +127,9 @@ class AccountController extends AbstractController
      */
     #[Route(path: '/account/edit/{id}', name: 'app_account_edit')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function edit(Account $account): Response
+    public function edit(
+        #[MapEntity(id: 'id')] Account $account
+    ): Response
     {
         $editForm = $this->createEditForm($account);
 
@@ -131,7 +141,11 @@ class AccountController extends AbstractController
 
     #[Route(path: '/account/update/{id}', name: 'app_account_update')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function update(Request $request, Account $account, EntityManagerInterface $entityManager): Response
+    public function update(
+        Request $request,
+        #[MapEntity(id: 'id')] Account $account,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $editForm = $this->createEditForm($account);
         $editForm->handleRequest($request);
@@ -154,7 +168,11 @@ class AccountController extends AbstractController
      */
     #[Route(path: '/account/delete/{id}', name: 'app_account_delete')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function delete(Request $request, Account $account, EntityManagerInterface $entityManager): RedirectResponse|Response
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] Account $account,
+        EntityManagerInterface $entityManager
+    ): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($account->getId());
         $deleteForm->handleRequest($request);
@@ -179,7 +197,11 @@ class AccountController extends AbstractController
      */
     #[Route(path: '/account/ofx/{id}', name: 'app_account_ofx')]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function ofx(Request $request, Account $account, OFXManager $ofxManager): Response
+    public function ofx(
+        Request $request,
+        #[MapEntity(id: 'id')] Account $account,
+        OFXManager $ofxManager
+    ): Response
     {
         $logsOperations = [];
         $form = $this->createOFXForm($account)

@@ -16,6 +16,7 @@ use App\Services\ResponseRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -84,7 +85,10 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(path: '/account-statement/create/{account}', name: 'app_account_statement_create', methods: ['POST'])]
-    public function create(Account $account, Request $request): RedirectResponse|Response
+    public function create(
+        #[MapEntity(id: 'account')] Account $account,
+        Request $request
+    ): RedirectResponse|Response
     {
         $accountStatement = new AccountStatement();
         $accountStatement->setAccount($account);
@@ -111,7 +115,9 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(path: '/account-statement/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
-    public function new(Account $account): Response
+    public function new(
+        #[MapEntity(id: 'account')] Account $account
+    ): Response
     {
         $accountStatement = new AccountStatement();
         $accountStatement->setAccount($account);
@@ -125,7 +131,10 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(path: '/account-statement/show/{id}', name: 'app_account_statement_show', methods: ['GET'])]
-    public function show(AccountStatement $accountStatement, OperationRepository $operationRepository): Response
+    public function show(
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement,
+        OperationRepository $operationRepository
+    ): Response
     {
         $stats = $operationRepository->getQueryStatsAccountStatement([$accountStatement->getId()])
             ->getQuery()
@@ -150,7 +159,9 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(path: '/account-statement/edit/{id}', name: 'app_account_statement_edit', methods: ['GET'])]
-    public function edit(AccountStatement $accountStatement): Response
+    public function edit(
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement
+    ): Response
     {
         $editForm = $this->createEditForm($accountStatement);
 
@@ -161,7 +172,10 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(path: '/account-statement/update/{id}', name: 'app_account_statement_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, AccountStatement $accountStatement): Response
+    public function update(
+        Request $request,
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement
+    ): Response
     {
         $editForm = $this->createEditForm($accountStatement);
         $editForm->handleRequest($request);
@@ -181,7 +195,10 @@ class AccountStatementController extends AbstractController
     }
 
     #[Route(path: '/account-statement/delete/{id}', name: 'app_account_statement_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, AccountStatement $accountStatement): RedirectResponse|Response
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement
+    ): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($accountStatement->getId());
         $deleteForm->handleRequest($request);
@@ -223,7 +240,7 @@ class AccountStatementController extends AbstractController
     )]
     public function addDocument(
         Request $request,
-        AccountStatement $accountStatement,
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement,
         DocumentFetcher $documentFetcher,
         EntityManagerInterface $entityManager,
     ): JsonResponse {
@@ -242,7 +259,7 @@ class AccountStatementController extends AbstractController
         methods: ['GET', 'POST']
     )]
     public function operationsAvailable(
-        AccountStatement $accountStatement,
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement,
         OperationRepository $operationRepository
     ): JsonResponse {
         $responseModel = ResponseRequest::responseDefault();
@@ -269,7 +286,10 @@ class AccountStatementController extends AbstractController
         options: ['expose' => 'true'],
         methods: ['GET', 'POST']
     )]
-    public function addOperations(Request $request, AccountStatement $accountStatement): JsonResponse
+    public function addOperations(
+        Request $request,
+        #[MapEntity(id: 'id')] AccountStatement $accountStatement
+    ): JsonResponse
     {
         return $this->treatmentOperations($request->get('operations'), $accountStatement);
     }

@@ -22,6 +22,7 @@ use App\Repository\ClassSchoolRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -138,7 +139,10 @@ class ClassPeriodController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: '/class-period/show/{id}', name: 'app_class_period_show', options: ['expose' => true], methods: ['GET'])]
-    public function show(ClassPeriod $classPeriod, AppealCourseRepository $appealCourseRepository): Response
+    public function show(
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
+        AppealCourseRepository $appealCourseRepository
+    ): Response
     {
         $listStatus = CourseManager::getListStatus();
         $appeals = $appealCourseRepository->getAppealToClassPeriod($classPeriod, $listStatus);
@@ -151,7 +155,9 @@ class ClassPeriodController extends AbstractController
     }
 
     #[Route(path: '/class-period/edit/{id}', name: 'app_class_period_edit', methods: ['GET'])]
-    public function edit(ClassPeriod $classPeriod): Response
+    public function edit(
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod
+    ): Response
     {
         $editForm = $this->createEditForm($classPeriod);
 
@@ -162,7 +168,11 @@ class ClassPeriodController extends AbstractController
     }
 
     #[Route(path: '/class-period/update/{id}', name: 'app_class_period_update', methods: ['POST', 'PUT'])]
-    public function update(Request $request, ClassPeriod $classPeriod, EntityManagerInterface $entityManager): Response
+    public function update(
+        Request $request,
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $editForm = $this->createEditForm($classPeriod);
         $editForm->handleRequest($request);
@@ -180,7 +190,10 @@ class ClassPeriodController extends AbstractController
     }
 
     #[Route(path: '/class-period/delete/{id}', name: 'app_class_period_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Request $request, ClassPeriod $classPeriod): RedirectResponse|Response
+    public function delete(
+        Request $request,
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod
+    ): RedirectResponse|Response
     {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
             ->handleRequest($request)
@@ -211,7 +224,11 @@ class ClassPeriodController extends AbstractController
 
     #[Route(path: '/class-period/add/{period}/{classSchool}', name: 'app_class_period_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function add(ClassSchool $classSchool, Period $period, EntityManagerInterface $entityManager): RedirectResponse
+    public function add(
+        #[MapEntity(id: 'classSchool')] ClassSchool $classSchool,
+        #[MapEntity(id: 'period')] Period $period,
+        EntityManagerInterface $entityManager
+    ): RedirectResponse
     {
         $classPeriod = $this->classPeriodRepository->findBy(['classSchool' => $classSchool, 'period' => $period]);
         if ([] === $classPeriod) {
@@ -232,7 +249,10 @@ class ClassPeriodController extends AbstractController
     }
 
     #[Route(path: '/class-period/show-student/{id}', name: 'app_class_period_show_student', methods: ['GET'])]
-    public function showStudent(ClassPeriod $classPeriod, ClassPeriodManagerInterface $classPeriodManager): Response
+    public function showStudent(
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
+        ClassPeriodManagerInterface $classPeriodManager
+    ): Response
     {
         return $this->render('class_period/showStudent.html.twig', [
             'classperiod' => $classPeriod,
@@ -244,7 +264,10 @@ class ClassPeriodController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/class-period/print-list-student/{id}', name: 'app_class_period_print_list_student', methods: ['GET'])]
-    public function printListStudent(ClassPeriod $classPeriod, ClassPeriodManager $classPeriodManager): Response
+    public function printListStudent(
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
+        ClassPeriodManager $classPeriodManager
+    ): Response
     {
         $packageStudents = $classPeriodManager->getPackageStudent($classPeriod);
         $students = $classPeriodManager->getStudentsInClassPeriod($classPeriod);
@@ -267,7 +290,7 @@ class ClassPeriodController extends AbstractController
         methods: ['GET']
     )]
     public function printAppealStudent(
-        ClassPeriod $classPeriod,
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
         ClassPeriodManager $classPeriodManager,
         int $page = 1,
         ?\DateTimeInterface $from = null
@@ -303,8 +326,8 @@ class ClassPeriodController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function deleteStudent(
         EntityManagerInterface $entityManager,
-        ClassPeriod $classPeriod,
-        Student $student
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
+        #[MapEntity(id: 'student')] Student $student
     ): RedirectResponse {
         $list = $this->classPeriodRepository->getStudentToClassPeriod($classPeriod, $student);
 
@@ -331,7 +354,10 @@ class ClassPeriodController extends AbstractController
     }
 
     #[Route('/class-period/change-student/{id}/{student}', name: 'app_class_period_change_student', methods: ['GET'])]
-    public function changeStudent(ClassPeriod $classPeriod, Student $student): RedirectResponse
+    public function changeStudent(
+        #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
+        #[MapEntity(id: 'student')] Student $student
+    ): RedirectResponse
     {
         return $this->redirectToRoute('app_class_period_show_student', ['id' => $classPeriod->getId()]);
     }
