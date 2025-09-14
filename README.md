@@ -336,12 +336,34 @@ DATABASE_URL=mysql://user:pass@host/database
 
 ### CI/CD Pipeline
 
-The project includes GitLab CI configuration with:
+The project includes comprehensive CI/CD automation with:
 
--   Automated testing
--   Code quality checks
--   Docker image building
--   Deployment automation
+#### GitHub Actions Workflows
+-   **CI Pipeline** (`.github/workflows/ci.yml`): Automated testing and code quality checks
+-   **Docker Build** (`.github/workflows/docker.yml`): Container image building and registry push
+-   **Deployment** (`.github/workflows/deploy.yml`): Automated deployment via Coolify webhook
+
+#### Automated Deployment
+
+Deployments are automatically triggered via Coolify webhook on:
+- Push to `main` branch
+- Manual workflow dispatch
+
+**Required Secrets:**
+- `COOLIFY_WEBHOOK_URL`: Your Coolify incoming webhook URL
+- `COOLIFY_WEBHOOK_TOKEN`: Optional authentication token for webhook
+
+**Setup Instructions:**
+1. Configure your Coolify application with an incoming webhook
+2. Add the webhook URL to GitHub repository secrets as `COOLIFY_WEBHOOK_URL`
+3. Optionally add webhook token as `COOLIFY_WEBHOOK_TOKEN` if your Coolify instance requires authentication
+4. Deploy will trigger automatically on main branch updates
+
+The deployment workflow provides:
+- Payload validation and error handling
+- Detailed logging of deployment process
+- Support for both authenticated and unauthenticated webhooks
+- Commit and repository metadata in webhook payload
 
 ### Monitoring
 
