@@ -129,8 +129,7 @@ class AccountSlipController extends AbstractController
     #[Route(path: '/account-slip/show/{id}', name: 'app_account_slip_show', methods: ['GET'])]
     public function show(
         #[MapEntity(id: 'id')] AccountSlip $accountSlip
-    ): Response
-    {
+    ): Response {
         return $this->render('account_slip/show.html.twig', [
             'accountslip' => $accountSlip,
         ]);
@@ -139,8 +138,7 @@ class AccountSlipController extends AbstractController
     #[Route(path: '/account-slip/edit/{id}', name: 'app_account_slip_edit', methods: ['GET'])]
     public function edit(
         #[MapEntity(id: 'id')] AccountSlip $accountSlip
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($accountSlip);
 
         return $this->render('account_slip/edit.html.twig', [
@@ -195,8 +193,7 @@ class AccountSlipController extends AbstractController
     public function delete(
         Request $request,
         #[MapEntity(id: 'id')] AccountSlip $accountSlip
-    ): Response
-    {
+    ): Response {
         $deleteForm = $this->createDeleteForm($accountSlip->getId());
         $deleteForm->handleRequest($request);
 

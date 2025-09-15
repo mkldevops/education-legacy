@@ -98,8 +98,7 @@ class AccountController extends AbstractController
         #[MapEntity(id: 'id')] Account $account,
         SchoolManager $schoolManager,
         OperationRepository $operationRepository
-    ): Response
-    {
+    ): Response {
         if ($account->getStructure()?->getId() !== $schoolManager->getEntitySchool()->getStructure()?->getId()) {
             throw $this->createNotFoundException('Unable to find Account entity.');
         }
@@ -115,8 +114,7 @@ class AccountController extends AbstractController
     #[Route(path: '/account/operations/{id}', name: 'app_account_operations')]
     public function operations(
         #[MapEntity(id: 'id')] Account $account
-    ): Response
-    {
+    ): Response {
         return $this->render('account/operations.html.twig', [
             'account' => $account,
         ]);
@@ -129,8 +127,7 @@ class AccountController extends AbstractController
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function edit(
         #[MapEntity(id: 'id')] Account $account
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($account);
 
         return $this->render('account/edit.html.twig', [
@@ -145,8 +142,7 @@ class AccountController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Account $account,
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($account);
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
@@ -172,8 +168,7 @@ class AccountController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Account $account,
         EntityManagerInterface $entityManager
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $deleteForm = $this->createDeleteForm($account->getId());
         $deleteForm->handleRequest($request);
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
@@ -201,8 +196,7 @@ class AccountController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Account $account,
         OFXManager $ofxManager
-    ): Response
-    {
+    ): Response {
         $logsOperations = [];
         $form = $this->createOFXForm($account)
             ->handleRequest($request)

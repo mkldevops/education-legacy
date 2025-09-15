@@ -7,21 +7,26 @@ namespace App\Tests\Controller;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class PagesAuthControllerTest extends AppWebTestCase
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
+final class PagesAuthControllerTest extends AppWebTestCase
 {
     /**
-     * @dataProvider providers
+     * @dataProvider providePagesWithAuthCases
      */
     public static function testPagesWithAuth(string $url): void
     {
-        static::$client->request(Request::METHOD_GET, $url);
-        static::assertResponseIsSuccessful();
+        self::$client->request(Request::METHOD_GET, $url);
+        self::assertResponseIsSuccessful();
     }
 
     /**
      * @return iterable<array-key, string[]>
      */
-    public static function providers(): iterable
+    public static function providePagesWithAuthCases(): iterable
     {
         yield ['/'];
         yield ['/account'];

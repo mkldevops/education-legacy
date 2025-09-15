@@ -107,8 +107,7 @@ class FamilyController extends AbstractController
     public function edit(
         Request $request,
         #[MapEntity(id: 'id')] Family $family
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($request, $family);
 
         return $this->render('family/edit.html.twig', [
@@ -122,8 +121,7 @@ class FamilyController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Family $family,
         EntityManagerInterface $entityManager
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $editForm = $this->createEditForm($request, $family);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $entityManager->flush();
@@ -142,8 +140,7 @@ class FamilyController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Family $family,
         EntityManagerInterface $entityManager
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $form = $this->createDeleteForm($family);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
