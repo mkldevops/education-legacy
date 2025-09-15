@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * @coversNothing
  */
-final class AppWebTestCase extends WebTestCase
+class AppWebTestCase extends WebTestCase
 {
     protected static KernelBrowser $client;
 
