@@ -4,27 +4,31 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Tests\AppWebTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class PagesPublicControllerTest extends WebTestCase
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
+final class PagesPublicControllerTest extends WebTestCase
 {
     /**
-     * @dataProvider providers
+     * @dataProvider providePagesCases
      */
     public static function testPages(string $url): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
 
         $client->request(Request::METHOD_GET, $url);
-        static::assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
     }
 
     /**
      * @return iterable<array-key, string[]>
      */
-    public static function providers(): iterable
+    public static function providePagesCases(): iterable
     {
         yield ['/login'];
     }
