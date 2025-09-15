@@ -147,6 +147,44 @@
                     0%, 100% { opacity: 1; }
                     50% { opacity: 0.5; }
                 }
+
+                /* Login form enhancements */
+                .login-container {
+                    min-height: 100vh;
+                    min-height: 100dvh; /* Support for dynamic viewport units */
+                }
+                
+                .login-button {
+                    min-height: 3.5rem;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                
+                .login-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+                }
+                
+                .login-button:disabled {
+                    transform: none !important;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+                }
+
+                /* Responsive improvements for mobile */
+                @media (max-height: 600px) {
+                    .login-container {
+                        min-height: auto;
+                        padding: 1rem 0;
+                    }
+                }
+                
+                @media (max-width: 640px) {
+                    .login-button {
+                        min-height: 3rem;
+                        font-size: 1rem;
+                    }
+                }
             </style>
         {% endblock %}
 
