@@ -88,8 +88,7 @@ class AccountStatementController extends AbstractController
     public function create(
         #[MapEntity(id: 'account')] Account $account,
         Request $request
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $accountStatement = new AccountStatement();
         $accountStatement->setAccount($account);
 
@@ -117,8 +116,7 @@ class AccountStatementController extends AbstractController
     #[Route(path: '/account-statement/new/{account}', name: 'app_account_statement_new', methods: ['GET'])]
     public function new(
         #[MapEntity(id: 'account')] Account $account
-    ): Response
-    {
+    ): Response {
         $accountStatement = new AccountStatement();
         $accountStatement->setAccount($account);
 
@@ -134,8 +132,7 @@ class AccountStatementController extends AbstractController
     public function show(
         #[MapEntity(id: 'id')] AccountStatement $accountStatement,
         OperationRepository $operationRepository
-    ): Response
-    {
+    ): Response {
         $stats = $operationRepository->getQueryStatsAccountStatement([$accountStatement->getId()])
             ->getQuery()
             ->getArrayResult()
@@ -161,8 +158,7 @@ class AccountStatementController extends AbstractController
     #[Route(path: '/account-statement/edit/{id}', name: 'app_account_statement_edit', methods: ['GET'])]
     public function edit(
         #[MapEntity(id: 'id')] AccountStatement $accountStatement
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($accountStatement);
 
         return $this->render('account_statement/edit.html.twig', [
@@ -175,8 +171,7 @@ class AccountStatementController extends AbstractController
     public function update(
         Request $request,
         #[MapEntity(id: 'id')] AccountStatement $accountStatement
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($accountStatement);
         $editForm->handleRequest($request);
 
@@ -198,8 +193,7 @@ class AccountStatementController extends AbstractController
     public function delete(
         Request $request,
         #[MapEntity(id: 'id')] AccountStatement $accountStatement
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $deleteForm = $this->createDeleteForm($accountStatement->getId());
         $deleteForm->handleRequest($request);
         if ($deleteForm->isValid()) {
@@ -289,8 +283,7 @@ class AccountStatementController extends AbstractController
     public function addOperations(
         Request $request,
         #[MapEntity(id: 'id')] AccountStatement $accountStatement
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->treatmentOperations($request->get('operations'), $accountStatement);
     }
 
