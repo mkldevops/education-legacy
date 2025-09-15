@@ -36,6 +36,7 @@ RUN set -eux; \
 
 # Set proper permissions
 RUN set -eux; \
+	mkdir -p var && \
 	chown -R www-data:www-data /app && \
 	chmod +x bin/console
 
