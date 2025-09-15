@@ -1,0 +1,192 @@
+{% trans_default_domain 'student' %}
+
+{{ form_start(form, {'attr': {'class': 'space-y-8'}}) }}
+
+{# Civility Section #}
+<div class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+    <div class="px-6 py-4 bg-white border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+            {{ ux_icon('bi:person-badge', {class: 'w-5 h-5 mr-2 text-primary-500'}) }}
+            {{ 'new.form.civility'|trans }}
+        </h3>
+        <p class="mt-1 text-sm text-gray-600">Informations personnelles de base</p>
+    </div>
+    <div class="p-6 bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div>
+                    {{ form_label(form.person.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.person.name, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.person.name) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.person.forname, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.person.forname, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.person.forname) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.person.gender, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.person.gender, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.person.gender) }}
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    {{ form_label(form.person.birthday, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.person.birthday, {'attr': {'class': 'datepicker w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.person.birthday) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.person.birthplace, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.person.birthplace, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.person.birthplace) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.grade, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.grade, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    {{ form_errors(form.grade) }}
+                </div>
+                
+                {% if form.lastSchool is defined %}
+                    <div>
+                        {{ form_label(form.lastSchool, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(form.lastSchool, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                        {{ form_errors(form.lastSchool) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Residency Section #}
+<div class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+    <div class="px-6 py-4 bg-white border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+            {{ ux_icon('bi:house', {class: 'w-5 h-5 mr-2 text-primary-500'}) }}
+            {{ 'new.form.residency'|trans }}
+        </h3>
+        <p class="mt-1 text-sm text-gray-600">Adresse et coordonnées</p>
+    </div>
+    <div class="p-6 bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+                {% if form.person.address is defined %}
+                    <div>
+                        {{ form_label(form.person.address, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(form.person.address, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                        {{ form_errors(form.person.address) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-4">
+                {% if form.person.zip is defined %}
+                    <div>
+                        {{ form_label(form.person.zip, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(form.person.zip, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                        {{ form_errors(form.person.zip) }}
+                    </div>
+                {% endif %}
+                
+                {% if form.person.city is defined %}
+                    <div>
+                        {{ form_label(form.person.city, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(form.person.city, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                        {{ form_errors(form.person.city) }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-4">
+                {% if form.person.phone is defined %}
+                    <div>
+                        {{ form_label(form.person.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(form.person.phone, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                        {{ form_errors(form.person.phone) }}
+                    </div>
+                {% endif %}
+                
+                {% if form.person.email is defined %}
+                    <div>
+                        {{ form_label(form.person.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                        {{ form_widget(form.person.email, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                        {{ form_errors(form.person.email) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Relations Section #}
+{% if form.person.family is defined %}
+<div id="relations" class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+    <div class="px-6 py-4 bg-white border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+            {{ ux_icon('bi:people', {class: 'w-5 h-5 mr-2 text-primary-500'}) }}
+            {{ 'new.form.relations'|trans }}
+        </h3>
+        <p class="mt-1 text-sm text-gray-600">Famille et relations</p>
+    </div>
+    <div class="p-6 bg-gray-50">
+        <div class="space-y-4">
+            <div>
+                {{ form_label(form.person.family, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                <div class="flex space-x-2">
+                    {{ form_widget(form.person.family, {'attr': {'class': 'flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm'}}) }}
+                    <button type="button" 
+                            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
+                            data-toggle="modal" data-target="#modalFamily">
+                        {{ ux_icon('bi:plus-lg', {class: 'w-4 h-4 mr-1'}) }}
+                        Créer famille
+                    </button>
+                </div>
+                {{ form_errors(form.person.family) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Form Actions #}
+<div class="flex items-center justify-between pt-6 border-t border-gray-200">
+    <div class="flex items-center space-x-4">
+        <a href="{{ app.request.headers.get('referer') ?: path('app_student_index') }}" 
+           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+            {{ ux_icon('bi:arrow-left', {class: 'w-4 h-4 mr-2'}) }}
+            Annuler
+        </a>
+    </div>
+    
+    <div class="flex items-center space-x-3">
+        {% if form.vars.data.id is defined %}
+            <button type="submit" 
+                    name="{{ form.submit.vars.full_name }}" 
+                    class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                {{ ux_icon('bi:check-lg', {class: 'w-4 h-4 mr-2'}) }}
+                Mettre à jour
+            </button>
+        {% else %}
+            <button type="submit" 
+                    name="{{ form.submit.vars.full_name }}" 
+                    class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                {{ ux_icon('bi:plus-lg', {class: 'w-4 h-4 mr-2'}) }}
+                Créer l'étudiant
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+{# Family Creation Modal (if needed) #}
+{% if form.person.family is defined %}
+    {% include 'student/includes/modal-family-tailwind.html.twig' %}
+{% endif %}
