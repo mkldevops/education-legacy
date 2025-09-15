@@ -142,8 +142,7 @@ class ClassPeriodController extends AbstractController
     public function show(
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
         AppealCourseRepository $appealCourseRepository
-    ): Response
-    {
+    ): Response {
         $listStatus = CourseManager::getListStatus();
         $appeals = $appealCourseRepository->getAppealToClassPeriod($classPeriod, $listStatus);
 
@@ -157,8 +156,7 @@ class ClassPeriodController extends AbstractController
     #[Route(path: '/class-period/edit/{id}', name: 'app_class_period_edit', methods: ['GET'])]
     public function edit(
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($classPeriod);
 
         return $this->render('class_period/edit.html.twig', [
@@ -172,8 +170,7 @@ class ClassPeriodController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($classPeriod);
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
@@ -193,8 +190,7 @@ class ClassPeriodController extends AbstractController
     public function delete(
         Request $request,
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $deleteForm = $this->createDeleteForm($classPeriod->getId())
             ->handleRequest($request)
         ;
@@ -228,8 +224,7 @@ class ClassPeriodController extends AbstractController
         #[MapEntity(id: 'classSchool')] ClassSchool $classSchool,
         #[MapEntity(id: 'period')] Period $period,
         EntityManagerInterface $entityManager
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $classPeriod = $this->classPeriodRepository->findOneBy(['classSchool' => $classSchool, 'period' => $period]);
         if (null === $classPeriod) {
             $classPeriod = new ClassPeriod();
@@ -252,8 +247,7 @@ class ClassPeriodController extends AbstractController
     public function showStudent(
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
         ClassPeriodManagerInterface $classPeriodManager
-    ): Response
-    {
+    ): Response {
         return $this->render('class_period/showStudent.html.twig', [
             'classperiod' => $classPeriod,
             'students' => $classPeriodManager->getStudentsInClassPeriod($classPeriod),
@@ -267,8 +261,7 @@ class ClassPeriodController extends AbstractController
     public function printListStudent(
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
         ClassPeriodManager $classPeriodManager
-    ): Response
-    {
+    ): Response {
         $packageStudents = $classPeriodManager->getPackageStudent($classPeriod);
         $students = $classPeriodManager->getStudentsInClassPeriod($classPeriod);
         $lines = \count($students);
@@ -357,8 +350,7 @@ class ClassPeriodController extends AbstractController
     public function changeStudent(
         #[MapEntity(id: 'id')] ClassPeriod $classPeriod,
         #[MapEntity(id: 'student')] Student $student
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         return $this->redirectToRoute('app_class_period_show_student', ['id' => $classPeriod->getId()]);
     }
 

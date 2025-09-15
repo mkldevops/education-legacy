@@ -12,6 +12,7 @@ use App\Repository\PackageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,7 +21,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
 class PackageController extends AbstractController
 {
@@ -109,8 +109,7 @@ class PackageController extends AbstractController
     #[Route(path: '/package/show/{id}', name: 'app_package_show', methods: ['GET'])]
     public function show(
         #[MapEntity(id: 'id')] Package $package
-    ): Response
-    {
+    ): Response {
         return $this->render('package/show.html.twig', [
             'package' => $package,
         ]);
@@ -122,8 +121,7 @@ class PackageController extends AbstractController
     #[Route(path: '/package/edit/{id}', name: 'app_package_edit', methods: ['GET'])]
     public function edit(
         #[MapEntity(id: 'id')] Package $package
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($package);
 
         return $this->render('package/edit.html.twig', [
@@ -137,8 +135,7 @@ class PackageController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Package $package,
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
         $editForm = $this->createEditForm($package);
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
@@ -163,8 +160,7 @@ class PackageController extends AbstractController
         Request $request,
         #[MapEntity(id: 'id')] Package $package,
         EntityManagerInterface $entityManager
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         $deleteForm = $this->createDeleteForm($package->getId())
             ->handleRequest($request)
         ;
