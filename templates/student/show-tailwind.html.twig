@@ -1,0 +1,263 @@
+{% set resources = resources|merge({ ckeditor : true, operations : true, uploadfile : true }) %}
+{% trans_default_domain 'student' %}
+{% extends "student/common-tailwind.html.twig" %}
+
+{% set title = "title.show"|trans({'%name%': student}) %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_student_show', {id : student.id })}|merge(breadcrumbs|default({})) %}
+
+{% block body %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {# Student Information Panel #}
+        <div class="lg:col-span-2">
+            <div class="bg-white shadow-sm rounded-lg border {{ student.enable ? 'border-gray-200' : 'border-red-300' }} overflow-hidden">
+                {# Header #}
+                <div class="px-6 py-4 border-b {{ student.enable ? 'border-gray-200 bg-gray-50' : 'border-red-200 bg-red-50' }}">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold {{ student.enable ? 'text-gray-900' : 'text-red-900' }}">
+                            {{ ux_icon('bi:person-circle', {class: 'w-5 h-5 mr-2 inline'}) }}
+                            {{ 'show.info.title'|trans }}
+                        </h3>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_student_edit_status', { id : student.id, enable : student.enable ? false : true, redirect : true}) }}" 
+                               class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm 
+                                      {{ student.enable ? 'text-red-700 bg-red-100 hover:bg-red-200' : 'text-green-700 bg-green-100 hover:bg-green-200' }}
+                                      transition-colors duration-200">
+                                {% if student.enable %}
+                                    {{ ux_icon('bi:toggle-off', {class: 'w-4 h-4 mr-1'}) }}
+                                    {{ 'btn.disable'|trans }}
+                                {% else %}
+                                    {{ ux_icon('bi:toggle-on', {class: 'w-4 h-4 mr-1'}) }}
+                                    {{ 'btn.enable'|trans }}
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Body #}
+                <div class="p-6">
+                    {# Family Status Alert #}
+                    <div class="mb-6">
+                        {% if student.family|default(null) is not empty %}
+                            <div class="flex items-center p-4 bg-green-50 border border-green-200 rounded-lg">
+                                {{ ux_icon('bi:people-fill', {class: 'w-5 h-5 text-green-600 mr-3'}) }}
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-green-800">
+                                        {{ 'show.family.label'|trans }}
+                                    </p>
+                                    <p class="text-sm text-green-700">
+                                        <a href="{{ path('app_family_show', {id : student.family.id }) }}" 
+                                           class="font-medium hover:underline">
+                                            {{ student.family }}
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="flex items-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                {{ ux_icon('bi:exclamation-triangle-fill', {class: 'w-5 h-5 text-yellow-600 mr-3'}) }}
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-yellow-800">
+                                        {{ 'show.family.nothing'|trans }}
+                                    </p>
+                                    <p class="text-sm text-yellow-700">
+                                        <a href="{{ path('app_student_edit', { id : student.id }) }}" 
+                                           class="font-medium hover:underline">
+                                            Associer une famille
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {# Student Image #}
+                        <div id="student-image" class="space-y-4">
+                            {% include 'document/upload.html.twig' with {
+                                documents : ( student.image is not empty ? [student.image] : [] ),
+                                upload : {
+                                    url : path('app_student_setimage', { id : student.id }),
+                                    prefix : 'show.student.image'|trans,
+                                    name : student.nameComplete,
+                                    class : 'w-full'
+                                }
+                            } %}
+                        </div>
+
+                        {# Student Details #}
+                        <div class="space-y-4">
+                            <dl class="space-y-3">
+                                <div class="flex flex-col sm:flex-row sm:items-center">
+                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                        {{ 'show.student.name'|trans }}
+                                    </dt>
+                                    <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900 font-medium">
+                                        {{ student.name }}
+                                    </dd>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center">
+                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                        Prénom
+                                    </dt>
+                                    <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900">
+                                        {{ student.forname }}
+                                    </dd>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center">
+                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                        Sexe
+                                    </dt>
+                                    <dd class="mt-1 sm:mt-0 sm:ml-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium 
+                                                     {% if student.gender == 'male' %}bg-blue-100 text-blue-800{% else %}bg-pink-100 text-pink-800{% endif %}">
+                                            {% if student.gender == 'male' %}
+                                                {{ ux_icon('bi:person', {class: 'w-3 h-3 mr-1'}) }}
+                                            {% else %}
+                                                {{ ux_icon('bi:person-dress', {class: 'w-3 h-3 mr-1'}) }}
+                                            {% endif %}
+                                            {{ student.genderCode }}
+                                        </span>
+                                    </dd>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center">
+                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                        Niveau
+                                    </dt>
+                                    <dd class="mt-1 sm:mt-0 sm:ml-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-purple-100 text-purple-800">
+                                            {{ ux_icon('bi:mortarboard', {class: 'w-4 h-4 mr-1'}) }}
+                                            {{ student.grade.name }}
+                                        </span>
+                                    </dd>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center">
+                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                        Date de naissance
+                                    </dt>
+                                    <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900">
+                                        {{ student.birthday.format('d/m/Y')|default('---') }} 
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2">
+                                            {{ ux_icon('bi:calendar3', {class: 'w-3 h-3 mr-1'}) }}
+                                            {{ student.getAge() }} ans
+                                        </span>
+                                        {% if student.birthplace %}
+                                            <div class="text-xs text-gray-500 mt-1">à {{ student.birthplace }}</div>
+                                        {% endif %}
+                                    </dd>
+                                </div>
+
+                                {% if student.email %}
+                                    <div class="flex flex-col sm:flex-row sm:items-center">
+                                        <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                            E-mail
+                                        </dt>
+                                        <dd class="mt-1 sm:mt-0 sm:ml-4">
+                                            <a href="mailto:{{ student.email }}" 
+                                               class="inline-flex items-center text-sm text-primary-600 hover:text-primary-500">
+                                                {{ ux_icon('bi:envelope', {class: 'w-4 h-4 mr-1'}) }}
+                                                {{ student.email }}
+                                            </a>
+                                        </dd>
+                                    </div>
+                                {% endif %}
+
+                                {% if student.lastSchool %}
+                                    <div class="flex flex-col sm:flex-row sm:items-center">
+                                        <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
+                                            {{ 'show.label.lastschool'|trans }}
+                                        </dt>
+                                        <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900">
+                                            {{ student.lastSchool }}
+                                        </dd>
+                                    </div>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Sidebar with additional info #}
+        <div class="space-y-6">
+            {# Quick Stats #}
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        {{ ux_icon('bi:graph-up', {class: 'w-5 h-5 mr-2 inline'}) }}
+                        Statistiques
+                    </h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-500">ID Étudiant</span>
+                        <span class="text-sm font-mono text-gray-900 bg-gray-100 px-2 py-1 rounded">{{ student.id }}</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-500">Statut</span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium 
+                                     {{ student.enable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                            {% if student.enable %}
+                                {{ ux_icon('bi:check-circle-fill', {class: 'w-3 h-3 mr-1'}) }}
+                                Actif
+                            {% else %}
+                                {{ ux_icon('bi:x-circle-fill', {class: 'w-3 h-3 mr-1'}) }}
+                                Inactif
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if student.zip %}
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-500">Code Postal</span>
+                            <span class="text-sm text-gray-900">{{ student.zip }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Quick Actions #}
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        {{ ux_icon('bi:lightning', {class: 'w-5 h-5 mr-2 inline'}) }}
+                        Actions rapides
+                    </h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    <a href="{{ path('app_student_edit', {'id': student.id}) }}" 
+                       class="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition-colors duration-200">
+                        {{ ux_icon('bi:pencil-square', {class: 'w-4 h-4 mr-2'}) }}
+                        Modifier les informations
+                    </a>
+                    
+                    {% if student.family|default(null) is not empty %}
+                        <a href="{{ path('app_family_show', {id : student.family.id }) }}" 
+                           class="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition-colors duration-200">
+                            {{ ux_icon('bi:people', {class: 'w-4 h-4 mr-2'}) }}
+                            Voir la famille
+                        </a>
+                    {% endif %}
+                    
+                    <a href="{{ path('app_student_delete', {'id': student.id}) }}" 
+                       class="flex items-center w-full px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md shadow-sm hover:bg-red-50 transition-colors duration-200">
+                        {{ ux_icon('bi:trash', {class: 'w-4 h-4 mr-2'}) }}
+                        Supprimer l'étudiant
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Additional content sections can be added here #}
+    <div class="mt-8 space-y-6">
+        {# You can add more sections here for courses, payments, etc. #}
+    </div>
+{% endblock %}

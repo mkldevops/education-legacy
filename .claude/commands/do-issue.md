@@ -30,7 +30,19 @@ Execute a complete issue resolution workflow:
 - Create new feature branch from main with descriptive name based on issue
 - Example: `git checkout -b feature/issue-123-add-user-authentication`
 
-### 3. Investigation & Planning
+### 3. Environment Setup
+
+- Configure random ports in .env.local to avoid conflicts:
+  - `echo "PROJECT_APP_PORT=$((8000 + RANDOM % 1000))" >> .env.local`
+  - `echo "PROJECT_DB_PORT=$((9000 + RANDOM % 1000))" >> .env.local`
+- Start Docker environment: `make up` or `docker compose up -d`
+- Verify containers are running: `docker compose ps`
+- Create/update database: `make create-database && make migrate`
+- Load fixtures for testing: `make load-fixtures`
+- Verify application is accessible and functional
+- Ensure test environment is ready: `make test-load-fixtures`
+
+### 4. Investigation & Planning
 
 - Use TodoWrite to create detailed implementation plan
 - Search codebase for related functionality using Grep/Glob
@@ -38,7 +50,7 @@ Execute a complete issue resolution workflow:
 - Identify potential impact areas and breaking changes
 - Plan test strategy and validation approach
 
-### 4. Implementation Strategy
+### 5. Implementation Strategy
 
 - Determine optimal implementation approach
 - Consider existing patterns and conventions
@@ -46,22 +58,25 @@ Execute a complete issue resolution workflow:
 - Identify required dependencies or migrations
 - Design for maintainability and performance
 
-### 5. Code Implementation
+### 6. Code Implementation
 
 - Implement solution following project conventions
 - Write/update tests as needed
 - Ensure code quality standards
 - Add documentation if required
 
-### 6. Optimization & Validation
+### 7. Optimization & Validation
 
-- Run code analysis tools (make analyze)
-- Optimize performance bottlenecks
-- Validate functionality works as expected
+- Run code analysis tools: `make analyze`
+- Run full test suite: `make test-all`
+- Validate functionality works in Docker environment
+- Test implementation through browser/API if applicable
 - Check for edge cases and error handling
 - Ensure no regressions introduced
+- Verify database migrations work correctly
+- Test with both development and test fixtures
 
-### 7. Complete Git Workflow
+### 8. Complete Git Workflow
 
 - Add all changes to staging
 - Generate descriptive commit message referencing issue

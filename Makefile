@@ -28,6 +28,9 @@ endif
 help: ## Outputs this help screen
 	@grep -E '(^[a-zA-Z0-9_-]+:.*?## .*$$)|(^## )' Makefile | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
+sync : up restore-backup composer-install
+	@echo "✅ Sync completed"
+
 ## —— Composer 🧙‍♂️ ————————————————————————————————————————————————————————————
 composer-install: composer.lock ## Install vendors according to the current composer.lock file
 	$(COMPOSER) install -n
@@ -90,7 +93,7 @@ reset-database:  drop-database migrate load-fixtures  doctrine-validate ## Build
 ## —— Database Backup & Restore 💾 ———————————————————————————————————————————
 # Example PROD_DB_URL: mysql://user:password@host:port/database
 PROD_DB_URL ?=
-BACKUP_FILE ?= backup-prod-$$(date +%Y%m%d-%H%M%S).sql
+BACKUP_FILE ?= backup-prod-latest.sql
 
 # Parse database URL components
 parse-db-url = $(shell echo $(1) | sed -E 's|mysql://([^:]+):([^@]+)@([^:]+):([^/]+)/(.+)|\1 \2 \3 \4 \5|')
@@ -110,8 +113,10 @@ fetch-prod-backup: ## Dump production database from MySQL URL
 	PROD_NAME=$$5; \
 	echo "Connecting to $$PROD_HOST:$$PROD_PORT as $$PROD_USER..."; \
 	echo "Dumping database $$PROD_NAME..."; \
-	mysqldump -h$$PROD_HOST -P$$PROD_PORT -u$$PROD_USER -p$$PROD_PASS $$PROD_NAME > var/$(BACKUP_FILE); \
-	echo "✅ Backup saved to var/$(BACKUP_FILE)"
+	BACKUP_NAME="backup-prod-$$(date +%Y%m%d-%H%M%S).sql"; \
+	mysqldump -h$$PROD_HOST -P$$PROD_PORT -u$$PROD_USER -p$$PROD_PASS $$PROD_NAME > "var/$$BACKUP_NAME"; \
+	cp "var/$$BACKUP_NAME" var/backup-prod-latest.sql; \
+	echo "✅ Backup saved to var/$$BACKUP_NAME"
 
 restore-backup: drop-database create-database ## Restore database from backup file
 	@if [ ! -f "var/$(BACKUP_FILE)" ]; then \
