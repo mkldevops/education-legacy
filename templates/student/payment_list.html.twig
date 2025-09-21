@@ -9,229 +9,449 @@
 {% set breadcrumbs = { ('' ~ title) : path('app_student_payment_list')}|merge(breadcrumbs|default({})) %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-lg-3">
-            <div class="widget style1 lazur-bg">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <i class="fa fa-euro fa-5x" aria-hidden="true"></i>
-                    </div>
-                    <div class="col-xs-8 text-right">
-                        <span>{{ 'payment.title.payments'|trans }} </span>
-
-                        <h2 class="font-bold">{{ '%.2f'|format(listPayment.total.totalPaid) }}</h2>
-                    </div>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Payments Card -->
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <p class="text-blue-100 text-sm font-medium uppercase tracking-wide">
+                        {{ 'payment.title.payments'|trans }}
+                    </p>
+                    <p class="text-3xl font-bold mt-2">
+                        {{ '%.2f'|format(listPayment.total.totalPaid) }}
+                    </p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    {{ ux_icon('tabler:currency-euro', {class: 'w-6 h-6'}) }}
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3">
-            <div class="widget style1 lazur-bg">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <i class="fa fa-percent fa-5x" aria-hidden="true"></i>
-                    </div>
-                    <div class="col-xs-8 text-right">
-                        <span>{{ "payment.title.percentage"|trans }} </span>
-
-                        <h2 class="font-bold">{{ '%.2f'|format(listPayment.total.percentage) }}</h2>
-                    </div>
+        <!-- Percentage Card -->
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <p class="text-emerald-100 text-sm font-medium uppercase tracking-wide">
+                        {{ "payment.title.percentage"|trans }}
+                    </p>
+                    <p class="text-3xl font-bold mt-2">
+                        {{ '%.2f'|format(listPayment.total.percentage) }}
+                    </p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    {{ ux_icon('tabler:percentage', {class: 'w-6 h-6'}) }}
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3">
-            <div class="widget style1 red-bg">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <i class="fa fa-euro fa-5x" aria-hidden="true"></i>
-                    </div>
-                    <div class="col-xs-8 text-right">
-                        <span>{{ 'payment.title.reminder'|trans }} </span>
-
-                        <h2 class="font-bold">-{{ '%.2f'|format(listPayment.total.totalReminderPaid) }}</h2>
-                    </div>
+        <!-- Reminder Card -->
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <p class="text-red-100 text-sm font-medium uppercase tracking-wide">
+                        {{ 'payment.title.reminder'|trans }}
+                    </p>
+                    <p class="text-3xl font-bold mt-2">
+                        -{{ '%.2f'|format(listPayment.total.totalReminderPaid) }}
+                    </p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    {{ ux_icon('tabler:receipt-refund', {class: 'w-6 h-6'}) }}
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3">
-            <div class="widget style1 navy-bg">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <i class="fa fa-euro fa-5x"></i>
-                    </div>
-                    <div class="col-xs-8 text-right" aria-hidden="true">
-                        <span>{{ "payment.title.discount"|trans }} </span>
-
-                        <h2 class="font-bold">{{ '%.2f'|format(listPayment.total.discount) }}</h2>
-                    </div>
+        <!-- Discount Card -->
+        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <p class="text-indigo-100 text-sm font-medium uppercase tracking-wide">
+                        {{ "payment.title.discount"|trans }}
+                    </p>
+                    <p class="text-3xl font-bold mt-2">
+                        {{ '%.2f'|format(listPayment.total.discount) }}
+                    </p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    {{ ux_icon('tabler:discount', {class: 'w-6 h-6'}) }}
                 </div>
             </div>
         </div>
     </div>
 
 
-    <ul class="nav nav-tabs">
-        {% if listPayment %}
-            <li>
-                <a data-toggle="tab" href="#students-payments">{{ 'payment.tabs.list_student'|trans }} <span class="badge badge">{{ listPayment.students|length }}</span></a>
-            </li>
-        {% endif %}
+    <!-- Tabs Navigation -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6" x-data="{
+        activeTab: 'students-payments',
+        searchTerm: '',
+        statusFilter: 'all',
+        packageFilter: 'all',
+        filteredStudents: [],
 
-        {% if studentsWithoutPackage %}
-            <li>
-                <a data-toggle="tab" href="#students-without-package">{{ 'payment.tabs.list_student_without_package'|trans }}<span class="alert-danger badge">{{ studentsWithoutPackage|length }}</span></a>
-            </li>
-        {% endif %}
-    </ul>
+        filterStudents() {
+            // Filter main students table
+            const rows = document.querySelectorAll('#students-table tbody tr');
+            let visibleCount = 0;
 
-    <div class="tab-content">
-        <div id="students-payments" class="tab-pane fade">
-            {% if listPayment.students %}
-                <table class="table table-condensed table-responsive table-hover table-striped" data-toggle="datatable">
-                    <thead>
-                        <tr>
-                            <th class='text-center'>#</th>
-                            <th class='text-center'>Nom</th>
-                            <th class='text-center'>Prénom</th>
-                            <th class='text-center date'>Date entré</th>
-                            <th class='text-center'>Status</th>
-                            <th class='text-center'>Forfait</th>
-                            <th class='text-center'>Remise</th>
-                            <th class='text-center'>A Payer</th>
-                            <th class='text-center'>Paiement Réalisé</th>
-                            <th class='sort text-center'>Pourcentage %</th>
-                            <th class="no_sort text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% set paymentTotal = 0 %}
-                        {% set amountTotal = 0 %}
+            rows.forEach(row => {
+                const fullName = row.cells[1]?.textContent?.toLowerCase() || '';
+                const status = row.cells[2]?.textContent?.toLowerCase() || '';
+                const packageCell = row.cells[3];
+                const hasPackage = packageCell && !packageCell.querySelector('svg');
 
-                        {% for infoStudent in listPayment.students %}
-                            {% set student = infoStudent.student %}
-                            {% set packagePeriod = student.packagePeriods ? student.packagePeriods[0] : {} %}
+                const matchesSearch = this.searchTerm === '' ||
+                    fullName.includes(this.searchTerm.toLowerCase());
 
-                            {% set paymentTotal = paymentTotal + infoStudent.paymentTotal %}
-                            {% set amountTotal = amountTotal + infoStudent.amountTotal %}
+                const matchesStatus = this.statusFilter === 'all' ||
+                    (this.statusFilter === 'active' && status.includes('actif')) ||
+                    (this.statusFilter === 'inactive' && status.includes('inactif'));
 
-                            <tr class="{{ student.enable ? '' : 'text-muted' }}" data-id="{{ student.id }}">
-                                <td class="num"><a href="{{ path('app_student_show', {'id': student.id}) }}" class="fas fa-folder-open"></a></td>
-                                <td>{{ student.person.name|upper }}</td>
-                                <td>{{ student.person.forname|capitalize }}</td>
-                                <td>
-                                    <span data-toggle="tooltip" data-placement="top" title="{{ student.createdAt.format('d/m/Y') }}">
-                                        {{ student.createdAt.format('d/m/Y') }}
-                                    </span>
-                                </td>
-                                <td class="text-{{ student.enable ? "success" : "danger" }}"><strong>{{ student.enable ? "actif" : "inactif" }}</strong></td>
-                                <td>
-                                    {% if packagePeriod is empty %}
-                                        <a href="{{ path('app_student_addpackage', { 'id' : student.id }) }}" class="fa fa-th-large"></a>
-                                    {% else %}
-                                        {{ packagePeriod.package.name }}
-                                    {% endif %}
-                                </td>
-                                <td class='text-right num'>{{ '%.2f €'|format(packagePeriod.discount|default(0)) }}</td>
-                                <td class='text-right num'>{{ '%.2f €'|format(infoStudent.amountTotal|default(0)) }}</td>
-                                <td class='text-right num'>
-                                    <span data-toggle="tooltip" data-placement="top" title="{{infoStudent.numberPayment }} paiement(s)">
-                                        {{ '%.2f €'|format(infoStudent.paymentTotal|default(0)) }}
-                                    </span>
-                                </td>
-                                <td class='text-right num'>
-                                    <div class="progress" style="margin-bottom:0px; height: 18px">
-                                        <div class="progress-bar {{ 'progress-bar-'~infoStudent.status }}" role="progressbar" aria-valuenow="{{ infoStudent.percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ infoStudent.percentage }}%;">
-                                          {{ infoStudent.percentage }} %
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="no_sort  text-center">
-                                    {% if packagePeriod is not empty and infoStudent.paymentTotal <  infoStudent.amountTotal %}
-                                        {% if student.person.family %}
-                                            <a href="{{ path('app_family_show', { 'id' : student.person.family.id }) }}" class="fa fa-money"></a> Payer
-                                        {% else %}
-                                            <a href="{{ path('app_student_show', { 'id' : student.id }) }}" class="fa fa-money"></a> Payer
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th class='text-right'></th>
-                            <th class='text-right'></th>
-                            <th class='text-right'></th>
-                            <th class='text-right'></th>
-                            <th class='text-right'></th>
-                            <th class='text-right'><strong>TOTAL</strong></th>
-                            <th class='text-right num'>{{ '%.2f €'|format(listPayment.total.discount) }}</th>
-                            <th class='text-right num'>{{ '%.2f €'|format(amountTotal) }}</th>
-                            <th class='text-right num'>{{ '%.2f €'|format(paymentTotal) }}</th>
-                            <th class='text-right num'>{{ '%.2f'|format((amountTotal is empty or amountTotal <= 0) ? 0 : paymentTotal / amountTotal * 100 ) }} %</th>
-                            <th class="no_sort text-center"></th>
-                        </tr>
-                    </tfoot>
-                </table>
-            {% endif %}
+                const matchesPackage = this.packageFilter === 'all' ||
+                    (this.packageFilter === 'with' && hasPackage) ||
+                    (this.packageFilter === 'without' && !hasPackage);
+
+                if (matchesSearch && matchesStatus && matchesPackage) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Filter students without package table
+            const noPackageRows = document.querySelectorAll('#students-without-package-table tbody tr');
+            let noPackageVisibleCount = 0;
+
+            noPackageRows.forEach(row => {
+                const fullName = row.cells[1]?.textContent?.toLowerCase() || '';
+
+                const matchesSearch = this.searchTerm === '' ||
+                    fullName.includes(this.searchTerm.toLowerCase());
+
+                // Students without package are always active and without package
+                const matchesStatus = this.statusFilter === 'all' || this.statusFilter === 'active';
+                const matchesPackage = this.packageFilter === 'all' || this.packageFilter === 'without';
+
+                if (matchesSearch && matchesStatus && matchesPackage) {
+                    row.style.display = '';
+                    noPackageVisibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Update counters
+            const counter = document.querySelector('#filtered-count');
+            const noPackageCounter = document.querySelector('#no-package-filtered-count');
+
+            if (counter) {
+                counter.textContent = visibleCount;
+            }
+            if (noPackageCounter) {
+                noPackageCounter.textContent = noPackageVisibleCount;
+            }
+        }
+    }">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                {% if listPayment %}
+                    <button
+                        @click="activeTab = 'students-payments'; setTimeout(() => filterStudents(), 100)"
+                        :class="activeTab === 'students-payments' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
+                        {{ 'payment.tabs.list_student'|trans }}
+                        <span class="ml-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ listPayment.students|length }}
+                        </span>
+                    </button>
+                {% endif %}
+
+                {% if studentsWithoutPackage %}
+                    <button
+                        @click="activeTab = 'students-without-package'; setTimeout(() => filterStudents(), 100)"
+                        :class="activeTab === 'students-without-package' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
+                        {{ 'payment.tabs.list_student_without_package'|trans }}
+                        <span class="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ studentsWithoutPackage|length }}
+                        </span>
+                    </button>
+                {% endif %}
+            </nav>
         </div>
 
-        {% if studentsWithoutPackage %}
-            <div id="students-without-package" class="tab-pane fade">
-                <table class="table table-condensed table-responsive table-hover table-striped" data-toggle="datatable">
-                    <thead>
-                        <tr>
-                            <th class='text-center'>#</th>
-                            <th class='text-center'>Nom</th>
-                            <th class='text-center'>Prénom</th>
-                            <th class='text-center'>Date entré</th>
-                            <th class='text-center num'>Age</th>
-                            <th class='text-center no-sort'></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in studentsWithoutPackage %}
-                            <tr data-id="{{ student.id }}">
-                                <td class="num"><a href="{{ path('app_student_show', {'id': student.id }) }}" class="fas fa-folder-open"></a></td>
-                                <td>{{ student.person.name|upper }}</td>
-                                <td>{{ student.person.forname|capitalize }}</td>
-                                <td class="text-center" data-toggle="tooltip" title="{{ student.since }} ans">{{ student.createdAt.format('d/m/Y') }}</td>
-                                <td class="num text-center">{{  student.person.age }}</td>
-                                <td class="text-center">
-                                    <a href="{{ path('app_student_addpackage', { id : student.id, period : period.id }) }}"
-                                        target="_blank"
-                                        data-student="{{ student.id }}" 
-                                        class="add-package-student btn btn-primary btn-xs">
-                                        {{ 'payment.tabs.button.addPackage'|trans({ '%name%' : period }) }}</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <!-- Search and Filters -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50" x-show="activeTab === 'students-payments' || activeTab === 'students-without-package'">
+            <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+                <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 max-w-md">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:search', {class: 'w-4 h-4 text-gray-400'}) }}
+                        </div>
+                        <input
+                            type="text"
+                            x-model="searchTerm"
+                            @input="filterStudents()"
+                            placeholder="Rechercher par nom ou prénom..."
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="relative">
+                        <select
+                            x-model="statusFilter"
+                            @change="filterStudents()"
+                            class="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            <option value="all">Tous les statuts</option>
+                            <option value="active">Actifs</option>
+                            <option value="inactive">Inactifs</option>
+                        </select>
+                    </div>
+
+                    <!-- Package Filter -->
+                    <div class="relative">
+                        <select
+                            x-model="packageFilter"
+                            @change="filterStudents()"
+                            class="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            <option value="all">Tous les forfaits</option>
+                            <option value="with">Avec forfait</option>
+                            <option value="without">Sans forfait</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Results Counter -->
+                <div class="flex items-center text-sm text-gray-500">
+                    <span id="filtered-count">{{ listPayment.students|length }}</span>
+                    <span class="ml-1">résultat(s) affiché(s)</span>
+                </div>
             </div>
-        {% endif %}
+
+            <!-- Clear Filters Button -->
+            <div class="mt-3" x-show="searchTerm !== '' || statusFilter !== 'all' || packageFilter !== 'all'">
+                <button
+                    @click="searchTerm = ''; statusFilter = 'all'; packageFilter = 'all'; filterStudents()"
+                    class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    {{ ux_icon('tabler:x', {class: 'w-3 h-3 mr-1'}) }}
+                    Effacer les filtres
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <!-- Students Payments Tab -->
+            <div x-show="activeTab === 'students-payments'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                {% if listPayment.students %}
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5">
+                        <table id="students-table" class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                                    <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom complet</th>
+                                    <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Entrée / Status</th>
+                                    <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Forfait</th>
+                                    <th scope="col" class="px-2 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">A Payer / Réalisé</th>
+                                    <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pourcentage %</th>
+                                    <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% set paymentTotal = 0 %}
+                                {% set amountTotal = 0 %}
+
+                                {% for infoStudent in listPayment.students %}
+                                    {% set student = infoStudent.student %}
+                                    {% set packagePeriod = student.packagePeriods ? student.packagePeriods[0] : {} %}
+
+                                    {% set paymentTotal = paymentTotal + infoStudent.paymentTotal %}
+                                    {% set amountTotal = amountTotal + infoStudent.amountTotal %}
+
+                                    <tr class="hover:bg-gray-50 {{ student.enable ? '' : 'opacity-50' }}" data-id="{{ student.id }}">
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <div class="flex items-center space-x-2">
+                                                <a href="{{ path('app_student_show', {'id': student.id}) }}" class="text-blue-600 hover:text-blue-900" title="Voir l'étudiant">
+                                                    {{ ux_icon('tabler:folder', {class: 'w-4 h-4'}) }}
+                                                </a>
+                                                {% if student.person.family %}
+                                                    <a href="{{ path('app_family_show', {'id': student.person.family.id}) }}" class="text-green-600 hover:text-green-900" title="Voir la famille">
+                                                        {{ ux_icon('tabler:users', {class: 'w-4 h-4'}) }}
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <div class="flex flex-col">
+                                                <span class="font-medium">{{ student.person.forname|capitalize }}</span>
+                                                <span class="text-gray-500 text-xs">{{ student.person.name|upper }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-center">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-sm text-gray-900 font-medium">{{ student.createdAt.format('d/m/Y') }}</span>
+                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ student.enable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} mt-1">
+                                                    {{ student.enable ? "actif" : "inactif" }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                                            {% if packagePeriod is empty %}
+                                                <a href="{{ path('app_student_addpackage', { 'id' : student.id }) }}" class="text-blue-600 hover:text-blue-900">
+                                                    {{ ux_icon('tabler:package', {class: 'w-4 h-4'}) }}
+                                                </a>
+                                            {% else %}
+                                                <span class="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                                    {{ packagePeriod.package.name }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
+                                            <div class="flex flex-col items-end">
+                                                <span class="text-sm font-medium text-gray-900">{{ '%.2f €'|format(infoStudent.amountTotal|default(0)) }}</span>
+                                                <span class="text-xs text-green-600 font-medium" title="{{infoStudent.numberPayment }} paiement(s)">
+                                                    {{ '%.2f €'|format(infoStudent.paymentTotal|default(0)) }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-center">
+                                            <div class="w-full bg-gray-200 rounded-full h-4 relative">
+                                                <div class="bg-{{ infoStudent.status == 'success' ? 'green' : (infoStudent.status == 'warning' ? 'yellow' : 'red') }}-500 h-4 rounded-full transition-all duration-300 flex items-center justify-center text-xs font-medium text-white" style="width: {{ infoStudent.percentage }}%;">
+                                                    <span class="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-700">
+                                                        {{ infoStudent.percentage }}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                            {% if packagePeriod is not empty and infoStudent.paymentTotal <  infoStudent.amountTotal %}
+                                                {% if student.person.family %}
+                                                    <a href="{{ path('app_family_show', { 'id' : student.person.family.id }) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200">
+                                                        {{ ux_icon('tabler:credit-card', {class: 'w-3 h-3 mr-1'}) }} Payer
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('app_student_show', { 'id' : student.id }) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200">
+                                                        {{ ux_icon('tabler:credit-card', {class: 'w-3 h-3 mr-1'}) }} Payer
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-gray-50">
+                                <tr>
+                                    <td class="px-2 py-3"></td>
+                                    <td class="px-2 py-3"></td>
+                                    <td class="px-2 py-3"></td>
+                                    <td class="px-2 py-3 text-right text-sm font-bold text-gray-900 uppercase tracking-wider">TOTAL</td>
+                                    <td class="px-2 py-3 text-right">
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-sm font-bold text-gray-900">{{ '%.2f €'|format(amountTotal) }}</span>
+                                            <span class="text-xs font-bold text-green-600">{{ '%.2f €'|format(paymentTotal) }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-2 py-3 text-right text-sm font-bold text-gray-900">{{ '%.2f'|format((amountTotal is empty or amountTotal <= 0) ? 0 : paymentTotal / amountTotal * 100 ) }} %</td>
+                                    <td class="px-2 py-3"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Students Without Package Tab -->
+            {% if studentsWithoutPackage %}
+                <div x-show="activeTab === 'students-without-package'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                    <!-- Results counter for students without package -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Étudiants sans forfait</h3>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span id="no-package-filtered-count">{{ studentsWithoutPackage|length }}</span>
+                            <span class="ml-1">résultat(s) affiché(s)</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                        <table id="students-without-package-table" class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom complet</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Entrée / Age</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for student in studentsWithoutPackage %}
+                                    <tr class="hover:bg-gray-50" data-id="{{ student.id }}">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <div class="flex items-center space-x-2">
+                                                <a href="{{ path('app_student_show', {'id': student.id }) }}" class="text-blue-600 hover:text-blue-900" title="Voir l'étudiant">
+                                                    {{ ux_icon('tabler:folder', {class: 'w-4 h-4'}) }}
+                                                </a>
+                                                {% if student.person.family %}
+                                                    <a href="{{ path('app_family_show', {'id': student.person.family.id}) }}" class="text-green-600 hover:text-green-900" title="Voir la famille">
+                                                        {{ ux_icon('tabler:users', {class: 'w-4 h-4'}) }}
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <div class="flex flex-col">
+                                                <span class="font-medium">{{ student.person.forname|capitalize }}</span>
+                                                <span class="text-gray-500 text-xs">{{ student.person.name|upper }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-sm text-gray-900 font-medium">{{ student.createdAt.format('d/m/Y') }}</span>
+                                                <span class="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full mt-1">
+                                                    {{ student.person.age }} ans
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                            <a href="{{ path('app_student_addpackage', { id : student.id, period : period.id }) }}"
+                                                target="_blank"
+                                                data-student="{{ student.id }}"
+                                                class="add-package-student inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                                                {{ ux_icon('tabler:plus', {class: 'w-4 h-4 mr-2'}) }}
+                                                {{ 'payment.tabs.button.addPackage'|trans({ '%name%' : period }) }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-
     {{ parent() }}
     <script type="text/javascript">
-        $(function() {
-            $('add-package-student').click(function(event) {
-                event.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tab functionality
+            if (typeof Alpine !== 'undefined') {
+                // Alpine.js will handle the tab switching
+                console.log('Alpine.js tabs initialized');
+            }
 
-                let route = Routing.generate('route_name', { 'student' : $(this).data('student') });
-                $.post()
-                    .done(function(data) {
-                        console.log(data);
-                    })
-                    .fail(function() {
-                        alert( "error" );
-                    });
+            // Handle add package buttons with modern JavaScript
+            document.querySelectorAll('.add-package-student').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    // Let the link work normally for now
+                    console.log('Adding package for student:', this.dataset.student);
+                });
             });
+
+            // Add smooth scroll behavior for better UX
+            document.documentElement.style.scrollBehavior = 'smooth';
         });
     </script>
 {% endblock %}
