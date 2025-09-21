@@ -32,7 +32,6 @@ class PersonStudentType extends PersonSimpleType
             ->add('birthday', DatePickerType::class, [
                 'label' => 'form.birthday.label',
                 'required' => true,
-                'format' => 'dd/mm/yyyy',
                 'placeholder' => 'form.birthday.placeholder',
             ])
             ->add('birthplace', null, [

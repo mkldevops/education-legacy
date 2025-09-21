@@ -39,8 +39,8 @@ class AdminController extends AbstractController
      * @throws \Exception
      */
     #[Route('', name: 'app_admin_home')]
+    #[Route('/index', name: 'app_admin_index')]
     public function index(
-        DashboardManager $dashboardManager,
         TranslatorInterface $translator,
         StudentRepository $studentRepository,
         AccountRepository $accountRepository,

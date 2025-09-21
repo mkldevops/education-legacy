@@ -1,17 +1,77 @@
-{% extends "student/common.html.twig" %}
+{% extends 'student/common.html.twig' %}
 
 {% trans_default_domain 'student' %}
 
-{% set title = 'title.edit'|trans({'%name%' : student }) %}
+{% set title = 'title.edit'|trans({'%name%': student.nameComplete}) %}
+
+{% block errors %}
+    {% if form.vars.errors|length > 0 %}
+        <div class="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    {{ ux_icon('bi:exclamation-triangle-fill', {class: 'w-5 h-5 text-red-400'}) }}
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">
+                        Erreurs dans le formulaire
+                    </h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        {{ form_errors(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock errors %}
+
+{% set breadcrumbs = { ('' ~ title) : path('app_student_edit', {id: student.id})}|merge(breadcrumbs|default({})) %}
 
 {% block body %}
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+        {# Header #}
+        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-blue-100">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                            {{ ux_icon('bi:pencil-square', {class: 'w-5 h-5 text-white'}) }}
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <h1 class="text-xl font-semibold text-gray-900">
+                            Modifier l'étudiant
+                        </h1>
+                        <p class="text-sm text-gray-600">
+                            {{ student.nameComplete }} - ID: {{ student.id }}
+                        </p>
+                    </div>
+                </div>
 
-    {% embed '_inspina/embed/ibox.html.twig' %}
-        {% trans_default_domain "person" %}
-        {% block title 'title.form.edit'|trans({ '%name%' : student }) %}
-        {% block config '' %}
-        {% block content %}
+                {# Status indicator #}
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium
+                                 {{ student.enable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {% if student.enable %}
+                            {{ ux_icon('bi:check-circle-fill', {class: 'w-3 h-3 mr-1'}) }}
+                            Actif
+                        {% else %}
+                            {{ ux_icon('bi:x-circle-fill', {class: 'w-3 h-3 mr-1'}) }}
+                            Inactif
+                        {% endif %}
+                    </span>
+
+                    <a href="{{ path('app_student_show', {'id': student.id}) }}"
+                       class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                        {{ ux_icon('bi:eye', {class: 'w-4 h-4 mr-1'}) }}
+                        Voir le profil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# Form Content #}
+        <div class="p-6">
             {% include 'student/includes/form.html.twig' %}
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </div>
 {% endblock %}

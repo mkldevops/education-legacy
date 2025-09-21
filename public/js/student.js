@@ -5,11 +5,11 @@ $(function() {
         event.preventDefault();
         $('.hidden', '#panel-comments').removeClass('hidden');
     });
-    
+
     $('#modal-classperiod').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var data = $(button).parents('tr').data(); // Extract info from data-* attributes
-        
+
         $('form', this).data(data);
         $('form select', this).val(data.classPeriod);
     });
@@ -21,16 +21,16 @@ $(function() {
         var tdClassPeriod = $('.class-period', '#student-' + student);
         var classPeriod = $(this).val();
         console.log(classPeriod);
-        
+
         $.ajax({
              url: Routing.generate( 'app_api_class_period_update_student', { id : classPeriod }),
              type: "POST",
              data: { students : [student] }
         }).done(function(msg) {
              $('#modal-classperiod').modal('hide');
-             
+
              $(select).val("0");
-             
+
              console.log(msg);
              if(msg.success) {
                  $('.class-period-name', tdClassPeriod)
@@ -39,7 +39,7 @@ $(function() {
                          text : ' Classe ' + msg.name,
                          "class" : "class-period fa fa-folder-open class-period-" + classPeriod
                      }));
-                 
+
                  if(classPeriod === "0") {
                      $('.icon', tdClassPeriod).removeClass('sign-out text-warning').addClass('sign-in text-success');
                  } else {

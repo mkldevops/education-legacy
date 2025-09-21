@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Api\FamilyApiController;
 use App\Entity\Document;
-use App\Entity\Family;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
 use App\Entity\Student;
@@ -14,7 +12,6 @@ use App\Entity\StudentComment;
 use App\Entity\User;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
-use App\Form\FamilyType;
 use App\Form\PackageStudentPeriodType;
 use App\Form\StudentCommentSimpleType;
 use App\Form\StudentType;
@@ -34,7 +31,6 @@ use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -138,7 +134,6 @@ class StudentController extends AbstractController
             ->setStudent($student)
         ;
         $form = $this->createForm(PackageStudentPeriodType::class, $packageStudentPeriod)
-            ->add('submit', SubmitType::class, ['label' => 'Create'])
             ->remove('student')
             ->handleRequest($request)
         ;
@@ -172,7 +167,7 @@ class StudentController extends AbstractController
 
         return $this->render('student/add_package.html.twig', [
             'packageStudentPeriod' => $packageStudentPeriod,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -182,12 +177,10 @@ class StudentController extends AbstractController
     {
         $student = new Student();
         $form = $this->createCreateForm($student);
-        $formFamily = $this->createCreateFormFamily();
 
         return $this->render('student/new.html.twig', [
             'student' => $student,
-            'form' => $form->createView(),
-            'formFamily' => $formFamily->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -195,12 +188,10 @@ class StudentController extends AbstractController
      * @throws \Exception
      */
     #[Route('/student/create', methods: ['POST'])]
-    public function create(Request $request, FamilyApiController $familyApiController, EntityManagerInterface $entityManager, SchoolManager $schoolManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, SchoolManager $schoolManager): Response
     {
-        $this->logger->info(__METHOD__);
         $student = new Student();
 
-        $formFamily = $familyApiController->createCreateForm(new Family());
         $form = $this->createCreateForm($student)
             ->handleRequest($request)
         ;
@@ -218,8 +209,7 @@ class StudentController extends AbstractController
 
         return $this->render('student/new.html.twig', [
             'student' => $student,
-            'form' => $form->createView(),
-            'formFamily' => $formFamily->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -250,14 +240,11 @@ class StudentController extends AbstractController
     #[Route(path: '/student/edit/{id}', name: 'app_student_edit', methods: ['GET'])]
     public function edit(
         #[MapEntity(id: 'id')] Student $student,
-        FamilyApiController $familyApiController
     ): Response {
         $form = $this->createEditForm($student);
-        $formFamily = $familyApiController->createEditForm($student->getFamily());
 
         return $this->render('student/edit.html.twig', [
-            'formFamily' => $formFamily->createView(),
-            'form' => $form->createView(),
+            'form' => $form,
             'student' => $student,
         ]);
     }
@@ -271,9 +258,9 @@ class StudentController extends AbstractController
         $editForm = $this->createEditForm($student)
             ->handleRequest($request)
         ;
-        $formFamily = $this->createCreateFormFamily()
-            ->handleRequest($request)
-        ;
+
+        dump($editForm->isSubmitted(), $editForm->isSubmitted() && $editForm->isValid());
+
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $entityManager->flush();
 
@@ -286,10 +273,11 @@ class StudentController extends AbstractController
             return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
         }
 
+        $this->logger->debug(__FUNCTION__, ['editForm' => $editForm->getErrors()]);
+
         return $this->render('student/edit.html.twig', [
-            'formFamily' => $formFamily->createView(),
             'student' => $student,
-            'form' => $editForm->createView(),
+            'form' => $editForm,
         ]);
     }
 
@@ -469,31 +457,10 @@ class StudentController extends AbstractController
 
     private function createCreateForm(Student $student): FormInterface
     {
-        $this->logger->info(__METHOD__);
-
-        $form = $this->createForm(StudentType::class, $student, [
+        return $this->createForm(StudentType::class, $student, [
             'action' => $this->generateUrl('app_student_create'),
             'method' => Request::METHOD_POST,
         ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'form.button.create']);
-
-        $this->logger->debug(__FUNCTION__, ['form' => $form]);
-
-        return $form;
-    }
-
-    private function createCreateFormFamily(): FormInterface
-    {
-        $family = new Family();
-        $form = $this->createForm(FamilyType::class, $family, [
-            'action' => $this->generateUrl('app_api_family_create'),
-            'method' => Request::METHOD_POST,
-        ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'form.button.create']);
-
-        return $form;
     }
 
     private function createCreateCommentForm(StudentComment $studentComment, Student $student): FormInterface
@@ -507,14 +474,10 @@ class StudentController extends AbstractController
 
     private function createEditForm(Student $student): FormInterface
     {
-        $form = $this->createForm(StudentType::class, $student, [
+        return $this->createForm(StudentType::class, $student, [
             'action' => $this->generateUrl('app_student_update', ['id' => $student->getId()]),
             'method' => Request::METHOD_PUT,
         ]);
-
-        $form->add('submit', SubmitType::class, ['label' => 'Update']);
-
-        return $form;
     }
 
     private function createDeleteForm(?int $id): FormInterface
@@ -522,10 +485,6 @@ class StudentController extends AbstractController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('app_student_delete', ['id' => $id]))
             ->setMethod(Request::METHOD_DELETE)
-            ->add('submit', SubmitType::class, [
-                'label' => 'Delete',
-                'attr' => ['class' => 'btn btn-danger'],
-            ])
             ->getForm()
         ;
     }

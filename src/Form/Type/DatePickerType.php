@@ -20,8 +20,8 @@ class DatePickerType extends AbstractType
         $optionsResolver->setDefaults([
             'widget' => 'single_text',
             'attr' => ['class' => 'datepicker'],
-            'format' => 'dd/MM/yyyy',
-            'html5' => false,
+            'format' => 'yyyy-MM-dd',
+            'html5' => true,
         ]);
     }
 
