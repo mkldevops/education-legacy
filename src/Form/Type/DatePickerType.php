@@ -32,6 +32,6 @@ class DatePickerType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return self::class;
+        return 'datepicker';
     }
 }
