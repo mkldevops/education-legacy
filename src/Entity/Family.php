@@ -85,7 +85,9 @@ class Family implements EntityInterface, AuthorEntityInterface
 
     public function __toString(): string
     {
-        return \sprintf('%d - %s', (int) $this->getId(), $this->getNameComplete());
+        $id = $this->getId() ?? 0;
+
+        return \sprintf('%d - %s', $id, $this->getNameComplete());
     }
 
     public function getEmail(): ?string

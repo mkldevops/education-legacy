@@ -53,13 +53,16 @@ class FamilyManager implements FamilyManagerInterface
         }
 
         if (!$form->isValid()) {
-            $this->logger->debug(__METHOD__.' Form family invalid', ['errors' => $form->getErrors()]);
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+            $this->logger->debug(__METHOD__.' Form family invalid', ['errors' => $errors]);
 
-            throw new AppException('The form is not valid '.$form->getErrors());
+            throw new AppException('The form is not valid: '.implode(', ', $errors));
         }
 
         $family
-            ->setName($family->__toString())
             ->setGenders()
             ->setEnable(true)
             ->setAuthor($this->security->getUser() instanceof User ? $this->security->getUser() : null)

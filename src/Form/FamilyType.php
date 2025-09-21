@@ -34,6 +34,12 @@ class FamilyType extends AbstractType
             ])
             ->add('numberChildren', null, [
                 'label' => 'form.numberChildren.label',
+                'attr' => [
+                    'min' => 1,
+                    'max' => 12,
+                    'value' => 1,
+                ],
+                'data' => 1,
             ])
             ->add('address', null, [
                 'label' => 'form.address.label',
