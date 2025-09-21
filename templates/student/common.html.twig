@@ -1,10 +1,11 @@
-{% extends '_inspina/layout.html.twig' %}
+{% extends '_tailwind/layout.html.twig' %}
 
 {% trans_default_domain "student" %}
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('js/student.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/phone.js') }}"></script>
 
     <script>
         $(function () {
@@ -56,53 +57,84 @@
 {% set breadcrumbs = { ('title.common'|trans) : path('app_student_index')}|merge(breadcrumbs|default({})) %}
 
 {% block menu_action %}
-
-    <li class="{%if 'app_student_index' == app.request.attributes.get('_route')%} active{% endif %}">
-        <a href="{{ path('app_student_index') }}">
-            <span class="fa fa-list"></span>
-            <span class="hidden-xs">{% trans %}List{% endtrans %}</span>
+    <nav class="flex space-x-1 bg-white rounded-lg shadow-sm p-1" aria-label="Navigation">
+        <a href="{{ path('app_student_index') }}" 
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 {% if 'app_student_index' == app.request.attributes.get('_route') %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:text-gray-900 hover:bg-gray-100{% endif %}">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="hidden sm:inline">{% trans %}List{% endtrans %}</span>
         </a>
-    </li>
-    <li class="{%if 'app_student_new' == app.request.attributes.get('_route')%} active{% endif %}">
-        <a href="{{ path('app_student_new') }}">
-            <span class="fa fa-plus"></span>
-            <span class="hidden-xs">{% trans %}New student{% endtrans %}</span>
+        
+        <a href="{{ path('app_student_new') }}" 
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 {% if 'app_student_new' == app.request.attributes.get('_route') %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:text-gray-900 hover:bg-gray-100{% endif %}">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="hidden sm:inline">{% trans %}New student{% endtrans %}</span>
         </a>
-    </li>
-    <li class="{%if 'app_student_desactivated' == app.request.attributes.get('_route')%} active{% endif %}">
-        <a href="{{ path('app_student_desactivated') }}">
-            <span class="fa fa-list"></span>
-            <span class="hidden-xs">{% trans %}action.inactive_list{% endtrans %}</span>
+        
+        <a href="{{ path('app_student_desactivated') }}" 
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 {% if 'app_student_desactivated' == app.request.attributes.get('_route') %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:text-gray-900 hover:bg-gray-100{% endif %}">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="hidden sm:inline">{% trans %}action.inactive_list{% endtrans %}</span>
         </a>
-    </li>
-    <li class="{%if 'app_student_payment_list' == app.request.attributes.get('_route')%} active{% endif %}">
-        <a href="{{ path('app_student_payment_list') }}">
-            <span class="fa fa-list"></span>
-            <span class="hidden-xs">{% trans %}action.payment_list{% endtrans %}</span>
+        
+        <a href="{{ path('app_student_payment_list') }}" 
+           class="flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 {% if 'app_student_payment_list' == app.request.attributes.get('_route') %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:text-gray-900 hover:bg-gray-100{% endif %}">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="hidden sm:inline">{% trans %}action.payment_list{% endtrans %}</span>
         </a>
-    </li>
 
-    {% if student is defined and student.id %}
-
-        <li class="provider"></li>
-        <li class="{%if 'app_student_show' == app.request.attributes.get('_route')%} active{% endif %}">
-            <a href="{{ path('app_student_show', {'id': student.id}) }}">
-                <i class="fas fa-file-text"></i>
-                <span class="hidden-xs">{% trans %}Show{% endtrans %}</span>
-            </a>
-        </li>
-        <li class="{%if 'app_student_edit' == app.request.attributes.get('_route')%} active{% endif %}">
-            <a href="{{ path('app_student_edit', {'id': student.id}) }}">
-                <span class="fas fa-edit</span>
-                <span class="hidden-xs">{% trans %}Edit{% endtrans %}</span>
-            </a>
-        </li>
-        <li class="{%if 'app_student_delete' == app.request.attributes.get('_route')%} active{% endif %}">
-            <a href="{{ path('app_student_delete', {'id': student.id}) }}">
-                <span class="fa fa-trash"></span>
-                <span class="hidden-xs">{% trans %}Delete{% endtrans %}</span>
-            </a>
-        </li>
-    {% endif %}
-
+        {% if student is defined and student.id %}
+            <div class="flex items-center px-2">
+                <div class="w-px h-6 bg-gray-300"></div>
+            </div>
+            
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open" 
+                        class="flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                    {{ ux_icon('bi:three-dots-vertical', {class: 'w-4 h-4 mr-2'}) }}
+                    <span class="hidden sm:inline">Actions</span>
+                    {{ ux_icon('bi:chevron-down', {class: 'w-4 h-4 ml-1 transition-transform duration-200', ':class': "{'rotate-180': open}"}) }}
+                </button>
+                
+                <div x-show="open" 
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     @click.away="open = false"
+                     class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div class="py-1">
+                        <a href="{{ path('app_student_show', {'id': student.id}) }}" 
+                           class="flex items-center px-4 py-2 text-sm transition-colors duration-200 {% if 'app_student_show' == app.request.attributes.get('_route') %}bg-blue-50 text-blue-700{% else %}text-gray-700 hover:bg-gray-100{% endif %}">
+                            {{ ux_icon('bi:eye', {class: 'w-4 h-4 mr-2'}) }}
+                            {% trans %}Show{% endtrans %}
+                        </a>
+                        
+                        <a href="{{ path('app_student_edit', {'id': student.id}) }}" 
+                           class="flex items-center px-4 py-2 text-sm transition-colors duration-200 {% if 'app_student_edit' == app.request.attributes.get('_route') %}bg-blue-50 text-blue-700{% else %}text-gray-700 hover:bg-gray-100{% endif %}">
+                            {{ ux_icon('bi:pencil', {class: 'w-4 h-4 mr-2'}) }}
+                            {% trans %}Edit{% endtrans %}
+                        </a>
+                        
+                        <hr class="my-1">
+                        
+                        <a href="{{ path('app_student_delete', {'id': student.id}) }}" 
+                           class="flex items-center px-4 py-2 text-sm transition-colors duration-200 {% if 'app_student_delete' == app.request.attributes.get('_route') %}bg-red-50 text-red-700{% else %}text-gray-700 hover:bg-red-50 hover:text-red-700{% endif %}">
+                            {{ ux_icon('bi:trash', {class: 'w-4 h-4 mr-2'}) }}
+                            {% trans %}Delete{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </nav>
 {% endblock %}
