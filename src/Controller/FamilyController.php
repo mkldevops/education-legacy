@@ -164,7 +164,6 @@ class FamilyController extends AbstractController
             'action' => $this->generateUrl('app_family_create'),
             'method' => Request::METHOD_POST,
         ])
-            ->add('submit', SubmitType::class, ['label' => 'form.button.create'])
             ->handleRequest($request)
         ;
     }
@@ -176,9 +175,7 @@ class FamilyController extends AbstractController
             'method' => Request::METHOD_POST,
         ]);
 
-        $form->add('submit', SubmitType::class, ['label' => 'form.button.edit'])
-            ->handleRequest($request)
-        ;
+        $form->handleRequest($request);
 
         return $form;
     }

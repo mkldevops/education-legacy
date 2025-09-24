@@ -57,6 +57,7 @@ class FamilyManager implements FamilyManagerInterface
             foreach ($form->getErrors(true) as $error) {
                 $errors[] = $error->getMessage();
             }
+
             $this->logger->debug(__METHOD__.' Form family invalid', ['errors' => $errors]);
 
             throw new AppException('The form is not valid: '.implode(', ', $errors));

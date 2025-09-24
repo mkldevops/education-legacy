@@ -1,44 +1,212 @@
 {% trans_default_domain 'family' %}
 
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'class': 'space-y-8'}}) }}
 
-    <div class="form-group">
-        {{ form_label(form.father) }}
-        <div class="col-sm-3">
-            {{ form_widget(form.father.name, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.name'|trans }}) }}
+<div x-data="{ showLegalGuardian: false }" class="space-y-8">
+
+    <!-- Father Section -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-blue-100 rounded-full p-2 mr-3">
+                {{ ux_icon('tabler:user', {class: 'w-5 h-5 text-blue-600'}) }}
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">{{ form.father.vars.label|trans }}</h3>
         </div>
-        <div class="col-sm-3">
-            {{ form_widget(form.father.forname, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.forname'|trans}}) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.father.phone, { 'attr' : {'class' : 'form-control'}}) }}
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                {{ form_label(form.father.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.father.name, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'placeholder': 'form.family.person.name'|trans }}) }}
+                {{ form_errors(form.father.name) }}
+            </div>
+            <div>
+                {{ form_label(form.father.forname, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.father.forname, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'placeholder': 'form.family.person.forname'|trans}}) }}
+                {{ form_errors(form.father.forname) }}
+            </div>
+            <div>
+                {{ form_label(form.father.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.father.phone, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                {{ form_errors(form.father.phone) }}
+            </div>
         </div>
     </div>
 
-    <div class="form-group">
-        {{ form_label(form.mother) }}
-        <div class="col-sm-3">
-            {{ form_widget(form.mother.name, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.name'|trans}}) }}
+    <!-- Mother Section -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-pink-100 rounded-full p-2 mr-3">
+                {{ ux_icon('tabler:user', {class: 'w-5 h-5 text-pink-600'}) }}
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">{{ form.mother.vars.label|trans }}</h3>
         </div>
-        <div class="col-sm-3">
-            {{ form_widget(form.mother.forname, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.forname'|trans}}) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.mother.phone, { 'attr' : {'class' : 'form-control'}}) }}
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                {{ form_label(form.mother.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.mother.name, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'placeholder': 'form.family.person.name'|trans}}) }}
+                {{ form_errors(form.mother.name) }}
+            </div>
+            <div>
+                {{ form_label(form.mother.forname, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.mother.forname, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'placeholder': 'form.family.person.forname'|trans}}) }}
+                {{ form_errors(form.mother.forname) }}
+            </div>
+            <div>
+                {{ form_label(form.mother.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.mother.phone, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                {{ form_errors(form.mother.phone) }}
+            </div>
         </div>
     </div>
 
-    <div class="form-group">
-        {{ form_label(form.legalGuardian) }}
-        <div class="col-sm-3">
-            {{ form_widget(form.legalGuardian.name, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.name'|trans}}) }}
+    <!-- Legal Guardian Toggle -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="bg-green-100 rounded-full p-2 mr-3">
+                    {{ ux_icon('tabler:user-check', {class: 'w-5 h-5 text-green-600'}) }}
+                </div>
+                <h3 class="text-lg font-medium text-gray-900">{{ form.legalGuardian.vars.label|trans }}</h3>
+            </div>
+            <button type="button" @click="showLegalGuardian = !showLegalGuardian" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <span x-text="showLegalGuardian ? 'Masquer' : 'Ajouter'"></span>
+                <svg class="ml-2 -mr-0.5 h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': showLegalGuardian }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+            </button>
         </div>
-        <div class="col-sm-3">
-            {{ form_widget(form.legalGuardian.forname, { 'attr' : {'class' : 'form-control', 'placeholder': 'form.family.person.forname'|trans}}) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.legalGuardian.phone, { 'attr' : {'class' : 'form-control'}}) }}
+
+        <!-- Legal Guardian Fields -->
+        <div x-show="showLegalGuardian" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="mt-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    {{ form_label(form.legalGuardian.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.legalGuardian.name, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'placeholder': 'form.family.person.name'|trans}}) }}
+                    {{ form_errors(form.legalGuardian.name) }}
+                </div>
+                <div>
+                    {{ form_label(form.legalGuardian.forname, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.legalGuardian.forname, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'placeholder': 'form.family.person.forname'|trans}}) }}
+                    {{ form_errors(form.legalGuardian.forname) }}
+                </div>
+                <div>
+                    {{ form_label(form.legalGuardian.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.legalGuardian.phone, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                    {{ form_errors(form.legalGuardian.phone) }}
+                </div>
+            </div>
         </div>
     </div>
-    {{ form_widget(form) }}
+
+    <!-- Contact Information -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-purple-100 rounded-full p-2 mr-3">
+                {{ ux_icon('tabler:mail', {class: 'w-5 h-5 text-purple-600'}) }}
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">Informations de contact</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                {{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.email, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'type': 'email'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+            <div>
+                {{ form_label(form.language, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.language, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                {{ form_errors(form.language) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Address Information -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-orange-100 rounded-full p-2 mr-3">
+                {{ ux_icon('tabler:map-pin', {class: 'w-5 h-5 text-orange-600'}) }}
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">Adresse</h3>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                {{ form_label(form.address, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.address, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                {{ form_errors(form.address) }}
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    {{ form_label(form.city, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.city, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                    {{ form_errors(form.city) }}
+                </div>
+                <div>
+                    {{ form_label(form.zip, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.zip, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+                    {{ form_errors(form.zip) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Family Details -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-indigo-100 rounded-full p-2 mr-3">
+                {{ ux_icon('tabler:users', {class: 'w-5 h-5 text-indigo-600'}) }}
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">Détails de la famille</h3>
+        </div>
+
+        <div class="mb-4">
+            {{ form_label(form.numberChildren, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.numberChildren, { 'attr' : {'class' : 'block w-full md:w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'}}) }}
+            {{ form_errors(form.numberChildren) }}
+        </div>
+    </div>
+
+    <!-- Emergency & Authorized Persons -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-red-100 rounded-full p-2 mr-3">
+                {{ ux_icon('tabler:shield-check', {class: 'w-5 h-5 text-red-600'}) }}
+            </div>
+            <h3 class="text-lg font-medium text-gray-900">Personnes autorisées et d'urgence</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                {{ form_label(form.personAuthorized, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.personAuthorized, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'rows': 3}}) }}
+                {{ form_errors(form.personAuthorized) }}
+            </div>
+            <div>
+                {{ form_label(form.personEmergency, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.personEmergency, { 'attr' : {'class' : 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm', 'rows': 3}}) }}
+                {{ form_errors(form.personEmergency) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex justify-end space-x-3 pt-6">
+        <a href="{{ path('app_family_index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+            {{ ux_icon('tabler:arrow-left', {class: 'w-4 h-4 mr-2'}) }}
+            Annuler
+        </a>
+        <button type="submit" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+            {{ ux_icon('tabler:check', {class: 'w-4 h-4 mr-2'}) }}
+            {% if family is defined and family.id %}
+                Modifier la famille
+            {% else %}
+                Créer la famille
+            {% endif %}
+        </button>
+    </div>
+
+</div>
+
 {{ form_end(form) }}

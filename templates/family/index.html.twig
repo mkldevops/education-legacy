@@ -9,39 +9,261 @@
 {% block errors %}{{ form_errors(delete_form) }}{% endblock errors %}
 
 {% block body %}
-    <h1>Families list</h1>
+    <!-- Header Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6" x-data="{
+        searchTerm: '',
+        statusFilter: 'all',
+        
+        filterFamilies() {
+            const rows = document.querySelectorAll('#families-table tbody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const familyName = row.cells[1]?.textContent?.toLowerCase() || '';
+                const status = row.cells[5]?.textContent?.toLowerCase() || '';
+                
+                const matchesSearch = this.searchTerm === '' || 
+                    familyName.includes(this.searchTerm.toLowerCase());
+                
+                const matchesStatus = this.statusFilter === 'all' || 
+                    (this.statusFilter === 'active' && status.includes('oui')) ||
+                    (this.statusFilter === 'inactive' && status.includes('non'));
+                
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            const counter = document.querySelector('#filtered-count');
+            if (counter) {
+                counter.textContent = visibleCount;
+            }
+        }
+    }">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 rounded-full p-3 mr-4">
+                        {{ ux_icon('tabler:users', {class: 'w-6 h-6 text-blue-600'}) }}
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Liste des Familles</h1>
+                        <p class="text-sm text-gray-500">Gestion et consultation des familles</p>
+                    </div>
+                </div>
+                <div class="mt-4 sm:mt-0">
+                    <a href="{{ path('app_family_new') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        {{ ux_icon('tabler:plus', {class: 'w-4 h-4 mr-2'}) }}
+                        Nouvelle famille
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <table class="table table-striped  table-bordered table-hover dt-responsive" data-toggle="datatable">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Famille</th>
-                <th>Email</th>
-                <th>Language</th>
-                <th>{{ 'index.header.Numberchildren'|trans }}</th>
-                <th>Zip</th>
-                <th>{{ 'index.createdat'|trans }}</th>
-                <th>Enable</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for family in families %}
-            <tr>
-                <td><a href="{{ path('app_family_show', { 'id': family.id }) }}">{{ family.id }}</a></td>
-                <td><a href="{{ path('app_family_show', { 'id': family.id }) }}">{{ family }}</a></td>
-                <td>{{ family.email }}</td>
-                <td>{{ family.language }}</td>
-                <td>{{ family.numberChildren }}</td>
-                <td>{{ family.city }}</td>
-                <td>{% if family.createdAt %}{{ family.createdAt|date('d/m/Y H:i') }}{% endif %}</td>
-                <td>{% if family.enable %}Yes{% else %}No{% endif %}</td>
-                <td class="text-center">
-                    <a href="{{ path('app_family_show', { 'id': family.id }) }}"><i class="fa fa-file"></i></a>
-                    <a href="{{ path('app_family_edit', { 'id': family.id }) }}"><i class="fa fa-edit"></i></a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <!-- Search and Filters -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+                <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 max-w-md">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:search', {class: 'w-4 h-4 text-gray-400'}) }}
+                        </div>
+                        <input 
+                            type="text" 
+                            x-model="searchTerm"
+                            @input="filterFamilies()"
+                            placeholder="Rechercher par nom de famille..."
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="relative">
+                        <select 
+                            x-model="statusFilter"
+                            @change="filterFamilies()"
+                            class="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            <option value="all">Tous les statuts</option>
+                            <option value="active">Actives</option>
+                            <option value="inactive">Inactives</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Results Counter -->
+                <div class="flex items-center text-sm text-gray-500">
+                    <span id="filtered-count">{{ families|length }}</span>
+                    <span class="ml-1">famille(s) affichée(s)</span>
+                </div>
+            </div>
+
+            <!-- Clear Filters Button -->
+            <div class="mt-3" x-show="searchTerm !== '' || statusFilter !== 'all'">
+                <button 
+                    @click="searchTerm = ''; statusFilter = 'all'; filterFamilies()"
+                    class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    {{ ux_icon('tabler:x', {class: 'w-3 h-3 mr-1'}) }}
+                    Effacer les filtres
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-hidden">
+            <div class="overflow-x-auto">
+                <table id="families-table" class="min-w-full divide-y divide-gray-300">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Famille</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Langue</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'index.header.Numberchildren'|trans }}</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ville</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'index.createdat'|trans }}</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for family in families %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <a href="{{ path('app_family_show', { 'id': family.id }) }}" class="text-blue-600 hover:text-blue-900">
+                                        #{{ family.id }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="bg-blue-100 rounded-full p-2 mr-3">
+                                            {{ ux_icon('tabler:users', {class: 'w-4 h-4 text-blue-600'}) }}
+                                        </div>
+                                        <div>
+                                            <a href="{{ path('app_family_show', { 'id': family.id }) }}" class="text-sm font-medium text-gray-900 hover:text-blue-600">
+                                                {{ family }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    {% if family.language %}
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                                            {{ family.language|upper }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-gray-400">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ ux_icon('tabler:users', {class: 'w-3 h-3 mr-1'}) }}
+                                        {{ family.numberChildren }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                    {{ family.city ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                    {% if family.createdAt %}
+                                        <span title="{{ family.createdAt|date('d/m/Y H:i:s') }}">
+                                            {{ family.createdAt|date('d/m/Y') }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-gray-400">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ family.enable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {% if family.enable %}Oui{% else %}Non{% endif %}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <a href="{{ path('app_family_show', { 'id': family.id }) }}" class="text-blue-600 hover:text-blue-900" title="Voir la famille">
+                                            {{ ux_icon('tabler:eye', {class: 'w-4 h-4'}) }}
+                                        </a>
+                                        <a href="{{ path('app_family_edit', { 'id': family.id }) }}" class="text-green-600 hover:text-green-900" title="Modifier la famille">
+                                            {{ ux_icon('tabler:edit', {class: 'w-4 h-4'}) }}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="bg-gray-100 rounded-full p-4 mb-4">
+                                            {{ ux_icon('tabler:users', {class: 'w-8 h-8 text-gray-400'}) }}
+                                        </div>
+                                        <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune famille trouvée</h3>
+                                        <p class="text-gray-500 mb-4">Commencez par créer votre première famille.</p>
+                                        <a href="{{ path('app_family_new') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                            {{ ux_icon('tabler:plus', {class: 'w-4 h-4 mr-2'}) }}
+                                            Créer une famille
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Summary -->
+    {% if families|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <!-- Total Families -->
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-blue-100 text-sm font-medium uppercase tracking-wide">Total Familles</p>
+                        <p class="text-3xl font-bold mt-2">{{ families|length }}</p>
+                    </div>
+                    <div class="bg-white/20 rounded-full p-3">
+                        {{ ux_icon('tabler:users', {class: 'w-6 h-6'}) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Families -->
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-green-100 text-sm font-medium uppercase tracking-wide">Familles Actives</p>
+                        <p class="text-3xl font-bold mt-2">
+                            {% set activeFamilies = families|filter(f => f.enable) %}
+                            {{ activeFamilies|length }}
+                        </p>
+                    </div>
+                    <div class="bg-white/20 rounded-full p-3">
+                        {{ ux_icon('tabler:check', {class: 'w-6 h-6'}) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Children -->
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-purple-100 text-sm font-medium uppercase tracking-wide">Total Enfants</p>
+                        <p class="text-3xl font-bold mt-2">
+                            {% set totalChildren = 0 %}
+                            {% for family in families %}
+                                {% set totalChildren = totalChildren + family.numberChildren %}
+                            {% endfor %}
+                            {{ totalChildren }}
+                        </p>
+                    </div>
+                    <div class="bg-white/20 rounded-full p-3">
+                        {{ ux_icon('tabler:baby-carriage', {class: 'w-6 h-6'}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
