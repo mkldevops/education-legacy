@@ -72,112 +72,171 @@
                         {% endif %}
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {# Student Image #}
-                        <div id="student-image" class="space-y-4">
-                            {% include 'document/upload.html.twig' with {
-                                documents : ( student.image is not empty ? [student.image] : [] ),
-                                upload : {
-                                    url : path('app_student_setimage', { id : student.id }),
-                                    prefix : 'show.student.image'|trans,
-                                    name : student.nameComplete,
-                                    class : 'w-full'
-                                }
-                            } %}
+                    {% set studentImage = student.image is not empty ? asset(student.image.getWebPathPreview()) : null %}
+
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                        <div class="xl:col-span-1 space-y-4">
+                            <div class="relative overflow-hidden rounded-2xl border border-gray-200 shadow-sm bg-slate-900 text-white">
+                                {% if studentImage %}
+                                    <img src="{{ studentImage }}" alt="{{ student.nameComplete }}" class="h-72 w-full object-cover">
+                                {% else %}
+                                    <div class="h-72 w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 via-blue-500 to-purple-500">
+                                        {{ ux_icon('bi:person', {class: 'w-16 h-16 text-white/80'}) }}
+                                        <span class="mt-3 text-sm font-medium text-white/80">Photo non disponible</span>
+                                    </div>
+                                {% endif %}
+
+                                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-5">
+                                    <p class="text-xs uppercase tracking-wide text-white/70">Fiche élève</p>
+                                    <p class="text-lg font-semibold">{{ student.nameComplete }}</p>
+                                    {% if student.grade is not empty %}
+                                        <p class="mt-1 text-sm text-white/80 flex items-center gap-2">
+                                            {{ ux_icon('bi:mortarboard', {class: 'w-4 h-4'}) }}
+                                            {{ student.grade.name }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="absolute top-4 left-4">
+                                    <a href="{{ path('app_student_edit', { id: student.id }) }}"
+                                       class="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-white">
+                                        {{ ux_icon('bi:pencil-square', {class: 'w-4 h-4'}) }}
+                                        Modifier le profil
+                                    </a>
+                                </div>
+
+                                <div class="absolute top-4 right-4">
+                                    <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold {{ student.enable ? 'bg-emerald-500/15 text-emerald-100 ring-1 ring-inset ring-emerald-400/60' : 'bg-rose-500/15 text-rose-100 ring-1 ring-inset ring-rose-400/60' }}">
+                                        {{ ux_icon(student.enable ? 'bi:check-circle' : 'bi:slash-circle', {class: 'w-4 h-4'}) }}
+                                        {{ student.enable ? 'Actif' : 'Inactif' }}
+                                    </span>
+                                </div>
+                            </div>
+
                         </div>
 
-                        {# Student Details #}
-                        <div class="space-y-4">
-                            <dl class="space-y-3">
-                                <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                        {{ 'show.student.name'|trans }}
-                                    </dt>
-                                    <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900 font-medium">
-                                        {{ student.name }}
-                                    </dd>
+                        <div class="xl:col-span-2 space-y-6">
+                            <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                                <div class="flex items-center justify-between gap-3">
+                                    <h4 class="text-base font-semibold text-gray-900">Informations personnelles</h4>
+                                    <span class="text-xs font-medium uppercase tracking-wider text-gray-400">Dernière mise à jour {{ student.updatedAt|default(student.createdAt)|date('d/m/Y') }}</span>
                                 </div>
 
-                                <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                        Prénom
-                                    </dt>
-                                    <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900">
-                                        {{ student.forname }}
-                                    </dd>
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                        Sexe
-                                    </dt>
-                                    <dd class="mt-1 sm:mt-0 sm:ml-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                                                     {% if student.gender == 'male' %}bg-blue-100 text-blue-800{% else %}bg-pink-100 text-pink-800{% endif %}">
-                                            {% if student.gender == 'male' %}
-                                                {{ ux_icon('bi:person', {class: 'w-3 h-3 mr-1'}) }}
-                                            {% else %}
-                                                {{ ux_icon('bi:person-standing-dress', {class: 'w-3 h-3 mr-1'}) }}
+                                <dl class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Nom</dt>
+                                        <dd class="mt-1 text-sm font-medium text-gray-900">{{ student.name|default('---') }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Prénom</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">{{ student.forname|default('---') }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Sexe</dt>
+                                        <dd class="mt-1">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold {{ student.gender == 'male' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700' }}">
+                                                {{ ux_icon(student.gender == 'male' ? 'bi:gender-male' : 'bi:gender-female', {class: 'w-3 h-3 mr-1'}) }}
+                                                {{ student.genderCode|default('---') }}
+                                            </span>
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Date de naissance</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            {{ student.birthday is not empty ? student.birthday|date('d/m/Y') : '---' }}
+                                            {% if student.birthday is not empty %}
+                                                <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                                                    {{ ux_icon('bi:calendar-event', {class: 'w-3 h-3'}) }}
+                                                    {{ student.getAge() }} ans
+                                                </span>
                                             {% endif %}
-                                            {{ student.genderCode }}
-                                        </span>
-                                    </dd>
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                        Niveau
-                                    </dt>
-                                    <dd class="mt-1 sm:mt-0 sm:ml-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-purple-100 text-purple-800">
-                                            {{ ux_icon('bi:mortarboard', {class: 'w-4 h-4 mr-1'}) }}
-                                            {{ student.grade.name }}
-                                        </span>
-                                    </dd>
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                        Date de naissance
-                                    </dt>
-                                    <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900">
-                                        {{ student.birthday.format('d/m/Y')|default('---') }}
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2">
-                                            {{ ux_icon('bi:calendar3', {class: 'w-3 h-3 mr-1'}) }}
-                                            {{ student.getAge() }} ans
-                                        </span>
-                                        {% if student.birthplace %}
-                                            <div class="text-xs text-gray-500 mt-1">à {{ student.birthplace }}</div>
-                                        {% endif %}
-                                    </dd>
-                                </div>
-
-                                {% if student.email %}
-                                    <div class="flex flex-col sm:flex-row sm:items-center">
-                                        <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                            E-mail
-                                        </dt>
-                                        <dd class="mt-1 sm:mt-0 sm:ml-4">
-                                            <a href="mailto:{{ student.email }}"
-                                               class="inline-flex items-center text-sm text-primary-600 hover:text-primary-500">
-                                                {{ ux_icon('bi:envelope', {class: 'w-4 h-4 mr-1'}) }}
-                                                {{ student.email }}
-                                            </a>
                                         </dd>
                                     </div>
-                                {% endif %}
-
-                                {% if student.lastSchool %}
-                                    <div class="flex flex-col sm:flex-row sm:items-center">
-                                        <dt class="text-sm font-medium text-gray-500 sm:w-32 sm:flex-shrink-0">
-                                            {{ 'show.label.lastschool'|trans }}
-                                        </dt>
-                                        <dd class="mt-1 sm:mt-0 sm:ml-4 text-sm text-gray-900">
-                                            {{ student.lastSchool }}
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Lieu de naissance</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">{{ student.birthplace|default('---') }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Niveau</dt>
+                                        <dd class="mt-1">
+                                            {% if student.grade is not empty %}
+                                                <span class="inline-flex items-center gap-1 rounded-md bg-purple-100 px-2.5 py-1 text-xs font-semibold text-purple-700">
+                                                    {{ ux_icon('bi:mortarboard', {class: 'w-4 h-4'}) }}
+                                                    {{ student.grade.name }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-sm text-gray-400">---</span>
+                                            {% endif %}
                                         </dd>
                                     </div>
-                                {% endif %}
-                            </dl>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">E-mail</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            {% if student.email %}
+                                                <a href="mailto:{{ student.email }}" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-500">
+                                                    {{ ux_icon('bi:envelope', {class: 'w-4 h-4'}) }}
+                                                    {{ student.email }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-gray-400">---</span>
+                                            {% endif %}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Téléphones</dt>
+                                        <dd class="mt-1">
+                                            {% set phones = student.listPhones %}
+                                            {% if phones is not empty %}
+                                                <div class="flex flex-wrap gap-2">
+                                                    {% for phone in phones %}
+                                                        <a href="tel:{{ phone }}" class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200">
+                                                            {{ ux_icon('bi:telephone', {class: 'w-3 h-3'}) }}
+                                                            {{ phone }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <span class="text-sm text-gray-400">---</span>
+                                            {% endif %}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Adresse</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">
+                                            {% if student.address or student.city or student.zip %}
+                                                {% set addressLine = [] %}
+                                                {% if student.zip %}
+                                                    {% set addressLine = addressLine|merge([student.zip]) %}
+                                                {% endif %}
+                                                {% if student.city %}
+                                                    {% set addressLine = addressLine|merge([student.city]) %}
+                                                {% endif %}
+                                                <div class="space-y-0.5">
+                                                    {% if student.address %}
+                                                        <p>{{ student.address }}</p>
+                                                    {% endif %}
+                                                    {% if addressLine is not empty %}
+                                                        <p>{{ addressLine|join(' ') }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% else %}
+                                                <span class="text-gray-400">---</span>
+                                            {% endif %}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400">Ancienne école</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">{{ student.lastSchool|default('---') }}</dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            {% if student.personAuthorized %}
+                                <div class="rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/60 p-6 shadow-sm">
+                                    <h4 class="text-base font-semibold text-indigo-800">Personnes autorisées à récupérer l'élève</h4>
+                                    <p class="mt-2 text-sm text-indigo-700 leading-relaxed">{{ student.personAuthorized|nl2br }}</p>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -223,63 +282,7 @@
                 </div>
             </div>
 
-            {# Quick Actions #}
-            <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        {{ ux_icon('bi:lightning', {class: 'w-5 h-5 mr-2 inline'}) }}
-                        Actions rapides
-                    </h3>
-                </div>
-                <div class="p-6" x-data="{ open: false }">
-                    <div class="relative">
-                        <button @click="open = !open" 
-                                class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 transition-colors duration-200">
-                            <span class="flex items-center">
-                                {{ ux_icon('bi:gear', {class: 'w-4 h-4 mr-2'}) }}
-                                Actions
-                            </span>
-                            <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-                        
-                        <div x-show="open" 
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="transform opacity-0 scale-95"
-                             x-transition:enter-end="transform opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="transform opacity-100 scale-100"
-                             x-transition:leave-end="transform opacity-0 scale-95"
-                             @click.away="open = false"
-                             class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            <div class="py-1">
-                                <a href="{{ path('app_student_edit', {'id': student.id}) }}"
-                                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
-                                    {{ ux_icon('bi:pencil-square', {class: 'w-4 h-4 mr-2'}) }}
-                                    Modifier les informations
-                                </a>
-
-                                {% if student.family|default(null) is not empty %}
-                                    <a href="{{ path('app_family_show', {id : student.family.id }) }}"
-                                       class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
-                                        {{ ux_icon('bi:people', {class: 'w-4 h-4 mr-2'}) }}
-                                        Voir la famille
-                                    </a>
-                                {% endif %}
-
-                                <hr class="my-1">
-                                
-                                <a href="{{ path('app_student_delete', {'id': student.id}) }}"
-                                   class="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors duration-200">
-                                    {{ ux_icon('bi:trash', {class: 'w-4 h-4 mr-2'}) }}
-                                    Supprimer l'étudiant
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{ component('student_packages', { student: student }) }}
         </div>
     </div>
 
