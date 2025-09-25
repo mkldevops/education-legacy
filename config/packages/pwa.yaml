@@ -44,6 +44,3 @@ pwa:
                 cache_name: fonts
                 max_entries: 60
                 max_age: 31536000
-            warm_cache_urls:
-                - '/'
-                - '/login'

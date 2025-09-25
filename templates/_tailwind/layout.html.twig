@@ -43,14 +43,14 @@
                         </ol>
                     </nav>
                 {% endif %}
-                
+
                 <!-- Enhanced Page Title and Actions -->
                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between">
                     {% if title is defined %}
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center">
                                 <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg mr-4">
-                                    {{ ux_icon('bi:file-text', {class: 'w-5 h-5 text-white'}) }}
+                                    {{ ux_icon('bi:file-text', {class: 'w-5 h-5 text-gray-900'}) }}
                                 </div>
                                 <div>
                                     <h1 class="text-2xl font-bold text-gray-900 tracking-tight sm:truncate">
@@ -86,7 +86,7 @@
                         {{ ux_icon('bi:funnel', {class: 'mx-auto h-16 w-16 text-gray-400 mb-4'}) }}
                         <h3 class="text-lg font-medium text-gray-900 mb-2">{{ 'base.not_body.title'|trans }}</h3>
                         <p class="text-sm text-gray-500 mb-6">Cette page n'a pas de contenu spécifique défini.</p>
-                        <a href="{{ path('app_admin_home') }}" 
+                        <a href="{{ path('app_admin_home') }}"
                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
                             {{ ux_icon('bi:house', {class: 'w-4 h-4 mr-2'}) }}
                             {{ 'breadcrumb.dashboard'|trans }}

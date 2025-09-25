@@ -72,6 +72,6 @@ class PersonStudentType extends PersonSimpleType
      */
     public function getBlockPrefix(): string
     {
-        return 'app_person_student';
+        return 'person_student';
     }
 }

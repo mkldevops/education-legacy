@@ -38,6 +38,6 @@ class PersonSimpleType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        return 'app_person_family';
+        return 'person_family';
     }
 }

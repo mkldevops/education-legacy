@@ -10,9 +10,100 @@
 
 
 {% block body %}
-    {% embed '_inspina/embed/delete.html.twig' %}
-        {% trans_default_domain 'family' %}
-        {% set nameEntity = 'name_entity'|trans %}
-        {% block title 'form.title.delete'|trans %}
-    {% endembed %}
+    <div class="max-w-6xl mx-auto space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-6 border-b border-gray-200">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-red-100 text-red-600 rounded-xl p-3 shadow-inner">
+                                {{ ux_icon('tabler:trash', { class: 'w-6 h-6' }) }}
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm uppercase tracking-wide text-red-600 font-semibold">{{ 'family.delete.pretitle'|trans({}, 'family') }}</p>
+                                <h2 class="mt-1 text-2xl font-semibold text-gray-900">{{ 'form.title.delete'|trans({}, 'family') }}</h2>
+                                <p class="mt-2 text-sm text-gray-600">{{ 'family.delete.lead'|trans({'%name%': family}, 'family') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-6 space-y-6">
+                        <div class="space-y-4">
+                            <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                {{ ux_icon('tabler:alert-triangle', { class: 'w-5 h-5 text-red-500' }) }}
+                                {{ 'family.delete.warning.title'|trans({}, 'family') }}
+                            </h3>
+                            <ul class="space-y-3 text-sm text-gray-600">
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-1 text-red-500">{{ ux_icon('tabler:point-filled', { class: 'w-4 h-4' }) }}</span>
+                                    <span>{{ 'family.delete.warning.description'|trans({'%name%': family}, 'family') }}</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-1 text-red-500">{{ ux_icon('tabler:point-filled', { class: 'w-4 h-4' }) }}</span>
+                                    <span>{{ 'family.delete.warning.children'|trans({'%count%': family.persons|length}, 'family') }}</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-1 text-red-500">{{ ux_icon('tabler:point-filled', { class: 'w-4 h-4' }) }}</span>
+                                    <span>{{ 'family.delete.warning.audit'|trans({}, 'family') }}</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-4 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ 'family.delete.info'|trans({'%created_at%': family.createdAt|date('d/m/Y H:i'), '%updated_at%': family.updatedAt|date('d/m/Y H:i')}, 'family') }}</p>
+                                <p class="mt-1 text-xs text-gray-500">{{ 'family.delete.info.detail'|trans({'%author%': family.author ?? '—'}, 'family') }}</p>
+                            </div>
+                            <div class="hidden sm:block">
+                                {{ ux_icon('tabler:clock', { class: 'w-8 h-8 text-gray-300' }) }}
+                            </div>
+                        </div>
+
+                        {{ form_start(delete_form, {'attr': {'class': 'space-y-4'}}) }}
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <a href="{{ path('app_family_show', { id: family.id }) }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
+                                    {{ ux_icon('tabler:arrow-left', { class: 'w-4 h-4 mr-2' }) }}
+                                    {{ 'family.delete.back'|trans({}, 'family') }}
+                                </a>
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">
+                                    {{ ux_icon('tabler:trash', { class: 'w-4 h-4 mr-2' }) }}
+                                    {{ 'family.delete.confirm'|trans({}, 'family') }}
+                                </button>
+                            </div>
+                        {{ form_end(delete_form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="px-4 py-4 border-b border-gray-200 flex items-center gap-2 text-sm font-semibold text-gray-900">
+                        {{ ux_icon('tabler:info-circle', { class: 'w-4 h-4 text-indigo-500' }) }}
+                        {{ 'family.delete.summary.title'|trans({}, 'family') }}
+                    </div>
+                    <dl class="px-4 py-4 space-y-3 text-sm text-gray-600">
+                        <div class="flex justify-between">
+                            <dt class="font-medium text-gray-900">{{ 'family.delete.summary.members'|trans({}, 'family') }}</dt>
+                            <dd>{{ family.persons|length }}</dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="font-medium text-gray-900">{{ 'family.delete.summary.periods'|trans({}, 'family') }}</dt>
+                            <dd>{{ app.session.get('period').selected|default('—') }}</dd>
+                        </div>
+                        <div class="flex justify-between">
+                            <dt class="font-medium text-gray-900">{{ 'family.delete.summary.id'|trans({}, 'family') }}</dt>
+                            <dd>#{{ family.id }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl px-4 py-4 text-sm text-blue-700">
+                    <div class="flex items-start gap-3">
+                        {{ ux_icon('tabler:lifebuoy', { class: 'w-5 h-5 text-blue-500 mt-0.5' }) }}
+                        <p>{{ 'family.delete.support'|trans({}, 'family') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

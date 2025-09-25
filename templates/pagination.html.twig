@@ -9,8 +9,7 @@
     * showAlwaysFirstAndLast (bool) : Always show first and last link (just disabled)
     * lastPage (int) : represents the total number of existing pages
 #}
-{% apply spaceless %}
-    {% if lastPage > 1 %}
+{% if lastPage > 1 %}
 
         {# the number of first and last pages to be displayed #}
         {% set extremePagesLimit = 3 %}
@@ -94,5 +93,4 @@
                 {% endif %}
             </ul>
         </nav>
-    {% endif %}
-{% endapply %}
+{% endif %}

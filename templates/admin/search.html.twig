@@ -22,7 +22,7 @@
                         <ul class="pa">
                             {% for person in result.person %}
                                 <li>
-                                    <a href="{{ path('app_person_show', { id : person.id }) }}">{{ person }}</a> ({{ person.age }} ans)
+                                    {{ person }} ({{ person.age }} ans)
                                     {% if person.student is not empty %}
                                         <a href="{{ path('app_student_show', {id : person.student.id }) }}">
                                             <i class="fas fa-user-graduate"></i>

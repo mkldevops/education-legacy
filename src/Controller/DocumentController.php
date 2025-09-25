@@ -28,6 +28,19 @@ class DocumentController extends AbstractController
         private readonly LoggerInterface $logger,
     ) {}
 
+    #[Route(path: '/document', name: 'app_document_index', methods: ['GET'])]
+    public function index(DocumentRepository $documentRepository): Response
+    {
+        $documentList = $documentRepository->findAll();
+
+        return $this->render('document/index.html.twig', [
+            'documentList' => $documentList,
+            'pages' => 1,
+            'page' => 1,
+            'search' => '',
+        ]);
+    }
+
     /**
      * @throws FileNotFoundException
      */

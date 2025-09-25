@@ -71,7 +71,7 @@ class Person implements \Stringable, EntityInterface, AuthorEntityInterface
     #[ORM\OneToOne(targetEntity: Member::class, cascade: ['persist'], mappedBy: 'person')]
     protected ?Member $member = null;
 
-    #[ORM\OneToOne(targetEntity: Student::class, cascade: ['persist'], mappedBy: 'person')]
+    #[ORM\OneToOne(targetEntity: Student::class, cascade: ['persist', 'remove'], mappedBy: 'person', orphanRemoval: true)]
     protected ?Student $student = null;
 
     /**

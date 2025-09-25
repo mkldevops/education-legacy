@@ -52,3 +52,33 @@ new_student: "Ajouter un élève"
 new_package_student: "Ajouter un forfait %period%"
 family.title.delete: "Supprimer famille"
 name_entity: Famille
+family.delete.warning.title: "Confirmation requise"
+family.delete.warning.description: "La suppression de %name% entraînera la suppression de toutes les données associées à cette famille. Cette action est irréversible."
+family.delete.info: "Créée le %created_at% • Dernière modification le %updated_at%"
+family.delete.back: "Annuler"
+family.delete.confirm: "Supprimer définitivement"
+family.delete.pretitle: "Action critique"
+family.delete.lead: "Vous êtes sur le point de supprimer la famille %name%. Vérifiez les éléments ci-dessous avant de valider."
+family.delete.warning.children: "%count% membre(s) rattaché(s) à cette famille seront également supprimés."
+family.delete.warning.audit: "Toutes les opérations financières et historiques associés seront retirés des rapports."
+family.delete.info.detail: "Responsable de la fiche : %author%"
+family.delete.summary.title: "Résumé"
+family.delete.summary.members: "Membres enregistrés"
+family.delete.summary.periods: "Année scolaire en cours"
+family.delete.summary.id: "Identifiant"
+family.delete.support: "Besoin d'aide ? Contactez l'équipe administrative pour récupérer des informations avant suppression."
+payments.button.new: "Réaliser un paiement"
+payments.button.history: "Voir les paiements"
+payments.modal.title: "Paiement pour la famille %family% (%period%)"
+payments.modal.cancel: Annuler
+payments.modal.submit: "Enregistrer le paiement"
+payments.history.title: "Paiements effectués %period%"
+payments.history.empty: "Aucun paiement réalisé pour la période en cours."
+payments.history.operation_total: "Montant total"
+payments.history.operation_by: "Enregistré par %author% le %date%"
+payments.history.operation_reference: Référence
+payments.history.operation_link: "Voir l'opération"
+payments.history.student_column: Élève
+payments.history.package_column: Forfait
+payments.history.amount_column: Montant
+payments.error.default: "Une erreur est survenue lors du paiement"

@@ -29,7 +29,7 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
     use SoftDeleteableEntity;
     use TimestampableEntity;
 
-    #[ORM\OneToOne(targetEntity: Person::class, inversedBy: 'student', cascade: ['persist'])]
+    #[ORM\OneToOne(targetEntity: Person::class, inversedBy: 'student', cascade: ['persist', 'remove'])]
     private ?Person $person = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]

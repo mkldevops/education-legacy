@@ -21,17 +21,17 @@
                         <dl class="dl-horizontal">
                             {% if family.father is not empty %}
                                 <dt>{{ 'show.other_info.family.father.label'|trans }}</dt>
-                                <dd><a href="{{ path('app_person_show', { id : family.father.id }) }}">{{ family.father }}</a></dd>
+                                <dd>{{ family.father }}</dd>
                             {% endif %}
 
                             {% if family.mother is not empty %}
                                 <dt>{{ 'show.other_info.family.mother.label'|trans }}</dt>
-                                <dd><a href="{{ path('app_person_show', { id : family.mother.id }) }}">{{ family.mother }}</a></dd>
+                                <dd>{{ family.mother }}</dd>
                             {% endif %}
 
                             {% if family.legalGuardian is not empty  %}
                                 <dt>{{ 'show.other_info.family.legalGuardian.label'|trans }}</dt>
-                                <dd><a href="{{ path('app_person_show', { id : family.legalGuardian.id }) }}"></a>{{ family.legalGuardian }}</dd>
+                                <dd>{{ family.legalGuardian }}</dd>
                             {% endif %}
 
                             <dt>{{ 'show.other_info.family.address.label'|trans }}</dt>
@@ -46,7 +46,7 @@
                                             {% if person.student is not empty %}
                                                 <a href="{{ path('app_student_show', { id : person.student.id }) }}">{{ person.student }}</a>
                                             {% else %}
-                                                <a href="{{ path('app_person_show', { id : person.id }) }}">{{ person.student }}</a>
+                                                {{ person.student }}
                                             {% endif %}
                                         </dd>
                                     {% endif %}

@@ -25,14 +25,6 @@
     </li>
 
     {% if teacher is defined and teacher.id %}
-        {% if person is defined and person.id %}
-            <li class="{% if 'person_show' == app.request.attributes.get('_route') %} active{% endif %}">
-                <a href="{{ path('app_person_show', {'id': person.id}) }}">
-                    <i class="fas fa-file-text"></i>
-                    {% trans %}Show Person{% endtrans %}
-                </a>
-            </li>
-        {% endif %}
         <li class="{% if 'app_teacher_show' == app.request.attributes.get('_route') %} active{% endif %}">
             <a href="{{ path('app_teacher_show', {'id': teacher.id}) }}">
                 <i class="fas fa-file-text"></i>

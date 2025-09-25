@@ -32,17 +32,17 @@
                         {% set person = teacher.person %}
                         <tr>
                             <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ teacher.id }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.id }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.name }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.forname }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.phone }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.email }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.gender }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.id }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.name }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.forname }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.phone }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.email }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.gender }}</a></td>
                             <td>
-                                <a href="{{ path('app_person_show', { 'id': person.id }) }}" title="{{ person.address }} {{ person.zip }}">{{ person.city }}</a>
+                                <a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}" title="{{ person.address }} {{ person.zip }}">{{ person.city }}</a>
                             </td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ person.enable }}</a></td>
-                            <td><a href="{{ path('app_person_show', { 'id': person.id }) }}">{{ teacher.classPeriods|length }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ person.enable }}</a></td>
+                            <td><a href="{{ path('app_teacher_show', { 'id': teacher.id }) }}">{{ teacher.classPeriods|length }}</a></td>
                             <td>{% if teacher.createdAt %}{{ teacher.createdAt|date('date.short_with_hour'|trans({}, 'common')) }}{% else %}-{% endif %}</td>
                             <td>
                                 <a href="{{ path('app_teacher_edit', {'id': teacher.id}) }}" title="{% trans %}Edit{% endtrans %}">
