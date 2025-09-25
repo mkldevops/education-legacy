@@ -172,7 +172,10 @@ rector: ## Run rector process
 cs-dry: ## Run php-cs-fixer and fix the code.
 	$(DOCKER_EXEC) ./vendor/bin/php-cs-fixer fix src --dry-run --allow-risky=yes
 
-analyze: stan cs-fix rector ## Run php-cs-fixer and fix the code.
+lint-twig: ## Run twig lint
+	$(CONSOLE) lint:twig templates/
+
+analyze: doctrine-validate stan cs-fix rector lint-twig ## Run php-cs-fixer and fix the code.
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
 config: compose.yaml ## build services to image
@@ -206,7 +209,7 @@ restart: compose.yaml down up ## stop & re-up containers
 logs: compose.yaml ## logs of all containers
 	$(DOCKER) logs --tail=100 -f $(c)
 
-app-logs: compose.yaml ## logs of container app
+logs.app: compose.yaml ## logs of container app
 	$(DOCKER) logs --tail=100 -f app
 
 ps: compose.yaml ## ps containers
@@ -228,10 +231,6 @@ docker-build-push: login
 	@docker push $(DOCKER_IMAGE):latest
 
 ## —— Git Hooks 🪝 ————————————————————————————————————————————————————————————
-hooks-install: package.json ## Install git hooks with Husky
-	bun install
-	bunx husky init
-
 hooks-test: ## Test lint-staged configuration without committing
 	bunx lint-staged --allow-empty
 
@@ -246,22 +245,3 @@ hooks-status: ## Show status of git hooks
 	@echo ""
 	@echo "Test hooks (dry run):"
 	@bunx lint-staged --allow-empty 2>/dev/null && echo "✅ lint-staged working" || echo "❌ lint-staged not working"
-
-## —— Git ———————————————————————————————————
-git-clean-branches: ## Clean merged branches
-	git remote prune origin
-	(git branch --merged | egrep -v "(^\*|main|master|dev)" | xargs git branch -d) || true
-
-git-rebase: ## Rebase current branch
-	git pull --rebase origin main
-
-m ?= \#$(shell git branch --show-current | sed -E 's/^([0-9]+)-([^-]+)-(.+)/\2: #\1 \3/' | sed "s/-/ /g")
-auto-commit: ## Auto commit
-	git add .
-	@git commit -m "$(m)" || true
-
-current_branch=$(shell git rev-parse --abbrev-ref HEAD)
-git-push: ## Push current branch
-	git push origin "$(current_branch)" --force-with-lease
-
-push: analyze auto-commit git-rebase push ## Commit and push

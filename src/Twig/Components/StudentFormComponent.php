@@ -49,7 +49,8 @@ final class StudentFormComponent extends AbstractController
         if ($this->getForm()->isValid()) {
             try {
                 // Set the family relationship
-                if ($this->family) {
+
+                if ($this->family instanceof Family) {
                     $student->getPerson()->setFamily($this->family);
                 }
 
@@ -65,8 +66,8 @@ final class StudentFormComponent extends AbstractController
 
                 // Reset form for next use
                 $this->resetForm();
-            } catch (\Exception $e) {
-                $this->errorMessage = 'Une erreur est survenue lors de l\'enregistrement.';
+            } catch (\Exception) {
+                $this->errorMessage = "Une erreur est survenue lors de l'enregistrement.";
             }
         } else {
             $this->errorMessage = 'Veuillez corriger les erreurs dans le formulaire.';
@@ -93,7 +94,8 @@ final class StudentFormComponent extends AbstractController
     protected function instantiateForm(): FormInterface
     {
         $student = new Student();
-        if ($this->family) {
+
+        if ($this->family instanceof Family) {
             $student->getPerson()->setFamily($this->family);
         }
 
@@ -103,9 +105,11 @@ final class StudentFormComponent extends AbstractController
     private function resetForm(): void
     {
         $student = new Student();
-        if ($this->family) {
+
+        if ($this->family instanceof Family) {
             $student->getPerson()->setFamily($this->family);
         }
+
         $this->formValues = [];
     }
 }

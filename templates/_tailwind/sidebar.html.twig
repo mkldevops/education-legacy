@@ -159,19 +159,6 @@
                 <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Administration</h3>
             </div>
             <div class="space-y-1">
-                <a href="{{ path('app_person_index') }}"
-                   class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 hover:translate-x-1 {{ app.request.attributes.get('_route') starts with 'app_person' ? 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border border-purple-200 shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-md border border-transparent hover:border-gray-200' }}">
-                    <div class="flex items-center justify-center w-7 h-7 rounded-lg mr-3 {{ app.request.attributes.get('_route') starts with 'app_person' ? 'bg-purple-500 shadow-sm' : 'bg-gray-100 group-hover:bg-purple-100' }}">
-                        <svg class="h-4 w-4 {{ app.request.attributes.get('_route') starts with 'app_person' ? 'text-white' : 'text-gray-500 group-hover:text-purple-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13.5 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"></path>
-                        </svg>
-                    </div>
-                    <span>Utilisateurs</span>
-                    {% if app.request.attributes.get('_route') starts with 'app_person' %}
-                        <div class="ml-auto w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                    {% endif %}
-                </a>
-
                 <a href="{{ path('app_document_new') }}"
                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 hover:translate-x-1 {{ app.request.attributes.get('_route') starts with 'app_document' ? 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border border-purple-200 shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-md border border-transparent hover:border-gray-200' }}">
                     <div class="flex items-center justify-center w-7 h-7 rounded-lg mr-3 {{ app.request.attributes.get('_route') starts with 'app_document' ? 'bg-purple-500 shadow-sm' : 'bg-gray-100 group-hover:bg-purple-100' }}">
