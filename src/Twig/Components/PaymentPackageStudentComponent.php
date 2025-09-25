@@ -57,9 +57,9 @@ final class PaymentPackageStudentComponent extends AbstractController
 
         $groupedPayments = [];
 
-        /** @var PaymentPackageStudent $payment */
-        foreach ($this->paymentPackageStudentRepository->findForFamilyAndPeriod($this->family, $this->period) as $payment) {
-            $operation = $payment->getOperation();
+        /** @var PaymentPackageStudent $paymentPackageStudent */
+        foreach ($this->paymentPackageStudentRepository->findForFamilyAndPeriod($this->family, $this->period) as $paymentPackageStudent) {
+            $operation = $paymentPackageStudent->getOperation();
             $operationId = $operation->getId();
 
             if (null === $operationId) {
@@ -74,8 +74,8 @@ final class PaymentPackageStudentComponent extends AbstractController
                 ];
             }
 
-            $groupedPayments[$operationId]['payments'][] = $payment;
-            $groupedPayments[$operationId]['total'] += (float) $payment->getAmount();
+            $groupedPayments[$operationId]['payments'][] = $paymentPackageStudent;
+            $groupedPayments[$operationId]['total'] += (float) $paymentPackageStudent->getAmount();
         }
 
         uasort($groupedPayments, static function (array $a, array $b): int {
