@@ -159,7 +159,6 @@
                 <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Administration</h3>
             </div>
             <div class="space-y-1">
-
                 <a href="{{ path('app_document_new') }}"
                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 hover:translate-x-1 {{ app.request.attributes.get('_route') starts with 'app_document' ? 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-700 border border-purple-200 shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-md border border-transparent hover:border-gray-200' }}">
                     <div class="flex items-center justify-center w-7 h-7 rounded-lg mr-3 {{ app.request.attributes.get('_route') starts with 'app_document' ? 'bg-purple-500 shadow-sm' : 'bg-gray-100 group-hover:bg-purple-100' }}">

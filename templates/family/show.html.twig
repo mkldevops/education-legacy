@@ -231,6 +231,217 @@
             </div>
 
             {% if persons %}
+<<<<<<< HEAD
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Photo</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.name'|trans }}</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.age'|trans }}</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.gender'|trans }}</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.class'|trans }}</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.package'|trans({ '%period%' : period }) }}</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.to_pay'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% set unpaid_total = 0 %}
+                            {% for person in persons %}
+                                {% set enable = person.student.enable|default(false) %}
+                                <tr class="{{ enable ? 'hover:bg-gray-50' : 'opacity-60 italic' }}">
+=======
+<<<<<<< HEAD
+                <div x-data="{
+                        showPackageModal: false,
+                        selectedStudent: null,
+                        openPackageModal(studentId) {
+                            this.selectedStudent = studentId;
+                            this.showPackageModal = true;
+                            this.$nextTick(() => {
+                                const studentField = document.getElementById('{{ formPackage.student.vars.id }}');
+                                if (studentField) {
+                                    studentField.value = studentId;
+                                }
+                            });
+                        },
+                        closePackageModal() {
+                            this.showPackageModal = false;
+                            this.selectedStudent = null;
+                            const studentField = document.getElementById('{{ formPackage.student.vars.id }}');
+                            if (studentField) {
+                                studentField.value = '';
+                            }
+                        }
+                    }">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Photo</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.name'|trans }}</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.age'|trans }}</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.gender'|trans }}</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.class'|trans }}</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.package'|trans({ '%period%' : period }) }}</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'show.list.person.to_pay'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% set unpaid_total = 0 %}
+                                {% for person in persons %}
+                                    {% set enable = person.student.enable|default(false) %}
+                                    <tr class="{{ enable ? 'hover:bg-gray-50' : 'opacity-60 italic' }}">
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            {% if person.image is not empty %}
+                                                <div class="flex justify-center">
+                                                    <img src="{{ person.image.path }}" alt="{{ person }}" class="w-10 h-10 rounded-full object-cover">
+                                                </div>
+                                            {% else %}
+                                                <div class="flex justify-center">
+                                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                                        {{ ux_icon('tabler:user', {class: 'w-5 h-5 text-gray-400'}) }}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            {% if person.student is not empty %}
+                                                <a href="{{ path('app_student_show', { id : person.student.id }) }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ person }}</a>
+                                            {% else %}
+                                                <span class="text-gray-900">{{ person }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">{{ person.age }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <span class="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">{{ person.gender }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            {% if enable and person.student.classPeriods.first.classPeriod|default(null) is not empty %}
+                                                <a href="{{ path('app_class_period_show', { id : person.student.classPeriods.first.classPeriod.id }) }}" class="text-blue-600 hover:text-blue-800">{{ person.student.classPeriods.first.classPeriod }}</a>
+                                            {% else %}
+                                                <span class="text-gray-400">---</span>
+                                            {% endif %}
+                                        </td>
+                                        {% set pp = enable ? person.student.packagePeriods.first|default(null) : null %}
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            {% if pp is not empty %}
+                                                <a href="{{ path('app_package_student_period_show', {'id': pp.id }) }}" class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white">{{ pp.period }} {{ pp.package }}</a>
+                                            {% elseif enable %}
+                                                <button type="button" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" @click="openPackageModal({{ person.student.id }})">
+                                                    {{ ux_icon('tabler:calendar-plus', {class: 'w-3 h-3 mr-1'}) }}
+                                                    {{ 'new_package_student'|trans({'%period%' : period}) }}
+                                                </button>
+                                            {% else %}
+                                                <span class="text-gray-400">---</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            {% if pp is not empty %}
+                                                {% set unpaid = pp.unpaid %}
+                                                {% if unpaid <= 0 %}
+                                                    <a href="{{ path('app_student_show', {'id': person.student.id }) }}" class="text-green-600">
+                                                        {{ ux_icon('tabler:circle-check', {class: 'w-5 h-5'}) }}
+                                                    </a>
+                                                {% else %}
+                                                    {% set unpaid_total = unpaid_total + unpaid %}
+                                                    <a href="{{ path('app_student_show', {'id': person.student.id }) }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ unpaid|number_format(2) }} €</a>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-gray-400">---</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-gray-50">
+                                <tr>
+                                    <th colspan="6" class="px-6 py-4 text-right text-sm font-semibold text-gray-900">{{ 'show.total_to_pay'|trans }}</th>
+>>>>>>> 008f720 (fix: remove remaining person navigation links)
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        {% if person.image is not empty %}
+                                            <div class="flex justify-center">
+                                                <img src="{{ person.image.path }}" alt="{{ person }}" class="w-10 h-10 rounded-full object-cover">
+                                            </div>
+                                        {% else %}
+                                            <div class="flex justify-center">
+                                                <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    {{ ux_icon('tabler:user', {class: 'w-5 h-5 text-gray-400'}) }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        {% if person.student is not empty %}
+                                            <a href="{{ path('app_student_show', { id : person.student.id }) }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ person }}</a>
+                                        {% else %}
+                                            <span class="text-gray-900">{{ person }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">{{ person.age }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">{{ person.gender }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        {% if enable and person.student.classPeriods.first.classPeriod|default(null) is not empty %}
+                                            <a href="{{ path('app_class_period_show', { id : person.student.classPeriods.first.classPeriod.id }) }}" class="text-blue-600 hover:text-blue-800">{{ person.student.classPeriods.first.classPeriod }}</a>
+                                        {% else %}
+                                            <span class="text-gray-400">---</span>
+                                        {% endif %}
+                                    </td>
+                                    {% set pp = enable ? person.student.packagePeriods.first|default(null) : null %}
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        {% if pp is not empty %}
+                                            <a href="{{ path('app_package_student_period_show', {'id': pp.id }) }}" class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white">{{ pp.period }} {{ pp.package }}</a>
+                                        {% elseif enable %}
+                                            <button type="button" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="openPackageModal({{ person.student.id }})">
+                                                {{ ux_icon('tabler:calendar-plus', {class: 'w-3 h-3 mr-1'}) }}
+                                                {{ 'new_package_student'|trans({'%period%' : period}) }}
+                                            </button>
+                                        {% else %}
+                                            <span class="text-gray-400">---</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        {% if pp is not empty %}
+                                            {% set unpaid = pp.unpaid %}
+                                            {% if unpaid <= 0 %}
+                                                <a href="{{ path('app_student_show', {'id': person.student.id }) }}" class="text-green-600">
+                                                    {{ ux_icon('tabler:circle-check', {class: 'w-5 h-5'}) }}
+                                                </a>
+                                            {% else %}
+                                                {% set unpaid_total = unpaid_total + unpaid %}
+                                                <a href="{{ path('app_student_show', {'id': person.student.id }) }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ unpaid|number_format(2) }} €</a>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-gray-400">---</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="bg-gray-50">
+                            <tr>
+                                <th colspan="6" class="px-6 py-4 text-right text-sm font-semibold text-gray-900">{{ 'show.total_to_pay'|trans }}</th>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    {% if unpaid_total > 0 %}
+                                        <span class="text-lg font-bold text-blue-600">{{ unpaid_total|number_format(2) }} €</span>
+                                    {% else %}
+                                        <span class="text-green-600">
+                                            {{ ux_icon('tabler:circle-check', {class: 'w-6 h-6'}) }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                {% include 'family/includes/_modal_form_package_student_period.html.twig' %}
+<<<<<<< HEAD
+=======
+            </div>
+=======
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
@@ -329,6 +540,8 @@
                 </div>
 
                 {% include 'family/includes/_modal_form_package_student_period.html.twig' %}
+>>>>>>> 1aa3a21 (feat(ui): implement Alpine.js student form component with AJAX submission)
+>>>>>>> 008f720 (fix: remove remaining person navigation links)
             {% else %}
                 <div class="p-12 text-center">
                     <div class="flex flex-col items-center">

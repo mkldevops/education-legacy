@@ -1,5 +1,120 @@
 {% trans_default_domain 'family' %}
 
+<<<<<<< HEAD
+<div x-data="{ showPackageModal: false, selectedStudent: null }" 
+     x-init="
+        window.openPackageModal = function(studentId) {
+            $data.selectedStudent = studentId;
+            $data.showPackageModal = true;
+            // Set the student ID in the hidden field
+            const studentField = document.querySelector('#{{ formPackage.student.vars.id }}');
+            if (studentField) {
+                studentField.value = studentId;
+            }
+        }
+     ">
+    
+    <!-- Package Modal -->
+    <div x-show="showPackageModal" @click.away="showPackageModal = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+            
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+            
+            <div @click.stop class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="bg-indigo-100 rounded-full p-2 mr-3">
+                                {{ ux_icon('tabler:calendar-plus', {class: 'w-5 h-5 text-indigo-600'}) }}
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-900">{{ 'new_package_student'|trans({'%period%' : period}) }}</h4>
+=======
+<<<<<<< HEAD
+<!-- Package Modal -->
+<div
+    x-cloak
+    x-show="showPackageModal"
+    @click.self="closePackageModal()"
+    @keydown.escape.window="closePackageModal()"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 z-50 overflow-y-auto"
+    style="display: none;"
+>
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div
+            @click.stop
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+        >
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-indigo-100 rounded-full p-2 mr-3">
+                            {{ ux_icon('tabler:calendar-plus', {class: 'w-5 h-5 text-indigo-600'}) }}
+>>>>>>> 008f720 (fix: remove remaining person navigation links)
+                        </div>
+                        <button type="button" @click="showPackageModal = false" class="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition ease-in-out duration-150">
+                            {{ ux_icon('tabler:x', {class: 'w-6 h-6'}) }}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4">
+                    {{ form_start(formPackage, {'attr': {'id': 'package-form', 'class': 'space-y-4'}}) }}
+                    {{ form_errors(formPackage) }}
+                    
+                    <div class="space-y-4">
+                        <!-- Package Selection -->
+                        <div>
+                            {{ form_label(formPackage.package, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(formPackage.package, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm'}}) }}
+                            {{ form_errors(formPackage.package) }}
+                        </div>
+                        
+                        <!-- Hidden Student Field -->
+                        <div class="hidden">
+                            {{ form_widget(formPackage.student) }}
+                        </div>
+                        
+                        <!-- Discount -->
+                        <div>
+                            {{ form_label(formPackage.discount, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(formPackage.discount, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm'}}) }}
+                            {{ form_errors(formPackage.discount) }}
+                        </div>
+                        
+                        <!-- Comment -->
+                        <div>
+                            {{ form_label(formPackage.comment, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                            {{ form_widget(formPackage.comment, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm', 'rows': 3}}) }}
+                            {{ form_errors(formPackage.comment) }}
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-6">
+                        <button type="button" @click="showPackageModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ ux_icon('tabler:x', {class: 'w-4 h-4 mr-2'}) }}
+                            Annuler
+                        </button>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="save-package-student">
+                            {{ ux_icon('tabler:check', {class: 'w-4 h-4 mr-2'}) }}
+                            Enregistrer le forfait
+                        </button>
+                    </div>
+                    
+                    {{ form_end(formPackage) }}
+                </div>
+            </div>
+=======
 <div x-data="{ showPackageModal: false, selectedStudent: null }" 
      x-init="
         window.openPackageModal = function(studentId) {
@@ -81,6 +196,7 @@
                     {{ form_end(formPackage) }}
                 </div>
             </div>
+>>>>>>> 1aa3a21 (feat(ui): implement Alpine.js student form component with AJAX submission)
         </div>
     </div>
 </div>

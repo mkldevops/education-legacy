@@ -38,7 +38,6 @@ accounting:
                     label: "Stats Operation"
                     path: "app_operation_statsbymonth"
 
-
 setting:
     role: "ROLE_SUPER_ADMIN"
     icon: "fa-cogs"
