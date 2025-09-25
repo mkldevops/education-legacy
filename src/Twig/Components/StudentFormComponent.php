@@ -49,15 +49,8 @@ final class StudentFormComponent extends AbstractController
         if ($this->getForm()->isValid()) {
             try {
                 // Set the family relationship
-<<<<<<< HEAD
-                if ($this->family instanceof \App\Entity\Family) {
-=======
-<<<<<<< HEAD
+
                 if ($this->family instanceof Family) {
-=======
-                if ($this->family) {
->>>>>>> 1aa3a21 (feat(ui): implement Alpine.js student form component with AJAX submission)
->>>>>>> 008f720 (fix: remove remaining person navigation links)
                     $student->getPerson()->setFamily($this->family);
                 }
 
@@ -73,13 +66,8 @@ final class StudentFormComponent extends AbstractController
 
                 // Reset form for next use
                 $this->resetForm();
-<<<<<<< HEAD
             } catch (\Exception) {
                 $this->errorMessage = "Une erreur est survenue lors de l'enregistrement.";
-=======
-            } catch (\Exception $e) {
-                $this->errorMessage = 'Une erreur est survenue lors de l\'enregistrement.';
->>>>>>> 1aa3a21 (feat(ui): implement Alpine.js student form component with AJAX submission)
             }
         } else {
             $this->errorMessage = 'Veuillez corriger les erreurs dans le formulaire.';
@@ -106,15 +94,8 @@ final class StudentFormComponent extends AbstractController
     protected function instantiateForm(): FormInterface
     {
         $student = new Student();
-<<<<<<< HEAD
-        if ($this->family instanceof \App\Entity\Family) {
-=======
-<<<<<<< HEAD
+
         if ($this->family instanceof Family) {
-=======
-        if ($this->family) {
->>>>>>> 1aa3a21 (feat(ui): implement Alpine.js student form component with AJAX submission)
->>>>>>> 008f720 (fix: remove remaining person navigation links)
             $student->getPerson()->setFamily($this->family);
         }
 
@@ -124,20 +105,11 @@ final class StudentFormComponent extends AbstractController
     private function resetForm(): void
     {
         $student = new Student();
-<<<<<<< HEAD
-        if ($this->family instanceof \App\Entity\Family) {
-=======
-<<<<<<< HEAD
+
         if ($this->family instanceof Family) {
->>>>>>> 008f720 (fix: remove remaining person navigation links)
             $student->getPerson()->setFamily($this->family);
         }
 
-=======
-        if ($this->family) {
-            $student->getPerson()->setFamily($this->family);
-        }
->>>>>>> 1aa3a21 (feat(ui): implement Alpine.js student form component with AJAX submission)
         $this->formValues = [];
     }
 }
