@@ -6,10 +6,13 @@ namespace App\Tests\Controller;
 
 use App\Entity\Family;
 use App\Entity\Student;
+use App\Entity\User;
 use App\Repository\FamilyRepository;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * @internal
@@ -21,6 +24,7 @@ final class FamilyDeletePageTest extends WebTestCase
     public function testFamilyDeletePageLoadsSuccessfully(): void
     {
         $client = self::createClient();
+        $this->loginTestUser($client);
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
@@ -54,6 +58,7 @@ final class FamilyDeletePageTest extends WebTestCase
     public function testFamilyDeletionRemovesRelatedStudent(): void
     {
         $client = self::createClient();
+        $this->loginTestUser($client);
         $container = self::getContainer();
 
         /** @var EntityManagerInterface $entityManager */
@@ -74,6 +79,7 @@ final class FamilyDeletePageTest extends WebTestCase
         $studentPerson = $student->getPerson();
         $studentPerson->setName('Test');
         $studentPerson->setForname('Student');
+        $studentPerson->setGender('female');
         $studentPerson->setFamily($family);
 
         $family->addPerson($studentPerson);
@@ -100,5 +106,40 @@ final class FamilyDeletePageTest extends WebTestCase
 
         self::assertNull($studentRepository->find($studentId));
         self::assertNull($familyRepository->find($familyId));
+    }
+
+    private function loginTestUser(KernelBrowser $client): void
+    {
+        $container = self::getContainer();
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $container->get(EntityManagerInterface::class);
+        $schemaManager = $entityManager->getConnection()->createSchemaManager();
+
+        if (!$schemaManager->tablesExist(['user'])) {
+            self::markTestSkipped('User table not available in the test database.');
+        }
+
+        $username = 'functional_admin';
+
+        $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
+
+        if (!$user instanceof User) {
+            $user = (new User())
+                ->setUsername($username)
+                ->setEmail('functional_admin@example.com')
+                ->setName('Functional')
+                ->setSurname('Admin')
+                ->setRoles(['ROLE_ADMIN'])
+            ;
+
+            /** @var UserPasswordHasherInterface $passwordHasher */
+            $passwordHasher = $container->get(UserPasswordHasherInterface::class);
+            $user->setPassword($passwordHasher->hashPassword($user, 'test-password'));
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        $client->loginUser($user);
     }
 }
