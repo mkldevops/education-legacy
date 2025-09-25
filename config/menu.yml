@@ -38,12 +38,6 @@ accounting:
                     label: "Stats Operation"
                     path: "app_operation_statsbymonth"
 
-user:
-    role: "ROLE_SUPER_ADMIN"
-    icon: "fa-user"
-    label: "Users"
-    sub:
-        person: { label: "List person", path: "app_person_index" }
 
 setting:
     role: "ROLE_SUPER_ADMIN"
