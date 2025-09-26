@@ -1,7 +1,10 @@
 name: Deploy
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Docker Build & Push"]
+    types:
+      - completed
     branches: [ main ]
   workflow_dispatch: {}
 
@@ -13,9 +16,18 @@ jobs:
   deploy:
     name: Trigger Coolify
     runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
     environment:
       name: production
     steps:
+      - name: Check Docker Build Success
+        run: |
+          echo "Docker build workflow completed with status: ${{ github.event.workflow_run.conclusion }}"
+          if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+            echo "❌ Docker build failed, skipping deployment"
+            exit 1
+          fi
+          echo "✅ Docker build succeeded, proceeding with deployment"
       - name: Trigger Coolify Webhook
         env:
           WEBHOOK_URL: ${{ secrets.COOLIFY_WEBHOOK_URL }}
