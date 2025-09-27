@@ -268,7 +268,7 @@
         function openClassPeriodModal(studentId) {
             const modalComponent = document.getElementById('class-period-modal-component');
             if (!modalComponent) {
-                console.error('Modal component not found');
+                console.warn('Composant modal introuvable');
                 return;
             }
             
@@ -282,10 +282,10 @@
                 if (openButton) {
                     openButton.click();
                 } else {
-                    console.error('Open button not found');
+                    console.warn('Bouton d\'ouverture introuvable');
                 }
             } else {
-                console.error('Live component not found');
+                console.warn('Composant live introuvable');
             }
         }
     </script>

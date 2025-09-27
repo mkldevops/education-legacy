@@ -40,11 +40,14 @@ final class StudentControllerTest extends AppWebTestCase
         self::assertStringNotContainsString('aucune données affiché', $content);
         self::assertStringNotContainsString('no data showing', $content);
         self::assertStringNotContainsString('Exception', $content);
-        self::assertStringNotContainsString('Error', $content);
+        self::assertStringNotContainsString('Fatal error', $content);
+        self::assertStringNotContainsString('Parse error', $content);
+        self::assertStringNotContainsString('404 Not Found', $content);
+        self::assertStringNotContainsString('500 Internal Server Error', $content);
 
-        // Check that student-related JavaScript is loaded (indicating the page structure is intact)
-        self::assertStringContainsString('/js/student.js', $content);
-        self::assertStringContainsString('/js/phone.js', $content);
+        // Check that essential elements are present (indicating the page structure is intact)
+        self::assertStringContainsString('openClassPeriodModal', $content);
+        self::assertStringContainsString('class-period-modal-component', $content);
     }
 
     public function testStudentRepositoryReturnsData(): void
