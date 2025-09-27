@@ -106,9 +106,9 @@ final class ClassPeriodModalComponent extends AbstractController
 
             // We'll redirect after a short delay
             $this->addFlash('success', 'La classe de l\'étudiant a été modifiée avec succès.');
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('Error changing student class', [
-                'exception' => $e,
+                'exception' => $throwable,
                 'studentId' => $this->selectedStudentId,
                 'classPeriodId' => $this->selectedClassPeriodId,
             ]);
@@ -140,7 +140,7 @@ final class ClassPeriodModalComponent extends AbstractController
 
                 try {
                     $studentCount = $classPeriod->getStudents()->count();
-                } catch (\Throwable $e) {
+                } catch (\Throwable) {
                     $studentCount = 0;
                 }
 
@@ -152,8 +152,8 @@ final class ClassPeriodModalComponent extends AbstractController
             }
 
             return $classPeriodsData;
-        } catch (\Throwable $e) {
-            $this->logger->error('Error loading class periods', ['exception' => $e]);
+        } catch (\Throwable $throwable) {
+            $this->logger->error('Error loading class periods', ['exception' => $throwable]);
 
             return [];
         }
@@ -161,7 +161,7 @@ final class ClassPeriodModalComponent extends AbstractController
 
     public function hasClassPeriods(): bool
     {
-        return !empty($this->getAvailableClassPeriods());
+        return [] !== $this->getAvailableClassPeriods();
     }
 
     public function getChangeClassUrl(): ?string

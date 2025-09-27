@@ -80,18 +80,6 @@
                     {% endif %}
                 </a>
 
-                <a href="{{ path('app_teacher_index') }}"
-                   class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 hover:translate-x-1 {{ app.request.attributes.get('_route') starts with 'app_teacher' ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-md border border-transparent hover:border-gray-200' }}">
-                    <div class="flex items-center justify-center w-7 h-7 rounded-lg mr-3 {{ app.request.attributes.get('_route') starts with 'app_teacher' ? 'bg-blue-500 shadow-sm' : 'bg-gray-100 group-hover:bg-blue-100' }}">
-                        <svg class="h-4 w-4 {{ app.request.attributes.get('_route') starts with 'app_teacher' ? 'text-white' : 'text-gray-500 group-hover:text-blue-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                    </div>
-                    <span>Enseignants</span>
-                    {% if app.request.attributes.get('_route') starts with 'app_teacher' %}
-                        <div class="ml-auto w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    {% endif %}
-                </a>
             </div>
         </div>
 
