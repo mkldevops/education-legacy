@@ -16,7 +16,6 @@ madrasse:
             label: Setting
             role: "ROLE_ADMIN"
             sub:
-                teacher: { label: "Teacher", path: "app_teacher_index" }
                 package: { label: "Package", path: "app_package_index" }
 
 accounting:
