@@ -6,15 +6,15 @@
         <div class="absolute inset-0 bg-black/5"></div>
         <div class="flex items-center space-x-3 relative z-10">
             <div class="p-2 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg ring-1 ring-white/30">
-                <img class="h-6 w-6" src="{{ asset('img/logo-custom.png') }}" alt="Logo">
+                <img class="h-6 w-6" src="{{ asset('img/logo-structure.jpg') }}" alt="Logo">
             </div>
             <div>
-                <span class="text-lg font-bold text-white tracking-tight">EduManage</span>
-                <div class="text-xs text-primary-200 font-medium">Gestion Éducative</div>
+                <span class="text-lg font-bold text-gray-900 tracking-tight">Education</span>
+                <div class="text-xs text-gray-500 font-medium">Gestion Éducative</div>
             </div>
         </div>
-        <button type="button" 
-                onclick="toggleMobileMenu()" 
+        <button type="button"
+                onclick="toggleMobileMenu()"
                 class="relative z-10 p-2 bg-white/10 rounded-xl text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200">
             <span class="sr-only">Fermer le menu</span>
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@
                         <img class="h-12 w-12 rounded-full object-cover ring-2 ring-primary-300 shadow-md" src="{{ asset(app.user.image) }}" alt="{{ app.user.name }}">
                     {% else %}
                         <div class="h-12 w-12 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center ring-2 ring-primary-300 shadow-md">
-                            <span class="text-sm font-bold text-white">{{ app.user.name|first|upper }}</span>
+                            <span class="text-sm font-bold text-gray-900">{{ app.user.name|first|upper }}</span>
                         </div>
                     {% endif %}
                     <!-- Mobile Online Status Indicator -->
@@ -54,7 +54,7 @@
     <!-- Mobile Navigation (same as desktop but with click handlers to close menu) -->
     <nav class="flex-1 px-4 py-4 space-y-1">
         <!-- Dashboard -->
-        <a href="{{ path('app_admin_home') }}" 
+        <a href="{{ path('app_admin_home') }}"
            onclick="toggleMobileMenu()"
            class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') == 'app_admin_home' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
             <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') == 'app_admin_home' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
         <div class="mt-6">
             <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Education</h3>
             <div class="mt-2 space-y-1">
-                <a href="{{ path('app_student_index') }}" 
+                <a href="{{ path('app_student_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_student' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_student' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +76,7 @@
                     Élèves
                 </a>
 
-                <a href="{{ path('app_family_index') }}" 
+                <a href="{{ path('app_family_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_family' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_family' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +85,7 @@
                     Familles
                 </a>
 
-                <a href="{{ path('app_class_school_index') }}" 
+                <a href="{{ path('app_class_school_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_class' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_class' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
                     Classes
                 </a>
 
-                <a href="{{ path('app_teacher_index') }}" 
+                <a href="{{ path('app_teacher_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_teacher' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_teacher' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@
         <div class="mt-6">
             <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Finance</h3>
             <div class="mt-2 space-y-1">
-                <a href="{{ path('app_operation_index') }}" 
+                <a href="{{ path('app_operation_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_operation' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_operation' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@
                     Opérations
                 </a>
 
-                <a href="{{ path('app_package_index') }}" 
+                <a href="{{ path('app_package_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_package' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_package' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
                     Forfaits
                 </a>
 
-                <a href="{{ path('app_account_index') }}" 
+                <a href="{{ path('app_account_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_account' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_account' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +142,7 @@
         <div class="mt-6">
             <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Administration</h3>
             <div class="mt-2 space-y-1">
-                <a href="{{ path('app_document_new') }}" 
+                <a href="{{ path('app_document_new') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_document' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_document' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@
                     Documents
                 </a>
 
-                <a href="{{ path('app_admin_dashboard_index') }}" 
+                <a href="{{ path('app_admin_dashboard_index') }}"
                    onclick="toggleMobileMenu()"
                    class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_admin' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
                     <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_admin' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +166,7 @@
 
     <!-- Bottom section (mobile) -->
     <div class="px-4 py-4 border-t border-gray-200">
-        <a href="{{ path('app_logout') }}" 
+        <a href="{{ path('app_logout') }}"
            onclick="toggleMobileMenu()"
            class="group flex items-center px-3 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 hover:text-red-700 transition-colors">
             <svg class="mr-3 h-5 w-5 text-red-500 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
