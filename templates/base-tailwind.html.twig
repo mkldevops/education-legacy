@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow">
         <link rel="shortcut icon" href="{{ asset('img/logo-custom.png') }}" type="image/x-icon" />
-        
+
         <title>{% block title %}Education Management System{% endblock %}</title>
 
         {{ pwa() }}
@@ -15,179 +15,15 @@
         {% block metas %}{% endblock %}
 
         {% block stylesheets %}
-            <script>
-                tailwind.config = {
-                    theme: {
-                        extend: {
-                            colors: {
-                                primary: {
-                                    50: '#eff6ff',
-                                    100: '#dbeafe', 
-                                    200: '#bfdbfe',
-                                    300: '#93c5fd',
-                                    400: '#60a5fa',
-                                    500: '#3b82f6',
-                                    600: '#2563eb',
-                                    700: '#1d4ed8',
-                                    800: '#1e40af',
-                                    900: '#1e3a8a',
-                                },
-                                success: {
-                                    50: '#ecfdf5',
-                                    100: '#d1fae5',
-                                    200: '#a7f3d0',
-                                    300: '#6ee7b7',
-                                    400: '#34d399',
-                                    500: '#10b981',
-                                    600: '#059669',
-                                    700: '#047857',
-                                    800: '#065f46',
-                                    900: '#064e3b',
-                                },
-                                warning: {
-                                    50: '#fffbeb',
-                                    100: '#fef3c7',
-                                    200: '#fde68a',
-                                    300: '#fcd34d',
-                                    400: '#fbbf24',
-                                    500: '#f59e0b',
-                                    600: '#d97706',
-                                    700: '#b45309',
-                                    800: '#92400e',
-                                    900: '#78350f',
-                                },
-                                danger: {
-                                    50: '#fef2f2',
-                                    100: '#fee2e2',
-                                    200: '#fecaca',
-                                    300: '#fca5a5',
-                                    400: '#f87171',
-                                    500: '#ef4444',
-                                    600: '#dc2626',
-                                    700: '#b91c1c',
-                                    800: '#991b1b',
-                                    900: '#7f1d1d',
-                                }
-                            },
-                            fontFamily: {
-                                'sans': ['Inter', 'system-ui', 'sans-serif'],
-                            }
-                        }
-                    }
-                }
-            </script>
-            <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
-            
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+            <link rel="stylesheet" type="text/tailwindcss" href="{{ asset('css/global.css') }}">
+
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-            
+
             <script src="https://unpkg.com/@heroicons/react@2.0.18/24/outline/index.js" type="module"></script>
-            
-            {% if resources is defined and resources.datatables %}
-                <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwindcss.min.css" />
-            {% endif %}
 
-            {% if resources is defined and resources.uploadfile %}
-                <style>
-                    .upload-area {
-                        border: 2px dashed #d1d5db;
-                        border-radius: 0.5rem;
-                        padding: 1.5rem;
-                        text-align: center;
-                        transition: border-color 0.2s;
-                    }
-                    .upload-area:hover {
-                        border-color: #60a5fa;
-                    }
-                </style>
-            {% endif %}
-
-            {% if resources is defined and resources.operations %}
-                <style>
-                    .operation-valid {
-                        background-color: #ecfdf5;
-                        border-color: #a7f3d0;
-                        color: #065f46;
-                    }
-                    .operation-invalid {
-                        background-color: #fef2f2;
-                        border-color: #fecaca;
-                        color: #7f1d1d;
-                    }
-                    .operation-pending {
-                        background-color: #fffbeb;
-                        border-color: #fde68a;
-                        color: #78350f;
-                    }
-                </style>
-            {% endif %}
-
-            <style>
-                [x-cloak] { display: none !important; }
-                
-                ::-webkit-scrollbar { width: 6px; }
-                ::-webkit-scrollbar-track { background-color: #f3f4f6; }
-                ::-webkit-scrollbar-thumb { 
-                    background-color: #9ca3af; 
-                    border-radius: 9999px; 
-                }
-                ::-webkit-scrollbar-thumb:hover { background-color: #6b7280; }
-                
-                .loading { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-                
-                .focus-ring { 
-                    outline: 2px solid transparent;
-                    outline-offset: 2px;
-                }
-                .focus-ring:focus {
-                    outline: none;
-                    box-shadow: 0 0 0 2px #3b82f6, 0 0 0 4px rgba(59, 130, 246, 0.5);
-                }
-                
-                @keyframes pulse {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0.5; }
-                }
-
-                /* Login form enhancements */
-                .login-container {
-                    min-height: 100vh;
-                    min-height: 100dvh; /* Support for dynamic viewport units */
-                }
-                
-                .login-button {
-                    min-height: 3.5rem;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                
-                .login-button:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
-                }
-                
-                .login-button:disabled {
-                    transform: none !important;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-                }
-
-                /* Responsive improvements for mobile */
-                @media (max-height: 600px) {
-                    .login-container {
-                        min-height: auto;
-                        padding: 1rem 0;
-                    }
-                }
-                
-                @media (max-width: 640px) {
-                    .login-button {
-                        min-height: 3rem;
-                        font-size: 1rem;
-                    }
-                }
-            </style>
         {% endblock %}
 
         {% block optionals %}{% endblock %}
@@ -239,7 +75,7 @@
                                             </ol>
                                         </nav>
                                     {% endif %}
-                                    
+
                                     {% if title is defined %}
                                         <h1 class="text-2xl font-semibold text-gray-900">{{ title }}</h1>
                                     {% endif %}
@@ -278,7 +114,7 @@
                         <footer class="bg-white border-t border-gray-200 mt-8">
                             <div class="px-4 py-4 sm:px-6 lg:px-8">
                                 <p class="text-sm text-gray-500 text-center">
-                                    © {{ "now"|date("Y") }} Education Management System. 
+                                    © {{ "now"|date("Y") }} Education Management System.
                                     Powered by Symfony {{ version }} & Tailwind CSS.
                                 </p>
                             </div>
@@ -298,53 +134,11 @@
 
             <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/dayjs.min.js"></script>
 
-            {% if resources is defined and resources.datatables %}
-                <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-                <script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwindcss.min.js"></script>
-                <script>
-                    $.extend(true, $.fn.dataTable.defaults, {
-                        dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4"<"flex-1"f><"mt-2 sm:mt-0"l>><"overflow-x-auto"t><"flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4"<"flex-1 text-sm text-gray-700"i><"mt-2 sm:mt-0"p>>',
-                        language: {
-                            search: "",
-                            searchPlaceholder: "Rechercher...",
-                            lengthMenu: "_MENU_ par page",
-                            info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-                            infoEmpty: "Aucune entrée",
-                            infoFiltered: "(filtré de _MAX_ entrées totales)",
-                            paginate: {
-                                first: "Premier",
-                                last: "Dernier", 
-                                next: "Suivant",
-                                previous: "Précédent"
-                            }
-                        }
-                    });
-                </script>
-            {% endif %}
-
-            {% if resources is defined and resources.uploadfile %}
-                <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-                <script src="{{ asset('js/document.js') }}"></script>
-            {% endif %}
-
-            {% if resources is defined and resources.ckeditor %}
-                <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
-                <script src="{{ asset('js/ckeditor.js') }}"></script>
-            {% endif %}
-
-            <script src="{{ asset('js/base/base-bundle.js') }}"></script>
-            <script src="{{ asset('js/base/base-config.js') }}"></script>
-            <script src="{{ asset('js/base/base-functions.js') }}"></script>
-
-            {% if resources is defined and resources.operations %}
-                <script src="{{ asset('js/operation.js') }}"></script>
-            {% endif %}
-
             <script>
                 function toggleMobileMenu() {
                     const menu = document.getElementById('mobile-menu');
                     const backdrop = document.getElementById('mobile-menu-backdrop');
-                    
+
                     if (menu.classList.contains('-translate-x-full')) {
                         menu.classList.remove('-translate-x-full');
                         backdrop.classList.remove('hidden');

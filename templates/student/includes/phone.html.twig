@@ -4,7 +4,6 @@
 {% set listPhone = '' %}
 
 {% if student.getListPhones is not empty %}
-
     <a href="tel:{{ student.getListPhones|first }}" class="phone pointer">
         {{ student.getListPhones|first }}
     </a>
@@ -14,12 +13,3 @@
     </a>
     {% endif %}
 {% endif %}
-
-<i id="set-phone-{{ student.id }}"
-   data-person="{{ student.person.id }}"
-   data-toggle="modal"
-   data-target="#phone-modal-sm"
-   class="fa fa-ellipsis-h pull-left fa-border"
-   data-placement="bottom"
-   title="{{ 'phone.title.list'|trans }}"></i>
-

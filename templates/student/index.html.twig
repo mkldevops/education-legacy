@@ -25,31 +25,31 @@
                 <table class="min-w-full divide-y divide-gray-200 student-table text-sm" data-toggle="datatable">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ 'list.label.family'|trans }}
                             </th>
-                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Nom
                             </th>
-                            <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Prénom
                             </th>
-                            <th class="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ 'list.label.phone'|trans }}
                             </th>
-                            <th class="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ 'list.label.class'|trans }}
                             </th>
-                            <th class="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 CP
                             </th>
-                            <th class="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Age
                             </th>
-                            <th class="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Sexe
                             </th>
-                            <th class="px-6 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </th>
                         </tr>
@@ -65,9 +65,10 @@
                                     class="student-row hover:bg-gray-50 {{ student.enable ? "" : "student-row danger"}} transition-colors duration-200">
 
                                     {# Family #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center">
                                         {% if student.person is not empty and student.person.family is not empty %}
                                             <a href="{{ path('app_family_show', { 'id' : student.person.family.id }) }}"
+                                               title="{{ student.person.family }}"
                                                class="inline-flex items-center px-2.5 py-1.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors duration-200">
                                                 {{ ux_icon('bi:house', {class: 'w-4 h-4 mr-1'}) }}
                                                 {{ student.person.family.id }}
@@ -82,7 +83,7 @@
                                     </td>
 
                                     {# Name #}
-                                    <td class="px-6 py-2 whitespace-nowrap">
+                                    <td class="px-2 py-2 whitespace-nowrap">
                                         <a href="{{ path('app_student_show', {'id': student.id}) }}"
                                            class="text-sm font-medium text-gray-900 hover:text-primary-600 transition-colors duration-200">
                                             {{ student.name | upper }}
@@ -90,7 +91,7 @@
                                     </td>
 
                                     {# First Name #}
-                                    <td class="px-6 py-2 whitespace-nowrap">
+                                    <td class="px-2 py-2 whitespace-nowrap">
                                         <a href="{{ path('app_student_show', {'id': student.id}) }}"
                                            class="text-sm text-gray-900 hover:text-primary-600 transition-colors duration-200">
                                             {{ student.forname | capitalize }}
@@ -98,12 +99,12 @@
                                     </td>
 
                                     {# Phone #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center">
                                         {% include 'student/includes/phone.html.twig' %}
                                     </td>
 
                                     {# Class #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center class-period">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center class-period">
                                         <div class="flex items-center justify-center space-x-2">
                                             {% if classPeriodStudent is not null %}
                                                 <a href="{{ path('app_class_period_show', {'id': classPeriodStudent.classPeriod.id }) }}"
@@ -118,8 +119,10 @@
                                                 </span>
                                             {% endif %}
 
-                                            <button type="button" class="modal-classperiod p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200"
-                                                    data-toggle="modal" data-target="#modal-classperiod">
+                                            <button type="button" 
+                                                    class="modal-classperiod p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                                                    onclick="openClassPeriodModal({{ student.id }})"
+                                                    data-student-id="{{ student.id }}">
                                                 {% if classPeriodStudent is not empty %}
                                                     {{ ux_icon('bi:box-arrow-right', {class: 'w-4 h-4 text-yellow-600'}) }}
                                                 {% else %}
@@ -130,7 +133,7 @@
                                     </td>
 
                                     {# ZIP Code with address tooltip #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center">
                                         <span class="text-sm text-gray-900 cursor-help"
                                               data-toggle="tooltip"
                                               title="{{ student.address }}">
@@ -139,7 +142,7 @@
                                     </td>
 
                                     {# Age with birthday tooltip #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center">
                                         <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 cursor-help"
                                               data-toggle="tooltip"
                                               data-placement="top"
@@ -150,7 +153,7 @@
                                     </td>
 
                                     {# Gender #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center">
                                         <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium
                                                      {% if student.gender == 'male' %}bg-blue-100 text-blue-800{% else %}bg-pink-100 text-pink-800{% endif %}"
                                               data-toggle="tooltip"
@@ -168,7 +171,7 @@
 
 
                                     {# Actions dropdown #}
-                                    <td class="px-6 py-2 whitespace-nowrap text-center student-setting">
+                                    <td class="px-2 py-2 whitespace-nowrap text-center student-setting">
                                         <div class="relative inline-block text-left" x-data="{ open: false }" @click.outside="open = false">
                                             <button type="button"
                                                     class="inline-flex justify-center items-center p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors duration-200"
@@ -256,5 +259,35 @@
         </div>
     {% endif %}
 
-    {#% include 'student/includes/modal-classperiod.html.twig' %}#}
+    {{ component('ClassPeriodModalComponent') }}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function openClassPeriodModal(studentId) {
+            const modalComponent = document.getElementById('class-period-modal-component');
+            if (!modalComponent) {
+                console.error('Modal component not found');
+                return;
+            }
+            
+            // Set the student ID directly on the component
+            const liveComponent = modalComponent.closest('[data-controller*="live"]');
+            if (liveComponent) {
+                liveComponent.setAttribute('data-live-selected-student-id-value', studentId);
+                
+                // Trigger the modal opening
+                const openButton = modalComponent.querySelector('#hidden-open-button');
+                if (openButton) {
+                    openButton.click();
+                } else {
+                    console.error('Open button not found');
+                }
+            } else {
+                console.error('Live component not found');
+            }
+        }
+    </script>
+{% endblock %}
+

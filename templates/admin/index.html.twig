@@ -79,7 +79,7 @@
                 </div>
             </div>
         {% endif %}
-        
+
         <!-- Additional Stats Card -->
         <div class="group">
             <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white hover:scale-105 hover:-translate-y-1">
@@ -222,22 +222,5 @@
             </div>
         {% endif %}
 
-    </div>
-    
-    <!-- Statistics Section -->
-    <div class="mt-8">
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
-                <div class="flex items-center">
-                    <div class="flex items-center justify-center w-8 h-8 bg-purple-100 rounded-lg mr-3">
-                        {{ ux_icon('bi:bar-chart', {class: 'w-4 h-4 text-purple-600'}) }}
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-900">Statistiques Avancées</h3>
-                </div>
-            </div>
-            <div class="p-6">
-                {{ render(controller("App\\Controller\\StatisticsController::statsAccount")) }}
-            </div>
-        </div>
     </div>
 {% endblock %}

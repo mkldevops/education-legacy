@@ -1,8 +1,11 @@
 {% trans_default_domain 'student' %}
 
-<div {{ attributes }} id="class-period-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div {{ attributes }} id="class-period-modal" class="fixed inset-0 z-50 overflow-y-auto {{ this.isOpen ? '' : 'hidden' }}" aria-labelledby="modal-title" role="dialog" aria-modal="true"{{ this.isOpen ? ' style="display: block;"' : '' }}>
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity modal-backdrop" aria-hidden="true"></div>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity modal-backdrop" 
+             aria-hidden="true"
+             data-action="live#action" 
+             data-live-action-param="close"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
@@ -44,7 +47,9 @@
                     </button>
                 {% endif %}
                 <button type="button"
-                        class="modal-close mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="modal-close mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                        data-action="live#action" 
+                        data-live-action-param="close">
                     {{ 'modal.close'|trans }}
                 </button>
             </div>
