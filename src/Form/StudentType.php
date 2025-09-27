@@ -24,7 +24,13 @@ class StudentType extends AbstractType
                 'label' => 'Niveau',
                 'class' => Grade::class,
                 'choice_label' => 'name',
+                'choice_value' => 'id',
                 'placeholder' => 'form.grade.placeholder',
+                'required' => true,
+                'query_builder' => static fn ($repository) => $repository->createQueryBuilder('g')
+                    ->where('g.enable = :enable')
+                    ->setParameter('enable', true)
+                    ->orderBy('g.name', 'ASC'),
             ])
             ->add('lastSchool', null, ['label' => 'label.lastSchool', 'required' => false])
             ->add('personAuthorized', TextareaType::class, ['label' => 'label.personAuthorized', 'required' => false])

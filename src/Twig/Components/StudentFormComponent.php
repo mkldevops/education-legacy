@@ -7,6 +7,7 @@ namespace App\Twig\Components;
 use App\Entity\Family;
 use App\Entity\Student;
 use App\Form\StudentType;
+use App\Repository\GradeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -35,7 +36,8 @@ final class StudentFormComponent extends AbstractController
     public string $errorMessage = '';
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly GradeRepository $gradeRepository
     ) {}
 
     #[LiveAction]
@@ -89,6 +91,11 @@ final class StudentFormComponent extends AbstractController
         $this->successMessage = '';
         $this->errorMessage = '';
         $this->resetForm();
+    }
+
+    public function getGrades(): array
+    {
+        return $this->gradeRepository->findBy(['enable' => true], ['name' => 'ASC']);
     }
 
     protected function instantiateForm(): FormInterface

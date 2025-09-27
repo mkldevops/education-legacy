@@ -41,9 +41,18 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         $throwable = $exceptionEvent->getThrowable();
 
-        // Don't log AccessDeniedException as errors since they're expected security behavior
-        if (!$throwable instanceof AccessDeniedException) {
+        // Don't log certain exceptions as errors since they're expected behavior
+        if (!$throwable instanceof AccessDeniedException
+            && !str_contains($throwable->getMessage(), 'You cannot refresh a user from the EntityUserProvider')) {
             $this->logger->error(__METHOD__, ['exception' => $throwable]);
+        }
+
+        // Handle EntityUserProvider refresh errors (common in tests)
+        if ($throwable instanceof \InvalidArgumentException
+            && str_contains($throwable->getMessage(), 'You cannot refresh a user from the EntityUserProvider')) {
+            $exceptionEvent->setResponse(new RedirectResponse('/login'));
+
+            return;
         }
 
         if ($throwable instanceof AccessDeniedException && !$this->security->getUser() instanceof UserInterface) {

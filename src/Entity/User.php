@@ -211,6 +211,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     public function getUserIdentifier(): string
     {
-        return $this->username;
+        return (string) $this->username;
     }
 }

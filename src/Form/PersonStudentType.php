@@ -26,8 +26,13 @@ class PersonStudentType extends PersonSimpleType
 
         $formBuilder
             ->add('gender', ChoiceType::class, [
-                'choices' => ['form.gender.choices.male' => Person::GENDER_MALE, 'form.gender.choices.female' => Person::GENDER_FEMALE],
+                'choices' => [
+                    'form.gender.choices.male' => Person::GENDER_MALE,
+                    'form.gender.choices.female' => Person::GENDER_FEMALE,
+                ],
                 'label' => 'form.gender.label',
+                'placeholder' => 'Sélectionner un genre',
+                'required' => true,
             ])
             ->add('birthday', DatePickerType::class, [
                 'label' => 'form.birthday.label',
