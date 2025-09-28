@@ -1,0 +1,104 @@
+1:
+  name: "Forfait Maternelle - Demi-journée"
+  description: "Accueil en demi-journée pour les enfants de maternelle (matin ou après-midi)"
+  price: 180.00
+  school: 1
+  enable: true
+
+2:
+  name: "Forfait Maternelle - Journée complète"
+  description: "Accueil en journée complète pour les enfants de maternelle avec repas inclus"
+  price: 320.00
+  school: 1
+  enable: true
+
+3:
+  name: "Forfait Maternelle - Garderie"
+  description: "Service de garderie le matin et le soir pour les enfants de maternelle"
+  price: 45.00
+  school: 1
+  enable: true
+
+4:
+  name: "Forfait Élémentaire - Journée complète"
+  description: "Scolarité complète pour les élèves du CP au CE2 avec repas"
+  price: 380.00
+  school: 2
+  enable: true
+
+5:
+  name: "Forfait Élémentaire - Étude surveillée"
+  description: "Étude surveillée après les cours pour les devoirs et leçons"
+  price: 65.00
+  school: 2
+  enable: true
+
+6:
+  name: "Forfait Élémentaire - Activités périscolaires"
+  description: "Activités sportives et culturelles en complément de la scolarité"
+  price: 85.00
+  school: 2
+  enable: true
+
+7:
+  name: "Forfait Primaire - Journée complète"
+  description: "Scolarité complète pour les élèves du CM1 au CM2 avec repas"
+  price: 420.00
+  school: 3
+  enable: true
+
+8:
+  name: "Forfait Primaire - Soutien scolaire"
+  description: "Cours de soutien individualisé en français et mathématiques"
+  price: 95.00
+  school: 3
+  enable: true
+
+9:
+  name: "Forfait Primaire - Langues étrangères"
+  description: "Cours d'anglais et d'espagnol pour les élèves de primaire"
+  price: 75.00
+  school: 3
+  enable: true
+
+10:
+  name: "Forfait Collège - Scolarité"
+  description: "Scolarité complète pour les élèves de la 6ème à la 3ème"
+  price: 520.00
+  school: 4
+  enable: true
+
+11:
+  name: "Forfait Collège - Option Latin"
+  description: "Cours de latin en option pour les élèves de 5ème, 4ème et 3ème"
+  price: 40.00
+  school: 4
+  enable: true
+
+12:
+  name: "Forfait Collège - Préparation Brevet"
+  description: "Cours de préparation intensive au Diplôme National du Brevet"
+  price: 120.00
+  school: 4
+  enable: true
+
+13:
+  name: "Forfait Cantine - Mensuel"
+  description: "Repas du midi pour tous les niveaux scolaires (forfait mensuel)"
+  price: 110.00
+  school: 1
+  enable: true
+
+14:
+  name: "Forfait Transport scolaire"
+  description: "Service de transport scolaire aller-retour quotidien"
+  price: 85.00
+  school: 1
+  enable: true
+
+15:
+  name: "Forfait Sortie éducative"
+  description: "Participation aux sorties et voyages scolaires éducatifs"
+  price: 150.00
+  school: 2
+  enable: true
