@@ -1,0 +1,59 @@
+1:
+  classSchool: 1
+  comment: "Classe de Petite Section pour l'année scolaire courante"
+  enable: true
+
+2:
+  classSchool: 2
+  comment: "Classe de Moyenne Section pour l'année scolaire courante"
+  enable: true
+
+3:
+  classSchool: 3
+  comment: "Classe de Grande Section pour l'année scolaire courante"
+  enable: true
+
+4:
+  classSchool: 4
+  comment: "Classe de CP pour l'année scolaire courante"
+  enable: true
+
+5:
+  classSchool: 5
+  comment: "Classe de CE1 pour l'année scolaire courante"
+  enable: true
+
+6:
+  classSchool: 6
+  comment: "Classe de CE2 pour l'année scolaire courante"
+  enable: true
+
+7:
+  classSchool: 7
+  comment: "Classe de CM1 pour l'année scolaire courante"
+  enable: true
+
+8:
+  classSchool: 8
+  comment: "Classe de CM2 pour l'année scolaire courante"
+  enable: true
+
+9:
+  classSchool: 9
+  comment: "Classe de 6ème pour l'année scolaire courante"
+  enable: true
+
+10:
+  classSchool: 10
+  comment: "Classe de 5ème pour l'année scolaire courante"
+  enable: true
+
+11:
+  classSchool: 11
+  comment: "Classe de 4ème pour l'année scolaire courante"
+  enable: true
+
+12:
+  classSchool: 12
+  comment: "Classe de 3ème pour l'année scolaire courante"
+  enable: true

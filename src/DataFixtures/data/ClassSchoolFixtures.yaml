@@ -1,0 +1,95 @@
+1:
+  name: "Petite Section"
+  description: "Classe pour les enfants de 3 à 4 ans - Découverte et éveil"
+  ageMinimum: 3
+  ageMaximum: 4
+  school: 1
+  enable: true
+
+2:
+  name: "Moyenne Section"
+  description: "Classe pour les enfants de 4 à 5 ans - Développement des apprentissages"
+  ageMinimum: 4
+  ageMaximum: 5
+  school: 1
+  enable: true
+
+3:
+  name: "Grande Section"
+  description: "Classe pour les enfants de 5 à 6 ans - Préparation au CP"
+  ageMinimum: 5
+  ageMaximum: 6
+  school: 1
+  enable: true
+
+4:
+  name: "CP - Cours Préparatoire"
+  description: "Classe de CP - Apprentissage de la lecture et de l'écriture"
+  ageMinimum: 6
+  ageMaximum: 7
+  school: 2
+  enable: true
+
+5:
+  name: "CE1 - Cours Élémentaire 1"
+  description: "Classe de CE1 - Consolidation des apprentissages fondamentaux"
+  ageMinimum: 7
+  ageMaximum: 8
+  school: 2
+  enable: true
+
+6:
+  name: "CE2 - Cours Élémentaire 2"
+  description: "Classe de CE2 - Approfondissement des connaissances"
+  ageMinimum: 8
+  ageMaximum: 9
+  school: 2
+  enable: true
+
+7:
+  name: "CM1 - Cours Moyen 1"
+  description: "Classe de CM1 - Développement de l'autonomie"
+  ageMinimum: 9
+  ageMaximum: 10
+  school: 3
+  enable: true
+
+8:
+  name: "CM2 - Cours Moyen 2"
+  description: "Classe de CM2 - Préparation au collège"
+  ageMinimum: 10
+  ageMaximum: 11
+  school: 3
+  enable: true
+
+9:
+  name: "6ème"
+  description: "Classe de 6ème - Entrée au collège"
+  ageMinimum: 11
+  ageMaximum: 12
+  school: 4
+  enable: true
+
+10:
+  name: "5ème"
+  description: "Classe de 5ème - Approfondissement des matières"
+  ageMinimum: 12
+  ageMaximum: 13
+  school: 4
+  enable: true
+
+11:
+  name: "4ème"
+  description: "Classe de 4ème - Préparation au brevet"
+  ageMinimum: 13
+  ageMaximum: 14
+  school: 4
+  enable: true
+
+12:
+  name: "3ème"
+  description: "Classe de 3ème - Diplôme national du brevet"
+  ageMinimum: 14
+  ageMaximum: 15
+  school: 4
+  enable: true

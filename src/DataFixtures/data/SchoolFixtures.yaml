@@ -1,8 +1,31 @@
 1:
-  id: 1
-  name: 'todefine'
+  name: 'École Maternelle Les Petits Explorateurs'
   status: true
   principal: true
-  city: 'todefine'
-  zip: 'todefine'
+  city: 'Paris'
+  zip: '75001'
+  structure: 1
+
+2:
+  name: 'École Élémentaire Jean de La Fontaine'
+  status: true
+  principal: false
+  city: 'Lyon'
+  zip: '69001'
+  structure: 1
+
+3:
+  name: 'École Primaire Victor Hugo'
+  status: true
+  principal: false
+  city: 'Marseille'
+  zip: '13001'
+  structure: 1
+
+4:
+  name: 'Collège Marie Curie'
+  status: true
+  principal: false
+  city: 'Toulouse'
+  zip: '31000'
   structure: 1
