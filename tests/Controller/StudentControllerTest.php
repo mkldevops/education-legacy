@@ -47,8 +47,8 @@ final class StudentControllerTest extends AppWebTestCase
         self::assertStringNotContainsString('500 Internal Server Error', $content);
 
         // Check that essential elements are present (indicating the page structure is intact)
-        self::assertStringContainsString('openClassPeriodModal', $content);
-        self::assertStringContainsString('class-period-modal-component', $content);
+        self::assertStringContainsString('open-class-modal', $content);
+        self::assertStringContainsString('class_period_modal', $content);
     }
 
     public function testStudentRepositoryReturnsData(): void
