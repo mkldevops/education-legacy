@@ -19,7 +19,7 @@ final class ClassSchoolFixtures extends AbstractAppFixtures implements Dependent
     public function load(ObjectManager $manager): void
     {
         $users = $manager->getRepository(User::class)->findAll();
-        $defaultUser = !empty($users) ? $users[0] : null;
+        $defaultUser = empty($users) ? null : $users[0];
 
         foreach (self::getData() as $id => $data) {
             $classSchool = new ClassSchool();

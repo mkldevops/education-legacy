@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Document;
 use App\Entity\PackageStudentPeriod;
 use App\Entity\Period;
+use App\Entity\Person;
 use App\Entity\Student;
 use App\Entity\StudentComment;
 use App\Entity\User;
@@ -263,9 +264,10 @@ class StudentController extends AbstractController
             $originalPhone = $student->getPhone();
 
             // S'assurer que l'entité Person est gérée par Doctrine
-            if ($student->getPerson()) {
+            if ($student->getPerson() instanceof Person) {
                 $entityManager->persist($student->getPerson());
             }
+
             $entityManager->persist($student);
             $entityManager->flush();
 
@@ -277,7 +279,7 @@ class StudentController extends AbstractController
             ));
 
             // Ajouter un message spécifique pour le téléphone si il a changé
-            if ($originalPhone !== $newPhone && !empty($newPhone)) {
+            if ($originalPhone !== $newPhone && (null !== $newPhone && '' !== $newPhone && '0' !== $newPhone)) {
                 $this->addFlash('info', \sprintf(
                     'Numéro de téléphone mis à jour : %s',
                     $newPhone

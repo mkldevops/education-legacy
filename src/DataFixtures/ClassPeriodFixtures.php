@@ -20,7 +20,7 @@ final class ClassPeriodFixtures extends AbstractAppFixtures implements Dependent
     public function load(ObjectManager $manager): void
     {
         $users = $manager->getRepository(User::class)->findAll();
-        $defaultUser = !empty($users) ? $users[0] : null;
+        $defaultUser = empty($users) ? null : $users[0];
 
         // Récupérer la première période active (celle qui est active maintenant)
         $period = $manager->getRepository(Period::class)->findOneBy(['enable' => true]);

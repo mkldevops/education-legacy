@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\ClassPeriod;
+use App\Entity\ClassPeriodStudent;
 use App\Entity\Student;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
@@ -100,7 +101,7 @@ class ClassPeriodApiController extends AbstractController
             // Get current class period for student
             if ($student instanceof Student) {
                 $classPeriodStudent = $student->getClassToPeriod($period);
-                if (null !== $classPeriodStudent) {
+                if ($classPeriodStudent instanceof ClassPeriodStudent) {
                     $currentClassPeriodId = $classPeriodStudent->getClassPeriod()?->getId();
                 }
             }
@@ -213,7 +214,7 @@ class ClassPeriodApiController extends AbstractController
                 'success' => false,
                 'message' => 'Aucune modification effectuée.',
             ], Response::HTTP_BAD_REQUEST);
-        } catch (\JsonException $jsonException) {
+        } catch (\JsonException) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Format JSON invalide.',
