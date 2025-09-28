@@ -259,21 +259,44 @@ class StudentController extends AbstractController
             ->handleRequest($request)
         ;
 
-        dump($editForm->isSubmitted(), $editForm->isSubmitted() && $editForm->isValid());
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $originalPhone = $student->getPhone();
+
+            // S'assurer que l'entité Person est gérée par Doctrine
+            if ($student->getPerson()) {
+                $entityManager->persist($student->getPerson());
+            }
+            $entityManager->persist($student);
             $entityManager->flush();
 
-            // Reste de la méthode qu'on avait déjà écrit
-            $this->addFlash('info', \sprintf(
-                "les information de l'élève %s  ont été modifié correctement",
+            $newPhone = $student->getPhone();
+
+            $this->addFlash('success', \sprintf(
+                "Les informations de l'élève %s ont été modifiées correctement",
                 (string) $student->getName()
             ));
+
+            // Ajouter un message spécifique pour le téléphone si il a changé
+            if ($originalPhone !== $newPhone && !empty($newPhone)) {
+                $this->addFlash('info', \sprintf(
+                    'Numéro de téléphone mis à jour : %s',
+                    $newPhone
+                ));
+            }
 
             return $this->redirectToRoute('app_student_show', ['id' => $student->getId()]);
         }
 
-        $this->logger->debug(__FUNCTION__, ['editForm' => $editForm->getErrors()]);
+        if ($editForm->isSubmitted() && !$editForm->isValid()) {
+            $this->logger->error('Form validation failed', [
+                'errors' => (string) $editForm->getErrors(true),
+                'student_id' => $student->getId(),
+            ]);
+
+            foreach ($editForm->getErrors(true) as $error) {
+                $this->addFlash('danger', $error->getMessage());
+            }
+        }
 
         return $this->render('student/edit.html.twig', [
             'student' => $student,

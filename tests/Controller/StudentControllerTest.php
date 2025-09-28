@@ -8,6 +8,7 @@ use App\Manager\PeriodManager;
 use App\Manager\SchoolManager;
 use App\Repository\StudentRepository;
 use App\Tests\AppWebTestCase;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -95,5 +96,65 @@ final class StudentControllerTest extends AppWebTestCase
             // If managers fail, it might be due to test setup, but the repository method should still work
             self::markTestSkipped('School/Period managers not properly configured in test environment: '.$e->getMessage());
         }
+    }
+
+    public function testStudentPhoneUpdateBug(): void
+    {
+        $container = self::getContainer();
+
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $container->get(EntityManagerInterface::class);
+
+        /** @var StudentRepository $studentRepository */
+        $studentRepository = $container->get(StudentRepository::class);
+
+        // Créer un étudiant de test
+        $students = $studentRepository->findAll();
+        if (empty($students)) {
+            self::markTestSkipped('Aucun étudiant trouvé dans les fixtures');
+        }
+
+        $student = $students[0];
+        $originalPhone = $student->getPhone();
+        $newPhone = '0123456789';
+
+        // Assurer que le nouveau téléphone est différent
+        if ($originalPhone === $newPhone) {
+            $newPhone = '0987654321';
+        }
+
+        // Test GET de la page d'édition
+        self::$client->request(Request::METHOD_GET, '/student/edit/'.$student->getId());
+        self::assertResponseIsSuccessful();
+
+        // Test POST de mise à jour
+        self::$client->request(Request::METHOD_PUT, '/student/update/'.$student->getId(), [
+            'app_student' => [
+                'person' => [
+                    'forname' => $student->getForname(),
+                    'name' => $student->getName(),
+                    'phone' => $newPhone,
+                    'gender' => $student->getGender(),
+                    'birthday' => $student->getBirthday()?->format('Y-m-d'),
+                    'birthplace' => $student->getBirthplace(),
+                    'email' => $student->getEmail(),
+                    'family' => $student->getFamily()?->getId(),
+                ],
+                'grade' => $student->getGrade()?->getId(),
+                'lastSchool' => $student->getLastSchool(),
+                'personAuthorized' => $student->getPersonAuthorized(),
+                'remarksHealth' => $student->getRemarksHealth(),
+                'letAlone' => $student->getLetAlone(),
+            ],
+        ]);
+
+        // Vérifier la redirection de succès
+        self::assertResponseRedirects('/student/show/'.$student->getId());
+
+        // Rafraîchir l'entité depuis la base de données
+        $entityManager->refresh($student);
+
+        // Vérifier que le téléphone a été mis à jour
+        self::assertSame($newPhone, $student->getPhone(), 'Le numéro de téléphone devrait être mis à jour');
     }
 }
