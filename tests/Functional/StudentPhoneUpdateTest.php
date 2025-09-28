@@ -39,7 +39,7 @@ final class StudentPhoneUpdateTest extends AppWebTestCase
             ->setGender(Person::GENDER_MALE)
             ->setBirthday(new \DateTime('2000-01-01'))
             ->setBirthplace('Test City')
-            ->setEmail('test.student.phone.update@example.com')
+            ->setEmail('test.student.phone.update.'.uniqid().'@example.com')
         ;
 
         $student = new Student();
