@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Family;
 use App\Entity\Grade;
 use App\Entity\Person;
 use App\Entity\School;
@@ -23,6 +24,7 @@ class StudentFixtures extends AbstractAppFixtures implements DependentFixtureInt
             // Récupérer les références nécessaires
             $grade = $this->getReference(GradeFixtures::getKey($data['grade']), Grade::class);
             $school = $this->getReference(SchoolFixtures::getKey($data['school']), School::class);
+            $family = isset($data['family']) ? $this->getReference(FamilyFixtures::getKey($data['family']), Family::class) : null;
 
             // Créer l'entité Person
             $person = new Person();
@@ -33,6 +35,7 @@ class StudentFixtures extends AbstractAppFixtures implements DependentFixtureInt
                 ->setBirthplace($data['birthplace'])
                 ->setPhone($data['phone'])
                 ->setEmail($data['email'])
+                ->setFamily($family)
                 ->setEnable(true)
                 ->setCreatedAt(new \DateTime())
             ;
@@ -65,6 +68,7 @@ class StudentFixtures extends AbstractAppFixtures implements DependentFixtureInt
     public function getDependencies(): array
     {
         return [
+            FamilyFixtures::class,
             GradeFixtures::class,
             SchoolFixtures::class,
         ];

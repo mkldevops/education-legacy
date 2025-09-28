@@ -1,0 +1,191 @@
+1:
+  email: "famille.dupont@email.fr"
+  address: "15 Avenue des Champs"
+  zip: "75001"
+  city: "Paris"
+  language: "fr"
+  numberChildren: 2
+  personAuthorized: "Marie Dupont (mère), Pierre Dupont (père), Sylvie Martin (grand-mère)"
+  personEmergency: "Dr. Laurent Martin - 01 42 34 56 78"
+  father:
+    forname: "Pierre"
+    name: "Dupont"
+    phone: "0142345678"
+    email: "pierre.dupont@email.fr"
+    birthday: "1985-04-15"
+    birthplace: "Paris"
+  mother:
+    forname: "Marie"
+    name: "Dupont"
+    phone: "0143456789"
+    email: "marie.dupont@email.fr"
+    birthday: "1987-08-22"
+    birthplace: "Lyon"
+
+2:
+  email: "famille.martin@email.fr"
+  address: "22 Rue de la Paix"
+  zip: "69001"
+  city: "Lyon"
+  language: "fr"
+  numberChildren: 1
+  personAuthorized: "Isabelle Martin (mère), Jean Martin (père)"
+  personEmergency: "Dr. Sophie Dubois - 04 78 23 45 67"
+  father:
+    forname: "Jean"
+    name: "Martin"
+    phone: "0478234567"
+    email: "jean.martin@email.fr"
+    birthday: "1982-11-10"
+    birthplace: "Marseille"
+  mother:
+    forname: "Isabelle"
+    name: "Martin"
+    phone: "0479345678"
+    email: "isabelle.martin@email.fr"
+    birthday: "1984-03-18"
+    birthplace: "Lyon"
+
+3:
+  email: "famille.petit@email.fr"
+  address: "8 Boulevard Voltaire"
+  zip: "13001"
+  city: "Marseille"
+  language: "fr"
+  numberChildren: 3
+  personAuthorized: "Caroline Petit (mère), Thomas Petit (père), Anne Dubois (tante)"
+  personEmergency: "Dr. Michel Rousseau - 04 91 12 34 56"
+  father:
+    forname: "Thomas"
+    name: "Petit"
+    phone: "0491123456"
+    email: "thomas.petit@email.fr"
+    birthday: "1980-07-05"
+    birthplace: "Toulouse"
+  mother:
+    forname: "Caroline"
+    name: "Petit"
+    phone: "0492234567"
+    email: "caroline.petit@email.fr"
+    birthday: "1983-12-14"
+    birthplace: "Marseille"
+
+4:
+  email: "famille.bernard@email.fr"
+  address: "45 Rue Victor Hugo"
+  zip: "31000"
+  city: "Toulouse"
+  language: "fr"
+  numberChildren: 1
+  personAuthorized: "Nathalie Bernard (mère), Olivier Bernard (père)"
+  personEmergency: "Dr. Claire Moreau - 05 61 45 67 89"
+  father:
+    forname: "Olivier"
+    name: "Bernard"
+    phone: "0561456789"
+    email: "olivier.bernard@email.fr"
+    birthday: "1979-09-30"
+    birthplace: "Bordeaux"
+  mother:
+    forname: "Nathalie"
+    name: "Bernard"
+    phone: "0562567890"
+    email: "nathalie.bernard@email.fr"
+    birthday: "1981-06-12"
+    birthplace: "Toulouse"
+
+5:
+  email: "famille.moreau@email.fr"
+  address: "12 Place du Marché"
+  zip: "06000"
+  city: "Nice"
+  language: "fr"
+  numberChildren: 2
+  personAuthorized: "Julie Moreau (mère), Marc Moreau (père), Françoise Moreau (grand-mère)"
+  personEmergency: "Dr. Paul Lefort - 04 93 67 89 01"
+  father:
+    forname: "Marc"
+    name: "Moreau"
+    phone: "0493678901"
+    email: "marc.moreau@email.fr"
+    birthday: "1986-01-25"
+    birthplace: "Nice"
+  mother:
+    forname: "Julie"
+    name: "Moreau"
+    phone: "0494789012"
+    email: "julie.moreau@email.fr"
+    birthday: "1988-05-08"
+    birthplace: "Cannes"
+
+6:
+  email: "famille.roux@email.fr"
+  address: "33 Allée des Tilleuls"
+  zip: "33000"
+  city: "Bordeaux"
+  language: "fr"
+  numberChildren: 1
+  personAuthorized: "Sandra Roux (mère), Vincent Roux (père)"
+  personEmergency: "Dr. Émilie Garnier - 05 56 89 01 23"
+  father:
+    forname: "Vincent"
+    name: "Roux"
+    phone: "0556890123"
+    email: "vincent.roux@email.fr"
+    birthday: "1983-02-14"
+    birthplace: "Bordeaux"
+  mother:
+    forname: "Sandra"
+    name: "Roux"
+    phone: "0557901234"
+    email: "sandra.roux@email.fr"
+    birthday: "1985-10-27"
+    birthplace: "Pau"
+
+7:
+  email: "famille.fournier@email.fr"
+  address: "18 Rue des Oliviers"
+  zip: "44000"
+  city: "Nantes"
+  language: "fr"
+  numberChildren: 2
+  personAuthorized: "Céline Fournier (mère), David Fournier (père), Michel Fournier (grand-père)"
+  personEmergency: "Dr. Sylvain Durand - 02 40 12 34 56"
+  father:
+    forname: "David"
+    name: "Fournier"
+    phone: "0240123456"
+    email: "david.fournier@email.fr"
+    birthday: "1981-08-17"
+    birthplace: "Rennes"
+  mother:
+    forname: "Céline"
+    name: "Fournier"
+    phone: "0241234567"
+    email: "celine.fournier@email.fr"
+    birthday: "1984-04-03"
+    birthplace: "Nantes"
+
+8:
+  email: "famille.girard@email.fr"
+  address: "27 Quai des Bateliers"
+  zip: "67000"
+  city: "Strasbourg"
+  language: "fr"
+  numberChildren: 1
+  personAuthorized: "Valérie Girard (mère), Christophe Girard (père)"
+  personEmergency: "Dr. Antoine Weber - 03 88 34 56 78"
+  father:
+    forname: "Christophe"
+    name: "Girard"
+    phone: "0388345678"
+    email: "christophe.girard@email.fr"
+    birthday: "1978-12-03"
+    birthplace: "Metz"
+  mother:
+    forname: "Valérie"
+    name: "Girard"
+    phone: "0389456789"
+    email: "valerie.girard@email.fr"
+    birthday: "1980-07-19"
+    birthplace: "Strasbourg"

@@ -8,6 +8,7 @@
   email: "antoine.dupont@famille.fr"
   grade: 1
   school: 1
+  family: 1
   lastSchool: "École maternelle Saint-Martin"
   personAuthorized: "Marie Dupont (mère), Pierre Dupont (père), Sylvie Martin (grand-mère)"
   remarksHealth: "Allergique aux noix"
@@ -23,6 +24,7 @@
   email: "sophie.martin@famille.fr"
   grade: 2
   school: 1
+  family: 2
   lastSchool: "École maternelle Jean Moulin"
   personAuthorized: "Isabelle Martin (mère), Jean Martin (père)"
   remarksHealth: "Porte des lunettes"
@@ -38,6 +40,7 @@
   email: "lucas.petit@famille.fr"
   grade: 3
   school: 1
+  family: 3
   lastSchool: "École primaire Victor Hugo"
   personAuthorized: "Caroline Petit (mère), Thomas Petit (père), Anne Dubois (tante)"
   remarksHealth: ""
@@ -53,6 +56,7 @@
   email: "emma.bernard@famille.fr"
   grade: 4
   school: 1
+  family: 4
   lastSchool: "École primaire Molière"
   personAuthorized: "Nathalie Bernard (mère), Olivier Bernard (père)"
   remarksHealth: "Suit un traitement pour l'asthme"
@@ -68,6 +72,7 @@
   email: "theo.moreau@famille.fr"
   grade: 1
   school: 1
+  family: 5
   lastSchool: ""
   personAuthorized: "Julie Moreau (mère), Marc Moreau (père), Françoise Moreau (grand-mère)"
   remarksHealth: "Tendance à l'hyperactivité"
@@ -83,6 +88,7 @@
   email: "lea.roux@famille.fr"
   grade: 2
   school: 1
+  family: 6
   lastSchool: "École maternelle Les Hirondelles"
   personAuthorized: "Sandra Roux (mère), Vincent Roux (père)"
   remarksHealth: ""
@@ -98,6 +104,7 @@
   email: "noah.fournier@famille.fr"
   grade: 3
   school: 1
+  family: 7
   lastSchool: "École primaire Paul Éluard"
   personAuthorized: "Céline Fournier (mère), David Fournier (père), Michel Fournier (grand-père)"
   remarksHealth: "Intolérance au lactose"
@@ -113,6 +120,7 @@
   email: "chloe.girard@famille.fr"
   grade: 4
   school: 1
+  family: 8
   lastSchool: "École primaire Marie Curie"
   personAuthorized: "Valérie Girard (mère), Christophe Girard (père)"
   remarksHealth: "Très bonne élève, avance rapidement"
