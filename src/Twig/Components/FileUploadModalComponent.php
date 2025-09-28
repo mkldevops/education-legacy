@@ -14,6 +14,7 @@ final class FileUploadModalComponent
     public string $acceptedTypes = '.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif';
 
     public int $maxFileSize = 10;
+
     // MB
     public bool $multiple = false;
 
