@@ -1,0 +1,295 @@
+<div 
+    x-data="{
+        files: [],
+        isDragging: false,
+        isUploading: false,
+        uploadProgress: 0,
+        uploadedFiles: [],
+        errors: [],
+
+        init() {
+            console.log('FileUpload component initialized');
+            this.maxFileSize = {{ this.maxFileSizeBytes }};
+            this.acceptedTypes = {{ this.acceptedTypesArray|json_encode|raw }};
+            this.multiple = {{ this.multiple ? 'true' : 'false' }};
+        },
+
+        onDragOver(event) {
+            event.preventDefault();
+            this.isDragging = true;
+        },
+
+        onDragLeave(event) {
+            event.preventDefault();
+            this.isDragging = false;
+        },
+
+        onDrop(event) {
+            event.preventDefault();
+            this.isDragging = false;
+            const droppedFiles = Array.from(event.dataTransfer.files);
+            this.handleFiles(droppedFiles);
+        },
+
+        onFileSelect(event) {
+            const selectedFiles = Array.from(event.target.files);
+            this.handleFiles(selectedFiles);
+        },
+
+        handleFiles(newFiles) {
+            this.errors = [];
+            
+            newFiles.forEach(file => {
+                // Validation de la taille
+                if (file.size > this.maxFileSize) {
+                    this.errors.push(`Le fichier \${file.name} est trop volumineux. Taille maximum: {{ this.maxFileSize }}MB`);
+                    return;
+                }
+
+                // Validation du type
+                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                if (this.acceptedTypes.length > 0 && !this.acceptedTypes.includes(fileExtension)) {
+                    this.errors.push(`Le type de fichier \${fileExtension} n'est pas autorisé pour \${file.name}`);
+                    return;
+                }
+
+                // Ajouter le fichier si validation OK
+                if (this.multiple) {
+                    this.files.push(file);
+                } else {
+                    this.files = [file];
+                }
+            });
+        },
+
+        removeFile(index) {
+            this.files.splice(index, 1);
+        },
+
+        async uploadFiles() {
+            if (this.files.length === 0) {
+                this.errors = ['Veuillez sélectionner au moins un fichier'];
+                return;
+            }
+
+            this.isUploading = true;
+            this.uploadProgress = 0;
+            this.errors = [];
+
+            try {
+                const formData = new FormData();
+                
+                if (this.multiple) {
+                    this.files.forEach((file, index) => {
+                        formData.append(`files[\${index}]`, file);
+                    });
+                } else {
+                    formData.append('file', this.files[0]);
+                }
+
+                const response = await fetch('{{ this.uploadUrl }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        this.uploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    this.uploadedFiles = result.files || [result];
+                    this.files = [];
+                    this.uploadProgress = 100;
+                    
+                    // Callback de succès
+                    {% if this.successCallback %}
+                        if (typeof {{ this.successCallback }} === 'function') {
+                            {{ this.successCallback }}(result);
+                        }
+                    {% endif %}
+
+                    // Event personnalisé
+                    this.$dispatch('file-uploaded', { 
+                        files: this.uploadedFiles,
+                        result: result 
+                    });
+
+                } else {
+                    const errorData = await response.json();
+                    this.errors = [errorData.message || 'Erreur lors de l\\'upload'];
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                this.errors = ['Erreur réseau lors de l\\'upload'];
+                
+                // Callback d'erreur
+                {% if this.errorCallback %}
+                    if (typeof {{ this.errorCallback }} === 'function') {
+                        {{ this.errorCallback }}(error);
+                    }
+                {% endif %}
+            } finally {
+                this.isUploading = false;
+            }
+        },
+
+        formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    }"
+    class="space-y-4"
+    id="{{ this.id }}">
+
+    <!-- Dropzone -->
+    <div 
+        @dragover="onDragOver"
+        @dragleave="onDragLeave"
+        @drop="onDrop"
+        :class="isDragging ? 'border-primary-500 bg-primary-50' : ''"
+        class="{{ this.dropzoneClass }}">
+        
+        <div class="space-y-4">
+            <!-- Upload Icon -->
+            <div class="mx-auto w-12 h-12 text-gray-400">
+                {{ ux_icon('tabler:cloud-upload', {class: 'w-12 h-12'}) }}
+            </div>
+
+            <!-- Instructions -->
+            <div>
+                <p class="text-sm font-medium text-gray-900">
+                    Glissez-déposez vos fichiers ici, ou 
+                    <label for="{{ this.id }}-input" class="cursor-pointer text-primary-600 hover:text-primary-500">
+                        parcourez
+                    </label>
+                </p>
+                <p class="text-xs text-gray-500 mt-1">
+                    Types acceptés: {{ this.acceptedTypes }}
+                    <br>Taille maximum: {{ this.maxFileSize }}MB
+                    {% if this.multiple %}
+                        <br>Plusieurs fichiers autorisés
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Hidden File Input -->
+            <input 
+                type="file" 
+                id="{{ this.id }}-input"
+                @change="onFileSelect"
+                {% if this.multiple %}multiple{% endif %}
+                accept="{{ this.acceptedTypes }}"
+                class="hidden">
+
+            <!-- Upload Button -->
+            <button 
+                type="button"
+                @click="$refs.fileInput.click()"
+                class="{{ this.buttonClass }}">
+                {{ ux_icon('tabler:upload', {class: 'w-4 h-4 mr-2'}) }}
+                {{ this.buttonText }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Selected Files -->
+    <div x-show="files.length > 0" x-transition class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-900">Fichiers sélectionnés :</h4>
+        <template x-for="(file, index) in files" :key="index">
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        {{ ux_icon('tabler:file', {class: 'w-5 h-5 text-gray-400'}) }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900" x-text="file.name"></p>
+                        <p class="text-xs text-gray-500" x-text="formatFileSize(file.size)"></p>
+                    </div>
+                </div>
+                <button 
+                    type="button"
+                    @click="removeFile(index)"
+                    :disabled="isUploading"
+                    class="text-red-400 hover:text-red-600 disabled:opacity-50">
+                    {{ ux_icon('tabler:x', {class: 'w-4 h-4'}) }}
+                </button>
+            </div>
+        </template>
+
+        <!-- Upload Button -->
+        <button 
+            type="button"
+            @click="uploadFiles"
+            :disabled="isUploading || files.length === 0"
+            class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            
+            <div x-show="isUploading" class="flex items-center">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <span>Upload en cours...</span>
+            </div>
+            
+            <div x-show="!isUploading" class="flex items-center">
+                {{ ux_icon('tabler:upload', {class: 'w-4 h-4 mr-2'}) }}
+                <span>Uploader les fichiers</span>
+            </div>
+        </button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div x-show="isUploading" x-transition class="space-y-2">
+        <div class="flex justify-between text-sm">
+            <span class="text-gray-700">Progression de l'upload</span>
+            <span class="text-gray-700" x-text="uploadProgress + '%'"></span>
+        </div>
+        <div class="{{ this.progressClass }}">
+            <div 
+                class="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                :style="'width: ' + uploadProgress + '%'"></div>
+        </div>
+    </div>
+
+    <!-- Error Messages -->
+    <div x-show="errors.length > 0" x-transition class="space-y-2">
+        <template x-for="error in errors" :key="error">
+            <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+                <div class="flex items-center">
+                    {{ ux_icon('tabler:alert-triangle', {class: 'w-4 h-4 mr-2'}) }}
+                    <span x-text="error"></span>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Success Messages -->
+    <div x-show="uploadedFiles.length > 0" x-transition class="space-y-2">
+        <div class="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg text-sm">
+            <div class="flex items-center">
+                {{ ux_icon('tabler:circle-check', {class: 'w-4 h-4 mr-2'}) }}
+                <span x-text="'Fichier(s) uploadé(s) avec succès: ' + uploadedFiles.length"></span>
+            </div>
+        </div>
+        
+        <!-- Uploaded Files List -->
+        <div class="space-y-2">
+            <template x-for="uploadedFile in uploadedFiles" :key="uploadedFile.id || uploadedFile.name">
+                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0">
+                            {{ ux_icon('tabler:file-filled', {class: 'w-5 h-5 text-green-500'}) }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-green-900" x-text="uploadedFile.name || uploadedFile.originalName"></p>
+                            <p class="text-xs text-green-600" x-text="uploadedFile.size ? formatFileSize(uploadedFile.size) : ''"></p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
