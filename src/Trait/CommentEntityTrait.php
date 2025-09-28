@@ -19,7 +19,7 @@ trait CommentEntityTrait
         return $this->comment;
     }
 
-    public function setComment(string $comment): static
+    public function setComment(?string $comment): static
     {
         $this->comment = $comment;
 
