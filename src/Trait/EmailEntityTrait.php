@@ -12,9 +12,8 @@ trait EmailEntityTrait
 {
     #[Groups(['email', 'email:write'])]
     #[Assert\Email]
-    #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
-    #[ORM\Column(unique: true)]
+    #[ORM\Column(unique: true, nullable: true)]
     protected ?string $email = null;
 
     public function getEmail(): ?string
@@ -22,7 +21,7 @@ trait EmailEntityTrait
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
 

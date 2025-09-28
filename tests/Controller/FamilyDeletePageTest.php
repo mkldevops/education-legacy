@@ -80,6 +80,7 @@ final class FamilyDeletePageTest extends WebTestCase
         $studentPerson->setName('Test');
         $studentPerson->setForname('Student');
         $studentPerson->setGender('female');
+        $studentPerson->setEmail('test.student@example.com');
         $studentPerson->setFamily($family);
 
         $family->addPerson($studentPerson);
