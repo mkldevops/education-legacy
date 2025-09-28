@@ -1,5 +1,5 @@
-{% set resources = resources|merge({ ckeditor : true, operations : true, uploadfile : true }) %}
 {% trans_default_domain 'student' %}
+
 {% extends "student/common.html.twig" %}
 
 {% set title = "title.show"|trans({'%name%': student}) %}

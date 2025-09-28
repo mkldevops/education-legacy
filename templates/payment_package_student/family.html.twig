@@ -7,10 +7,9 @@
     <!-- Payment Modal -->
     <div x-show="showPaymentModal" x-cloak @click.away="showPaymentModal = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-            
+
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-            
+
             <div @click.stop class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
                 <div class="px-6 py-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
@@ -25,10 +24,10 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="px-6 py-4">
                     <div class="alert alert-danger hidden mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg" id="payment-error-alert"></div>
-                    
+
                     {{ form_start(form, {'attr': {'id': 'payment-form', 'class': 'space-y-4'}}) }}
                     <div class="space-y-4">
                         {% for child in form %}
@@ -39,7 +38,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    
+
                     <div class="flex justify-end space-x-3 pt-6">
                         <button type="button" @click="showPaymentModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             {{ ux_icon('tabler:x', {class: 'w-4 h-4 mr-2'}) }}

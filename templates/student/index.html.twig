@@ -119,10 +119,9 @@
                                                 </span>
                                             {% endif %}
 
-                                            <button type="button" 
-                                                    class="modal-classperiod p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200"
-                                                    onclick="openClassPeriodModal({{ student.id }})"
-                                                    data-student-id="{{ student.id }}">
+                                            <button type="button"
+                                                    class="p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                                                    @click="$dispatch('open-class-modal', { studentId: {{ student.id }} })"
                                                 {% if classPeriodStudent is not empty %}
                                                     {{ ux_icon('bi:box-arrow-right', {class: 'w-4 h-4 text-yellow-600'}) }}
                                                 {% else %}
@@ -259,35 +258,8 @@
         </div>
     {% endif %}
 
-    {{ component('ClassPeriodModalComponent') }}
+    {% include 'components/class_period_modal.html.twig' %}
 {% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        function openClassPeriodModal(studentId) {
-            const modalComponent = document.getElementById('class-period-modal-component');
-            if (!modalComponent) {
-                console.warn('Composant modal introuvable');
-                return;
-            }
-            
-            // Set the student ID directly on the component
-            const liveComponent = modalComponent.closest('[data-controller*="live"]');
-            if (liveComponent) {
-                liveComponent.setAttribute('data-live-selected-student-id-value', studentId);
-                
-                // Trigger the modal opening
-                const openButton = modalComponent.querySelector('#hidden-open-button');
-                if (openButton) {
-                    openButton.click();
-                } else {
-                    console.warn('Bouton d\'ouverture introuvable');
-                }
-            } else {
-                console.warn('Composant live introuvable');
-            }
-        }
-    </script>
 {% endblock %}
-

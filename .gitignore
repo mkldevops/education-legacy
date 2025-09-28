@@ -39,3 +39,7 @@ node_modules
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+
+public/sw.js
+public/workbox

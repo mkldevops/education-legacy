@@ -18,8 +18,8 @@ title.form.edit: 'Formulaire de modification de l''élève %name%'
 title.form.delete: 'Formulaire de suppression de l''élève %name%'
 title.phone.delete: 'Supprimmer le numero de téléphone'
 title.phone.edit: 'Modifier le numero de téléphone'
-action.inactive_list: 'Liste des inactifs'
-action.payment_list: 'Liste des paiements'
+action.inactive_list: 'Inactifs'
+action.payment_list: 'Paiements'
 btn.disable: Désactiver
 btn.enable: Activer
 btn.activate_student: 'Activer l''élève'
