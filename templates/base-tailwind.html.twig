@@ -23,7 +23,6 @@
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
             <script src="https://unpkg.com/@heroicons/react@2.0.18/24/outline/index.js" type="module"></script>
-
         {% endblock %}
 
         {% block optionals %}{% endblock %}
@@ -84,9 +83,7 @@
                         {% endif %}
                     {% endblock %}
 
-                    <div class="px-4 py-2 sm:px-6 lg:px-8">
-                        {% include "_tailwind/flashbag.html.twig" %}
-                    </div>
+                    {% include "_tailwind/flashbag.html.twig" %}
 
                     <main class="px-4 py-6 sm:px-6 lg:px-8">
                         {% block body %}
