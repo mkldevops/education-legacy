@@ -123,27 +123,28 @@
         <fieldset class="col-md-5">
             <legend>{% trans %}Attachements{% endtrans %}</legend>
 
-            <div role="tabpanel">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active">
-                        <a href="#documents-operation" aria-controls="documents" role="tab" data-toggle="tab">Documents ( {{ operation.documents|length }} )</a>
-                    </li>
-                </ul>
-            </div>
-
-             <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="documents-operation">
-                    {% include 'document/upload.html.twig' with {
-                        documents : operation.documents,
-                        upload : {
-                            url : path('app_operation_set_document', { id : operation.id, action : 'add' }),
-                            urlUnlink : path('app_operation_set_document', { id : operation.id, action : 'remove' }),
-                            prefix : 'Operation document - '|trans,
-                            multiple : true
-                        }
-                    } %}
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 rounded-full p-2 mr-3">
+                            {{ ux_icon('tabler:upload', {class: 'w-5 h-5 text-blue-600'}) }}
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900">Documents de l'opération</h3>
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            {{ operation.documents|length }}
+                        </span>
+                    </div>
+                </div>
+                <div class="px-6 py-4">
+                    {{ component('file_upload', {
+                        uploadUrl: '/api/upload',
+                        acceptedTypes: '.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif',
+                        maxFileSize: 10,
+                        multiple: true,
+                        buttonText: 'Ajouter un document',
+                        successCallback: 'onOperationFileUploadSuccess',
+                        errorCallback: 'onOperationFileUploadError'
+                    }) }}
                 </div>
             </div>
         </fieldset>

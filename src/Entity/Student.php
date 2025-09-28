@@ -59,7 +59,7 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
     private bool $letAlone = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\NotNull(message: 'La date d\'inscription est obligatoire.')]
+    #[Assert\NotNull(message: "La date d'inscription est obligatoire.")]
     #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $dateRegistration = null;
 
