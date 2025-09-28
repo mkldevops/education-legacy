@@ -24,7 +24,7 @@
                             {% endif %}
                         </a>
                         <a href="{{ path('app_student_print', { id : packagePeriod.id }) }}" target="_self" class="fa fa-print pull-right"></a>
-                        <a href="{{ path('app_package_student_period_edit', { id : packagePeriod.id }) }}" class="fa fa-pencil-square-o pull-right"></a>
+                        <span class="fa fa-package text-gray-400 pull-right" title="Forfait: {{ packagePeriod.package.name }}"></span>
                     </h4>
                 </div>
                 <div id="pakage-period-{{ packagePeriod.id }}" class="panel-collapse collapse {{ isCurrentPackage ? 'in' : '' }}">

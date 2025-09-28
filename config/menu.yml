@@ -12,11 +12,6 @@ madrasse:
         student: { label: "Student", path: "app_student_index" }
         class: { label: "Class", path: "app_class_period_current" }
         family: { label: "List family", path: "app_family_index" }
-        setting:
-            label: Setting
-            role: "ROLE_ADMIN"
-            sub:
-                package: { label: "Package", path: "app_package_index" }
 
 accounting:
     role: "ROLE_ACCOUNTANT"

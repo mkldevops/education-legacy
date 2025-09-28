@@ -129,11 +129,10 @@
                                         Aucun commentaire
                                     </span>
                                 {% endif %}
-                                <a href="{{ path('app_package_student_period_show', {'id': packagePeriod.id}) }}"
-                                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-primary-600 hover:text-primary-500">
-                                    {{ ux_icon('tabler:arrow-right', {class: 'w-4 h-4 mr-1'}) }}
-                                    Détails
-                                </a>
+                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-400">
+                                    {{ ux_icon('tabler:eye', {class: 'w-4 h-4 mr-1'}) }}
+                                    {{ packagePeriod.package.name }}
+                                </span>
                             </div>
                         </div>
                     </article>

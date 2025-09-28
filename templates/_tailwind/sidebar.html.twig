@@ -107,18 +107,6 @@
                     {% endif %}
                 </a>
 
-                <a href="{{ path('app_package_index') }}"
-                   class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 hover:translate-x-1 {{ app.request.attributes.get('_route') starts with 'app_package' ? 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-md border border-transparent hover:border-gray-200' }}">
-                    <div class="flex items-center justify-center w-7 h-7 rounded-lg mr-3 {{ app.request.attributes.get('_route') starts with 'app_package' ? 'bg-green-500 shadow-sm' : 'bg-gray-100 group-hover:bg-green-100' }}">
-                        <svg class="h-4 w-4 {{ app.request.attributes.get('_route') starts with 'app_package' ? 'text-white' : 'text-gray-500 group-hover:text-green-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                    </div>
-                    <span>Forfaits</span>
-                    {% if app.request.attributes.get('_route') starts with 'app_package' %}
-                        <div class="ml-auto w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    {% endif %}
-                </a>
 
                 <a href="{{ path('app_account_index') }}"
                    class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 hover:translate-x-1 {{ app.request.attributes.get('_route') starts with 'app_account' ? 'bg-gradient-to-r from-green-50 to-green-100 text-green-700 border border-green-200 shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-md border border-transparent hover:border-gray-200' }}">

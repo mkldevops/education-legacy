@@ -279,7 +279,7 @@
                                     {% set pp = enable ? person.student.packagePeriods.first|default(null) : null %}
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         {% if pp is not empty %}
-                                            <a href="{{ path('app_package_student_period_show', {'id': pp.id }) }}" class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white">{{ pp.period }} {{ pp.package }}</a>
+                                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white">{{ pp.period }} {{ pp.package }}</span>
                                         {% elseif enable %}
                                             <button type="button" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="openPackageModal({{ person.student.id }})">
                                                 {{ ux_icon('tabler:calendar-plus', {class: 'w-3 h-3 mr-1'}) }}

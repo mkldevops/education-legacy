@@ -110,14 +110,6 @@
                     Opérations
                 </a>
 
-                <a href="{{ path('app_package_index') }}"
-                   onclick="toggleMobileMenu()"
-                   class="group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ app.request.attributes.get('_route') starts with 'app_package' ? 'bg-primary-100 text-primary-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
-                    <svg class="mr-3 h-5 w-5 {{ app.request.attributes.get('_route') starts with 'app_package' ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    Forfaits
-                </a>
 
                 <a href="{{ path('app_account_index') }}"
                    onclick="toggleMobileMenu()"
