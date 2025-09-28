@@ -39,7 +39,7 @@ final class StudentPhoneUpdateTest extends AppWebTestCase
             ->setGender(Person::GENDER_MALE)
             ->setBirthday(new \DateTime('2000-01-01'))
             ->setBirthplace('Test City')
-            ->setEmail('test@example.com')
+            ->setEmail('test.student.phone.update@example.com')
         ;
 
         $student = new Student();
@@ -57,9 +57,12 @@ final class StudentPhoneUpdateTest extends AppWebTestCase
 
         self::assertNotSame($originalPhone, $newPhone, 'Les téléphones doivent être différents pour le test');
 
-        // Test GET de la page d'édition
-        self::$client->request(Request::METHOD_GET, '/student/edit/'.$studentId);
+        // Test GET de la page d'édition pour récupérer le token CSRF
+        $crawler = self::$client->request(Request::METHOD_GET, '/student/edit/'.$studentId);
         self::assertResponseIsSuccessful();
+
+        // Extraire le token CSRF du formulaire
+        $csrfToken = $crawler->filter('input[name="app_student[_token]"]')->attr('value');
 
         // Test POST de mise à jour
         self::$client->request(Request::METHOD_PUT, '/student/update/'.$studentId, [
@@ -79,16 +82,19 @@ final class StudentPhoneUpdateTest extends AppWebTestCase
                 'personAuthorized' => $student->getPersonAuthorized(),
                 'remarksHealth' => $student->getRemarksHealth(),
                 'letAlone' => $student->getLetAlone(),
+                '_token' => $csrfToken,
             ],
         ]);
 
         // Vérifier la redirection de succès
         self::assertResponseRedirects('/student/show/'.$studentId);
 
-        // Rafraîchir l'entité depuis la base de données
-        $this->entityManager->refresh($student);
+        // Récupérer l'entité fraîche depuis la base de données
+        $updatedStudent = $this->entityManager->getRepository(Student::class)->find($studentId);
 
-        // Vérifier que le téléphone a été mis à jour
-        self::assertSame($newPhone, $student->getPhone(), 'Le numéro de téléphone devrait être mis à jour');
+        // Vérifier que le téléphone a été mis à jour (le PhoneManager formate automatiquement)
+        // Le format attendu pour '0987654321' est '09 87 65 43 21'
+        $expectedFormattedPhone = '09 87 65 43 21';
+        self::assertSame($expectedFormattedPhone, $updatedStudent->getPhone(), 'Le numéro de téléphone devrait être formaté et mis à jour');
     }
 }

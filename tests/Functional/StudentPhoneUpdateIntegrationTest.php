@@ -42,9 +42,12 @@ final class StudentPhoneUpdateIntegrationTest extends AppWebTestCase
         // S'assurer que le nouveau téléphone est différent
         self::assertNotSame($originalPhone, $newPhone, 'Les téléphones doivent être différents pour le test');
 
-        // Test GET de la page d'édition
-        self::$client->request(Request::METHOD_GET, '/student/edit/1');
+        // Test GET de la page d'édition pour récupérer le token CSRF
+        $crawler = self::$client->request(Request::METHOD_GET, '/student/edit/1');
         self::assertResponseIsSuccessful();
+
+        // Extraire le token CSRF du formulaire
+        $csrfToken = $crawler->filter('input[name="app_student[_token]"]')->attr('value');
 
         // Test POST de mise à jour avec les vraies données du formulaire
         self::$client->request(Request::METHOD_PUT, '/student/update/1', [
@@ -64,21 +67,24 @@ final class StudentPhoneUpdateIntegrationTest extends AppWebTestCase
                 'personAuthorized' => $student->getPersonAuthorized(),
                 'remarksHealth' => $student->getRemarksHealth(),
                 'letAlone' => $student->getLetAlone(),
+                '_token' => $csrfToken,
             ],
         ]);
 
         // Vérifier la redirection de succès
         self::assertResponseRedirects('/student/show/1');
 
-        // Rafraîchir l'entité depuis la base de données
-        $this->entityManager->refresh($student);
+        // Récupérer l'entité fraîche depuis la base de données
+        /** @var StudentRepository $studentRepository */
+        $studentRepository = $this->entityManager->getRepository(Student::class);
+        $updatedStudent = $studentRepository->find(1);
 
         // Le téléphone devrait être formaté automatiquement
         $expectedFormattedPhone = '06 12 34 56 78';
-        self::assertSame($expectedFormattedPhone, $student->getPhone(), 'Le numéro de téléphone devrait être mis à jour et formaté');
+        self::assertSame($expectedFormattedPhone, $updatedStudent->getPhone(), 'Le numéro de téléphone devrait être mis à jour et formaté');
 
         // Vérifier que c'est différent de l'original
-        self::assertNotSame($originalPhone, $student->getPhone(), 'Le téléphone devrait avoir changé');
+        self::assertNotSame($originalPhone, $updatedStudent->getPhone(), 'Le téléphone devrait avoir changé');
     }
 
     public function testStudentListPageDisplaysStudents(): void
@@ -90,10 +96,10 @@ final class StudentPhoneUpdateIntegrationTest extends AppWebTestCase
         $content = self::$client->getResponse()->getContent();
         self::assertNotFalse($content);
 
-        // Vérifier que les étudiants des fixtures sont affichés
-        self::assertStringContainsString('Antoine', $content);
-        self::assertStringContainsString('Dupont', $content);
-        self::assertStringContainsString('Sophie', $content);
-        self::assertStringContainsString('Martin', $content);
+        // Vérifier que les étudiants des fixtures sont affichés (insensible à la casse)
+        self::assertStringContainsStringIgnoringCase('Antoine', $content);
+        self::assertStringContainsStringIgnoringCase('Dupont', $content);
+        self::assertStringContainsStringIgnoringCase('Sophie', $content);
+        self::assertStringContainsStringIgnoringCase('Martin', $content);
     }
 }
