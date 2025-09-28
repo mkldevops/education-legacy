@@ -7,14 +7,10 @@ namespace App\Controller;
 use App\Entity\AccountSlip;
 use App\Entity\Structure;
 use App\Exception\AppException;
-use App\Exception\InvalidArgumentException;
-use App\Exception\NotFoundDataException;
-use App\Fetcher\DocumentFetcher;
 use App\Form\AccountSlipEditType;
 use App\Form\AccountSlipType;
 use App\Manager\SchoolManager;
 use App\Manager\TransferManager;
-use App\Model\ResponseModel;
 use App\Repository\AccountSlipRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -22,11 +18,9 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -221,41 +215,6 @@ class AccountSlipController extends AbstractController
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
         ]);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     * @throws NotFoundDataException
-     */
-    #[Route(path: '/account-slip/set-document/{id}/{action}', name: 'app_account_slip_set_document', methods: ['POST'])]
-    public function setDocument(
-        Request $request,
-        #[MapEntity(id: 'id')] AccountSlip $accountSlip,
-        string $action,
-        DocumentFetcher $documentFetcher,
-        EntityManagerInterface $entityManager,
-    ): JsonResponse {
-        $document = $documentFetcher->getDocument($request->get('document'));
-
-        switch ($action) {
-            case 'add':
-                $accountSlip->addDocument($document);
-                $accountSlip->getOperationCredit()?->addDocument($document);
-                $accountSlip->getOperationDebit()?->addDocument($document);
-
-                break;
-            case 'remove':
-                $accountSlip->removeDocument($document);
-
-                break;
-            default:
-                throw new InvalidDefinitionException('the action '.$action.' is not defined');
-        }
-
-        $entityManager->persist($accountSlip);
-        $entityManager->flush();
-
-        return $this->json(new ResponseModel(success: true));
     }
 
     private function getQuery(string $search): QueryBuilder

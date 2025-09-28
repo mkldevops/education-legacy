@@ -72,21 +72,4 @@
             </div>
         {% endif %}
 
-        {% if result.document|default({}) is not empty %}
-            <div>
-                <div class="panel panel-default">
-                    <h3 class="panel-heading">Search in document</h3>
-                    <div class="panel-body">
-                        <ul>
-                            {% for document in result.document %}
-                                <li>
-                                    <a href="{{ path('app_document_show', { id : document.id }) }}">{{ document.name }}</a>
-                                    ({{ document.createdAt.format('d/m/Y H:i')|default('---') }})
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
 {% endblock %}

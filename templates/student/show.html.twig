@@ -105,7 +105,19 @@
                                     </a>
                                 </div>
 
-                                <div class="absolute top-4 right-4">
+                                <div class="absolute top-4 right-4 flex flex-col items-end space-y-2">
+                                    {{ component('file_upload_modal', {
+                                        uploadUrl: '/api/upload',
+                                        acceptedTypes: '.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif',
+                                        maxFileSize: 10,
+                                        multiple: true,
+                                        modalTitle: 'Documents de ' ~ student.nameComplete,
+                                        triggerButtonText: 'Documents',
+                                        triggerButtonClass: 'inline-flex items-center gap-1 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200',
+                                        successCallback: 'onFileUploadSuccess',
+                                        errorCallback: 'onFileUploadError'
+                                    }) }}
+                                    
                                     <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold {{ student.enable ? 'bg-emerald-500/15 text-emerald-100 ring-1 ring-inset ring-emerald-400/60' : 'bg-rose-500/15 text-rose-100 ring-1 ring-inset ring-rose-400/60' }}">
                                         {{ ux_icon(student.enable ? 'bi:check-circle' : 'bi:slash-circle', {class: 'w-4 h-4'}) }}
                                         {{ student.enable ? 'Actif' : 'Inactif' }}
@@ -286,8 +298,24 @@
         </div>
     </div>
 
-    {# Additional content sections can be added here #}
-    <div class="mt-8 space-y-6">
-        {# You can add more sections here for courses, payments, etc. #}
-    </div>
+
+    <script>
+        // Callbacks pour l'upload de fichiers
+        function onFileUploadSuccess(result) {
+            console.log('Upload réussi:', result);
+            // Ici vous pouvez ajouter la logique pour rafraîchir la liste des documents
+            // ou envoyer les infos du fichier au backend pour les associer à l'étudiant
+        }
+
+        function onFileUploadError(error) {
+            console.error('Erreur upload:', error);
+            // Gestion des erreurs personnalisée
+        }
+
+        // Écouter l'événement d'upload
+        document.addEventListener('file-uploaded', function(event) {
+            console.log('Fichiers uploadés via event:', event.detail);
+            // Logique supplémentaire si nécessaire
+        });
+    </script>
 {% endblock %}

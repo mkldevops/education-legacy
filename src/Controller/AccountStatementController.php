@@ -6,9 +6,6 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AccountStatement;
-use App\Exception\InvalidArgumentException;
-use App\Exception\NotFoundDataException;
-use App\Fetcher\DocumentFetcher;
 use App\Form\AccountStatementType;
 use App\Repository\AccountStatementRepository;
 use App\Repository\OperationRepository;
@@ -220,30 +217,6 @@ class AccountStatementController extends AbstractController
             'page' => 1,
             'search' => urlencode((string) $all['form']['q']),
         ]);
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     * @throws NotFoundDataException
-     */
-    #[Route(
-        path: '/account-statement/add-document/{id}',
-        name: 'app_account_statement_add_document',
-        options: ['expose' => 'true'],
-        methods: ['POST']
-    )]
-    public function addDocument(
-        Request $request,
-        #[MapEntity(id: 'id')] AccountStatement $accountStatement,
-        DocumentFetcher $documentFetcher,
-        EntityManagerInterface $entityManager,
-    ): JsonResponse {
-        $document = $documentFetcher->getDocument($request->get('document'));
-        $accountStatement->addDocument($document);
-        $entityManager->persist($accountStatement);
-        $entityManager->flush();
-
-        return $this->json(['success' => true]);
     }
 
     #[Route(

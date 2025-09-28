@@ -18,6 +18,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
 class Student implements \Stringable, EntityInterface, AuthorEntityInterface
@@ -30,24 +31,40 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
     use TimestampableEntity;
 
     #[ORM\OneToOne(targetEntity: Person::class, inversedBy: 'student', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
+    #[Assert\Valid]
     private ?Person $person = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le nom de l\'ancienne école ne peut pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $lastSchool = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Assert\Length(
+        max: 500,
+        maxMessage: 'Les personnes autorisées ne peuvent pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $personAuthorized = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 2000,
+        maxMessage: 'Les remarques de santé ne peuvent pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $remarksHealth = null;
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
     private bool $letAlone = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'La date d\'inscription est obligatoire.')]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $dateRegistration = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\Type(\DateTimeInterface::class)]
     private ?\DateTimeInterface $dateDesactivated = null;
 
     #[ORM\ManyToOne(targetEntity: Grade::class, cascade: ['persist'])]
@@ -297,7 +314,7 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
         return $this->lastSchool;
     }
 
-    public function setLastSchool(string $lastSchool): self
+    public function setLastSchool(?string $lastSchool): self
     {
         $this->lastSchool = $lastSchool;
 
@@ -309,7 +326,7 @@ class Student implements \Stringable, EntityInterface, AuthorEntityInterface
         return $this->grade;
     }
 
-    public function setGrade(Grade $grade): self
+    public function setGrade(?Grade $grade): self
     {
         $this->grade = $grade;
 

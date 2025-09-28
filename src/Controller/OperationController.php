@@ -9,7 +9,6 @@ use App\Entity\Operation;
 use App\Entity\Validate;
 use App\Exception\AppException;
 use App\Exception\InvalidArgumentException;
-use App\Fetcher\DocumentFetcher;
 use App\Form\OperationType;
 use App\Manager\OperationManager;
 use App\Manager\PeriodManager;
@@ -238,37 +237,6 @@ class OperationController extends AbstractController
             'operation' => $operation,
             'delete_form' => $deleteForm->createView(),
         ]);
-    }
-
-    /**
-     * @throws AppException
-     */
-    #[Route(path: '/operation/set-document/{id}/{action}', name: 'app_operation_set_document', methods: ['POST'])]
-    public function setDocument(
-        Request $request,
-        Operation $operation,
-        string $action,
-        DocumentFetcher $documentFetcher,
-        EntityManagerInterface $entityManager
-    ): JsonResponse {
-        $responseModel = ResponseRequest::responseDefault();
-
-        try {
-            $document = $documentFetcher->getDocument($request->get('document'));
-
-            if ('add' === $action) {
-                $operation->addDocument($document);
-            } elseif ('remove' === $action) {
-                $operation->removeDocument($document);
-            }
-
-            $entityManager->persist($operation);
-            $entityManager->flush();
-        } catch (\Exception $exception) {
-            throw new AppException($exception->getMessage(), (int) $exception->getCode(), $exception);
-        }
-
-        return new JsonResponse($responseModel);
     }
 
     /**
