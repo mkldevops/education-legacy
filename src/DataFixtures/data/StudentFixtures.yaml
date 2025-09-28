@@ -1,0 +1,119 @@
+1:
+  forname: Antoine
+  name: Dupont
+  gender: male
+  birthday: "2015-03-15"
+  birthplace: Paris
+  phone: "0123456789"
+  email: "antoine.dupont@famille.fr"
+  grade: 1
+  school: 1
+  lastSchool: "École maternelle Saint-Martin"
+  personAuthorized: "Marie Dupont (mère), Pierre Dupont (père), Sylvie Martin (grand-mère)"
+  remarksHealth: "Allergique aux noix"
+  letAlone: false
+
+2:
+  forname: Sophie
+  name: Martin
+  gender: female
+  birthday: "2014-09-22"
+  birthplace: Lyon
+  phone: "0987654321"
+  email: "sophie.martin@famille.fr"
+  grade: 2
+  school: 1
+  lastSchool: "École maternelle Jean Moulin"
+  personAuthorized: "Isabelle Martin (mère), Jean Martin (père)"
+  remarksHealth: "Porte des lunettes"
+  letAlone: false
+
+3:
+  forname: Lucas
+  name: Petit
+  gender: male
+  birthday: "2013-12-08"
+  birthplace: Marseille
+  phone: "0145673829"
+  email: "lucas.petit@famille.fr"
+  grade: 3
+  school: 1
+  lastSchool: "École primaire Victor Hugo"
+  personAuthorized: "Caroline Petit (mère), Thomas Petit (père), Anne Dubois (tante)"
+  remarksHealth: ""
+  letAlone: true
+
+4:
+  forname: Emma
+  name: Bernard
+  gender: female
+  birthday: "2012-06-11"
+  birthplace: Toulouse
+  phone: "0156423987"
+  email: "emma.bernard@famille.fr"
+  grade: 4
+  school: 1
+  lastSchool: "École primaire Molière"
+  personAuthorized: "Nathalie Bernard (mère), Olivier Bernard (père)"
+  remarksHealth: "Suit un traitement pour l'asthme"
+  letAlone: true
+
+5:
+  forname: Théo
+  name: Moreau
+  gender: male
+  birthday: "2015-01-25"
+  birthplace: Nice
+  phone: "0134567890"
+  email: "theo.moreau@famille.fr"
+  grade: 1
+  school: 1
+  lastSchool: ""
+  personAuthorized: "Julie Moreau (mère), Marc Moreau (père), Françoise Moreau (grand-mère)"
+  remarksHealth: "Tendance à l'hyperactivité"
+  letAlone: false
+
+6:
+  forname: Léa
+  name: Roux
+  gender: female
+  birthday: "2014-04-30"
+  birthplace: Bordeaux
+  phone: "0167890123"
+  email: "lea.roux@famille.fr"
+  grade: 2
+  school: 1
+  lastSchool: "École maternelle Les Hirondelles"
+  personAuthorized: "Sandra Roux (mère), Vincent Roux (père)"
+  remarksHealth: ""
+  letAlone: false
+
+7:
+  forname: Noah
+  name: Fournier
+  gender: male
+  birthday: "2013-08-17"
+  birthplace: Nantes
+  phone: "0178901234"
+  email: "noah.fournier@famille.fr"
+  grade: 3
+  school: 1
+  lastSchool: "École primaire Paul Éluard"
+  personAuthorized: "Céline Fournier (mère), David Fournier (père), Michel Fournier (grand-père)"
+  remarksHealth: "Intolérance au lactose"
+  letAlone: false
+
+8:
+  forname: Chloé
+  name: Girard
+  gender: female
+  birthday: "2012-11-03"
+  birthplace: Strasbourg
+  phone: "0189012345"
+  email: "chloe.girard@famille.fr"
+  grade: 4
+  school: 1
+  lastSchool: "École primaire Marie Curie"
+  personAuthorized: "Valérie Girard (mère), Christophe Girard (père)"
+  remarksHealth: "Très bonne élève, avance rapidement"
+  letAlone: true
