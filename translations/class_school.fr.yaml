@@ -1,28 +1,53 @@
-title.new: 'Nouvelle classe'
-title.edit: 'Modifier la classe "%name%"'
-title.form.edit: 'Formulaire d''ajout de classe'
-title.form.new: 'Formulaire d''ajout de classe'
-title.form.delete: 'Formulaire de supression de classe'
-title.delete: 'Supprimer la classe "%name%"'
-title.index: 'Liste des classes'
-title.show: 'Fiche de la classe "%name%"'
-title.header.info: 'Information de la classe "%name%"'
-title.header.classperiod: 'Classe annuelle'
-title.header.status: 'Status de la classe'
-class_period.add: 'Ajouter une classe pour la période %period%'
-classschool: Classe
-show.begin: 'from %begin to %end%'
-show.enable: Actif|Inactif
-show.head.name: class_school
-show.head.id: class_school
-show.head.created_at: class_school
-show.head.enable: __show.head.enable
-show.head.period: __show.head.period
-Period: __Period
-'Count Student': '__Count Student'
-'Count Course': '__Count Course'
-Status: __Status
-Record: __Record
-'Request a superadmin to add this class': '__Request a superadmin to add this class'
-Author: __Author
-Created: __Created
+# Class School translations
+title:
+    new: 'Nouvelle classe'
+    edit: 'Modifier la classe "%name%"'
+    delete: 'Supprimer la classe "%name%"'
+    index: 'Liste des classes'
+    show: 'Fiche de la classe "%name%"'
+    header:
+        info: 'Informations de la classe "%name%"'
+        classperiod: 'Périodes de classe'
+        status: 'Statut de la classe'
+
+form:
+    edit: 'Formulaire de modification de classe'
+    new: 'Formulaire d''ajout de classe'
+    delete: 'Formulaire de suppression de classe'
+
+show:
+    begin: 'du %begin% au %end%'
+    enable: 'Actif|Inactif'
+    head:
+        id: 'ID'
+        name: 'Nom'
+        enable: 'Statut'
+        period: 'Période'
+        created_at: 'Créé le'
+
+# Navigation and Actions
+classschool:
+    new: 'Nouvelle classe'
+    breadcrumb: 'Classes'
+
+# Actions
+List: 'Liste'
+Show: 'Voir'
+Edit: 'Modifier'
+Delete: 'Supprimer'
+
+# Class periods
+class_period:
+    add: 'Ajouter une classe pour la période %period%'
+
+# Table headers
+Period: 'Période'
+'Count Student': 'Nombre d''élèves'
+'Count Course': 'Nombre de cours'
+Status: 'Statut'
+Record: 'Enregistrement'
+Author: 'Auteur'
+Created: 'Créé le'
+
+# Messages
+'Request a superadmin to add this class': 'Demander à un super administrateur d''ajouter cette classe'
