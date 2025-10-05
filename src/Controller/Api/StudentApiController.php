@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class StudentApiController extends AbstractController
@@ -25,9 +26,6 @@ class StudentApiController extends AbstractController
         private readonly SchoolManager $schoolManager,
     ) {}
 
-    /**
-     * @throws AppException
-     */
     #[Route('/api/student/create', name: 'app_api_student_create', methods: ['POST'], options: ['expose' => true])]
     public function create(Request $request): JsonResponse
     {
@@ -36,11 +34,17 @@ class StudentApiController extends AbstractController
             ->handleRequest($request)
         ;
 
-        $this->persistData($student, $form);
+        try {
+            $this->persistData($student, $form);
+            $this->addFlash('success', 'The student has been added.');
 
-        $this->addFlash('success', 'The student has been added.');
-
-        return $this->json(StudentModel::fromStudent($student));
+            return $this->json(StudentModel::fromStudent($student));
+        } catch (AppException $e) {
+            return $this->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -72,7 +76,17 @@ class StudentApiController extends AbstractController
         }
 
         if (!$form->isValid()) {
-            throw new AppException('The form is not valid '.$form->getErrors());
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+            $errorMessage = implode(', ', $errors);
+
+            $this->logger->error('Student form validation failed', [
+                'errors' => $errorMessage,
+            ]);
+
+            throw new AppException('Form validation failed: '.$errorMessage);
         }
 
         $student

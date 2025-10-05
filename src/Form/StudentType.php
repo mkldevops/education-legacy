@@ -32,7 +32,7 @@ class StudentType extends AbstractType
                     ->setParameter('enable', true)
                     ->orderBy('g.name', 'ASC'),
             ])
-            ->add('lastSchool', null, ['label' => 'label.lastSchool', 'required' => false])
+            ->add('lastSchool', null, ['label' => 'label.lastSchool', 'required' => false, 'attr' => ['maxlength' => 255]])
             ->add('personAuthorized', TextareaType::class, ['label' => 'label.personAuthorized', 'required' => false])
             ->add('remarksHealth', TextareaType::class, ['label' => 'label.remarksHealth', 'required' => false])
             ->add('letAlone', null, ['label' => 'label.letAlone', 'required' => false])
