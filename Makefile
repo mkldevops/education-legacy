@@ -88,12 +88,6 @@ doctrine-schema: create-database ## implement schema of database if not exists
 load-fixtures: ## load fixtures
 	$(CONSOLE) doctrine:fixtures:load -n
 
-reload-fixtures-safe: ## Safely reload fixtures by dropping and recreating database
-	$(CONSOLE) doctrine:database:drop --force --if-exists
-	$(CONSOLE) doctrine:database:create
-	$(CONSOLE) doctrine:migrations:migrate -n
-	$(CONSOLE) doctrine:fixtures:load -n
-
 reset-database:  drop-database migrate load-fixtures  doctrine-validate ## Build the db, control the schema validity, load fixtures and check the migration status
 
 ## —— Database Backup & Restore 💾 ———————————————————————————————————————————
