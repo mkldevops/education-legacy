@@ -39,10 +39,10 @@ class StudentApiController extends AbstractController
             $this->addFlash('success', 'The student has been added.');
 
             return $this->json(StudentModel::fromStudent($student));
-        } catch (AppException $e) {
+        } catch (AppException $appException) {
             return $this->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => $appException->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
         }
     }
@@ -80,6 +80,7 @@ class StudentApiController extends AbstractController
             foreach ($form->getErrors(true) as $error) {
                 $errors[] = $error->getMessage();
             }
+
             $errorMessage = implode(', ', $errors);
 
             $this->logger->error('Student form validation failed', [

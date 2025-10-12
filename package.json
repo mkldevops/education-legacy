@@ -13,8 +13,8 @@
     "analyse:php": "vendor/bin/phpstan analyse --memory-limit=1G --no-progress",
     "validate:composer": "composer validate",
     "hooks:install": "husky install",
-    "hooks:test": "lint-staged --allow-empty",
-    "pre-commit": "lint-staged",
+    "hooks:test": "lint-staged --allow-empty --relative",
+    "pre-commit": "lint-staged --relative",
     "test": "make test"
   },
   "devDependencies": {
@@ -23,15 +23,15 @@
   },
   "lint-staged": {
     "*.php": [
-      "php -l",
-      "vendor/bin/php-cs-fixer fix --allow-risky=yes --config=.php-cs-fixer.dist.php"
+      "docker compose exec -T app php -l",
+      "docker compose exec -T app vendor/bin/php-cs-fixer fix --allow-risky=yes --config=.php-cs-fixer.dist.php"
     ],
     "*.twig": [
-      "php bin/console lint:twig"
+      "docker compose exec -T app php bin/console lint:twig"
     ],
-    "composer.{json,lock}": "./scripts/validate-composer.sh",
+    "composer.{json,lock}": "docker compose exec -T app ./scripts/validate-composer.sh",
     "{src,tests}/**/*.php": [
-      "vendor/bin/phpstan analyse --memory-limit=1G --no-progress"
+      "docker compose exec -T app vendor/bin/phpstan analyse --memory-limit=1G --no-progress"
     ]
   },
   "repository": {
