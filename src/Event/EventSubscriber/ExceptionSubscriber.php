@@ -67,7 +67,30 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
         $data = ['error' => \sprintf('Error : %s', $throwable->getMessage())];
         if ($this->debug) {
-            $data['traces'] = $throwable->getTrace();
+            $traces = [];
+            foreach ($throwable->getTrace() as $trace) {
+                $traces[] = [
+                    'file' => $trace['file'] ?? '',
+                    'line' => $trace['line'] ?? 0,
+                    'function' => $trace['function'],
+                    'class' => $trace['class'] ?? '',
+                    'type' => $trace['type'] ?? '',
+                    'args' => array_map(static function ($arg) {
+                        if (\is_object($arg)) {
+                            return ['object' => $arg::class];
+                        }
+                        if (\is_array($arg)) {
+                            return ['array' => 'Array'];
+                        }
+                        if (\is_resource($arg)) {
+                            return ['resource' => get_resource_type($arg)];
+                        }
+
+                        return $arg;
+                    }, $trace['args'] ?? []),
+                ];
+            }
+            $data['traces'] = $traces;
         }
 
         // Determine a valid HTTP status code.

@@ -1,0 +1,5 @@
+pwa:
+    manifest:
+        enabled: false
+    serviceworker:
+        enabled: false
